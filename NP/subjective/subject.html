@@ -150,6 +150,36 @@
     .assessment-badge:hover { background: #ffedd5; border-color: #fb923c; }
     .assessment-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #f97316; }
 
+    .tx-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 16px; border: 1px solid #93c5fd; border-radius: 999px;
+      font-size: 13px; background: #eff6ff; color: #2563eb;
+      font-family: inherit; cursor: pointer; font-weight: 500;
+      transition: all .15s;
+    }
+    .tx-badge:hover { background: #dbeafe; border-color: #60a5fa; }
+    .tx-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #3b82f6; }
+
+    .rx-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 16px; border: 1px solid #86efac; border-radius: 999px;
+      font-size: 13px; background: #f0fdf4; color: #16a34a;
+      font-family: inherit; cursor: pointer; font-weight: 500;
+      transition: all .15s;
+    }
+    .rx-badge:hover { background: #dcfce7; border-color: #4ade80; }
+    .rx-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; }
+
+    .tag-med { background: #e0e7ff; color: #3730a3; }
+    .tag-fluid { background: #dcfce7; color: #166534; }
+    .tag-proc { background: #fef3c7; color: #92400e; }
+    .sel-row-meta { font-size: 12px; color: #6b7280; margin-top: 4px; padding-left: 28px; }
+    .sel-row-meta .saved-time { color: #9ca3af; }
+    .dose-row { display: flex; gap: 8px; }
+    .dose-row .amt { flex: 0 0 35%; }
+    .dose-row .unit { flex: 1; }
+    .meta-readonly.full { white-space: pre-wrap; line-height: 1.6; font-size: 14px; color: #374151; padding: 8px 0; }
+
     .topics-content {
       flex: 1;
       overflow-y: auto;
@@ -235,6 +265,19 @@
     .topic-assessment-block .asm-detail {
       padding-left: 12px;
       color: #64748b;
+    }
+    .topic-assessment-block .asm-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      line-height: 1.8;
+    }
+    .topic-assessment-block .asm-row .asm-label {
+      flex: 0 0 140px;
+    }
+    .topic-assessment-block .asm-row .asm-val {
+      flex: 1;
+      color: #334155;
     }
 
     .extras-row {
@@ -828,9 +871,17 @@
         <div class="editor-col">
           <div class="editor-col-header">
             <span>Editor</span>
-            <button class="assessment-badge" onclick="document.getElementById('assess-modal').classList.add('show')">
-              <span class="dot"></span> Assessment
-            </button>
+            <div style="display:flex;gap:8px;">
+              <button class="assessment-badge" onclick="document.getElementById('assess-modal').classList.add('show')">
+                <span class="dot"></span> Assessment
+              </button>
+              <button class="tx-badge" onclick="document.getElementById('tx-modal').classList.add('show')">
+                <span class="dot"></span> Tx
+              </button>
+              <button class="rx-badge" onclick="document.getElementById('rx-modal').classList.add('show')">
+                <span class="dot"></span> Rx
+              </button>
+            </div>
           </div>
           <div class="topics-content" id="topicsContent"></div>
         </div>
@@ -1310,7 +1361,9 @@
       'Oncological',
       'Lymph nodes',
       'Add Images',
-      'Assessment'
+      'Assessment',
+      'Tx',
+      'Rx'
     ];
 
     const topicsNav = document.getElementById('topicsNav');
@@ -1407,12 +1460,124 @@
       `;
     }
 
+    function createTxSection(index) {
+      var txSel = [
+        { name: "Prednisolone acetate injection (25 mg/ml) (Predni-Ject)", tag: "ยาฉีด (Injection)", route: "ฉีดเข้าใต้ผิวหนัง (SC)", amt: "0.4", unit: "ซีซี (CC)", freq: "วันละ 1 ครั้ง (SID)", note: "- เขย่าขวดก่อนฉีด เก็บในตู้เย็น 2-8°C ห้ามแช่แข็ง\n- ฉีดเข้าใต้ผิวหนังบริเวณสะบัก คลึงเบา ๆ หลังฉีด\n- ห้ามหยุดยาเอง ให้ค่อย ๆ ลดขนาดยา (tapering) ตามที่สัตวแพทย์สั่ง\n- สังเกตอาการกินน้ำ/ปัสสาวะมากผิดปกติ หากพบแจ้งสัตวแพทย์", time: '09/07/26 08:15' },
+        { name: "0.9% Sodium Chloride (NSS) 500 ml", tag: "สารน้ำ / IV Fluid", route: "ฉีดเข้าหลอดเลือดดำแบบหยด (IV drip)", amt: "350", unit: "มิลลิลิตร (ml)", freq: "60 ml/hr (minidrip)", note: "- ให้ NSS จากขวด 500 ml เฉพาะปริมาณ 350 ml (ไม่ต้องให้หมดขวด) IV drip อัตรา 60 ml/hr\n- ใช้ชุดให้สารน้ำ minidrip (60 drops/ml) → ปรับหยด = 60 หยด/นาที (≈ 1 หยด/วินาที)\n- เฝ้าระวังอาการบวมน้ำ หายใจเร็ว/ลำบาก หรือบวมบริเวณที่แทงเข็ม\n- ตรวจตำแหน่งเข็มและปริมาณคงเหลือทุก 1 ชั่วโมง บันทึกลงใบ monitor\n- ระบุวันที่/เวลาเริ่มให้ และผู้ให้บนฉลากขวดทุกครั้ง", time: '09/07/26 08:20' },
+        { name: "Enrofloxacin injection (25 mg/ml) (Baytril)", tag: "ยาฉีด (Injection)", route: "ฉีดเข้าใต้ผิวหนัง (SC)", amt: "0.5", unit: "ซีซี (CC)", freq: "วันละ 1 ครั้ง (SID)", note: "- ฉีดเข้าใต้ผิวหนัง อาจระคายเคืองเฉพาะที่ ให้คลึงเบา ๆ หลังฉีด\n- ห้ามใช้ในสัตว์อายุน้อยที่กำลังเจริญเติบโต (ผลต่อกระดูกอ่อน)\n- ให้ครบ course ตามที่สัตวแพทย์สั่ง ห้ามหยุดยาเอง\n- เก็บพ้นแสง อุณหภูมิห้อง", time: '09/07/26 08:25' }
+      ];
+      var txNote = 'สัตว์เลี้ยงเคยให้ยามาแล้ว ให้เปลี่ยนขาในการให้ยา ไม่ซ้ำกับคราวที่แล้ว และโกนขนบริเวณที่ฉีดยาด้วย';
+
+      function routeEng(it) {
+        if (!it.route) return '—';
+        var m = it.route.match(/\(([^)]+)\)/);
+        return m ? m[1] : it.route;
+      }
+      function unitEng(it) {
+        if (!it.unit) return '—';
+        var mu = it.unit.match(/\(([^)]+)\)/);
+        return mu ? mu[1] : it.unit;
+      }
+      function doseStr(it) {
+        return it.amt ? it.amt + ' ' + unitEng(it) : '—';
+      }
+
+      var selLines = txSel.map(function(s, i) {
+        return (i + 1) + '. ' + s.name + '    → ' + s.tag + '    | ' + routeEng(s) + '    | ' + doseStr(s);
+      }).join('\n');
+
+      var detailPanels = txSel.map(function(s) {
+        var noteLines = s.note.split('\n').map(function(l) { return '<div class="asm-detail">' + l + '</div>'; }).join('');
+        return '<div class="asm-title">--- Detail Panel (' + s.name + ' — บันทึกแล้ว ' + s.time + ') ---</div>' +
+          '<div class="asm-row"><span class="asm-label">Category:</span><span class="asm-val">' + s.tag + '</span></div>' +
+          '<div class="asm-row"><span class="asm-label">Route:</span><span class="asm-val">' + (s.route || '—') + '</span></div>' +
+          '<div class="asm-row"><span class="asm-label">Dose:</span><span class="asm-val">' + doseStr(s) + '</span></div>' +
+          '<div class="asm-row"><span class="asm-label">Frequency/Rate:</span><span class="asm-val">' + (s.freq || '—') + '</span></div>' +
+          '<div class="asm-row"><span class="asm-label">Note:</span></div>' +
+          noteLines;
+      }).join('\n');
+
+      return `
+        <div class="topic-section" id="topic-${index}">
+          <div class="topic-title">${topics[index - 1]}</div>
+          <div class="topic-assessment-block">
+<div class="asm-title">--- Tx Summary ---</div>
+<span class="asm-label">:</span> ${txNote}
+
+<div class="asm-title">--- Selected Items (${txSel.length} บันทึกแล้ว) ---</div>
+${selLines}
+
+${detailPanels}
+          </div>
+        </div>
+      `;
+    }
+
+    function createRxSection(index) {
+      var rxSel = [
+        { name: "Prednisolone acetate injection (25 mg/ml) (Predni-Ject)", tag: "ยาฉีด (Injection)", route: "ฉีดเข้าใต้ผิวหนัง (SC)", amt: "0.4", unit: "ซีซี (CC)", freq: "วันละ 1 ครั้ง (SID)", note: "- เขย่าขวดก่อนฉีด เก็บในตู้เย็น 2-8°C ห้ามแช่แข็ง\n- ฉีดเข้าใต้ผิวหนังบริเวณสะบัก คลึงเบา ๆ หลังฉีด\n- ห้ามหยุดยาเอง ให้ค่อย ๆ ลดขนาดยา (tapering) ตามที่สัตวแพทย์สั่ง\n- สังเกตอาการกินน้ำ/ปัสสาวะมากผิดปกติ หากพบแจ้งสัตวแพทย์", time: '09/07/26 08:15' },
+        { name: "0.9% Sodium Chloride (NSS) 500 ml", tag: "สารน้ำ / IV Fluid", route: "ฉีดเข้าหลอดเลือดดำแบบหยด (IV drip)", amt: "350", unit: "มิลลิลิตร (ml)", freq: "60 ml/hr (minidrip)", note: "- ให้ NSS จากขวด 500 ml เฉพาะปริมาณ 350 ml (ไม่ต้องให้หมดขวด) IV drip อัตรา 60 ml/hr\n- ใช้ชุดให้สารน้ำ minidrip (60 drops/ml) → ปรับหยด = 60 หยด/นาที (≈ 1 หยด/วินาที)\n- เฝ้าระวังอาการบวมน้ำ หายใจเร็ว/ลำบาก หรือบวมบริเวณที่แทงเข็ม\n- ตรวจตำแหน่งเข็มและปริมาณคงเหลือทุก 1 ชั่วโมง บันทึกลงใบ monitor\n- ระบุวันที่/เวลาเริ่มให้ และผู้ให้บนฉลากขวดทุกครั้ง", time: '09/07/26 08:20' },
+        { name: "Enrofloxacin injection (25 mg/ml) (Baytril)", tag: "ยาฉีด (Injection)", route: "ฉีดเข้าใต้ผิวหนัง (SC)", amt: "0.5", unit: "ซีซี (CC)", freq: "วันละ 1 ครั้ง (SID)", note: "- ฉีดเข้าใต้ผิวหนัง อาจระคายเคืองเฉพาะที่ ให้คลึงเบา ๆ หลังฉีด\n- ห้ามใช้ในสัตว์อายุน้อยที่กำลังเจริญเติบโต (ผลต่อกระดูกอ่อน)\n- ให้ครบ course ตามที่สัตวแพทย์สั่ง ห้ามหยุดยาเอง\n- เก็บพ้นแสง อุณหภูมิห้อง", time: '09/07/26 08:25' }
+      ];
+      var rxNote = 'สัตว์เลี้ยงเคยให้ยามาแล้ว ให้เปลี่ยนขาในการให้ยา ไม่ซ้ำกับคราวที่แล้ว และโกนขนบริเวณที่ฉีดยาด้วย';
+
+      function rxRouteEng(it) {
+        if (!it.route) return '—';
+        var m = it.route.match(/\(([^)]+)\)/);
+        return m ? m[1] : it.route;
+      }
+      function rxUnitEng(it) {
+        if (!it.unit) return '—';
+        var mu = it.unit.match(/\(([^)]+)\)/);
+        return mu ? mu[1] : it.unit;
+      }
+      function rxDoseStr(it) {
+        return it.amt ? it.amt + ' ' + rxUnitEng(it) : '—';
+      }
+
+      var rxSelLines = rxSel.map(function(s, i) {
+        return (i + 1) + '. ' + s.name + '    → ' + s.tag + '    | ' + rxRouteEng(s) + '    | ' + rxDoseStr(s);
+      }).join('\n');
+
+      var rxDetailPanels = rxSel.map(function(s) {
+        var noteLines = s.note.split('\n').map(function(l) { return '<div class="asm-detail">' + l + '</div>'; }).join('');
+        return '<div class="asm-title">--- Detail Panel (' + s.name + ' — บันทึกแล้ว ' + s.time + ') ---</div>' +
+          '<div class="asm-row"><span class="asm-label">Category:</span><span class="asm-val">' + s.tag + '</span></div>' +
+          '<div class="asm-row"><span class="asm-label">Route:</span><span class="asm-val">' + (s.route || '—') + '</span></div>' +
+          '<div class="asm-row"><span class="asm-label">Dose:</span><span class="asm-val">' + rxDoseStr(s) + '</span></div>' +
+          '<div class="asm-row"><span class="asm-label">Frequency/Rate:</span><span class="asm-val">' + (s.freq || '—') + '</span></div>' +
+          '<div class="asm-row"><span class="asm-label">Note:</span></div>' +
+          noteLines;
+      }).join('\n');
+
+      return `
+        <div class="topic-section" id="topic-${index}">
+          <div class="topic-title">${topics[index - 1]}</div>
+          <div class="topic-assessment-block">
+<div class="asm-title">--- Rx Summary ---</div>
+<span class="asm-label">:</span> ${rxNote}
+
+<div class="asm-title">--- Selected Items (${rxSel.length} บันทึกแล้ว) ---</div>
+${rxSelLines}
+
+${rxDetailPanels}
+          </div>
+        </div>
+      `;
+    }
+
     function createTopicSection(index) {
       if (index === 20) {
         return createImageSection(index);
       }
       if (index === 21) {
         return createAssessmentSection(index);
+      }
+      if (index === 22) {
+        return createTxSection(index);
+      }
+      if (index === 23) {
+        return createRxSection(index);
       }
       return `
         <div class="topic-section" id="topic-${index}">
@@ -1436,7 +1601,7 @@
       const index = i + 1;
       const item = document.createElement('div');
       item.className = 'topic-item';
-      if (index === 21) {
+      if (index === 21 || index === 22 || index === 23) {
         item.textContent = topic;
       } else {
         item.textContent = `${index}. ${topic}`;
@@ -1508,12 +1673,12 @@
       }, 2000);
     }
     var tabDvmMap = { '1':'นิพนธ์ วงศ์ประเสริฐ', '2':'นิพนธ์ วงศ์ประเสริฐ', '3':'วิชัย ใจดี', '4':'ปนัดดา ศรีสุข', '5':'นิพนธ์ วงศ์ประเสริฐ' };
-    document.querySelectorAll('.vtab').forEach(function(tab) {
+    document.querySelectorAll('#assess-modal .vtab').forEach(function(tab) {
       tab.addEventListener('click', function() {
-        document.querySelectorAll('.vtab').forEach(function(t) { t.classList.remove('active'); });
+        document.querySelectorAll('#assess-modal .vtab').forEach(function(t) { t.classList.remove('active'); });
         this.classList.add('active');
         var idx = this.getAttribute('data-tab');
-        document.querySelectorAll('.tab-content').forEach(function(c) { c.style.display = 'none'; });
+        document.querySelectorAll('#assess-modal .tab-content').forEach(function(c) { c.style.display = 'none'; });
         var target = document.getElementById('content-' + idx);
         if (target) target.style.display = '';
         var nameEl = document.getElementById('last-update-name');
@@ -1693,6 +1858,698 @@
     }
 
     renderTable(tableData);
+
+    // ====== CLONE ASSESSMENT FOR Tx AND Rx ======
+    function replaceTextInNode(node, find, replace) {
+      var walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT, null, false);
+      while (walker.nextNode()) {
+        walker.currentNode.textContent = walker.currentNode.textContent.replace(new RegExp(find, 'g'), replace);
+      }
+    }
+
+    function cloneAssessment(prefix, label) {
+      // --- Clone Modal ---
+      var modal = document.getElementById('assess-modal').cloneNode(true);
+      modal.id = prefix + '-modal';
+
+      // Fix content IDs
+      for (var i = 1; i <= 5; i++) {
+        var c = modal.querySelector('#content-' + i);
+        if (c) c.id = prefix + '-content-' + i;
+      }
+
+      // Fix other IDs
+      var idMap = {
+        'last-update-time': prefix + '-last-update-time',
+        'last-update-name': prefix + '-last-update-name',
+        'tab1-problem-type': prefix + '-tab1-problem-type',
+        'tab1-prognosis': prefix + '-tab1-prognosis',
+        'tbl-search': prefix + '-tbl-search',
+        'tbl-cat': prefix + '-tbl-cat',
+        'tbl-type': prefix + '-tbl-type',
+        'tbl-status': prefix + '-tbl-status',
+        'tbl-prog': prefix + '-tbl-prog',
+        'data-table': prefix + '-data-table',
+        'data-table-body': prefix + '-data-table-body'
+      };
+      for (var oldId in idMap) {
+        var el = modal.querySelector('#' + oldId);
+        if (el) el.id = idMap[oldId];
+      }
+
+      // Fix onclick handlers
+      modal.querySelectorAll('[onclick]').forEach(function(el) {
+        var onclick = el.getAttribute('onclick');
+        onclick = onclick.replace(/assess-confirm/g, prefix + '-confirm');
+        onclick = onclick.replace(/assess-modal/g, prefix + '-modal');
+        onclick = onclick.replace(/logic-modal/g, prefix + '-logic-modal');
+        onclick = onclick.replace(/assessConfirm\((\d+)\)/g, prefix + 'Confirm($1)');
+        onclick = onclick.replace(/togglePrognosis\(\)/g, prefix + 'TogglePrognosis()');
+        onclick = onclick.replace(/filterTable\(\)/g, prefix + 'FilterTable()');
+        onclick = onclick.replace(/clearFilter\(\)/g, prefix + 'ClearFilter()');
+        el.setAttribute('onclick', onclick);
+      });
+
+      // Fix text content
+      replaceTextInNode(modal, 'Assessment', label);
+
+      document.body.appendChild(modal);
+
+      // --- Clone Logic Modal ---
+      var logic = document.getElementById('logic-modal').cloneNode(true);
+      logic.id = prefix + '-logic-modal';
+      logic.querySelectorAll('[onclick]').forEach(function(el) {
+        var onclick = el.getAttribute('onclick');
+        if (onclick) {
+          onclick = onclick.replace(/logic-modal/g, prefix + '-logic-modal');
+          el.setAttribute('onclick', onclick);
+        }
+      });
+      replaceTextInNode(logic, 'Assessment', label);
+      document.body.appendChild(logic);
+
+      // --- Clone Confirm ---
+      var confirmOv = document.getElementById('assess-confirm').cloneNode(true);
+      confirmOv.id = prefix + '-confirm';
+      confirmOv.querySelectorAll('[onclick]').forEach(function(el) {
+        var onclick = el.getAttribute('onclick');
+        if (onclick) {
+          onclick = onclick.replace(/assess-confirm/g, prefix + '-confirm');
+          onclick = onclick.replace(/assess-modal/g, prefix + '-modal');
+          el.setAttribute('onclick', onclick);
+        }
+      });
+      document.body.appendChild(confirmOv);
+
+      // --- Clone Toast ---
+      var toast = document.getElementById('assess-toast').cloneNode(true);
+      toast.id = prefix + '-toast';
+      var toastDvm = toast.querySelector('#toast-dvm');
+      if (toastDvm) toastDvm.id = prefix + '-toast-dvm';
+      var toastDept = toast.querySelector('#toast-dept');
+      if (toastDept) toastDept.id = prefix + '-toast-dept';
+      var toastUpdate = toast.querySelector('#toast-update');
+      if (toastUpdate) toastUpdate.id = prefix + '-toast-update';
+      document.body.appendChild(toast);
+
+      // --- Set up tab switching ---
+      var dvmMap = { '1':'นิพนธ์ วงศ์ประเสริฐ', '2':'นิพนธ์ วงศ์ประเสริฐ', '3':'วิชัย ใจดี', '4':'ปนัดดา ศรีสุข', '5':'นิพนธ์ วงศ์ประเสริฐ' };
+      modal.querySelectorAll('.vtab').forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          modal.querySelectorAll('.vtab').forEach(function(t) { t.classList.remove('active'); });
+          this.classList.add('active');
+          var idx = this.getAttribute('data-tab');
+          modal.querySelectorAll('.tab-content').forEach(function(c) { c.style.display = 'none'; });
+          var target = document.getElementById(prefix + '-content-' + idx);
+          if (target) target.style.display = '';
+          var nameEl = document.getElementById(prefix + '-last-update-name');
+          if (nameEl && dvmMap[idx]) nameEl.textContent = dvmMap[idx];
+        });
+      });
+
+      // --- Set up togglePrognosis ---
+      window[prefix + 'TogglePrognosis'] = function() {
+        var pt = document.getElementById(prefix + '-tab1-problem-type');
+        var prog = document.getElementById(prefix + '-tab1-prognosis');
+        if (!pt || !prog) return;
+        var val = pt.value;
+        var active = val === 'Working Diagnosis (dx)' || val === 'Differential Diagnosis (ddx)' || val === 'Clinical Sign';
+        prog.disabled = !active;
+        if (active) {
+          prog.style.background = '';
+          prog.style.color = '';
+        } else {
+          prog.style.background = '#f9fafb';
+          prog.style.color = '#9ca3af';
+          prog.selectedIndex = 0;
+        }
+      };
+
+      // --- Set up confirm ---
+      var metaMap = {
+        '1': { dvm: 'นิพนธ์ วงศ์ประเสริฐ', dept: 'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', time: '10.57' },
+        '2': { dvm: 'นิพนธ์ วงศ์ประเสริฐ', dept: 'อายุรกรรมทั่วไป (ในเวลา)', time: '10.57' },
+        '3': { dvm: 'วิชัย ใจดี', dept: 'ภาพวินิจฉัย (นอกเวลา)', time: '10.57' },
+        '4': { dvm: 'ปนัดดา ศรีสุข', dept: 'อายุรกรรมทั่วไป (ในเวลา)', time: '10.57' }
+      };
+      window[prefix + 'Confirm'] = function(tabNum) {
+        var meta = metaMap[tabNum] || metaMap['1'];
+        document.getElementById(prefix + '-toast-dvm').innerHTML = 'ชื่อ: <b>' + meta.dvm + '</b>';
+        document.getElementById(prefix + '-toast-dept').innerHTML = 'หน่วย: <b>' + meta.dept + '</b>';
+        document.getElementById(prefix + '-toast-update').innerHTML = 'last update: <b>' + meta.time + '</b> by <b>' + meta.dvm + '</b>';
+        var t = document.getElementById(prefix + '-toast');
+        t.classList.add('show');
+        setTimeout(function() { t.classList.remove('show'); }, 2000);
+      };
+
+      // --- Set up table data (same content as Assessment) ---
+      var tData = [];
+      var tDate = '09/07/26';
+      for (var i = 0; i < tabProblems.length; i++) {
+        var hh = String(8 + (i % 10)).padStart(2,'0');
+        var mi = String((i * 13) % 60).padStart(2,'0');
+        tData.push({
+          date: tDate + ' ' + hh + ':' + mi,
+          name: tabProblems[i].n, cf: tabProblems[i].cf, cat: tabProblems[i].cat,
+          type: tabProblems[i].t, status: tabProblems[i].s, prognosis: tabProblems[i].p,
+          dvm: tabProblems[i].dvm, dept: tabProblems[i].dept
+        });
+      }
+      var tBaseDate = new Date(2026, 6, 10);
+      for (var i = 0; i < problems.length; i++) {
+        var d = new Date(tBaseDate);
+        d.setDate(d.getDate() - Math.floor(i * 3.5));
+        var dd = String(d.getDate()).padStart(2,'0');
+        var mm = String(d.getMonth()+1).padStart(2,'0');
+        var yy = String(d.getFullYear()).slice(2);
+        var hh = String(8 + (i % 10)).padStart(2,'0');
+        var mi = String((i * 7) % 60).padStart(2,'0');
+        tData.push({
+          date: dd+'/'+mm+'/'+yy+' '+hh+':'+mi,
+          name: problems[i].n, cf: problems[i].cf, cat: problems[i].cat,
+          type: problems[i].t, status: problems[i].s, prognosis: problems[i].p,
+          dvm: problems[i].dvm, dept: problems[i].dept
+        });
+      }
+
+      window[prefix + 'RenderTable'] = function(data) {
+        var tbody = document.getElementById(prefix + '-data-table-body');
+        var html = '';
+        for (var i = 0; i < data.length; i++) {
+          html += '<tr><td>' + (i+1) + '</td><td>' + data[i].date + '</td><td>' + data[i].name +
+            '</td><td>' + (data[i].cf || '<span style="color:#d1d5db;">—</span>') + '</td><td>' + data[i].cat +
+            '</td><td>' + data[i].type + '</td><td>' + data[i].status + '</td><td>' + (data[i].prognosis || '<span style="color:#d1d5db;">—</span>') +
+            '</td><td>' + data[i].dvm + '</td><td>' + data[i].dept + '</td></tr>';
+        }
+        tbody.innerHTML = html;
+      };
+
+      window[prefix + 'ClearFilter'] = function() {
+        document.getElementById(prefix + '-tbl-search').value = '';
+        document.getElementById(prefix + '-tbl-cat').value = '';
+        document.getElementById(prefix + '-tbl-type').value = '';
+        document.getElementById(prefix + '-tbl-status').value = '';
+        document.getElementById(prefix + '-tbl-prog').value = '';
+        window[prefix + 'RenderTable'](tData);
+      };
+
+      document.getElementById(prefix + '-tbl-search')?.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') window[prefix + 'FilterTable']();
+      });
+
+      window[prefix + 'FilterTable'] = function() {
+        var q = document.getElementById(prefix + '-tbl-search').value.toLowerCase().trim();
+        var catF = document.getElementById(prefix + '-tbl-cat').value;
+        var typeF = document.getElementById(prefix + '-tbl-type').value;
+        var statusF = document.getElementById(prefix + '-tbl-status').value;
+        var progF = document.getElementById(prefix + '-tbl-prog').value;
+        var filtered = tData.filter(function(r) {
+          var matchQ = !q || r.name.toLowerCase().indexOf(q) >= 0 || (r.cf && r.cf.toLowerCase().indexOf(q) >= 0) || r.dvm.toLowerCase().indexOf(q) >= 0 || r.dept.toLowerCase().indexOf(q) >= 0;
+          var matchC = !catF || r.cat === catF;
+          var matchT = !typeF || r.type === typeF;
+          var matchS = !statusF || r.status === statusF;
+          var matchP = !progF || r.prognosis === progF;
+          return matchQ && matchC && matchT && matchS && matchP;
+        });
+        window[prefix + 'RenderTable'](filtered);
+      };
+
+      window[prefix + 'RenderTable'](tData);
+    }
+
+    cloneAssessment('tx', 'Tx');
+
+    // ====== CUSTOMIZE Tx MODAL WITH DRUG/PROCEDURE CONTENT ======
+    var txItems = {
+      predni: { name: "Prednisolone acetate injection (25 mg/ml) (Predni-Ject)", kind: "med", tag: "ยาฉีด (Injection)", route: "ฉีดเข้าใต้ผิวหนัง (SC)", amt: "0.4", unit: "ซีซี (CC)", freq: "วันละ 1 ครั้ง (SID)", note: "- เขย่าขวดก่อนฉีด เก็บในตู้เย็น 2-8°C ห้ามแช่แข็ง\n- ฉีดเข้าใต้ผิวหนังบริเวณสะบัก คลึงเบา ๆ หลังฉีด\n- ห้ามหยุดยาเอง ให้ค่อย ๆ ลดขนาดยา (tapering) ตามที่สัตวแพทย์สั่ง\n- สังเกตอาการกินน้ำ/ปัสสาวะมากผิดปกติ หากพบแจ้งสัตวแพทย์" },
+      enro: { name: "Enrofloxacin injection (25 mg/ml) (Baytril)", kind: "med", tag: "ยาฉีด (Injection)", route: "ฉีดเข้าใต้ผิวหนัง (SC)", amt: "0.5", unit: "ซีซี (CC)", freq: "วันละ 1 ครั้ง (SID)", note: "- ฉีดเข้าใต้ผิวหนัง อาจระคายเคืองเฉพาะที่ ให้คลึงเบา ๆ หลังฉีด\n- ห้ามใช้ในสัตว์อายุน้อยที่กำลังเจริญเติบโต (ผลต่อกระดูกอ่อน)\n- ให้ครบ course ตามที่สัตวแพทย์สั่ง ห้ามหยุดยาเอง\n- เก็บพ้นแสง อุณหภูมิห้อง" },
+      maropitant: { name: "Maropitant injection (10 mg/ml) (Cerenia)", kind: "med", tag: "ยาฉีด (Injection)", route: "ฉีดเข้าใต้ผิวหนัง (SC)", amt: "0.5", unit: "ซีซี (CC)", freq: "วันละ 1 ครั้ง (SID)", note: "- ยาแก้อาเจียน ให้ฉีดใต้ผิวหนัง แนะนำเก็บยาในตู้เย็น 2-8°C เพื่อลดอาการเจ็บขณะฉีด\n- ให้ติดต่อกันไม่เกิน 5 วัน\n- สังเกตอาการซึม/เบื่ออาหาร หากไม่ดีขึ้นภายใน 1-2 วัน แจ้งสัตวแพทย์" },
+      nss: { name: "0.9% Sodium Chloride (NSS) 500 ml", kind: "fluid", tag: "สารน้ำ / IV Fluid", route: "ฉีดเข้าหลอดเลือดดำแบบหยด (IV drip)", amt: "350", unit: "มิลลิลิตร (ml)", freq: "60 ml/hr (minidrip)", note: "- ให้ NSS จากขวด 500 ml เฉพาะปริมาณ 350 ml (ไม่ต้องให้หมดขวด) IV drip อัตรา 60 ml/hr\n- ใช้ชุดให้สารน้ำ minidrip (60 drops/ml) → ปรับหยด = 60 หยด/นาที (≈ 1 หยด/วินาที)\n- เฝ้าระวังอาการบวมน้ำ หายใจเร็ว/ลำบาก หรือบวมบริเวณที่แทงเข็ม\n- ตรวจตำแหน่งเข็มและปริมาณคงเหลือทุก 1 ชั่วโมง บันทึกลงใบ monitor\n- ระบุวันที่/เวลาเริ่มให้ และผู้ให้บนฉลากขวดทุกครั้ง" },
+      lrs: { name: "Lactated Ringer's Solution (LRS) 500 ml", kind: "fluid", tag: "สารน้ำ / IV Fluid", route: "ฉีดเข้าหลอดเลือดดำแบบหยด (IV drip)", amt: "400", unit: "มิลลิลิตร (ml)", freq: "80 ml/hr (minidrip)", note: "- ให้ LRS 400 ml จากขวด 500 ml (ไม่ให้หมดขวด) IV drip อัตรา 80 ml/hr\n- เป็นสารน้ำ balanced electrolyte เหมาะกับภาวะขาดน้ำ/shock\n- minidrip (60 drops/ml) → 80 หยด/นาที\n- เฝ้าระวังภาวะน้ำเกิน โดยเฉพาะสัตว์โรคหัวใจ/ไต ตรวจทุก 1 ชั่วโมง\n- ระบุวันที่/เวลาเริ่มให้ และผู้ให้บนฉลากขวด" },
+      d5w: { name: "5% Dextrose in Water (D5W) 500 ml", kind: "fluid", tag: "สารน้ำ / IV Fluid", route: "ฉีดเข้าหลอดเลือดดำแบบหยด (IV drip)", amt: "250", unit: "มิลลิลิตร (ml)", freq: "40 ml/hr (minidrip)", note: "- ให้ D5W 250 ml จากขวด 500 ml (ไม่ให้หมดขวด) IV drip อัตรา 40 ml/hr\n- ใช้ในภาวะน้ำตาลในเลือดต่ำ (hypoglycemia)\n- ตรวจระดับน้ำตาลในเลือดซ้ำหลังให้ และเฝ้าระวังตำแหน่งเข็ม (dextrose ระคายหลอดเลือด)\n- minidrip (60 drops/ml) → 40 หยด/นาที\n- ระบุวันที่/เวลาเริ่มให้ และผู้ให้บนฉลากขวด" },
+      acetar: { name: "Acetar / Balanced electrolyte 500 ml", kind: "fluid", tag: "สารน้ำ / IV Fluid", route: "ฉีดเข้าหลอดเลือดดำแบบหยด (IV drip)", amt: "300", unit: "มิลลิลิตร (ml)", freq: "60 ml/hr (minidrip)", note: "- ให้ Acetar 300 ml จากขวด 500 ml (ไม่ให้หมดขวด) IV drip อัตรา 60 ml/hr\n- สารน้ำ balanced มี acetate เหมาะกับภาวะ metabolic acidosis\n- minidrip (60 drops/ml) → 60 หยด/นาที (≈ 1 หยด/วินาที)\n- เฝ้าระวังภาวะน้ำเกิน ตรวจทุก 1 ชั่วโมง บันทึกลงใบ monitor" },
+      hetastarch: { name: "Hetastarch 6% (Colloid) 500 ml", kind: "fluid", tag: "สารน้ำ / IV Fluid", route: "ฉีดเข้าหลอดเลือดดำแบบหยด (IV drip)", amt: "100", unit: "มิลลิลิตร (ml)", freq: "ให้ต่อเนื่อง (Continuous / CRI)", note: "- ให้ Hetastarch 100 ml (colloid) IV แบบช้า ๆ ตามที่สัตวแพทย์กำหนด\n- ใช้ในภาวะ albumin ต่ำ / shock ที่ต้องการเพิ่ม oncotic pressure\n- ให้ผ่าน infusion pump ควบคุมอัตรา ห้ามให้เร็วเกินไป (เสี่ยงน้ำเกิน)\n- เฝ้าระวังปฏิกิริยาแพ้ และภาวะเลือดออกผิดปกติ\n- ระบุวันที่/เวลาเริ่มให้ และผู้ให้บนฉลากขวด" },
+      blood: { name: "Whole Blood Transfusion (PRC/WB)", kind: "fluid", tag: "สารน้ำ / IV Fluid", route: "ฉีดเข้าหลอดเลือดดำแบบหยด (IV drip)", amt: "60", unit: "มิลลิลิตร (ml)", freq: "ให้ต่อเนื่อง (Continuous / CRI)", note: "- ตรวจ crossmatch/blood type ให้เข้ากันก่อนทุกครั้ง\n- ให้ผ่านชุดให้เลือดที่มี filter เท่านั้น ห้ามผสมยา/สารน้ำอื่นในสายเดียวกัน\n- เริ่มอัตราช้า ๆ ใน 15-30 นาทีแรก (0.5-1 ml/kg/hr) แล้วค่อยเพิ่มหากไม่มีปฏิกิริยา\n- เฝ้าระวัง transfusion reaction: ไข้ อาเจียน หายใจลำบาก บวมหน้า — หยุดทันทีเมื่อพบ\n- ให้เลือดหมดถุงภายใน 4 ชั่วโมง ระบุเวลาเริ่ม-สิ้นสุดและผู้ให้" },
+      oxygen: { name: "Oxygen Therapy (ดมออกซิเจน)", kind: "fluid", tag: "สารน้ำ / IV Fluid", route: "พ่น/ดมทางเดินหายใจ (Inhalation)", amt: "2", unit: "ลิตร/นาที (LPM)", freq: "ให้ต่อเนื่อง (Continuous / CRI)", note: "- ให้ออกซิเจนแบบ oxygen cage / mask / nasal อัตรา 2 ลิตร/นาที (ปรับตามอาการ)\n- ใช้ออกซิเจนผ่าน humidifier เพื่อลดการระคายทางเดินหายใจ\n- เฝ้าระวังอัตราการหายใจ สีเยื่อเมือก และค่า SpO2 ให้ > 95%\n- หลีกเลี่ยงประกายไฟ/ความร้อนใกล้จุดจ่ายออกซิเจน\n- บันทึกเวลาเริ่ม-หยุด และอาการสัตว์ป่วยเป็นระยะ" },
+      wound: { name: "หัตถการ: ทำแผล (Wound Dressing)", kind: "proc", tag: "หัตถการ (Procedure)", route: "", amt: "", unit: "", freq: "", note: "- ทำความสะอาดแผลด้วย 0.9% NSS ล้างเศษสิ่งสกปรกออกให้หมด\n- ฟอกรอบแผลด้วย povid-iodine (เจือจาง) หรือ chlorhexidine\n- ตัดแต่งเนื้อตาย (debride) เท่าที่จำเป็น ห้ามเลือดหากมี\n- ปิดแผลด้วยผ้าก๊อซชุบยาปฏิชีวนะ/gel และพันด้วย secondary dressing\n- นัดทำแผลซ้ำทุก 1-2 วัน สังเกตอาการบวมแดง มีหนอง หรือกลิ่นผิดปกติ\n- ใส่ Elizabethan collar กันเลียแผล" },
+      ucath: { name: "หัตถการ: สวนปัสสาวะ (Urinary Catheterization)", kind: "proc", tag: "หัตถการ (Procedure)", route: "", amt: "", unit: "", freq: "", note: "- เลือกขนาดสาย urinary catheter ให้เหมาะกับสัตว์ ใช้เทคนิคปลอดเชื้อ (aseptic)\n- หล่อลื่นปลายสายด้วย sterile lubricant ค่อย ๆ สอดเข้าท่อปัสสาวะ\n- ต่อถุงเก็บปัสสาวะแบบปิด (closed system) วัดปริมาณ urine output ทุก 4-6 ชั่วโมง\n- ยึดสายกันหลุด ทำความสะอาดรอบอวัยวะเพศวันละ 2 ครั้ง\n- เฝ้าระวังการติดเชื้อทางเดินปัสสาวะ ปัสสาวะขุ่น/มีเลือด และถอดสายเมื่อไม่จำเป็น" },
+      enema: { name: "หัตถการ: สวนล้างลำไส้ (Enema)", kind: "proc", tag: "หัตถการ (Procedure)", route: "", amt: "", unit: "", freq: "", note: "- ใช้ warm 0.9% NSS หรือน้ำอุ่น ค่อย ๆ สวนผ่านทวารหนักด้วยสายที่หล่อลื่น\n- ปริมาณ ~5-10 ml/kg ให้ช้า ๆ ห้ามใช้แรงดันสูง\n- ห้ามใช้ phosphate enema ในแมวและสัตว์เล็ก (เสี่ยงเกลือแร่ผิดปกติ)\n- นวดหน้าท้องเบา ๆ ช่วยการขับถ่าย สังเกตอุจจาระที่ออก\n- เฝ้าระวังอาการเบ่ง เจ็บ หรือมีเลือดออก" }
+    };
+
+    var txCategories = [
+      { id: 'inj', name: 'ยาฉีด (Injection)', items: ['predni','enro','maropitant'] },
+      { id: 'fluid', name: 'สารน้ำ / IV Fluid', items: ['nss','lrs','d5w','acetar','hetastarch','blood','oxygen'] },
+      { id: 'proc', name: 'หัตถการ (Procedure)', items: ['wound','ucath','enema'] }
+    ];
+
+    function txBuildTabContent(tabNum, opts) {
+      var activeCat = opts.activeCat || 'proc';
+      var activeItem = opts.activeItem || 'wound';
+      var selectedItems = opts.selectedItems || [];
+      var detailItem = opts.detailItem || 'wound';
+      var inactive = opts.inactive || false;
+      var txNoteText = opts.txNote || 'สัตว์เลี้ยงเคยให้ยามาแล้ว ให้เปลี่ยนขาในการให้ยา ไม่ซ้ำกับคราวที่แล้ว และโกนขนบริเวณที่ฉีดยาด้วย';
+      var dvm = opts.dvm || 'นิพนธ์ วงศ์ประเสริฐ';
+      var dept = opts.dept || 'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)';
+      var examCard = opts.examCard || 'exam-card-69001234';
+      var confirmFn = 'txConfirm(' + tabNum + ')';
+      var disabledAttr = inactive ? ' disabled style="background:#f9fafb;color:#9ca3af;"' : '';
+      var readonlyClass = inactive ? ' inactive' : '';
+      var confirmBtnClass = inactive ? 'btn-confirm-inactive' : 'btn-confirm';
+
+      var catHtml = txCategories.map(function(c) {
+        var cls = 'cat' + (c.id === activeCat ? ' active' : '');
+        return '<div class="' + cls + '"><div class="name">' + c.name + '</div><div class="count">' + c.items.length + ' รายการ</div></div>';
+      }).join('');
+
+      var cat = txCategories.filter(function(c) { return c.id === activeCat; })[0];
+      var itemHtml = cat ? cat.items.map(function(key) {
+        var it = txItems[key];
+        var cls = 'item' + (key === activeItem ? ' active' : '');
+        return '<div class="' + cls + '"><div class="t">' + it.name + '</div><div class="s">' + it.tag + '</div></div>';
+      }).join('') : '';
+
+      var selHtml = selectedItems.map(function(s, i) {
+        var it = txItems[s.key];
+        var kindClass = it.kind === 'med' ? 'tag-med' : (it.kind === 'fluid' ? 'tag-fluid' : 'tag-proc');
+        var routeEng = '';
+        if (it.route) {
+          var m = it.route.match(/\(([^)]+)\)/);
+          routeEng = m ? m[1] : it.route;
+        }
+        var unitEng = '';
+        if (it.unit) {
+          var mu = it.unit.match(/\(([^)]+)\)/);
+          unitEng = mu ? mu[1] : it.unit;
+        }
+        var doseBadge = it.amt ? it.amt + ' ' + unitEng : '—';
+        return '<div class="sel-row">' +
+          '<div class="sel-row-top"><div class="num">' + (i+1) + '</div><div class="pname">' + it.name + '</div></div>' +
+          '<div class="sel-row-badges"><span class="ptype ' + kindClass + '">' + it.tag + '</span><span class="ptype prob">' + (routeEng || '—') + '</span><span class="ptype status-active">' + doseBadge + '</span></div>' +
+        '</div>';
+      }).join('');
+
+      var detItem = txItems[detailItem];
+      var detKindClass = detItem.kind === 'med' ? 'tag-med' : (detItem.kind === 'fluid' ? 'tag-fluid' : 'tag-proc');
+      var isProc = detItem.kind === 'proc';
+      var routeOpts = ['','ฉีดเข้าใต้ผิวหนัง (SC)','ฉีดเข้ากล้ามเนื้อ (IM)','ฉีดเข้าหลอดเลือดดำ (IV push)','ฉีดเข้าหลอดเลือดดำแบบหยด (IV drip)','ฉีดเข้าช่องท้อง (IP)','ให้ทางสายให้อาหาร/ท่อ (per tube)','ป้อนยาทางปาก (Oral)','หยอดตา (Eye)','หยอดหู (Ear)','ทาภายนอก (Topical)','พ่น/ดมทางเดินหายใจ (Inhalation)'];
+      var unitOpts = ['','ซีซี (CC)','มิลลิลิตร (ml)','มิลลิกรัม (mg)','เม็ด (Tablet)','แคปซูล (Capsule)','หยด (Drop)','ลิตร/นาที (LPM)','ยูนิต (Unit)'];
+      var freqOpts = ['','วันละ 1 ครั้ง (SID)','วันละ 2 ครั้ง (BID)','วันละ 3 ครั้ง (TID)','วันเว้นวัน (EOD)','ทุก 8 ชั่วโมง','ทุก 12 ชั่วโมง','ทุก 24 ชั่วโมง','ครั้งเดียว (Single dose)','ตามอาการ (PRN)','ให้ต่อเนื่อง (Continuous / CRI)','40 ml/hr (minidrip)','60 ml/hr (minidrip)','80 ml/hr (minidrip)','100 ml/hr (macrodrip)','120 ml/hr (macrodrip)'];
+      function buildSelect(opts, selected, dis) {
+        var h = '<select class="ctrl"' + (dis ? ' disabled style="background:#f9fafb;color:#9ca3af;"' : '') + '>';
+        for (var i = 0; i < opts.length; i++) {
+          var o = opts[i];
+          h += '<option value="' + o + '"' + (o === selected ? ' selected' : '') + '>' + (o || '— เลือก —') + '</option>';
+        }
+        return h + '</select>';
+      }
+      var routeSelect = isProc
+        ? '<select class="ctrl" disabled style="background:#f9fafb;color:#9ca3af;"><option>— (ไม่ระบุ สำหรับหัตถการ)</option></select>'
+        : buildSelect(routeOpts, detItem.route, inactive);
+      var doseInput = isProc
+        ? '<input class="ctrl amt" type="text" value="" disabled style="background:#f9fafb;color:#9ca3af;" placeholder="—">'
+        : '<input class="ctrl amt" type="text" value="' + (detItem.amt || '') + '"' + (inactive ? ' disabled style="background:#f9fafb;color:#9ca3af;"' : '') + '>';
+      var doseUnit = isProc
+        ? '<select class="ctrl unit" disabled style="background:#f9fafb;color:#9ca3af;"><option>—</option></select>'
+        : buildSelect(unitOpts, detItem.unit, inactive).replace('class="ctrl"', 'class="ctrl unit"');
+      var freqSelect = isProc
+        ? '<select class="ctrl" disabled style="background:#f9fafb;color:#9ca3af;"><option>— (ไม่ระบุ สำหรับหัตถการ)</option></select>'
+        : buildSelect(freqOpts, detItem.freq, inactive);
+      var noteTextarea = '<textarea class="ctrl"' + (inactive ? ' disabled style="background:#f9fafb;color:#9ca3af;"' : '') + '>' + detItem.note + '</textarea>';
+
+      var selCount = selectedItems.length;
+
+      return '<div class="grid' + readonlyClass + '">' +
+        '<div class="editor-panel">' +
+          '<div class="editor-panel-head">Categories</div>' +
+          '<div class="editor-panel-body">' + catHtml + '</div>' +
+        '</div>' +
+        '<div class="editor-panel">' +
+          '<div class="editor-panel-head"><span>รายการ (Items)</span></div>' +
+          '<div class="editor-panel-body">' + itemHtml + '</div>' +
+        '</div>' +
+        '<div class="editor-panel">' +
+          '<div class="editor-panel-head"><span>Selected Items</span><span><span class="badge">📋 ' + selCount + ' บันทึกแล้ว</span></span></div>' +
+          '<div class="editor-panel-body">' +
+            '<div class="sel-list">' + selHtml + '</div>' +
+            '<div class="detail-banner"><div class="detail-banner-top"><div><div class="lbl">รายการสั่งใช้ยา/หัตถการ</div><div class="name">' + detItem.name + '</div><span class="tag ' + detKindClass + '">' + detItem.tag + '</span></div></div></div>' +
+            '<div class="detail-grid">' +
+              '<div class="field"><label>วิธีการให้ยา (Route)</label>' + routeSelect + '</div>' +
+              '<div class="field"><label>ปริมาณที่ให้ (Dose)</label><div class="dose-row">' + doseInput + doseUnit + '</div></div>' +
+              '<div class="field full"><label>ความถี่/อัตราการให้ (Frequency/Rate)</label>' + freqSelect + '</div>' +
+              '<div class="field full"><label>รายละเอียดการสั่งยาและหัตถการ (Note)</label>' + noteTextarea + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="editor-panel">' +
+          '<div class="editor-panel-head"><span>Record Meta</span><button class="' + confirmBtnClass + '" onclick="' + confirmFn + '">&#10003; Confirm</button></div>' +
+          '<div class="editor-panel-body">' +
+            '<div class="req-tags"><span style="font-size:11px;color:#6b7280;">Required</span><span class="tag ok">✓ Problem</span><span class="tag ok">✓ DVM</span><span class="tag ok">✓ Dept</span><span class="tag visit" style="font-weight:500;">' + examCard + '</span></div>' +
+            '<div class="form-group"><label>DVM</label><div class="meta-readonly">' + dvm + '</div></div>' +
+            '<div class="form-group"><label>Department</label><div class="meta-readonly">' + dept + '</div></div>' +
+            '<hr class="meta-divider">' +
+            '<div class="meta-section-label">Tx Note</div>' +
+            '<div class="form-group"><label>สรุปการสั่งยา/หัตถการ (Tx Summary) <span class="req">*</span></label><textarea' + disabledAttr + '>' + txNoteText + '</textarea></div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }
+
+    function customizeTxModal() {
+      var modal = document.getElementById('tx-modal');
+      if (!modal) return;
+
+      var titleEl = modal.querySelector('.section-title');
+      if (titleEl) titleEl.innerHTML = 'Tx by exam card <span>&#8635;</span>';
+
+      var tab1 = document.getElementById('tx-content-1');
+      if (tab1) tab1.innerHTML = txBuildTabContent(1, {
+        activeCat: 'proc',
+        activeItem: 'wound',
+        selectedItems: [
+          { key: 'predni', time: '09/07/26 08:15' },
+          { key: 'nss', time: '09/07/26 08:20' },
+          { key: 'enro', time: '09/07/26 08:25' }
+        ],
+        detailItem: 'wound',
+        txNote: 'สัตว์เลี้ยงเคยให้ยามาแล้ว ให้เปลี่ยนขาในการให้ยา ไม่ซ้ำกับคราวที่แล้ว และโกนขนบริเวณที่ฉีดยาด้วย',
+        dvm: 'นิพนธ์ วงศ์ประเสริฐ',
+        dept: 'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)',
+        examCard: 'exam-card-69001234'
+      });
+
+      var tab2 = document.getElementById('tx-content-2');
+      if (tab2) tab2.innerHTML = txBuildTabContent(2, {
+        activeCat: 'inj',
+        activeItem: 'predni',
+        selectedItems: [
+          { key: 'nss', time: '09/07/26 09:00' },
+          { key: 'maropitant', time: '09/07/26 09:05' }
+        ],
+        detailItem: 'predni',
+        txNote: 'ให้ยาฉีด Prednisolone และ Maropitant พร้อมสารน้ำ NSS ติดตามอาการทุก 4 ชั่วโมง',
+        dvm: 'นิพนธ์ วงศ์ประเสริฐ',
+        dept: 'อายุรกรรมทั่วไป (ในเวลา)',
+        examCard: 'exam-card-69001235'
+      });
+
+      var tab3 = document.getElementById('tx-content-3');
+      if (tab3) {
+        tab3.className = 'tab-content inactive';
+        tab3.innerHTML = txBuildTabContent(3, {
+          activeCat: 'fluid',
+          activeItem: 'lrs',
+          selectedItems: [
+            { key: 'lrs', time: '09/07/26 14:00' },
+            { key: 'oxygen', time: '09/07/26 14:30' }
+          ],
+          detailItem: 'lrs',
+          txNote: 'ให้สารน้ำ LRS และ Oxygen therapy ติดตาม SpO2 ทุก 2 ชั่วโมง',
+          dvm: 'วิชัย ใจดี',
+          dept: 'ภาพวินิจฉัย (นอกเวลา)',
+          examCard: 'exam-card-69001236',
+          inactive: true
+        });
+      }
+
+      var tab4 = document.getElementById('tx-content-4');
+      if (tab4) {
+        tab4.className = 'tab-content inactive';
+        tab4.innerHTML = txBuildTabContent(4, {
+          activeCat: 'proc',
+          activeItem: 'ucath',
+          selectedItems: [
+            { key: 'enro', time: '09/07/26 16:00' },
+            { key: 'wound', time: '09/07/26 16:15' }
+          ],
+          detailItem: 'ucath',
+          txNote: 'ทำหัตถการสวนปัสสาวะ และทำแผล ให้ Enrofloxacin ป้องกันการติดเชื้อ',
+          dvm: 'ปนัดดา ศรีสุข',
+          dept: 'อายุรกรรมทั่วไป (ในเวลา)',
+          examCard: 'exam-card-69001237',
+          inactive: true
+        });
+      }
+
+      var tab5 = document.getElementById('tx-content-5');
+      if (tab5) {
+        var txTableData = [];
+        var txDate = '09/07/26';
+        var allKeys = ['predni','enro','maropitant','nss','lrs','d5w','acetar','hetastarch','blood','oxygen','wound','ucath','enema'];
+        var txDvmMap = { predni: 'นิพนธ์ วงศ์ประเสริฐ', enro: 'นิพนธ์ วงศ์ประเสริฐ', maropitant: 'นิพนธ์ วงศ์ประเสริฐ', nss: 'นิพนธ์ วงศ์ประเสริฐ', lrs: 'วิชัย ใจดี', d5w: 'วิชัย ใจดี', acetar: 'วิชัย ใจดี', hetastarch: 'วิชัย ใจดี', blood: 'ปนัดดา ศรีสุข', oxygen: 'วิชัย ใจดี', wound: 'ปนัดดา ศรีสุข', ucath: 'ปนัดดา ศรีสุข', enema: 'ปนัดดา ศรีสุข' };
+        var txDeptMap = { predni: 'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', enro: 'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', maropitant: 'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', nss: 'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', lrs: 'ภาพวินิจฉัย (นอกเวลา)', d5w: 'ภาพวินิจฉัย (นอกเวลา)', acetar: 'ภาพวินิจฉัย (นอกเวลา)', hetastarch: 'ภาพวินิจฉัย (นอกเวลา)', blood: 'อายุรกรรมทั่วไป (ในเวลา)', oxygen: 'ภาพวินิจฉัย (นอกเวลา)', wound: 'อายุรกรรมทั่วไป (ในเวลา)', ucath: 'อายุรกรรมทั่วไป (ในเวลา)', enema: 'อายุรกรรมทั่วไป (ในเวลา)' };
+        for (var i = 0; i < allKeys.length; i++) {
+          var it = txItems[allKeys[i]];
+          var hh = String(8 + (i % 10)).padStart(2,'0');
+          var mi = String((i * 13) % 60).padStart(2,'0');
+          txTableData.push({
+            date: txDate + ' ' + hh + ':' + mi,
+            name: it.name, cf: it.note.split('\n')[0].replace(/^- /, ''), cat: it.tag,
+            type: it.kind === 'med' ? 'ยาฉีด' : (it.kind === 'fluid' ? 'สารน้ำ' : 'หัตถการ'),
+            status: 'Active', prognosis: it.freq || '—',
+            dvm: txDvmMap[allKeys[i]], dept: txDeptMap[allKeys[i]]
+          });
+        }
+        tab5.innerHTML = '<div class="editor-panel" style="height: calc(95vh - 180px); min-height: 400px;">' +
+          '<div class="editor-panel-head">ตารางข้อมูลทั้งหมด</div>' +
+          '<div class="data-table-bar">' +
+            '<input type="text" id="tx-tbl-search" placeholder="ค้นหา: ชื่อยา, หัตถการ, dvm, department...">' +
+            '<select id="tx-tbl-cat"><option value="">ประเภท: ทั้งหมด</option><option>ยาฉีด (Injection)</option><option>สารน้ำ / IV Fluid</option><option>หัตถการ (Procedure)</option></select>' +
+            '<select id="tx-tbl-type"><option value="">Kind: ทั้งหมด</option><option>ยาฉีด</option><option>สารน้ำ</option><option>หัตถการ</option></select>' +
+            '<select id="tx-tbl-status"><option value="">Status: ทั้งหมด</option><option>Active</option><option>Pending</option><option>Resolved</option></select>' +
+            '<select id="tx-tbl-prog"><option value="">Frequency: ทั้งหมด</option><option>วันละ 1 ครั้ง (SID)</option><option>วันละ 2 ครั้ง (BID)</option><option>ให้ต่อเนื่อง (Continuous / CRI)</option></select>' +
+            '<button class="btn-search" onclick="txFilterTable()">ค้นหา</button>' +
+            '<button class="btn-clear" onclick="txClearFilter()">ล้างตัวกรอง</button>' +
+          '</div>' +
+          '<div class="data-table-wrap">' +
+            '<table class="data-table" id="tx-data-table">' +
+              '<thead><tr><th>#</th><th>Date/time</th><th>ชื่อยา/หัตถการ</th><th>รายละเอียด (Note)</th><th>ประเภท</th><th>Kind</th><th>Status</th><th>Frequency</th><th>DVM</th><th>Department</th></tr></thead>' +
+              '<tbody id="tx-data-table-body"></tbody>' +
+            '</table>' +
+          '</div>' +
+        '</div>';
+
+        window.txRenderTable = function(data) {
+          var tbody = document.getElementById('tx-data-table-body');
+          var html = '';
+          for (var i = 0; i < data.length; i++) {
+            html += '<tr><td>' + (i+1) + '</td><td>' + data[i].date + '</td><td>' + data[i].name +
+              '</td><td>' + (data[i].cf || '<span style="color:#d1d5db;">—</span>') + '</td><td>' + data[i].cat +
+              '</td><td>' + data[i].type + '</td><td>' + data[i].status + '</td><td>' + (data[i].prognosis || '<span style="color:#d1d5db;">—</span>') +
+              '</td><td>' + data[i].dvm + '</td><td>' + data[i].dept + '</td></tr>';
+          }
+          tbody.innerHTML = html;
+        };
+
+        window.txClearFilter = function() {
+          document.getElementById('tx-tbl-search').value = '';
+          document.getElementById('tx-tbl-cat').value = '';
+          document.getElementById('tx-tbl-type').value = '';
+          document.getElementById('tx-tbl-status').value = '';
+          document.getElementById('tx-tbl-prog').value = '';
+          window.txRenderTable(txTableData);
+        };
+
+        document.getElementById('tx-tbl-search')?.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') window.txFilterTable();
+        });
+
+        window.txFilterTable = function() {
+          var q = document.getElementById('tx-tbl-search').value.toLowerCase().trim();
+          var catF = document.getElementById('tx-tbl-cat').value;
+          var typeF = document.getElementById('tx-tbl-type').value;
+          var statusF = document.getElementById('tx-tbl-status').value;
+          var progF = document.getElementById('tx-tbl-prog').value;
+          var filtered = txTableData.filter(function(r) {
+            var matchQ = !q || r.name.toLowerCase().indexOf(q) >= 0 || (r.cf && r.cf.toLowerCase().indexOf(q) >= 0) || r.dvm.toLowerCase().indexOf(q) >= 0 || r.dept.toLowerCase().indexOf(q) >= 0;
+            var matchC = !catF || r.cat === catF;
+            var matchT = !typeF || r.type === typeF;
+            var matchS = !statusF || r.status === statusF;
+            var matchP = !progF || r.prognosis === progF;
+            return matchQ && matchC && matchT && matchS && matchP;
+          });
+          window.txRenderTable(filtered);
+        };
+
+        window.txRenderTable(txTableData);
+      }
+
+      var logicModal = document.getElementById('tx-logic-modal');
+      if (logicModal) {
+        var subtitle = logicModal.querySelector('.logic-subtitle');
+        if (subtitle) subtitle.textContent = 'สรุปกฎการทำงานของ Tx by exam card';
+      }
+    }
+
+    customizeTxModal();
+    cloneAssessment('rx', 'Rx');
+    customizeRxModal();
+
+    function customizeRxModal() {
+      var modal = document.getElementById('rx-modal');
+      if (!modal) return;
+
+      var titleEl = modal.querySelector('.section-title');
+      if (titleEl) titleEl.innerHTML = 'Rx by exam card <span>&#8635;</span>';
+
+      var tab1 = document.getElementById('rx-content-1');
+      if (tab1) tab1.innerHTML = txBuildTabContent(1, {
+        activeCat: 'proc',
+        activeItem: 'wound',
+        selectedItems: [
+          { key: 'predni', time: '09/07/26 08:15' },
+          { key: 'nss', time: '09/07/26 08:20' },
+          { key: 'enro', time: '09/07/26 08:25' }
+        ],
+        detailItem: 'wound',
+        txNote: 'สัตว์เลี้ยงเคยให้ยามาแล้ว ให้เปลี่ยนขาในการให้ยา ไม่ซ้ำกับคราวที่แล้ว และโกนขนบริเวณที่ฉีดยาด้วย',
+        dvm: 'นิพนธ์ วงศ์ประเสริฐ',
+        dept: 'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)',
+        examCard: 'exam-card-69001234'
+      });
+
+      var tab2 = document.getElementById('rx-content-2');
+      if (tab2) tab2.innerHTML = txBuildTabContent(2, {
+        activeCat: 'inj',
+        activeItem: 'predni',
+        selectedItems: [
+          { key: 'nss', time: '09/07/26 09:00' },
+          { key: 'maropitant', time: '09/07/26 09:05' }
+        ],
+        detailItem: 'predni',
+        txNote: 'ให้ยาฉีด Prednisolone และ Maropitant พร้อมสารน้ำ NSS ติดตามอาการทุก 4 ชั่วโมง',
+        dvm: 'นิพนธ์ วงศ์ประเสริฐ',
+        dept: 'อายุรกรรมทั่วไป (ในเวลา)',
+        examCard: 'exam-card-69001235'
+      });
+
+      var tab3 = document.getElementById('rx-content-3');
+      if (tab3) {
+        tab3.className = 'tab-content inactive';
+        tab3.innerHTML = txBuildTabContent(3, {
+          activeCat: 'fluid',
+          activeItem: 'lrs',
+          selectedItems: [
+            { key: 'lrs', time: '09/07/26 14:00' },
+            { key: 'oxygen', time: '09/07/26 14:30' }
+          ],
+          detailItem: 'lrs',
+          txNote: 'ให้สารน้ำ LRS และ Oxygen therapy ติดตาม SpO2 ทุก 2 ชั่วโมง',
+          dvm: 'วิชัย ใจดี',
+          dept: 'ภาพวินิจฉัย (นอกเวลา)',
+          examCard: 'exam-card-69001236',
+          inactive: true
+        });
+      }
+
+      var tab4 = document.getElementById('rx-content-4');
+      if (tab4) {
+        tab4.className = 'tab-content inactive';
+        tab4.innerHTML = txBuildTabContent(4, {
+          activeCat: 'proc',
+          activeItem: 'ucath',
+          selectedItems: [
+            { key: 'enro', time: '09/07/26 16:00' },
+            { key: 'wound', time: '09/07/26 16:15' }
+          ],
+          detailItem: 'ucath',
+          txNote: 'ทำหัตถการสวนปัสสาวะ และทำแผล ให้ Enrofloxacin ป้องกันการติดเชื้อ',
+          dvm: 'ปนัดดา ศรีสุข',
+          dept: 'อายุรกรรมทั่วไป (ในเวลา)',
+          examCard: 'exam-card-69001237',
+          inactive: true
+        });
+      }
+
+      var tab5 = document.getElementById('rx-content-5');
+      if (tab5) {
+        var rxTableData = [];
+        var rxDate = '09/07/26';
+        var allKeys = ['predni','enro','maropitant','nss','lrs','d5w','acetar','hetastarch','blood','oxygen','wound','ucath','enema'];
+        var rxDvmMap = { predni: 'นิพนธ์ วงศ์ประเสริฐ', enro: 'นิพนธ์ วงศ์ประเสริฐ', maropitant: 'นิพนธ์ วงศ์ประเสริฐ', nss: 'นิพนธ์ วงศ์ประเสริฐ', lrs: 'วิชัย ใจดี', d5w: 'วิชัย ใจดี', acetar: 'วิชัย ใจดี', hetastarch: 'วิชัย ใจดี', blood: 'ปนัดดา ศรีสุข', oxygen: 'วิชัย ใจดี', wound: 'ปนัดดา ศรีสุข', ucath: 'ปนัดดา ศรีสุข', enema: 'ปนัดดา ศรีสุข' };
+        var rxDeptMap = { predni: 'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', enro: 'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', maropitant: 'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', nss: 'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', lrs: 'ภาพวินิจฉัย (นอกเวลา)', d5w: 'ภาพวินิจฉัย (นอกเวลา)', acetar: 'ภาพวินิจฉัย (นอกเวลา)', hetastarch: 'ภาพวินิจฉัย (นอกเวลา)', blood: 'อายุรกรรมทั่วไป (ในเวลา)', oxygen: 'ภาพวินิจฉัย (นอกเวลา)', wound: 'อายุรกรรมทั่วไป (ในเวลา)', ucath: 'อายุรกรรมทั่วไป (ในเวลา)', enema: 'อายุรกรรมทั่วไป (ในเวลา)' };
+        for (var i = 0; i < allKeys.length; i++) {
+          var it = txItems[allKeys[i]];
+          var hh = String(8 + (i % 10)).padStart(2,'0');
+          var mi = String((i * 13) % 60).padStart(2,'0');
+          rxTableData.push({
+            date: rxDate + ' ' + hh + ':' + mi,
+            name: it.name, cf: it.note.split('\n')[0].replace(/^- /, ''), cat: it.tag,
+            type: it.kind === 'med' ? 'ยาฉีด' : (it.kind === 'fluid' ? 'สารน้ำ' : 'หัตถการ'),
+            status: 'Active', prognosis: it.freq || '—',
+            dvm: rxDvmMap[allKeys[i]], dept: rxDeptMap[allKeys[i]]
+          });
+        }
+        tab5.innerHTML = '<div class="editor-panel" style="height: calc(95vh - 180px); min-height: 400px;">' +
+          '<div class="editor-panel-head">ตารางข้อมูลทั้งหมด</div>' +
+          '<div class="data-table-bar">' +
+            '<input type="text" id="rx-tbl-search" placeholder="ค้นหา: ชื่อยา, หัตถการ, dvm, department...">' +
+            '<select id="rx-tbl-cat"><option value="">ประเภท: ทั้งหมด</option><option>ยาฉีด (Injection)</option><option>สารน้ำ / IV Fluid</option><option>หัตถการ (Procedure)</option></select>' +
+            '<select id="rx-tbl-type"><option value="">Kind: ทั้งหมด</option><option>ยาฉีด</option><option>สารน้ำ</option><option>หัตถการ</option></select>' +
+            '<select id="rx-tbl-status"><option value="">Status: ทั้งหมด</option><option>Active</option><option>Pending</option><option>Resolved</option></select>' +
+            '<select id="rx-tbl-prog"><option value="">Frequency: ทั้งหมด</option><option>วันละ 1 ครั้ง (SID)</option><option>วันละ 2 ครั้ง (BID)</option><option>ให้ต่อเนื่อง (Continuous / CRI)</option></select>' +
+            '<button class="btn-search" onclick="rxFilterTable()">ค้นหา</button>' +
+            '<button class="btn-clear" onclick="rxClearFilter()">ล้างตัวกรอง</button>' +
+          '</div>' +
+          '<div class="data-table-wrap">' +
+            '<table class="data-table" id="rx-data-table">' +
+              '<thead><tr><th>#</th><th>Date/time</th><th>ชื่อยา/หัตถการ</th><th>รายละเอียด (Note)</th><th>ประเภท</th><th>Kind</th><th>Status</th><th>Frequency</th><th>DVM</th><th>Department</th></tr></thead>' +
+              '<tbody id="rx-data-table-body"></tbody>' +
+            '</table>' +
+          '</div>' +
+        '</div>';
+
+        window.rxRenderTable = function(data) {
+          var tbody = document.getElementById('rx-data-table-body');
+          var html = '';
+          for (var i = 0; i < data.length; i++) {
+            html += '<tr><td>' + (i+1) + '</td><td>' + data[i].date + '</td><td>' + data[i].name +
+              '</td><td>' + (data[i].cf || '<span style="color:#d1d5db;">—</span>') + '</td><td>' + data[i].cat +
+              '</td><td>' + data[i].type + '</td><td>' + data[i].status + '</td><td>' + (data[i].prognosis || '<span style="color:#d1d5db;">—</span>') +
+              '</td><td>' + data[i].dvm + '</td><td>' + data[i].dept + '</td></tr>';
+          }
+          tbody.innerHTML = html;
+        };
+
+        window.rxClearFilter = function() {
+          document.getElementById('rx-tbl-search').value = '';
+          document.getElementById('rx-tbl-cat').value = '';
+          document.getElementById('rx-tbl-type').value = '';
+          document.getElementById('rx-tbl-status').value = '';
+          document.getElementById('rx-tbl-prog').value = '';
+          window.rxRenderTable(rxTableData);
+        };
+
+        document.getElementById('rx-tbl-search')?.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') window.rxFilterTable();
+        });
+
+        window.rxFilterTable = function() {
+          var q = document.getElementById('rx-tbl-search').value.toLowerCase().trim();
+          var catF = document.getElementById('rx-tbl-cat').value;
+          var typeF = document.getElementById('rx-tbl-type').value;
+          var statusF = document.getElementById('rx-tbl-status').value;
+          var progF = document.getElementById('rx-tbl-prog').value;
+          var filtered = rxTableData.filter(function(r) {
+            var matchQ = !q || r.name.toLowerCase().indexOf(q) >= 0 || (r.cf && r.cf.toLowerCase().indexOf(q) >= 0) || r.dvm.toLowerCase().indexOf(q) >= 0 || r.dept.toLowerCase().indexOf(q) >= 0;
+            var matchC = !catF || r.cat === catF;
+            var matchT = !typeF || r.type === typeF;
+            var matchS = !statusF || r.status === statusF;
+            var matchP = !progF || r.prognosis === progF;
+            return matchQ && matchC && matchT && matchS && matchP;
+          });
+          window.rxRenderTable(filtered);
+        };
+
+        window.rxRenderTable(rxTableData);
+      }
+
+      var logicModal = document.getElementById('rx-logic-modal');
+      if (logicModal) {
+        var subtitle = logicModal.querySelector('.logic-subtitle');
+        if (subtitle) subtitle.textContent = 'สรุปกฎการทำงานของ Rx by exam card';
+      }
+    }
   </script>
 </body>
 </html>
