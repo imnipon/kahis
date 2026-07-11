@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order Clinical Lab Editor</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    background: #f0f2f5;
+    color: #333;
+    padding: 20px;
+  }
+  .wrap { max-width: 1500px; margin: 0 auto; }
+  .section-title {
+    font-size: 18px; font-weight: 600; color: #444;
+    margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr 1.8fr 1.1fr;
+    gap: 16px;
+  }
+  .panel {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    min-height: 560px;
+  }
+  .panel-head {
+    padding: 14px 16px;
+    border-bottom: 1px solid #eee;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .panel-body { padding: 12px 14px; overflow-y: auto; flex: 1; }
+
+  /* BLOCK 1: Categories */
+  .cat {
+    padding: 12px 14px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    cursor: pointer;
+  }
+  .cat:hover { background: #f5f7fa; }
+  .cat.active { background: #eef4ff; border: 1px solid #cdddff; }
+  .cat .name { font-size: 14px; color: #333; }
+  .cat .count { font-size: 12px; color: #9ca3af; }
+
+  /* BLOCK 2: Items */
+  .search {
+    width: 100%; padding: 9px 12px; margin-bottom: 12px;
+    border: 1px solid #d0d5dd; border-radius: 8px; font-size: 13px;
+  }
+  .item {
+    padding: 12px 4px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+  }
+  .item:hover { background: #f9fafb; }
+  .item .t { font-size: 14px; color: #333; }
+  .item .s { font-size: 11px; color: #9ca3af; }
+
+  /* BLOCK 3: Drug Details & Cart */
+  .badge {
+    background: #f3f4f6; border-radius: 20px; padding: 4px 10px;
+    font-size: 12px; color: #555; margin-left: 6px;
+  }
+  .cart-item {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .cart-item:hover { border-color: #cdddff; }
+  .cart-item .name { font-size: 14px; font-weight: 500; }
+  .cart-item .right { display: flex; align-items: center; gap: 12px; }
+  .cart-item .qty { font-size: 12px; color: #6b7280; }
+  .pill {
+    border: 1px solid #22c55e; color: #16a34a;
+    border-radius: 8px; padding: 4px 10px; font-size: 13px;
+  }
+  .ic { border: none; background: none; cursor: pointer; color: #9ca3af; font-size: 15px; }
+
+  /* BLOCK 4: Record Meta */
+  .req-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+  .tag { font-size: 11px; padding: 3px 8px; border-radius: 6px; }
+  .tag.ok { background: #e6f7ee; color: #16a34a; }
+  .tag.no { background: #fdeef0; color: #e53935; }
+  .btn-confirm {
+    background: #22c55e; color: #fff; border: none;
+    padding: 8px 16px; border-radius: 8px; font-size: 13px; cursor: pointer;
+  }
+  .form-group { margin-bottom: 14px; }
+  .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #444; }
+  .req { color: #e53935; }
+  .form-group input, .form-group select {
+    width: 100%; padding: 9px 10px; border: 1px solid #d0d5dd;
+    border-radius: 8px; font-size: 13px; background: #fff;
+  }
+  .btn-select-all {
+    background: #fff; color: #34d399; border: 1px solid #a7f3d0;
+    padding: 6px 14px; border-radius: 6px; font-size: 13px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .btn-select-all:hover { background: #f0fdf4; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="section-title">Order Clinical Lab Editor <span>&#8635;</span></div>
+
+    <div class="grid">
+
+      <!-- BLOCK 1: Categories -->
+      <div class="panel">
+        <div class="panel-head">Categories</div>
+        <div class="panel-body">
+          <div class="cat"><div class="name">Blood gas</div><div class="count">1 items</div></div>
+          <div class="cat"><div class="name">Hematology</div><div class="count">8 items</div></div>
+          <div class="cat active"><div class="name">Chemistry</div><div class="count">22 items</div></div>
+          <div class="cat"><div class="name">Urinalysis</div><div class="count">2 items</div></div>
+          <div class="cat"><div class="name">Snap / Test Kit</div><div class="count">5 items</div></div>
+          <div class="cat"><div class="name">Vet Scan</div><div class="count">3 items</div></div>
+          <div class="cat"><div class="name">Hormone</div><div class="count">7 items</div></div>
+          <div class="cat"><div class="name">แล็บนอก</div><div class="count">11 items</div></div>
+        </div>
+      </div>
+
+      <!-- BLOCK 2: Items -->
+      <div class="panel">
+        <div class="panel-head">
+          <span>Items</span>
+          <button class="btn-select-all">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12l5 5L16 7"/><path d="M8 12l5 5L23 7"/></svg>
+            Select All
+          </button>
+        </div>
+        <div class="panel-body">
+          <input class="search" type="text" placeholder="🔍 Search...">
+          <div class="item"><div class="t">ALT (SGPT)</div><div class="s">ตัวอย่าง</div><div class="s">คาดราจากห้องปฏิบัติการ</div></div>
+          <div class="item"><div class="t">Potassium</div><div class="s">ตัวอย่าง</div><div class="s">คาดราจากห้องปฏิบัติการ</div></div>
+          <div class="item"><div class="t">BUN</div><div class="s">ตัวอย่าง</div><div class="s">คาดราจากห้องปฏิบัติการ</div></div>
+          <div class="item"><div class="t">Creatinine</div><div class="s">ตัวอย่าง</div><div class="s">คาดราจากห้องปฏิบัติการ</div></div>
+          <div class="item"><div class="t">Glucose</div><div class="s">ตัวอย่าง</div><div class="s">คาดราจากห้องปฏิบัติการ</div></div>
+          <div class="item"><div class="t">Amylase</div><div class="s">ตัวอย่าง</div><div class="s">คาดราจากห้องปฏิบัติการ</div></div>
+        </div>
+      </div>
+
+      <!-- BLOCK 3: Drug Details & Cart -->
+      <div class="panel">
+        <div class="panel-head">
+          <span>Drug Details &amp; Cart</span>
+          <span><span class="badge">🛒 6</span><span class="badge">Total 560.00</span></span>
+        </div>
+        <div class="panel-body">
+          <div class="cart-item">
+            <div class="name">ALT (SGPT)</div>
+            <div class="right"><span class="qty">x 1 ตัวอย่าง</span><span class="pill">70 (A)</span><button class="ic">✎</button><button class="ic">✕</button></div>
+          </div>
+          <div class="cart-item">
+            <div class="name">Potassium</div>
+            <div class="right"><span class="qty">x 1 ตัวอย่าง</span><span class="pill">100 (A)</span><button class="ic">✎</button><button class="ic">✕</button></div>
+          </div>
+          <div class="cart-item">
+            <div class="name">BUN</div>
+            <div class="right"><span class="qty">x 1 ตัวอย่าง</span><span class="pill">70 (A)</span><button class="ic">✎</button><button class="ic">✕</button></div>
+          </div>
+          <div class="cart-item">
+            <div class="name">Creatinine</div>
+            <div class="right"><span class="qty">x 1 ตัวอย่าง</span><span class="pill">70 (A)</span><button class="ic">✎</button><button class="ic">✕</button></div>
+          </div>
+          <div class="cart-item">
+            <div class="name">Glucose</div>
+            <div class="right"><span class="qty">x 1 ตัวอย่าง</span><span class="pill">50 (A)</span><button class="ic">✎</button><button class="ic">✕</button></div>
+          </div>
+          <div class="cart-item">
+            <div class="name">Amylase</div>
+            <div class="right"><span class="qty">x 1 ตัวอย่าง</span><span class="pill">200 (A)</span><button class="ic">✎</button><button class="ic">✕</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BLOCK 4: Record Meta -->
+      <div class="panel">
+        <div class="panel-head">
+          <span>Record Meta</span>
+          <button class="btn-confirm">&#10003; Confirm</button>
+        </div>
+        <div class="panel-body">
+          <div class="req-tags">
+            <span style="font-size:11px;color:#6b7280;">Required</span>
+            <span class="tag ok">✓ Item</span>
+            <span class="tag ok">✓ DVM</span>
+            <span class="tag no">✕ Dept</span>
+            <span class="tag no">✕ Visit</span>
+          </div>
+
+          <div class="form-group">
+            <label>Effective Date</label>
+            <input type="text" value="07/07/2026">
+          </div>
+          <div class="form-group">
+            <label>Time</label>
+            <input type="text" value="16:31">
+          </div>
+          <div class="form-group">
+            <label>DVM <span class="req">*</span></label>
+            <select><option>นิพนธ์ วงศ์ประเสริฐ</option></select>
+          </div>
+          <div class="form-group">
+            <label>Department <span class="req">*</span></label>
+            <select><option>Select Dept</option></select>
+          </div>
+          <div class="form-group">
+            <label>Order Note</label>
+            <input type="text" placeholder="Note to Pharmacy...">
+          </div>
+          <div class="form-group">
+            <label>Pharmacy Note</label>
+            <input type="text" placeholder="Global Note...">
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>
