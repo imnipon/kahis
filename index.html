@@ -395,22 +395,7 @@
   <div class="app">
     <aside class="sidebar">
       <div class="sidebar-header">Explorer</div>
-      <div class="sidebar-tree">
-        <div class="folder">
-          <div class="folder-name">
-            <span class="folder-icon"></span>
-            <span>resource</span>
-          </div>
-          <ul class="file-list">
-            <li>
-              <a href="resource/landing-page.png" target="_blank">
-                <span class="file-icon"></span>
-                <span>landing-page.png</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
+      <div class="sidebar-tree" id="explorerTree"></div>
     </aside>
 
     <main class="main">
@@ -461,6 +446,7 @@
   </div>
 
   <script src="NP/list.js"></script>
+  <script src="NP/files.js"></script>
   <script>
     const CORRECT_PIN = '2557';
     const STORAGE_KEY = 'kahis_notes';
@@ -476,62 +462,208 @@
     const backupBtn = document.getElementById('backupBtn');
     const importBtn = document.getElementById('importBtn');
     const importFile = document.getElementById('importFile');
+    const explorerTree = document.getElementById('explorerTree');
 
     let currentPin = '';
     let pendingAction = null;
 
-    function getNotes() {
-      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch (e) { return []; }
+    function getStorage() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return { notes: [], recentSessions: [] };
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) return { notes: parsed, recentSessions: [] };
+        if (parsed && typeof parsed === 'object') {
+          return { notes: parsed.notes || [], recentSessions: parsed.recentSessions || [] };
+        }
+      } catch (e) {}
+      return { notes: [], recentSessions: [] };
     }
 
-    function setNotes(notes) {
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(notes)); } catch (e) {}
+    function setStorage(data) {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) {}
     }
+
+    function getNotes() { return getStorage().notes; }
+    function setNotes(notes) { const data = getStorage(); data.notes = notes; setStorage(data); }
+    function getRecentSessions() { return getStorage().recentSessions; }
+    function setRecentSessions(sessions) { const data = getStorage(); data.recentSessions = sessions; setStorage(data); }
 
     function generateId() {
       return Date.now().toString(36) + Math.random().toString(36).slice(2, 9);
     }
 
-    function renderSessions() {
-      sessions.innerHTML = '';
-      if (typeof assessmentFiles === 'undefined' || !Array.isArray(assessmentFiles)) {
-        sessions.innerHTML = '<div style="color: var(--text-muted); font-size: 13px;">No sessions found.</div>';
+    function findFile(path, tree) {
+      if (!tree) return null;
+      for (const node of tree) {
+        if (node.path === path) return node;
+        if (node.children) {
+          const found = findFile(path, node.children);
+          if (found) return found;
+        }
+      }
+      return null;
+    }
+
+    function findTitle(path) {
+      const list = typeof assessmentFiles !== 'undefined' ? assessmentFiles : [];
+      const listItem = list.find(item => item.file === path);
+      if (listItem) return listItem.title;
+      const node = findFile(path, filesTree);
+      if (node) {
+        return node.name.replace(/[_-]/g, ' ').replace(/\.html$/i, '').replace(/\b\w/g, c => c.toUpperCase());
+      }
+      return path;
+    }
+
+    function findLastUpdate(path) {
+      const list = typeof assessmentFiles !== 'undefined' ? assessmentFiles : [];
+      const listItem = list.find(item => item.file === path);
+      if (listItem) return listItem.lastUpdate;
+      const node = findFile(path, filesTree);
+      if (node) return node.lastUpdate;
+      return null;
+    }
+
+    function addRecentSession(file, title, lastUpdate) {
+      const sessions = getRecentSessions().filter(s => s.file !== file);
+      sessions.unshift({
+        file,
+        title: title || findTitle(file),
+        lastUpdate: lastUpdate || findLastUpdate(file),
+        time: Date.now(),
+      });
+      if (sessions.length > 20) sessions.length = 20;
+      setRecentSessions(sessions);
+      renderSessions();
+    }
+
+    function renderExplorer(tree, container) {
+      container.innerHTML = '';
+      if (!tree || !tree.length) {
+        container.innerHTML = '<div class="empty-state">No files found.</div>';
         return;
       }
-      assessmentFiles.forEach(item => {
+      tree.forEach(node => {
+        if (node.type === 'folder') {
+          const folder = document.createElement('div');
+          folder.className = 'folder';
+          const name = document.createElement('div');
+          name.className = 'folder-name';
+          const icon = document.createElement('span');
+          icon.className = 'folder-icon';
+          const text = document.createElement('span');
+          text.textContent = node.name;
+          name.appendChild(icon);
+          name.appendChild(text);
+          folder.appendChild(name);
+          const ul = document.createElement('ul');
+          ul.className = 'file-list';
+          renderChildren(node.children, ul);
+          folder.appendChild(ul);
+          container.appendChild(folder);
+        } else {
+          container.appendChild(createFileItem(node));
+        }
+      });
+    }
+
+    function renderChildren(children, parent) {
+      children.forEach(node => {
+        if (node.type === 'folder') {
+          const li = document.createElement('li');
+          const folder = document.createElement('div');
+          folder.className = 'folder';
+          const name = document.createElement('div');
+          name.className = 'folder-name';
+          const icon = document.createElement('span');
+          icon.className = 'folder-icon';
+          const text = document.createElement('span');
+          text.textContent = node.name;
+          name.appendChild(icon);
+          name.appendChild(text);
+          folder.appendChild(name);
+          const ul = document.createElement('ul');
+          ul.className = 'file-list';
+          renderChildren(node.children, ul);
+          folder.appendChild(ul);
+          li.appendChild(folder);
+          parent.appendChild(li);
+        } else {
+          parent.appendChild(createFileItem(node));
+        }
+      });
+    }
+
+    function createFileItem(node) {
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = node.path;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      const icon = document.createElement('span');
+      icon.className = 'file-icon';
+      const text = document.createElement('span');
+      text.textContent = node.name;
+      a.appendChild(icon);
+      a.appendChild(text);
+      a.addEventListener('click', () => {
+        if (node.path.endsWith('.html')) {
+          const title = findTitle(node.path);
+          const lastUpdate = findLastUpdate(node.path);
+          addRecentSession(node.path, title, lastUpdate);
+        }
+      });
+      li.appendChild(a);
+      return li;
+    }
+
+    function renderSessions() {
+      sessions.innerHTML = '';
+      const recent = getRecentSessions();
+      if (!recent.length) {
+        sessions.innerHTML = '<div style="color: var(--text-muted); font-size: 13px;">No recent sessions. Open an HTML file from the Explorer.</div>';
+        return;
+      }
+      recent.forEach(item => {
+        const title = item.title || findTitle(item.file);
+        const lastUpdate = item.lastUpdate || findLastUpdate(item.file);
         const a = document.createElement('a');
         a.className = 'session-card';
         a.href = item.file;
         a.target = '_blank';
         a.rel = 'noopener';
-        const lastUpdate = document.createElement('div');
-        lastUpdate.className = 'session-lastupdate';
-        lastUpdate.textContent = item.lastUpdate ? new Date(item.lastUpdate).toLocaleString() : '—';
-        a.appendChild(lastUpdate);
-        const title = document.createElement('div');
-        title.className = 'session-title';
-        title.textContent = item.title || item.file;
+        const lastUpdateEl = document.createElement('div');
+        lastUpdateEl.className = 'session-lastupdate';
+        lastUpdateEl.textContent = lastUpdate ? new Date(lastUpdate).toLocaleString() : '—';
+        a.appendChild(lastUpdateEl);
+        const titleEl = document.createElement('div');
+        titleEl.className = 'session-title';
+        titleEl.textContent = title;
         const desc = document.createElement('div');
         desc.className = 'session-desc';
         desc.textContent = 'Open in new tab';
         const path = document.createElement('div');
         path.className = 'session-path';
         path.textContent = item.file;
-        a.appendChild(title);
+        a.appendChild(titleEl);
         a.appendChild(desc);
         a.appendChild(path);
+        a.addEventListener('click', () => {
+          addRecentSession(item.file, title, lastUpdate);
+        });
         sessions.appendChild(a);
 
         fetch(item.file, { method: 'HEAD' })
           .then(response => {
             const date = response.headers.get('Last-Modified');
             if (date) {
-              lastUpdate.textContent = new Date(date).toLocaleString();
+              lastUpdateEl.textContent = new Date(date).toLocaleString();
             }
           })
           .catch(() => {
-            if (!item.lastUpdate) {
-              lastUpdate.style.display = 'none';
+            if (!lastUpdate) {
+              lastUpdateEl.style.display = 'none';
             }
           });
       });
@@ -652,10 +784,10 @@
     });
 
     async function backupNotes() {
-      const notes = getNotes();
-      const blob = new Blob([JSON.stringify(notes, null, 2)], { type: 'application/json' });
+      const data = getStorage();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
       const date = new Date().toISOString().slice(0, 10);
-      const suggested = `kahis-notes-backup-${date}.json`;
+      const suggested = `kahis-backup-${date}.json`;
       if (window.showSaveFilePicker) {
         try {
           const handle = await window.showSaveFilePicker({
@@ -687,15 +819,37 @@
       try {
         const text = await file.text();
         const imported = JSON.parse(text);
-        if (!Array.isArray(imported)) throw new Error('Invalid format');
-        const overwrite = confirm('ต้องการทับ notes เดิมหรือไม่?\nOK = ทับ (overwrite)\nCancel = เพิ่มเข้าไป (append)');
-        if (overwrite) {
-          setNotes(imported);
+        if (Array.isArray(imported)) {
+          const overwrite = confirm('ต้องการทับ notes เดิมหรือไม่?\nOK = ทับ (overwrite)\nCancel = เพิ่มเข้าไป (append)');
+          if (overwrite) {
+            setNotes(imported);
+          } else {
+            const notes = getNotes().concat(imported);
+            setNotes(notes);
+          }
+          renderNotes();
         } else {
-          const notes = getNotes().concat(imported);
-          setNotes(notes);
+          const overwrite = confirm('ต้องการทับข้อมูลเดิมทั้งหมดหรือไม่?\nOK = ทับ (overwrite)\nCancel = เพิ่มเข้าไป (append)');
+          const importedNotes = imported.notes || [];
+          const importedRecent = imported.recentSessions || [];
+          if (overwrite) {
+            setNotes(importedNotes);
+            setRecentSessions(importedRecent);
+          } else {
+            const notes = getNotes().concat(importedNotes);
+            const allRecent = [...getRecentSessions(), ...importedRecent];
+            const recentMap = new Map();
+            allRecent.forEach(s => {
+              if (!recentMap.has(s.file) || s.time > recentMap.get(s.file).time) {
+                recentMap.set(s.file, s);
+              }
+            });
+            setNotes(notes);
+            setRecentSessions(Array.from(recentMap.values()).sort((a, b) => b.time - a.time));
+          }
+          renderNotes();
+          renderSessions();
         }
-        renderNotes();
       } catch (e) {
         alert('Import failed: ' + e.message);
       }
@@ -704,6 +858,7 @@
 
     renderNotes();
     renderSessions();
+    renderExplorer(filesTree, explorerTree);
   </script>
 </body>
 </html>
