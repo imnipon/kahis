@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAHIS - Landing Page</title>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --bg-elevated: #111111;
+      --bg-card: #141414;
+      --bg-card-hover: #1a1a1a;
+      --border: #222222;
+      --border-light: #333333;
+      --text: #e5e5e5;
+      --text-muted: #888888;
+      --accent: #7c3aed;
+      --accent-hover: #6d28d9;
+      --error: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .app {
+      display: flex;
+      height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: var(--bg-card);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .sidebar-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sidebar-tree {
+      padding: 16px 20px;
+      overflow-y: auto;
+    }
+
+    .folder {
+      font-size: 13px;
+    }
+
+    .folder-name {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .folder-icon {
+      width: 0;
+      height: 0;
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-left: 6px solid var(--text-muted);
+      display: inline-block;
+    }
+
+    .file-list {
+      padding-left: 18px;
+      list-style: none;
+      margin: 0;
+    }
+
+    .file-list li {
+      margin-bottom: 6px;
+    }
+
+    .file-list a {
+      color: var(--text-muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .file-list a:hover {
+      color: var(--text);
+      text-decoration: underline;
+    }
+
+    .file-icon {
+      width: 14px;
+      height: 14px;
+      border: 1px solid var(--border-light);
+      border-radius: 3px;
+      display: inline-block;
+      background: var(--bg-elevated);
+    }
+
+    .empty-state {
+      color: var(--text-muted);
+      font-size: 12px;
+      padding-left: 18px;
+    }
+
+    /* Main */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .main-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      font-weight: 700;
+      font-size: 18px;
+      background: var(--bg-elevated);
+    }
+
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px;
+    }
+
+    .content-inner {
+      width: 100%;
+      max-width: 800px;
+    }
+
+    /* Chat */
+    .chat {
+      display: flex;
+      flex-direction: column;
+      min-height: 280px;
+      margin-bottom: 32px;
+    }
+
+    .messages {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 16px;
+      min-height: 120px;
+    }
+
+    .message {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      max-width: 85%;
+      align-self: flex-start;
+    }
+
+    .message-time {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    .input-area {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 12px;
+    }
+
+    .input-area textarea {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font: inherit;
+      font-size: 14px;
+      resize: none;
+      outline: none;
+      max-height: 120px;
+      min-height: 24px;
+      padding: 6px 4px;
+    }
+
+    .input-area textarea::placeholder {
+      color: var(--text-muted);
+    }
+
+    .btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    /* Recent sessions */
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .sessions {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+    }
+
+    .session-card {
+      display: block;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .session-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-light);
+    }
+
+    .session-title {
+      font-weight: 600;
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+
+    .session-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .session-path {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 10px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      word-break: break-all;
+    }
+
+    /* PIN Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      width: 320px;
+      padding: 24px;
+    }
+
+    .modal-title {
+      text-align: center;
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .pin-display {
+      height: 56px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      letter-spacing: 10px;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+
+    .pin-error {
+      color: var(--error);
+      text-align: center;
+      font-size: 12px;
+      min-height: 18px;
+      margin-bottom: 8px;
+    }
+
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .keypad button {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+
+    .keypad button:hover {
+      background: var(--border-light);
+    }
+
+    .keypad .wide {
+      grid-column: span 2;
+    }
+
+    .keypad .confirm {
+      background: var(--accent);
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    .keypad .confirm:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+    }
+
+    .hidden { display: none; }
+
+    .btn-block { width: 100%; }
+    .backup-section { margin-top: 16px; }
+    .message { position: relative; }
+    .message-actions { position: absolute; top: 10px; right: 10px; }
+    .delete-btn { background: transparent; border: 1px solid var(--border-light); color: var(--text-muted); border-radius: 6px; padding: 2px 8px; font-size: 12px; cursor: pointer; transition: all 0.15s; }
+    .delete-btn:hover { background: var(--error); color: #fff; border-color: var(--error); }
+
+    .input-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }
+    .btn-ghost { background: transparent; border: 1px solid var(--border-light); color: var(--text-muted); }
+    .btn-ghost:hover { background: var(--bg-elevated); color: var(--text); }
+
+    .session-card { position: relative; }
+    .session-title { padding-right: 130px; }
+    .session-lastupdate { position: absolute; top: 12px; right: 12px; font-size: 11px; color: var(--text-muted); max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-header">Explorer</div>
+      <div class="sidebar-tree">
+        <div class="folder">
+          <div class="folder-name">
+            <span class="folder-icon"></span>
+            <span>resource</span>
+          </div>
+          <ul class="file-list">
+            <li>
+              <a href="resource/landing-page.png" target="_blank">
+                <span class="file-icon"></span>
+                <span>landing-page.png</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="main-header">KAHIS</div>
+      <div class="content">
+        <div class="content-inner">
+          <div class="chat">
+            <div class="messages" id="messages"></div>
+            <div class="input-area">
+              <textarea id="noteInput" rows="1" placeholder="Message..."></textarea>
+              <button class="btn" id="saveBtn">Save as note</button>
+            </div>
+            <div class="input-actions">
+              <button class="btn btn-ghost" id="importBtn">Import notes</button>
+              <button class="btn btn-ghost" id="backupBtn">Backup notes</button>
+              <input type="file" id="importFile" accept="application/json" style="display: none">
+            </div>
+          </div>
+
+          <div class="section-title">Recent Sessions</div>
+          <div class="sessions" id="sessions"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="pinModal">
+    <div class="modal">
+      <div class="modal-title" id="pinTitle">Enter PIN</div>
+      <div class="pin-display" id="pinDisplay">••••</div>
+      <div class="pin-error" id="pinError"></div>
+      <div class="keypad">
+        <button data-key="1">1</button>
+        <button data-key="2">2</button>
+        <button data-key="3">3</button>
+        <button data-key="4">4</button>
+        <button data-key="5">5</button>
+        <button data-key="6">6</button>
+        <button data-key="7">7</button>
+        <button data-key="8">8</button>
+        <button data-key="9">9</button>
+        <button data-key="clear">C</button>
+        <button data-key="0">0</button>
+        <button data-key="back">←</button>
+        <button class="wide confirm" data-key="confirm">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="NP/list.js"></script>
+  <script>
+    const CORRECT_PIN = '2557';
+    const STORAGE_KEY = 'kahis_notes';
+
+    const noteInput = document.getElementById('noteInput');
+    const saveBtn = document.getElementById('saveBtn');
+    const messages = document.getElementById('messages');
+    const sessions = document.getElementById('sessions');
+    const pinModal = document.getElementById('pinModal');
+    const pinDisplay = document.getElementById('pinDisplay');
+    const pinError = document.getElementById('pinError');
+    const pinTitle = document.getElementById('pinTitle');
+    const backupBtn = document.getElementById('backupBtn');
+    const importBtn = document.getElementById('importBtn');
+    const importFile = document.getElementById('importFile');
+
+    let currentPin = '';
+    let pendingAction = null;
+
+    function getNotes() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch (e) { return []; }
+    }
+
+    function setNotes(notes) {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(notes)); } catch (e) {}
+    }
+
+    function generateId() {
+      return Date.now().toString(36) + Math.random().toString(36).slice(2, 9);
+    }
+
+    function renderSessions() {
+      sessions.innerHTML = '';
+      if (typeof assessmentFiles === 'undefined' || !Array.isArray(assessmentFiles)) {
+        sessions.innerHTML = '<div style="color: var(--text-muted); font-size: 13px;">No sessions found.</div>';
+        return;
+      }
+      assessmentFiles.forEach(item => {
+        const a = document.createElement('a');
+        a.className = 'session-card';
+        a.href = item.file;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        const lastUpdate = document.createElement('div');
+        lastUpdate.className = 'session-lastupdate';
+        lastUpdate.textContent = item.lastUpdate ? new Date(item.lastUpdate).toLocaleString() : '—';
+        a.appendChild(lastUpdate);
+        const title = document.createElement('div');
+        title.className = 'session-title';
+        title.textContent = item.title || item.file;
+        const desc = document.createElement('div');
+        desc.className = 'session-desc';
+        desc.textContent = 'Open in new tab';
+        const path = document.createElement('div');
+        path.className = 'session-path';
+        path.textContent = item.file;
+        a.appendChild(title);
+        a.appendChild(desc);
+        a.appendChild(path);
+        sessions.appendChild(a);
+
+        fetch(item.file, { method: 'HEAD' })
+          .then(response => {
+            const date = response.headers.get('Last-Modified');
+            if (date) {
+              lastUpdate.textContent = new Date(date).toLocaleString();
+            }
+          })
+          .catch(() => {
+            if (!item.lastUpdate) {
+              lastUpdate.style.display = 'none';
+            }
+          });
+      });
+    }
+
+    function renderNotes() {
+      messages.innerHTML = '';
+      const notes = getNotes();
+      if (notes.length === 0) {
+        const empty = document.createElement('div');
+        empty.style.color = 'var(--text-muted)';
+        empty.style.fontSize = '13px';
+        empty.textContent = 'No notes yet. Type a message and save it with PIN 2557.';
+        messages.appendChild(empty);
+        return;
+      }
+      notes.forEach(note => {
+        const div = document.createElement('div');
+        div.className = 'message';
+        const text = document.createElement('div');
+        text.textContent = note.text;
+        const time = document.createElement('div');
+        time.className = 'message-time';
+        time.textContent = new Date(note.time).toLocaleString();
+        const actions = document.createElement('div');
+        actions.className = 'message-actions';
+        const del = document.createElement('button');
+        del.className = 'delete-btn';
+        del.textContent = 'Delete';
+        del.addEventListener('click', e => {
+          e.preventDefault();
+          openPinModal('delete', note.id);
+        });
+        actions.appendChild(del);
+        div.appendChild(text);
+        div.appendChild(time);
+        div.appendChild(actions);
+        messages.appendChild(div);
+      });
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function updatePinDisplay() {
+      pinDisplay.textContent = '•'.repeat(currentPin.length) || '••••';
+    }
+
+    function openPinModal(action, data) {
+      currentPin = '';
+      pendingAction = { action, data };
+      pinError.textContent = '';
+      updatePinDisplay();
+      pinTitle.textContent = action === 'delete' ? 'Enter PIN to delete' : 'Enter PIN to save';
+      pinModal.classList.add('active');
+    }
+
+    function closePinModal() {
+      pinModal.classList.remove('active');
+      currentPin = '';
+      pendingAction = null;
+    }
+
+    function executeAction() {
+      if (!pendingAction) return;
+      if (pendingAction.action === 'save') {
+        const notes = getNotes();
+        notes.push({ id: generateId(), text: pendingAction.data, time: Date.now() });
+        setNotes(notes);
+        noteInput.value = '';
+        renderNotes();
+      } else if (pendingAction.action === 'delete') {
+        let notes = getNotes();
+        notes = notes.filter(n => n.id !== pendingAction.data);
+        setNotes(notes);
+        renderNotes();
+      }
+      closePinModal();
+    }
+
+    saveBtn.addEventListener('click', () => {
+      const text = noteInput.value.trim();
+      if (!text) return;
+      openPinModal('save', text);
+    });
+
+    noteInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        const text = noteInput.value.trim();
+        if (text) openPinModal('save', text);
+      }
+    });
+
+    pinModal.addEventListener('click', e => {
+      if (e.target === pinModal) closePinModal();
+    });
+
+    document.querySelector('.keypad').addEventListener('click', e => {
+      const key = e.target.dataset.key;
+      if (!key) return;
+      if (key === 'clear') {
+        currentPin = '';
+        pinError.textContent = '';
+      } else if (key === 'back') {
+        currentPin = currentPin.slice(0, -1);
+        pinError.textContent = '';
+      } else if (key === 'confirm') {
+        if (currentPin === CORRECT_PIN) {
+          executeAction();
+        } else {
+          pinError.textContent = 'Incorrect PIN. Try again.';
+          currentPin = '';
+        }
+      } else if (currentPin.length < 4) {
+        currentPin += key;
+        pinError.textContent = '';
+      }
+      updatePinDisplay();
+    });
+
+    async function backupNotes() {
+      const notes = getNotes();
+      const blob = new Blob([JSON.stringify(notes, null, 2)], { type: 'application/json' });
+      const date = new Date().toISOString().slice(0, 10);
+      const suggested = `kahis-notes-backup-${date}.json`;
+      if (window.showSaveFilePicker) {
+        try {
+          const handle = await window.showSaveFilePicker({
+            suggestedName: suggested,
+            types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }]
+          });
+          const writable = await handle.createWritable();
+          await writable.write(blob);
+          await writable.close();
+        } catch (e) {}
+      } else {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = suggested;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+    }
+
+    backupBtn.addEventListener('click', backupNotes);
+
+    importBtn.addEventListener('click', () => importFile.click());
+    importFile.addEventListener('change', importNotes);
+
+    async function importNotes() {
+      const file = importFile.files[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const imported = JSON.parse(text);
+        if (!Array.isArray(imported)) throw new Error('Invalid format');
+        const overwrite = confirm('ต้องการทับ notes เดิมหรือไม่?\nOK = ทับ (overwrite)\nCancel = เพิ่มเข้าไป (append)');
+        if (overwrite) {
+          setNotes(imported);
+        } else {
+          const notes = getNotes().concat(imported);
+          setNotes(notes);
+        }
+        renderNotes();
+      } catch (e) {
+        alert('Import failed: ' + e.message);
+      }
+      importFile.value = '';
+    }
+
+    renderNotes();
+    renderSessions();
+  </script>
+</body>
+</html>

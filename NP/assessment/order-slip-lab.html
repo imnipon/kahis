@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LAB Order Slip</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Sarabun", "Tahoma", sans-serif;
+    background: #e9ecef;
+    padding: 24px;
+    color: #000;
+  }
+  .sheet {
+    background: #fff;
+    width: 100mm;
+    margin: 0 auto;
+    padding: 6mm 7mm;
+    color: #111;
+  }
+
+  /* Header: HN + barcode */
+  .hn-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-bottom: 10px; border-bottom: 2px solid #000;
+  }
+  .hn { font-size: 22px; font-weight: 700; }
+  .barcode {
+    height: 42px; width: 170px;
+    background: repeating-linear-gradient(90deg,
+      #000 0, #000 2px, #fff 2px, #fff 4px,
+      #000 4px, #000 5px, #fff 5px, #fff 8px,
+      #000 8px, #000 11px, #fff 11px, #fff 13px,
+      #000 13px, #000 14px, #fff 14px, #fff 17px);
+  }
+
+  /* Info list */
+  .info { padding: 12px 0; border-bottom: 2px solid #000; }
+  .info .line { display: flex; align-items: baseline; margin-bottom: 12px; font-size: 14px; }
+  .info .line:last-child { margin-bottom: 0; }
+  .info .lbl { width: 130px; color: #222; }
+  .info .val { font-weight: 700; }
+  .owner-line { display: flex; align-items: baseline; justify-content: space-between; }
+  .owner-line .wi { font-size: 20px; font-weight: 700; letter-spacing: 3px; }
+
+  /* Visit row */
+  .visit-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 0; border-bottom: 2px solid #000;
+  }
+  .visit-row .v { font-size: 16px; font-weight: 700; }
+
+  .reg-note { padding: 12px 0 8px; font-size: 16px; font-weight: 700; }
+  .rx-note-text {
+    font-size: 13px; line-height: 1.7; color: #111;
+    padding: 4px 2px; margin-bottom: 16px;
+  }
+  .rx-meta {
+    font-size: 13px; line-height: 1.7; color: #111;
+    font-style: italic; padding: 2px 2px 0;
+  }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; font-size: 11px; table-layout: fixed; }
+  table th, table td { border: 1px solid #000; padding: 5px 5px; text-align: left; vertical-align: top; word-wrap: break-word; }
+  table th { font-weight: 600; text-align: center; }
+  .col-no { width: 8%; text-align: center; }
+  .col-item { width: 46%; }
+  .col-qty { width: 16%; text-align: center; }
+  .col-use { width: 30%; }
+  td.col-no { text-align: center; }
+  td.col-qty { text-align: center; }
+  .item-name { font-weight: 700; }
+  .use-detail { line-height: 1.5; }
+
+  /* Register footer */
+  .reg-foot {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px;
+    padding: 14px 0; font-size: 12px; color: #222;
+    border-bottom: 0;
+  }
+
+  .note-label { font-size: 14px; margin: 8px 0 6px; }
+  .note-box { border: 1px solid #000; height: 70px; }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .sheet { width: 100%; }
+  }
+</style>
+</head>
+<body>
+  <div class="sheet">
+
+    <!-- HN + barcode -->
+    <div class="hn-row">
+      <div class="hn">HN : 69003700</div>
+      <div class="barcode"></div>
+    </div>
+
+    <!-- Info -->
+    <div class="info">
+      <div class="line owner-line">
+        <span><span class="lbl">เจ้าของสัตว์ :</span><span class="val">ศักรินทร์ กล้าหาญ</span></span>
+        <span class="wi">WI001</span>
+      </div>
+      <div class="line"><span class="lbl">สิทธิ์ :</span><span class="val"></span></div>
+      <div class="line"><span class="lbl">ชื่อสัตว์เลี้ยง :</span><span class="val">แดง</span></div>
+      <div class="line"><span class="lbl">รายละเอียด :</span><span class="val">แมว / U / DSH</span></div>
+      <div class="line"><span class="lbl">Colour :</span><span class="val">ขาว</span></div>
+      <div class="line"><span class="lbl">Blood Type :</span><span class="val">DEA 1.2</span></div>
+      <div class="line"><span class="lbl">Microchip no :</span><span class="val"></span></div>
+      <div class="line"><span class="lbl">Other no :</span><span class="val"></span></div>
+      <div class="line"><span class="lbl">Weight Regis. :</span><span class="val"></span></div>
+      <div class="line"><span class="lbl">DOB :</span><span class="val">07 Jul 2021 (5Y0M2D)</span></div>
+      <div class="line"><span class="lbl">Patient Status :</span><span class="val">Alive</span></div>
+    </div>
+
+    <!-- Visit -->
+    <div class="visit-row">
+      <span class="v">Visit no. : A260708000003</span>
+      <span class="v">Location :</span>
+    </div>
+
+    <div class="reg-note">LAB Order Note (ORD-LAB-20260700520)</div>
+
+    <div class="rx-meta">DVM นิพนธ์วงศ์ประเสริฐ</div>
+    <div class="rx-meta">Department อายุรกรรมทั่วไป</div>
+    <div class="rx-meta">Eff.date/time: 17Jun2026, 23:45</div>
+
+    <div class="rx-note-text" style="margin-top:14px;">
+      ทดสอบการใส่ note ของ Clinical LAB เช่น แจ้งลักษณะ หรือ type ของตัวอย่าง จำนวนหลอด อาการเบื้องต้น สิ่งที่สงสัย หรือ req. ให้ใครตรวจเป็นพิเศษ
+    </div>
+
+    <!-- Table -->
+    <table>
+      <thead>
+        <tr>
+          <th class="col-no"></th>
+          <th class="col-item">รายการตรวจ</th>
+          <th class="col-qty">จำนวน</th>
+          <th class="col-use">หมวดของรายการ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="col-no">1</td>
+          <td class="col-item"><span class="item-name">Venous Blood Gas (VBG)</span></td>
+          <td class="col-qty">1 test</td>
+          <td class="col-use use-detail">Blood gas</td>
+        </tr>
+        <tr>
+          <td class="col-no">2</td>
+          <td class="col-item"><span class="item-name">CBC (Complete Blood Count)</span></td>
+          <td class="col-qty">1 test</td>
+          <td class="col-use use-detail">Hematology</td>
+        </tr>
+        <tr>
+          <td class="col-no">3</td>
+          <td class="col-item"><span class="item-name">Blood Smear Examination</span></td>
+          <td class="col-qty">1 test</td>
+          <td class="col-use use-detail">Hematology</td>
+        </tr>
+        <tr>
+          <td class="col-no">4</td>
+          <td class="col-item"><span class="item-name">ALT (SGPT)</span></td>
+          <td class="col-qty">1 test</td>
+          <td class="col-use use-detail">Chemistry</td>
+        </tr>
+        <tr>
+          <td class="col-no">5</td>
+          <td class="col-item"><span class="item-name">BUN</span></td>
+          <td class="col-qty">1 test</td>
+          <td class="col-use use-detail">Chemistry</td>
+        </tr>
+        <tr>
+          <td class="col-no">6</td>
+          <td class="col-item"><span class="item-name">Creatinine</span></td>
+          <td class="col-qty">1 test</td>
+          <td class="col-use use-detail">Chemistry</td>
+        </tr>
+        <tr>
+          <td class="col-no">7</td>
+          <td class="col-item"><span class="item-name">Glucose</span></td>
+          <td class="col-qty">1 test</td>
+          <td class="col-use use-detail">Chemistry</td>
+        </tr>
+        <tr>
+          <td class="col-no">8</td>
+          <td class="col-item"><span class="item-name">Urinalysis (UA)</span></td>
+          <td class="col-qty">1 test</td>
+          <td class="col-use use-detail">Urinalysis</td>
+        </tr>
+        <tr>
+          <td class="col-no">9</td>
+          <td class="col-item"><span class="item-name">SNAP FeLV / FIV Combo</span></td>
+          <td class="col-qty">1 test</td>
+          <td class="col-use use-detail">Snap / Test Kit</td>
+        </tr>
+        <tr>
+          <td class="col-no">10</td>
+          <td class="col-item"><span class="item-name">VetScan Preventive Care Profile</span></td>
+          <td class="col-qty">1 test</td>
+          <td class="col-use use-detail">Vet Scan</td>
+        </tr>
+        <tr>
+          <td class="col-no">11</td>
+          <td class="col-item"><span class="item-name">T4 (Total Thyroxine)</span></td>
+          <td class="col-qty">1 test</td>
+          <td class="col-use use-detail">Hormone</td>
+        </tr>
+        <tr>
+          <td class="col-no">12</td>
+          <td class="col-item"><span class="item-name">Cortisol</span></td>
+          <td class="col-qty">1 test</td>
+          <td class="col-use use-detail">Hormone</td>
+        </tr>
+        <tr>
+          <td class="col-no">13</td>
+          <td class="col-item"><span class="item-name">Clinical Lab Profile (ส่งตรวจภายนอก)</span></td>
+          <td class="col-qty">1 test</td>
+          <td class="col-use use-detail">แล็บนอก (Clinical Lab)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Register footer -->
+    <div class="reg-foot">
+      <span>Order LAB date : 08 Jul 2026 15:09:24</span>
+      <span>Print date : 08 Jul 2026 15:43:28</span>
+      <span>Order LAB User : นิพนธ์ วงศ์ประเสริฐ</span>
+      <span>Print user : ศักรินทร์ กล้าหาญ</span>
+    </div>
+
+    <div class="note-label">NOTE</div>
+    <div class="note-box"></div>
+
+  </div>
+</body>
+</html>

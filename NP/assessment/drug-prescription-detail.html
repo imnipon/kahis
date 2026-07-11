@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drug Prescription Detail</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Sarabun", "Segoe UI", "Tahoma", sans-serif;
+    background: #f3f4f8;
+    color: #1f2937;
+    padding: 24px;
+  }
+
+  .board {
+    display: grid;
+    grid-template-columns: 240px 300px 1fr;
+    gap: 18px;
+    max-width: 1180px;
+    margin: 0 auto;
+    align-items: start;
+  }
+
+  .panel {
+    background: #fff;
+    border: 1px solid #eceef3;
+    border-radius: 14px;
+    box-shadow: 0 8px 30px rgba(17, 24, 39, .06);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .panel-head {
+    display: flex; align-items: center; gap: 8px;
+    padding: 16px 18px;
+    font-size: 15px; font-weight: 700; color: #1e293b;
+    border-bottom: 1px solid #f0f1f5;
+  }
+  .panel-head svg { color: #6366f1; flex: none; }
+  .panel-head .title-text { flex: 1; }
+  .panel-body { padding: 12px; }
+
+  .copy-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #eef2ff; color: #4338ca; border: 1px solid #dfe3f7;
+    padding: 6px 11px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    font-family: inherit; cursor: pointer;
+  }
+  .copy-btn:hover { background: #e0e7ff; }
+
+  /* Category list */
+  .cat-item {
+    padding: 12px 14px; border-radius: 10px; cursor: pointer;
+    border: 1px solid transparent; margin-bottom: 6px;
+  }
+  .cat-item:hover { background: #f6f7fb; }
+  .cat-item.active { background: #eef2ff; border-color: #dfe3f7; }
+  .cat-item .cat-name { font-size: 14px; font-weight: 600; color: #1e293b; }
+  .cat-item .cat-count { font-size: 12px; color: #8a93a5; margin-top: 3px; }
+
+  /* Item list */
+  .list-item {
+    padding: 12px 14px; border-radius: 10px; cursor: pointer;
+    border: 1px solid #eef0f4; margin-bottom: 8px;
+  }
+  .list-item:hover { background: #f6f7fb; }
+  .list-item.active { background: #eef2ff; border-color: #c7d0f7; }
+  .list-item .li-name { font-size: 14px; font-weight: 600; color: #1e293b; line-height: 1.4; }
+  .list-item .li-tag { font-size: 12px; color: #8a93a5; margin-top: 4px; }
+  .empty-hint { padding: 24px 14px; text-align: center; color: #9aa2b1; font-size: 13px; }
+
+  .drug-banner {
+    background: #f5f6fd;
+    border: 1px solid #e7e9f8;
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 24px;
+  }
+  .drug-banner .lbl { font-size: 14px; color: #6b7280; margin-bottom: 6px; }
+  .drug-banner .name { font-size: 18px; font-weight: 700; color: #312e81; }
+  .drug-banner .tag {
+    display: inline-block; margin-top: 8px; font-size: 12px; font-weight: 600;
+    padding: 3px 10px; border-radius: 999px;
+  }
+  .tag.med { background: #e0e7ff; color: #3730a3; }
+  .tag.fluid { background: #dcfce7; color: #166534; }
+  .tag.proc { background: #fef3c7; color: #92400e; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 26px;
+  }
+  #detailBody .empty-detail {
+    padding: 60px 20px; text-align: center; color: #9aa2b1; font-size: 14px;
+  }
+
+  .field label {
+    display: block;
+    font-size: 14px;
+    color: #7c8698;
+    margin-bottom: 8px;
+  }
+  .field.full { grid-column: 1 / -1; }
+
+  .control {
+    width: 100%;
+    height: 46px;
+    border: 1px solid #d9dee7;
+    border-radius: 10px;
+    background: #fff;
+    padding: 0 14px;
+    font-size: 15px;
+    font-family: inherit;
+    color: #1f2937;
+  }
+  textarea.control {
+    height: auto;
+    padding: 12px 14px;
+    line-height: 1.6;
+    resize: none;
+    overflow: hidden;
+  }
+  select.control {
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 38px;
+  }
+  .control:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,.12); }
+  .control:disabled { background: #f4f5f7; color: #9aa2b1; cursor: not-allowed; }
+
+  .dose-row { display: flex; gap: 12px; }
+  .dose-row .amt { flex: 1; text-align: center; }
+  .dose-row .unit { flex: 1.1; }
+
+  /* Copy modal */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45);
+    z-index: 1000; align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: #fff; border-radius: 12px; width: 560px; max-width: 92vw;
+    max-height: 82vh; display: flex; flex-direction: column;
+    box-shadow: 0 20px 50px rgba(0,0,0,.25);
+  }
+  .modal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px; border-bottom: 1px solid #eee;
+  }
+  .modal-head h3 { font-size: 16px; font-weight: 600; color: #333; }
+  .modal-close { background: none; border: none; font-size: 20px; color: #9ca3af; cursor: pointer; line-height: 1; }
+  .modal-body { padding: 18px 20px; overflow-y: auto; }
+  .modal-body textarea {
+    width: 100%; min-height: 260px; resize: vertical;
+    border: 1px solid #d0d5dd; border-radius: 8px; padding: 12px;
+    font-size: 13px; line-height: 1.6; font-family: inherit; color: #333;
+  }
+  .modal-foot { display: flex; justify-content: flex-end; gap: 10px; padding: 14px 20px; border-top: 1px solid #eee; }
+  .btn-copy-do { background: #4338ca; color: #fff; border: none; padding: 9px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .btn-cancel { background: #fff; border: 1px solid #d0d5dd; color: #444; padding: 9px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .copied-toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: #16a34a; color: #fff; padding: 10px 18px; border-radius: 8px;
+    font-size: 13px; opacity: 0; transition: opacity .25s; z-index: 1100; pointer-events: none;
+  }
+  .copied-toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+  <div class="board">
+    <!-- Block 1: Categories -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="title-text">หมวดหมู่ (Categories)</span>
+      </div>
+      <div class="panel-body" id="catList"></div>
+    </div>
+
+    <!-- Block 2: Items in category -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="title-text">รายการ (Items)</span>
+      </div>
+      <div class="panel-body" id="itemList">
+        <div class="empty-hint">เลือกหมวดหมู่ทางซ้าย</div>
+      </div>
+    </div>
+
+    <!-- Block 3: Detail form -->
+    <div class="panel">
+      <div class="panel-head">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
+        <span class="title-text">วิธีการสั่งใช้ยา/หัตถการ <span class="en">(DRUG/PROCEDURE PRESCRIPTION DETAIL)</span></span>
+        <button class="copy-btn" onclick="openCopyModal()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy
+        </button>
+      </div>
+      <div class="panel-body" id="detailBody">
+        <div id="detailEmpty" class="empty-detail">เลือกรายการเพื่อแสดงรายละเอียด</div>
+
+        <div id="detailForm" style="display:none;">
+          <div class="drug-banner">
+            <div class="lbl">กำลังตั้งค่ารายการ:</div>
+            <div class="name" id="drugName"></div>
+            <span class="tag med" id="drugTag"></span>
+          </div>
+
+          <div class="grid">
+            <div class="field">
+              <label>วิธีการให้ยา (Route)</label>
+              <select class="control" id="routeSelect">
+                <option value=""></option>
+                <option>ฉีดเข้าใต้ผิวหนัง (SC)</option>
+                <option>ฉีดเข้ากล้ามเนื้อ (IM)</option>
+                <option>ฉีดเข้าหลอดเลือดดำ (IV push)</option>
+                <option>ฉีดเข้าหลอดเลือดดำแบบหยด (IV drip)</option>
+                <option>ฉีดเข้าช่องท้อง (IP)</option>
+                <option>ให้ทางสายให้อาหาร/ท่อ (per tube)</option>
+                <option>ป้อนยาทางปาก (Oral)</option>
+                <option>หยอดตา (Eye)</option>
+                <option>หยอดหู (Ear)</option>
+                <option>ทาภายนอก (Topical)</option>
+                <option>พ่น/ดมทางเดินหายใจ (Inhalation)</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>ปริมาณที่ให้ (Dose)</label>
+              <div class="dose-row">
+                <input class="control amt" type="text" id="doseAmt">
+                <select class="control unit" id="doseUnit">
+                  <option value=""></option>
+                  <option>ซีซี (CC)</option>
+                  <option>มิลลิลิตร (ml)</option>
+                  <option>มิลลิกรัม (mg)</option>
+                  <option>เม็ด (Tablet)</option>
+                  <option>แคปซูล (Capsule)</option>
+                  <option>หยด (Drop)</option>
+                  <option>ลิตร/นาที (LPM)</option>
+                  <option>ยูนิต (Unit)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field full">
+              <label>ความถี่ในการให้ยา / อัตราการให้ (Frequency / Rate)</label>
+              <select class="control" id="freqSelect">
+                <option value=""></option>
+                <option>วันละ 1 ครั้ง (SID)</option>
+                <option>วันละ 2 ครั้ง (BID)</option>
+                <option>วันละ 3 ครั้ง (TID)</option>
+                <option>วันเว้นวัน (EOD)</option>
+                <option>ทุก 8 ชั่วโมง</option>
+                <option>ทุก 12 ชั่วโมง</option>
+                <option>ทุก 24 ชั่วโมง</option>
+                <option>ครั้งเดียว (Single dose)</option>
+                <option>ตามอาการ (PRN)</option>
+                <option>ให้ต่อเนื่อง (Continuous / CRI)</option>
+                <option>40 ml/hr (minidrip)</option>
+                <option>60 ml/hr (minidrip)</option>
+                <option>80 ml/hr (minidrip)</option>
+                <option>100 ml/hr (macrodrip)</option>
+                <option>120 ml/hr (macrodrip)</option>
+              </select>
+            </div>
+
+            <div class="field full">
+              <label>รายละเอียดการสั่งยาและหัตถการ (Note)</label>
+              <textarea class="control" id="noteBox"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var ITEMS = {
+      predni: {
+        name: "Prednisolone acetate injection (25 mg/ml) (Predni-Ject)",
+        kind: "med", tag: "ยาฉีด (Injection)",
+        route: "ฉีดเข้าใต้ผิวหนัง (SC)", amt: "0.4", unit: "ซีซี (CC)",
+        freq: "วันละ 1 ครั้ง (SID)",
+        note: "- เขย่าขวดก่อนฉีด เก็บในตู้เย็น 2-8°C ห้ามแช่แข็ง\n- ฉีดเข้าใต้ผิวหนังบริเวณสะบัก คลึงเบา ๆ หลังฉีด\n- ห้ามหยุดยาเอง ให้ค่อย ๆ ลดขนาดยา (tapering) ตามที่สัตวแพทย์สั่ง\n- สังเกตอาการกินน้ำ/ปัสสาวะมากผิดปกติ หากพบแจ้งสัตวแพทย์"
+      },
+      enro: {
+        name: "Enrofloxacin injection (25 mg/ml) (Baytril)",
+        kind: "med", tag: "ยาฉีด (Injection)",
+        route: "ฉีดเข้าใต้ผิวหนัง (SC)", amt: "0.5", unit: "ซีซี (CC)",
+        freq: "วันละ 1 ครั้ง (SID)",
+        note: "- ฉีดเข้าใต้ผิวหนัง อาจระคายเคืองเฉพาะที่ ให้คลึงเบา ๆ หลังฉีด\n- ห้ามใช้ในสัตว์อายุน้อยที่กำลังเจริญเติบโต (ผลต่อกระดูกอ่อน)\n- ให้ครบ course ตามที่สัตวแพทย์สั่ง ห้ามหยุดยาเอง\n- เก็บพ้นแสง อุณหภูมิห้อง"
+      },
+      maropitant: {
+        name: "Maropitant injection (10 mg/ml) (Cerenia)",
+        kind: "med", tag: "ยาฉีด (Injection)",
+        route: "ฉีดเข้าใต้ผิวหนัง (SC)", amt: "0.5", unit: "ซีซี (CC)",
+        freq: "วันละ 1 ครั้ง (SID)",
+        note: "- ยาแก้อาเจียน ให้ฉีดใต้ผิวหนัง แนะนำเก็บยาในตู้เย็น 2-8°C เพื่อลดอาการเจ็บขณะฉีด\n- ให้ติดต่อกันไม่เกิน 5 วัน\n- สังเกตอาการซึม/เบื่ออาหาร หากไม่ดีขึ้นภายใน 1-2 วัน แจ้งสัตวแพทย์"
+      },
+      nss: {
+        name: "0.9% Sodium Chloride (NSS) 500 ml",
+        kind: "fluid", tag: "สารน้ำ / IV Fluid",
+        route: "ฉีดเข้าหลอดเลือดดำแบบหยด (IV drip)", amt: "350", unit: "มิลลิลิตร (ml)",
+        freq: "60 ml/hr (minidrip)",
+        note: "- ให้ NSS จากขวด 500 ml เฉพาะปริมาณ 350 ml (ไม่ต้องให้หมดขวด) IV drip อัตรา 60 ml/hr\n- ใช้ชุดให้สารน้ำ minidrip (60 drops/ml) → ปรับหยด = 60 หยด/นาที (≈ 1 หยด/วินาที)\n- เฝ้าระวังอาการบวมน้ำ หายใจเร็ว/ลำบาก หรือบวมบริเวณที่แทงเข็ม\n- ตรวจตำแหน่งเข็มและปริมาณคงเหลือทุก 1 ชั่วโมง บันทึกลงใบ monitor\n- ระบุวันที่/เวลาเริ่มให้ และผู้ให้บนฉลากขวดทุกครั้ง"
+      },
+      lrs: {
+        name: "Lactated Ringer's Solution (LRS) 500 ml",
+        kind: "fluid", tag: "สารน้ำ / IV Fluid",
+        route: "ฉีดเข้าหลอดเลือดดำแบบหยด (IV drip)", amt: "400", unit: "มิลลิลิตร (ml)",
+        freq: "80 ml/hr (minidrip)",
+        note: "- ให้ LRS 400 ml จากขวด 500 ml (ไม่ให้หมดขวด) IV drip อัตรา 80 ml/hr\n- เป็นสารน้ำ balanced electrolyte เหมาะกับภาวะขาดน้ำ/shock\n- minidrip (60 drops/ml) → 80 หยด/นาที\n- เฝ้าระวังภาวะน้ำเกิน โดยเฉพาะสัตว์โรคหัวใจ/ไต ตรวจทุก 1 ชั่วโมง\n- ระบุวันที่/เวลาเริ่มให้ และผู้ให้บนฉลากขวด"
+      },
+      d5w: {
+        name: "5% Dextrose in Water (D5W) 500 ml",
+        kind: "fluid", tag: "สารน้ำ / IV Fluid",
+        route: "ฉีดเข้าหลอดเลือดดำแบบหยด (IV drip)", amt: "250", unit: "มิลลิลิตร (ml)",
+        freq: "40 ml/hr (minidrip)",
+        note: "- ให้ D5W 250 ml จากขวด 500 ml (ไม่ให้หมดขวด) IV drip อัตรา 40 ml/hr\n- ใช้ในภาวะน้ำตาลในเลือดต่ำ (hypoglycemia)\n- ตรวจระดับน้ำตาลในเลือดซ้ำหลังให้ และเฝ้าระวังตำแหน่งเข็ม (dextrose ระคายหลอดเลือด)\n- minidrip (60 drops/ml) → 40 หยด/นาที\n- ระบุวันที่/เวลาเริ่มให้ และผู้ให้บนฉลากขวด"
+      },
+      acetar: {
+        name: "Acetar / Balanced electrolyte 500 ml",
+        kind: "fluid", tag: "สารน้ำ / IV Fluid",
+        route: "ฉีดเข้าหลอดเลือดดำแบบหยด (IV drip)", amt: "300", unit: "มิลลิลิตร (ml)",
+        freq: "60 ml/hr (minidrip)",
+        note: "- ให้ Acetar 300 ml จากขวด 500 ml (ไม่ให้หมดขวด) IV drip อัตรา 60 ml/hr\n- สารน้ำ balanced มี acetate เหมาะกับภาวะ metabolic acidosis\n- minidrip (60 drops/ml) → 60 หยด/นาที (≈ 1 หยด/วินาที)\n- เฝ้าระวังภาวะน้ำเกิน ตรวจทุก 1 ชั่วโมง บันทึกลงใบ monitor"
+      },
+      hetastarch: {
+        name: "Hetastarch 6% (Colloid) 500 ml",
+        kind: "fluid", tag: "สารน้ำ / IV Fluid",
+        route: "ฉีดเข้าหลอดเลือดดำแบบหยด (IV drip)", amt: "100", unit: "มิลลิลิตร (ml)",
+        freq: "ให้ต่อเนื่อง (Continuous / CRI)",
+        note: "- ให้ Hetastarch 100 ml (colloid) IV แบบช้า ๆ ตามที่สัตวแพทย์กำหนด\n- ใช้ในภาวะ albumin ต่ำ / shock ที่ต้องการเพิ่ม oncotic pressure\n- ให้ผ่าน infusion pump ควบคุมอัตรา ห้ามให้เร็วเกินไป (เสี่ยงน้ำเกิน)\n- เฝ้าระวังปฏิกิริยาแพ้ และภาวะเลือดออกผิดปกติ\n- ระบุวันที่/เวลาเริ่มให้ และผู้ให้บนฉลากขวด"
+      },
+      blood: {
+        name: "Whole Blood Transfusion (PRC/WB)",
+        kind: "fluid", tag: "สารน้ำ / IV Fluid",
+        route: "ฉีดเข้าหลอดเลือดดำแบบหยด (IV drip)", amt: "60", unit: "มิลลิลิตร (ml)",
+        freq: "ให้ต่อเนื่อง (Continuous / CRI)",
+        note: "- ตรวจ crossmatch/blood type ให้เข้ากันก่อนทุกครั้ง\n- ให้ผ่านชุดให้เลือดที่มี filter เท่านั้น ห้ามผสมยา/สารน้ำอื่นในสายเดียวกัน\n- เริ่มอัตราช้า ๆ ใน 15-30 นาทีแรก (0.5-1 ml/kg/hr) แล้วค่อยเพิ่มหากไม่มีปฏิกิริยา\n- เฝ้าระวัง transfusion reaction: ไข้ อาเจียน หายใจลำบาก บวมหน้า — หยุดทันทีเมื่อพบ\n- ให้เลือดหมดถุงภายใน 4 ชั่วโมง ระบุเวลาเริ่ม-สิ้นสุดและผู้ให้"
+      },
+      oxygen: {
+        name: "Oxygen Therapy (ดมออกซิเจน)",
+        kind: "fluid", tag: "สารน้ำ / IV Fluid",
+        route: "พ่น/ดมทางเดินหายใจ (Inhalation)", amt: "2", unit: "ลิตร/นาที (LPM)",
+        freq: "ให้ต่อเนื่อง (Continuous / CRI)",
+        note: "- ให้ออกซิเจนแบบ oxygen cage / mask / nasal อัตรา 2 ลิตร/นาที (ปรับตามอาการ)\n- ใช้ออกซิเจนผ่าน humidifier เพื่อลดการระคายทางเดินหายใจ\n- เฝ้าระวังอัตราการหายใจ สีเยื่อเมือก และค่า SpO2 ให้ > 95%\n- หลีกเลี่ยงประกายไฟ/ความร้อนใกล้จุดจ่ายออกซิเจน\n- บันทึกเวลาเริ่ม-หยุด และอาการสัตว์ป่วยเป็นระยะ"
+      },
+      wound: {
+        name: "หัตถการ: ทำแผล (Wound Dressing)",
+        kind: "proc", tag: "หัตถการ (Procedure)",
+        route: "", amt: "", unit: "", freq: "",
+        note: "- ทำความสะอาดแผลด้วย 0.9% NSS ล้างเศษสิ่งสกปรกออกให้หมด\n- ฟอกรอบแผลด้วย povid-iodine (เจือจาง) หรือ chlorhexidine\n- ตัดแต่งเนื้อตาย (debride) เท่าที่จำเป็น ห้ามเลือดหากมี\n- ปิดแผลด้วยผ้าก๊อซชุบยาปฏิชีวนะ/gel และพันด้วย secondary dressing\n- นัดทำแผลซ้ำทุก 1-2 วัน สังเกตอาการบวมแดง มีหนอง หรือกลิ่นผิดปกติ\n- ใส่ Elizabethan collar กันเลียแผล"
+      },
+      ucath: {
+        name: "หัตถการ: สวนปัสสาวะ (Urinary Catheterization)",
+        kind: "proc", tag: "หัตถการ (Procedure)",
+        route: "", amt: "", unit: "", freq: "",
+        note: "- เลือกขนาดสาย urinary catheter ให้เหมาะกับสัตว์ ใช้เทคนิคปลอดเชื้อ (aseptic)\n- หล่อลื่นปลายสายด้วย sterile lubricant ค่อย ๆ สอดเข้าท่อปัสสาวะ\n- ต่อถุงเก็บปัสสาวะแบบปิด (closed system) วัดปริมาณ urine output ทุก 4-6 ชั่วโมง\n- ยึดสายกันหลุด ทำความสะอาดรอบอวัยวะเพศวันละ 2 ครั้ง\n- เฝ้าระวังการติดเชื้อทางเดินปัสสาวะ ปัสสาวะขุ่น/มีเลือด และถอดสายเมื่อไม่จำเป็น"
+      },
+      enema: {
+        name: "หัตถการ: สวนล้างลำไส้ (Enema)",
+        kind: "proc", tag: "หัตถการ (Procedure)",
+        route: "", amt: "", unit: "", freq: "",
+        note: "- ใช้ warm 0.9% NSS หรือน้ำอุ่น ค่อย ๆ สวนผ่านทวารหนักด้วยสายที่หล่อลื่น\n- ปริมาณ ~5-10 ml/kg ให้ช้า ๆ ห้ามใช้แรงดันสูง\n- ห้ามใช้ phosphate enema ในแมวและสัตว์เล็ก (เสี่ยงเกลือแร่ผิดปกติ)\n- นวดหน้าท้องเบา ๆ ช่วยการขับถ่าย สังเกตอุจจาระที่ออก\n- เฝ้าระวังอาการเบ่ง เจ็บ หรือมีเลือดออก"
+      }
+    };
+
+    var CATEGORIES = [
+      { id: 'inj', name: 'ยาฉีด (Injection)', items: ['predni','enro','maropitant'] },
+      { id: 'fluid', name: 'สารน้ำ / IV Fluid', items: ['nss','lrs','d5w','acetar','hetastarch','blood','oxygen'] },
+      { id: 'proc', name: 'หัตถการ (Procedure)', items: ['wound','ucath','enema'] }
+    ];
+
+    var currentCat = null;
+    var currentItem = null;
+
+    function renderCategories() {
+      var box = document.getElementById('catList');
+      box.innerHTML = '';
+      CATEGORIES.forEach(function (c) {
+        var div = document.createElement('div');
+        div.className = 'cat-item' + (c.id === currentCat ? ' active' : '');
+        div.innerHTML = '<div class="cat-name">' + c.name + '</div>' +
+                        '<div class="cat-count">' + c.items.length + ' รายการ</div>';
+        div.onclick = function () { selectCategory(c.id); };
+        box.appendChild(div);
+      });
+    }
+
+    function selectCategory(id) {
+      currentCat = id;
+      renderCategories();
+      renderItems();
+    }
+
+    function renderItems() {
+      var box = document.getElementById('itemList');
+      box.innerHTML = '';
+      var cat = CATEGORIES.filter(function (c) { return c.id === currentCat; })[0];
+      if (!cat) { box.innerHTML = '<div class="empty-hint">เลือกหมวดหมู่ทางซ้าย</div>'; return; }
+      cat.items.forEach(function (key) {
+        var it = ITEMS[key];
+        var div = document.createElement('div');
+        div.className = 'list-item' + (key === currentItem ? ' active' : '');
+        div.innerHTML = '<div class="li-name">' + it.name + '</div>' +
+                        '<div class="li-tag">' + it.tag + '</div>';
+        div.onclick = function () { selectItem(key); };
+        box.appendChild(div);
+      });
+    }
+
+    function selectItem(key) {
+      currentItem = key;
+      renderItems();
+      applyItem(key);
+    }
+
+    function applyItem(key) {
+      var it = ITEMS[key];
+      if (!it) return;
+
+      document.getElementById('detailEmpty').style.display = 'none';
+      document.getElementById('detailForm').style.display = 'block';
+
+      document.getElementById('drugName').textContent = it.name;
+
+      var tag = document.getElementById('drugTag');
+      tag.textContent = it.tag;
+      tag.className = 'tag ' + it.kind;
+
+      var route = document.getElementById('routeSelect');
+      var amt = document.getElementById('doseAmt');
+      var unit = document.getElementById('doseUnit');
+      var freq = document.getElementById('freqSelect');
+
+      route.value = it.route;
+      amt.value = it.amt;
+      unit.value = it.unit;
+      freq.value = it.freq;
+      var note = document.getElementById('noteBox');
+      note.value = it.note;
+      autoGrow(note);
+
+      var isProc = it.kind === 'proc';
+      route.disabled = isProc;
+      amt.disabled = isProc;
+      unit.disabled = isProc;
+      freq.disabled = isProc;
+    }
+
+    function autoGrow(el) {
+      el.style.height = 'auto';
+      el.style.height = (el.scrollHeight + 2) + 'px';
+    }
+
+    function buildPlainText() {
+      var order = ['predni','enro','maropitant','nss','lrs','d5w','acetar','hetastarch','blood','oxygen','wound','ucath','enema'];
+      var blocks = [];
+      order.forEach(function (key, i) {
+        var it = ITEMS[key];
+        if (!it) return;
+        var lines = [];
+        lines.push((i + 1) + '. ' + it.name);
+        if (it.kind !== 'proc') {
+          lines.push('   วิธีการให้ยา (Route): ' + (it.route || '-'));
+          lines.push('   ปริมาณที่ให้ (Dose): ' + (it.amt ? it.amt + ' ' + it.unit : '-'));
+          lines.push('   ความถี่/อัตราการให้ (Frequency/Rate): ' + (it.freq || '-'));
+        }
+        lines.push('   รายละเอียดการสั่งยาและหัตถการ (Note):');
+        lines.push(it.note.replace(/^/gm, '   '));
+        blocks.push(lines.join('\n'));
+      });
+      return blocks.join('\n\n');
+    }
+
+    function openCopyModal() {
+      document.getElementById('copyText').value = buildPlainText();
+      document.getElementById('copyOverlay').classList.add('open');
+    }
+    function closeCopyModal() {
+      document.getElementById('copyOverlay').classList.remove('open');
+    }
+    function overlayClick(e) {
+      if (e.target === document.getElementById('copyOverlay')) closeCopyModal();
+    }
+    function showToast() {
+      var t = document.getElementById('copiedToast');
+      t.classList.add('show');
+      setTimeout(function () { t.classList.remove('show'); }, 1600);
+    }
+    function copyToClipboard() {
+      var ta = document.getElementById('copyText');
+      var text = ta.value;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(showToast, function () { fallbackCopy(ta); });
+      } else {
+        fallbackCopy(ta);
+      }
+    }
+    function fallbackCopy(ta) {
+      ta.removeAttribute('readonly');
+      ta.select();
+      try { document.execCommand('copy'); showToast(); } catch (e) {}
+      ta.setAttribute('readonly', '');
+      window.getSelection().removeAllRanges();
+    }
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeCopyModal();
+    });
+
+    renderCategories();
+    selectCategory('inj');
+  </script>
+
+  <!-- Copy modal -->
+  <div class="modal-overlay" id="copyOverlay" onclick="overlayClick(event)">
+    <div class="modal">
+      <div class="modal-head">
+        <h3>Copy รายละเอียดการสั่งยา/หัตถการ</h3>
+        <button class="modal-close" onclick="closeCopyModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <textarea id="copyText" readonly></textarea>
+      </div>
+      <div class="modal-foot">
+        <button class="btn-cancel" onclick="closeCopyModal()">Close</button>
+        <button class="btn-copy-do" onclick="copyToClipboard()">Copy to clipboard</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="copied-toast" id="copiedToast">Copied to clipboard</div>
+</body>
+</html>
