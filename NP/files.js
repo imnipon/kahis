@@ -5,19 +5,26 @@ const filesTree = [
     "path": "resource",
     "children": [
       {
-        "name": "image_avatar_poodle.jpg",
-        "type": "file",
-        "path": "resource/image_avatar_poodle.jpg"
-      },
-      {
-        "name": "image_avatar_poodle.webp",
-        "type": "file",
-        "path": "resource/image_avatar_poodle.webp"
-      },
-      {
-        "name": "image_avatar_poodle_square2.jpg",
-        "type": "file",
-        "path": "resource/image_avatar_poodle_square2.jpg"
+        "name": "img",
+        "type": "folder",
+        "path": "resource/img",
+        "children": [
+          {
+            "name": "image_avatar_poodle.jpg",
+            "type": "file",
+            "path": "resource/img/image_avatar_poodle.jpg"
+          },
+          {
+            "name": "image_avatar_poodle.webp",
+            "type": "file",
+            "path": "resource/img/image_avatar_poodle.webp"
+          },
+          {
+            "name": "image_avatar_poodle_square2.jpg",
+            "type": "file",
+            "path": "resource/img/image_avatar_poodle_square2.jpg"
+          }
+        ]
       },
       {
         "name": "landing-page.png",
@@ -28,6 +35,11 @@ const filesTree = [
         "name": "resource_subj-editor.jpg",
         "type": "file",
         "path": "resource/resource_subj-editor.jpg"
+      },
+      {
+        "name": "subjective_hight.png",
+        "type": "file",
+        "path": "resource/subjective_hight.png"
       }
     ]
   },
@@ -112,7 +124,7 @@ const filesTree = [
             "name": "subject.html",
             "type": "file",
             "path": "NP/subjective/subject.html",
-            "lastUpdate": "2026-07-11T10:05:25.468715"
+            "lastUpdate": "2026-07-11T10:23:18.490144"
           }
         ]
       }
