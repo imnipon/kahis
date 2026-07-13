@@ -9,4 +9,6 @@ const assessmentFiles = [
   { title: "Order Slip Lab", file: "NP/assessment/order-slip-lab.html", lastUpdate: "2026-07-08T19:21:38.893409" },
   { title: "Order Slip Rx", file: "NP/assessment/order-slip-rx.html", lastUpdate: "2026-07-08T17:30:21.286094" },
   { title: "Search HN", file: "NP/assessment/search-hn.html", lastUpdate: "2026-07-08T11:08:11.343821" },
+  { title: "Subject Editor", file: "NP/subjective/subject.html", lastUpdate: "2026-07-13T10:00:00.000000" },
+  { title: "Module Map", file: "NP/subjective/module-map.md", lastUpdate: "2026-07-13T10:00:00.000000" },
 ];

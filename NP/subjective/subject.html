@@ -284,7 +284,7 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      gap: 20px;
+      gap: 12px;
       margin-top: 16px;
     }
 
@@ -295,6 +295,8 @@
       color: var(--text-muted);
       font-size: 13px;
       cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
       white-space: nowrap;
       margin-top: 8px;
     }
@@ -308,30 +310,37 @@
 
     .dropdowns {
       display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
+      gap: 6px;
+      flex-wrap: nowrap;
     }
 
     .dropdown-group {
       border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px;
-      min-width: 220px;
+      border-radius: 6px;
+      padding: 4px 6px;
+      min-width: 0;
+      flex: 1;
       background: var(--bg-elevated);
+    }
+    .dropdown-group.wide {
+      flex: 3;
+    }
+    .dropdown-group.medium {
+      flex: 2.5;
     }
 
     .dropdown-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 13px;
-      margin-bottom: 8px;
+      font-size: 11px;
+      margin-bottom: 4px;
       color: var(--text);
     }
 
     .icon-btn {
-      width: 22px;
-      height: 22px;
+      width: 18px;
+      height: 18px;
       background: transparent;
       border: 1px solid var(--border-light);
       color: var(--text-muted);
@@ -340,7 +349,7 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 12px;
       line-height: 1;
       padding: 0;
     }
@@ -355,14 +364,35 @@
       background: var(--bg-elevated);
       color: var(--text);
       border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 8px 10px;
-      font-size: 13px;
+      border-radius: 4px;
+      padding: 5px 6px;
+      font-size: 12px;
       cursor: pointer;
       outline: none;
     }
 
     .dropdown-group select:focus {
+      border-color: var(--border-light);
+    }
+
+    .combined-selects {
+      display: flex;
+      gap: 4px;
+    }
+
+    .combined-selects select {
+      flex: 1;
+      background: var(--bg-elevated);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 5px 6px;
+      font-size: 12px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .combined-selects select:focus {
       border-color: var(--border-light);
     }
 
@@ -636,19 +666,33 @@
     }
     .sel-row.active .num { background: #4338ca; color: #fff; }
     .sel-row .pname { font-size: 13px; font-weight: 500; color: #1e293b; flex: 1; }
-    .sel-row .sel-row-badges { display: flex; gap: 4px; flex-wrap: wrap; padding-left: 30px; }
+    .sel-row .sel-row-badges { display: flex; gap: 4px; flex-wrap: wrap; padding-left: 30px; align-items: center; }
+    .sel-row .last-update { margin-left: auto; font-size: 10px; color: #9ca3af; white-space: nowrap; }
     .sel-row .ptype {
       font-size: 9px; padding: 1px 7px; border-radius: 999px; font-weight: 600;
       white-space: nowrap;
     }
-    .ptype.dx { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+    .ptype.sign { background: #e0f2fe; color: #075985; border: 1px solid #bae6fd; }
+    .ptype.dx { background: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
     .ptype.ddx { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
-    .ptype.prob { background: #ede9fe; color: #5b21b6; border: 1px solid #ddd6fe; }
-    .ptype.ro { background: #fce7f3; color: #9d174d; border: 1px solid #fbcfe8; }
-    .ptype.status-active { background: #ccfbf1; color: #115e59; border: 1px solid #99f6e4; }
+    .ptype.ro { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+    .ptype.status-active { background: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
     .ptype.status-pending { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
-    .ptype.status-resolved { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
-    .ptype.status-chronic { background: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
+    .ptype.status-resolved { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+    .ptype.status-follow { background: #e0f2fe; color: #075985; border: 1px solid #bae6fd; }
+    .ptype.status-chronic { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+    .ptype.prog-good { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+    .ptype.prog-guarded { background: #e0f2fe; color: #075985; border: 1px solid #bae6fd; }
+    .ptype.prog-poor { background: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
+    .ptype.prog-grave { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+    .ptype.prob { background: #ede9fe; color: #5b21b6; border: 1px solid #ddd6fe; }
+    .ptype.finding { background: #ede9fe; color: #5b21b6; border: 1px solid #ddd6fe; }
+    .ptype.disorder { background: #fce7f3; color: #9d174d; border: 1px solid #fbcfe8; }
+
+    .tbl-badge {
+      font-size: 11px; padding: 2px 8px; border-radius: 999px; font-weight: 600;
+      white-space: nowrap; display: inline-block;
+    }
     .sel-row .ic { color: #6b7280; font-size: 14px; cursor: pointer; border: none; background: none; padding: 2px; }
     .sel-row .ic:hover { color: #2563eb; }
     .sel-row .x { color: #9ca3af; font-size: 14px; cursor: pointer; border: none; background: none; }
@@ -968,8 +1012,8 @@
           <div class="editor-panel-head"><span>Problem/Diagnosis List</span></div>
           <div class="editor-panel-body">
             <input class="search" type="text" placeholder="🔍 Search problem / diagnosis...">
-            <div class="item"><div class="t">Acute Gastroenteritis</div><div class="s">SNOMED: 77400004</div><div class="s">Problem</div></div>
-            <div class="item"><div class="t">Chronic Gastroenteritis</div><div class="s">SNOMED: 23592003</div><div class="s">Problem</div></div>
+            <div class="item"><div class="t">Acute Gastroenteritis</div><div class="s">SNOMED: 77400004</div><div class="s">Finding</div></div>
+            <div class="item"><div class="t">Chronic Gastroenteritis</div><div class="s">SNOMED: 23592003</div><div class="s">Finding</div></div>
             <div class="item"><div class="t">Dehydration (moderate)</div><div class="s">SNOMED: 34025006</div><div class="s">Disorder</div></div>
             <div class="item active"><div class="t">Pancreatitis</div><div class="s">SNOMED: 75694006</div><div class="s">Disorder</div></div>
             <div class="item"><div class="t">Foreign Body Ingestion</div><div class="s">SNOMED: 28254003</div><div class="s">Disorder</div></div>
@@ -984,21 +1028,21 @@
             <div class="sel-list">
               <div class="sel-row">
                 <div class="sel-row-top"><div class="num">1</div><div class="pname">Acute Gastroenteritis</div><button class="ic">✎</button><button class="x">✕</button></div>
-                <div class="sel-row-badges"><span class="ptype prob">Problem</span><span class="ptype prob">Clinical Sign</span><span class="ptype status-active">Active</span></div>
+                <div class="sel-row-badges"><span class="ptype finding">Finding</span><span class="ptype sign">Sign</span><span class="ptype status-active">Active</span><span class="last-update">09/07/26 08:00</span></div>
               </div>
               <div class="sel-row">
                 <div class="sel-row-top"><div class="num">2</div><div class="pname">Dehydration (moderate)</div><button class="ic">✎</button><button class="x">✕</button></div>
-                <div class="sel-row-badges"><span class="ptype ddx">Disorder</span><span class="ptype prob">Clinical Sign</span><span class="ptype status-resolved">Resolved</span></div>
+                <div class="sel-row-badges"><span class="ptype disorder">Disorder</span><span class="ptype sign">Sign</span><span class="ptype status-resolved">Resolved/Inactive</span><span class="last-update">09/07/26 08:13</span></div>
               </div>
             </div>
             <div class="detail-banner"><div class="detail-banner-top"><div><div class="lbl">ยังไม่บันทึก</div><div class="name">Pancreatitis</div><span class="tag" style="background:#f3f4f6;color:#9ca3af;">- ยังไม่บันทึก</span></div><button class="btn-new-record">+ New Record</button></div></div>
             <div class="detail-grid">
-              <div class="field"><label>ประเภทปัญหา (Problem Type) <span class="req">*</span></label><select class="ctrl" id="tab1-problem-type" onchange="togglePrognosis()"><option value="" disabled selected>— เลือก —</option><option>Clinical Sign</option><option>Working Diagnosis (dx)</option><option>Differential Diagnosis (ddx)</option><option>Rule Out (R/O)</option><option>Resolved / Inactive</option><option>Recurrent</option></select></div>
-              <div class="field"><label>พยากรณ์โรค (Prognosis)</label><select class="ctrl" id="tab1-prognosis" disabled style="background:#f9fafb;color:#9ca3af;"><option value="" disabled selected>— เลือก —</option><option>Good — ตอบสนองการรักษาดี</option><option>Guarded — ต้องเฝ้าระวัง</option><option>Poor — ความคืบหน้าไม่แน่นอน</option><option>Grave — อาการรุนแรงมาก</option></select></div>
-              <div class="field"><label>สถานะ (Status) <span class="req">*</span></label><select class="ctrl"><option value="" disabled selected>— เลือก —</option><option>Active — กำลังรักษา</option><option>Pending — รอผลตรวจ</option><option>Resolved — หายแล้ว</option><option>Chronic — โรคเรื้อรัง</option></select></div>
-              <div class="field"><label>ความรุนแรง (Severity)</label><select class="ctrl"><option value="" disabled selected>— เลือก —</option><option>Mild — อาการเล็กน้อย</option><option>Moderate — ปานกลาง</option><option>Severe — รุนแรง</option><option>Life-threatening — เสี่ยงอันตรายถึงชีวิต</option></select></div>
+              <div class="field"><label>ประเภทปัญหา (Problem Type)</label><select class="ctrl" id="tab1-problem-type" onchange="togglePrognosis()"><option value="" disabled selected>— เลือก —</option><option>Clinical Sign (Sign)</option><option>Working Diagnosis (Dx)</option><option>Differential Diagnosis (DDx)</option><option>Rule Out (R/O)</option></select></div>
+              <div class="field"><label>พยากรณ์โรค (Prognosis)</label><select class="ctrl" id="tab1-prognosis" disabled style="background:#f9fafb;color:#9ca3af;"><option value="" disabled selected>— เลือก —</option><option>ตอบสนองการรักษาดี (Good)</option><option>ต้องเฝ้าระวัง (Guarded)</option><option>ความคืบหน้าไม่แน่นอน (Poor)</option><option>อาการรุนแรงมาก (Grave)</option></select></div>
+              <div class="field"><label>สถานะ (Status)</label><select class="ctrl"><option value="" disabled selected>— เลือก —</option><option>กำลังรักษา (Active)</option><option>รอผลการตรวจ (Pending)</option><option>หาย/สงบ (Resolved/Inactive)</option><option>ต่อเนื่อง (Follow)</option><option>เรื้อรัง (Chronic)</option></select></div>
+              <div class="field"><label>ความรุนแรง (Severity)</label><select class="ctrl"><option value="" disabled selected>— เลือก —</option><option>อาการเล็กน้อย (Mild)</option><option>ปานกลาง (Moderate)</option><option>รุนแรง (Severe)</option><option>เสี่ยงอันตรายถึงชีวิต (Life-threatening)</option></select></div>
               <div class="field"><label>ประเมินเวลา (Expected Duration)</label><input class="ctrl" type="text" value="1-3 วัน"></div>
-              <div class="field"><label>ระดับความมั่นใจ (Confidence)</label><select class="ctrl"><option value="" disabled selected>— เลือก —</option><option>High — มีหลักฐานสนับสนุนชัดเจน</option><option>Medium — มีหลักฐานบางส่วน</option><option>Low — เป็นไปได้แต่ยังไม่ยืนยัน</option></select></div>
+              <div class="field"><label>ระดับความมั่นใจ (Confidence)</label><select class="ctrl"><option value="" disabled selected>— เลือก —</option><option>มีหลักฐานสนับสนุนชัดเจน (High)</option><option>มีหลักฐานบางส่วน (Medium)</option><option>เป็นไปได้แต่ยังไม่ยืนยัน (Low)</option></select></div>
               <div class="field full"><label>การยืนยัน (Confirmatory Findings)</label><textarea class="ctrl">Vcheck cPL > 900 ng/ml</textarea></div>
               <div class="field full"><label>เหตุผลทางคลินิก (Clinical Reasoning)</label><textarea class="ctrl">สัตว์มีประวัติอาเจียนซ้ำๆ ซึม ท้องเสีย 2 วัน ตรวจพบ dehydration ปานกลาง ปวดท้องบริเวณ cranial abdomen ผล Vcheck cPL > 900 ng/ml สูงผิดปกติ สอดคล้องกับ pancreatitis แม้จะต้องตัด foreign body และ gastroenteritis ออก แต่ cPL ที่สูงมากชี้นำไปที่ pancreatic inflammation เป็นสาเหตุหลัก</textarea></div>
               <div class="field full"><label>หมายเหตุรายการ (Problem Note)</label><textarea class="ctrl">เริ่มให้ IV fluid และ antiemetic งดอาหารปานกลาง รอผล CBC/Chem และ ultrasound abdomen เพื่อประเมินความรุนแรงของ pancreatic inflammation และตัดสินใจเรื่อง pain management เพิ่มเติม</textarea></div>
@@ -1014,7 +1058,7 @@
             <div class="form-group"><label>Department</label><div class="meta-readonly">คลินิกพิเศษ โรคหัวใจ (นอกเวลา)</div></div>
             <hr class="meta-divider">
             <div class="meta-section-label">Assessment Note</div>
-            <div class="form-group"><label>สรุปการประเมิน (Assessment Summary) <span class="req">*</span></label><textarea>สัตว์มีอาการอาเจียน ซึม ท้องเสีย 2 วัน ตรวจพบ dehydration ปานกลาง ปวดท้อง cranial abdomen ผล Vcheck cPL > 900 ng/ml ยืนยันการวินิจฉัย Pancreatitis เป็นสาเหตุหลัก พร้อม DDx ได้แก่ Acute Gastroenteritis และ Foreign Body Ingestion แนะนำให้น้ำเกลือแร่ ยาต้านอาเจียน งดอาหาร รอผล CBC/Chem และ ultrasound เพื่อประเมินความรุนแรงเพิ่มเติม</textarea></div>
+            <div class="form-group"><label>สรุปการประเมิน (Assessment Summary)</label><textarea>สัตว์มีอาการอาเจียน ซึม ท้องเสีย 2 วัน ตรวจพบ dehydration ปานกลาง ปวดท้อง cranial abdomen ผล Vcheck cPL > 900 ng/ml ยืนยันการวินิจฉัย Pancreatitis เป็นสาเหตุหลัก พร้อม DDx ได้แก่ Acute Gastroenteritis และ Foreign Body Ingestion แนะนำให้น้ำเกลือแร่ ยาต้านอาเจียน งดอาหาร รอผล CBC/Chem และ ultrasound เพื่อประเมินความรุนแรงเพิ่มเติม</textarea></div>
           </div>
         </div>
       </div>
@@ -1042,8 +1086,8 @@
           <div class="editor-panel-head"><span>Problem/Diagnosis List</span></div>
           <div class="editor-panel-body">
             <input class="search" type="text" placeholder="🔍 Search problem / diagnosis...">
-            <div class="item"><div class="t">Heart Murmur</div><div class="s">SNOMED: 79604008</div><div class="s">Problem</div></div>
-            <div class="item"><div class="t">Arrhythmia</div><div class="s">SNOMED: 69896004</div><div class="s">Problem</div></div>
+            <div class="item"><div class="t">Heart Murmur</div><div class="s">SNOMED: 79604008</div><div class="s">Finding</div></div>
+            <div class="item"><div class="t">Arrhythmia</div><div class="s">SNOMED: 69896004</div><div class="s">Finding</div></div>
             <div class="item active"><div class="t">Congestive Heart Failure</div><div class="s">SNOMED: 42343007</div><div class="s">Disorder</div></div>
             <div class="item"><div class="t">Mitral Valve Disease</div><div class="s">SNOMED: 79619009</div><div class="s">Disorder</div></div>
             <div class="item"><div class="t">Dilated Cardiomyopathy</div><div class="s">SNOMED: 73456007</div><div class="s">Disorder</div></div>
@@ -1057,21 +1101,21 @@
             <div class="sel-list">
               <div class="sel-row">
                 <div class="sel-row-top"><div class="num">1</div><div class="pname">Heart Murmur</div><button class="ic">✎</button><button class="x">✕</button></div>
-                <div class="sel-row-badges"><span class="ptype prob">Problem</span><span class="ptype dx">Working Diagnosis (dx)</span><span class="ptype status-chronic">Chronic</span></div>
+                <div class="sel-row-badges"><span class="ptype finding">Finding</span><span class="ptype dx">Dx</span><span class="ptype status-chronic">Chronic</span><span class="last-update">09/07/26 08:26</span></div>
               </div>
               <div class="sel-row">
                 <div class="sel-row-top"><div class="num">2</div><div class="pname">Arrhythmia</div><button class="ic">✎</button><button class="x">✕</button></div>
-                <div class="sel-row-badges"><span class="ptype prob">Problem</span><span class="ptype prob">Clinical Sign</span><span class="ptype status-active">Active</span></div>
+                <div class="sel-row-badges"><span class="ptype finding">Finding</span><span class="ptype sign">Sign</span><span class="ptype status-active">Active</span><span class="last-update">09/07/26 08:39</span></div>
               </div>
             </div>
             <div class="detail-banner"><div class="detail-banner-top"><div><div class="lbl">ยังไม่บันทึก</div><div class="name">Congestive Heart Failure</div><span class="tag" style="background:#f3f4f6;color:#9ca3af;">- ยังไม่บันทึก</span></div><button class="btn-update">Update</button></div></div>
             <div class="detail-grid">
-              <div class="field"><label>ประเภทปัญหา (Problem Type) <span class="req">*</span></label><select class="ctrl"><option value="" disabled>— เลือก —</option><option>Clinical Sign</option><option selected>Working Diagnosis (dx)</option><option>Differential Diagnosis (ddx)</option><option>Rule Out (R/O)</option></select></div>
-              <div class="field"><label>พยากรณ์โรค (Prognosis)</label><select class="ctrl"><option value="" disabled>— เลือก —</option><option>Good — ตอบสนองการรักษาดี</option><option selected>Guarded — ต้องเฝ้าระวัง</option><option>Poor — ความคืบหน้าไม่แน่นอน</option><option>Grave — อาการรุนแรงมาก</option></select></div>
-              <div class="field"><label>สถานะ (Status) <span class="req">*</span></label><select class="ctrl"><option value="" disabled>— เลือก —</option><option selected>Active — กำลังรักษา</option><option>Pending — รอผลตรวจ</option><option>Resolved — หายแล้ว</option><option>Chronic — โรคเรื้อรัง</option></select></div>
-              <div class="field"><label>ความรุนแรง (Severity)</label><select class="ctrl"><option value="" disabled>— เลือก —</option><option>Mild — อาการเล็กน้อย</option><option selected>Moderate — ปานกลาง</option><option>Severe — รุนแรง</option><option>Life-threatening — เสี่ยงอันตรายถึงชีวิต</option></select></div>
+              <div class="field"><label>ประเภทปัญหา (Problem Type)</label><select class="ctrl"><option value="" disabled>— เลือก —</option><option>Clinical Sign (Sign)</option><option selected>Working Diagnosis (Dx)</option><option>Differential Diagnosis (DDx)</option><option>Rule Out (R/O)</option></select></div>
+              <div class="field"><label>พยากรณ์โรค (Prognosis)</label><select class="ctrl"><option value="" disabled>— เลือก —</option><option>ตอบสนองการรักษาดี (Good)</option><option selected>ต้องเฝ้าระวัง (Guarded)</option><option>ความคืบหน้าไม่แน่นอน (Poor)</option><option>อาการรุนแรงมาก (Grave)</option></select></div>
+              <div class="field"><label>สถานะ (Status)</label><select class="ctrl"><option value="" disabled>— เลือก —</option><option selected>กำลังรักษา (Active)</option><option>รอผลการตรวจ (Pending)</option><option>หาย/สงบ (Resolved/Inactive)</option><option>ต่อเนื่อง (Follow)</option><option>เรื้อรัง (Chronic)</option></select></div>
+              <div class="field"><label>ความรุนแรง (Severity)</label><select class="ctrl"><option value="" disabled>— เลือก —</option><option>อาการเล็กน้อย (Mild)</option><option selected>ปานกลาง (Moderate)</option><option>รุนแรง (Severe)</option><option>เสี่ยงอันตรายถึงชีวิต (Life-threatening)</option></select></div>
               <div class="field"><label>ประเมินเวลา (Expected Duration)</label><input class="ctrl" type="text" value="ระยะยาว (ตลอดชีวิต)"></div>
-              <div class="field"><label>ระดับความมั่นใจ (Confidence)</label><select class="ctrl"><option value="" disabled>— เลือก —</option><option>High — มีหลักฐานสนับสนุนชัดเจน</option><option selected>Medium — มีหลักฐานบางส่วน</option><option>Low — เป็นไปได้แต่ยังไม่ยืนยัน</option></select></div>
+              <div class="field"><label>ระดับความมั่นใจ (Confidence)</label><select class="ctrl"><option value="" disabled>— เลือก —</option><option>มีหลักฐานสนับสนุนชัดเจน (High)</option><option selected>มีหลักฐานบางส่วน (Medium)</option><option>เป็นไปได้แต่ยังไม่ยืนยัน (Low)</option></select></div>
               <div class="field full"><label>การยืนยัน (Confirmatory Findings)</label><textarea class="ctrl">Echocardiogram: LA enlargement, decreased FS%</textarea></div>
               <div class="field full"><label>เหตุผลทางคลินิก (Clinical Reasoning)</label><textarea class="ctrl">สัตว์มีประวัติไอเรื้อรัง หอบเหนื่อย ตรวจพบ heart murmur grade 4/6 ผล echo พบ LA enlargement และ decreased FS% สอดคล้องกับ CHF จาก mitral valve disease</textarea></div>
               <div class="field full"><label>หมายเหตุรายการ (Problem Note)</label><textarea class="ctrl">เริ่มให้ furosemide และ pimobendan จำกัดการออกกำลัง ติดตาม echo ทุก 3 เดือน</textarea></div>
@@ -1087,7 +1131,7 @@
             <div class="form-group"><label>Department</label><div class="meta-readonly">อายุรกรรมทั่วไป (ในเวลา)</div></div>
             <hr class="meta-divider">
             <div class="meta-section-label">Assessment Note</div>
-            <div class="form-group"><label>สรุปการประเมิน (Assessment Summary) <span class="req">*</span></label><textarea>สัตว์มีอาการไอเรื้อรัง หอบเหนื่อย ตรวจพบ heart murmur grade 4/6 ผล echo พบ LA enlargement และ decreased FS% ยืนยันการวินิจฉัย Congestive Heart Failure จาก mitral valve disease แนะนำให้ furosemide pimobendan จำกัดการออกกำลัง ติดตาม echo ทุก 3 เดือน</textarea></div>
+            <div class="form-group"><label>สรุปการประเมิน (Assessment Summary)</label><textarea>สัตว์มีอาการไอเรื้อรัง หอบเหนื่อย ตรวจพบ heart murmur grade 4/6 ผล echo พบ LA enlargement และ decreased FS% ยืนยันการวินิจฉัย Congestive Heart Failure จาก mitral valve disease แนะนำให้ furosemide pimobendan จำกัดการออกกำลัง ติดตาม echo ทุก 3 เดือน</textarea></div>
           </div>
         </div>
       </div>
@@ -1115,8 +1159,8 @@
           <div class="editor-panel-head"><span>Problem/Diagnosis List</span></div>
           <div class="editor-panel-body">
             <input class="search" type="text" placeholder="🔍 Search problem / diagnosis...">
-            <div class="item"><div class="t">Pneumonia</div><div class="s">SNOMED: 233604007</div><div class="s">Problem</div></div>
-            <div class="item"><div class="t">Bronchitis</div><div class="s">SNOMED: 32398005</div><div class="s">Problem</div></div>
+            <div class="item"><div class="t">Pneumonia</div><div class="s">SNOMED: 233604007</div><div class="s">Finding</div></div>
+            <div class="item"><div class="t">Bronchitis</div><div class="s">SNOMED: 32398005</div><div class="s">Finding</div></div>
             <div class="item active"><div class="t">Pulmonary Edema</div><div class="s">SNOMED: 765730005</div><div class="s">Disorder</div></div>
             <div class="item"><div class="t">Asthma</div><div class="s">SNOMED: 195967001</div><div class="s">Disorder</div></div>
             <div class="item"><div class="t">Pleural Effusion</div><div class="s">SNOMED: 60046008</div><div class="s">Disorder</div></div>
@@ -1128,21 +1172,21 @@
             <div class="sel-list">
               <div class="sel-row">
                 <div class="sel-row-top"><div class="num">1</div><div class="pname">Pneumonia</div><button class="ic">✎</button><button class="x">✕</button></div>
-                <div class="sel-row-badges"><span class="ptype prob">Problem</span><span class="ptype dx">Working Diagnosis (dx)</span><span class="ptype status-active">Active</span></div>
+                <div class="sel-row-badges"><span class="ptype finding">Finding</span><span class="ptype dx">Dx</span><span class="ptype status-active">Active</span><span class="last-update">09/07/26 08:52</span></div>
               </div>
               <div class="sel-row">
                 <div class="sel-row-top"><div class="num">2</div><div class="pname">Bronchitis</div><button class="ic">✎</button><button class="x">✕</button></div>
-                <div class="sel-row-badges"><span class="ptype prob">Problem</span><span class="ptype prob">Clinical Sign</span><span class="ptype status-resolved">Resolved</span></div>
+                <div class="sel-row-badges"><span class="ptype finding">Finding</span><span class="ptype sign">Sign</span><span class="ptype status-resolved">Resolved/Inactive</span><span class="last-update">09/07/26 09:05</span></div>
               </div>
             </div>
             <div class="detail-banner"><div class="detail-banner-top"><div><div class="lbl">ยังไม่บันทึก</div><div class="name">Pulmonary Edema</div><span class="tag" style="background:#f3f4f6;color:#9ca3af;">- ยังไม่บันทึก</span></div></div></div>
             <div class="detail-grid">
-              <div class="field"><label>ประเภทปัญหา (Problem Type) <span class="req">*</span></label><div class="meta-readonly">Differential Diagnosis (ddx)</div></div>
-              <div class="field"><label>พยากรณ์โรค (Prognosis)</label><div class="meta-readonly">Guarded — ต้องเฝ้าระวัง</div></div>
-              <div class="field"><label>สถานะ (Status) <span class="req">*</span></label><div class="meta-readonly">Active — กำลังรักษา</div></div>
-              <div class="field"><label>ความรุนแรง (Severity)</label><div class="meta-readonly">Severe — รุนแรง</div></div>
+              <div class="field"><label>ประเภทปัญหา (Problem Type)</label><div class="meta-readonly"><span class="ptype ddx">DDx</span></div></div>
+              <div class="field"><label>พยากรณ์โรค (Prognosis)</label><div class="meta-readonly"><span class="ptype prog-guarded">Guarded</span></div></div>
+              <div class="field"><label>สถานะ (Status)</label><div class="meta-readonly"><span class="ptype status-active">Active</span></div></div>
+              <div class="field"><label>ความรุนแรง (Severity)</label><div class="meta-readonly">รุนแรง (Severe)</div></div>
               <div class="field"><label>ประเมินเวลา (Expected Duration)</label><div class="meta-readonly">3-7 วัน</div></div>
-              <div class="field"><label>ระดับความมั่นใจ (Confidence)</label><div class="meta-readonly">High — มีหลักฐานสนับสนุนชัดเจน</div></div>
+              <div class="field"><label>ระดับความมั่นใจ (Confidence)</label><div class="meta-readonly">มีหลักฐานสนับสนุนชัดเจน (High)</div></div>
               <div class="field full"><label>การยืนยัน (Confirmatory Findings)</label><div class="meta-readonly full">X-ray: diffuse alveolar pattern</div></div>
               <div class="field full"><label>เหตุผลทางคลินิก (Clinical Reasoning)</label><div class="meta-readonly full">สัตว์มีอาการหอบเหนื่อย ไอ ผล X-ray พบ diffuse alveolar pattern สอดคล้องกับ pulmonary edema</div></div>
               <div class="field full"><label>หมายเหตุรายการ (Problem Note)</label><div class="meta-readonly full">ให้ furosemide IV oxygen therapy ติดตาม X-ray ซ้ำ</div></div>
@@ -1158,7 +1202,7 @@
             <div class="form-group"><label>Department</label><div class="meta-readonly">ภาพวินิจฉัย (นอกเวลา)</div></div>
             <hr class="meta-divider">
             <div class="meta-section-label">Assessment Note</div>
-            <div class="form-group"><label>สรุปการประเมิน (Assessment Summary) <span class="req">*</span></label><div class="meta-readonly full">สัตว์มีอาการหอบเหนื่อย ไอ ผล X-ray พบ diffuse alveolar pattern ยืนยันการวินิจฉัย Pulmonary Edema แนะนำให้ furosemide IV oxygen therapy</div></div>
+            <div class="form-group"><label>สรุปการประเมิน (Assessment Summary)</label><div class="meta-readonly full">สัตว์มีอาการหอบเหนื่อย ไอ ผล X-ray พบ diffuse alveolar pattern ยืนยันการวินิจฉัย Pulmonary Edema แนะนำให้ furosemide IV oxygen therapy</div></div>
           </div>
         </div>
       </div>
@@ -1186,8 +1230,8 @@
           <div class="editor-panel-head"><span>Problem/Diagnosis List</span></div>
           <div class="editor-panel-body">
             <input class="search" type="text" placeholder="🔍 Search problem / diagnosis...">
-            <div class="item"><div class="t">Atopic Dermatitis</div><div class="s">SNOMED: 24079001</div><div class="s">Problem</div></div>
-            <div class="item"><div class="t">Flea Allergy Dermatitis</div><div class="s">SNOMED: 418290009</div><div class="s">Problem</div></div>
+            <div class="item"><div class="t">Atopic Dermatitis</div><div class="s">SNOMED: 24079001</div><div class="s">Finding</div></div>
+            <div class="item"><div class="t">Flea Allergy Dermatitis</div><div class="s">SNOMED: 418290009</div><div class="s">Finding</div></div>
             <div class="item active"><div class="t">Pyoderma</div><div class="s">SNOMED: 419828002</div><div class="s">Disorder</div></div>
             <div class="item"><div class="t">Demodicosis</div><div class="s">SNOMED: 72298006</div><div class="s">Disorder</div></div>
             <div class="item"><div class="t">Ringworm</div><div class="s">SNOMED: 40556004</div><div class="s">Disorder</div></div>
@@ -1199,21 +1243,21 @@
             <div class="sel-list">
               <div class="sel-row">
                 <div class="sel-row-top"><div class="num">1</div><div class="pname">Atopic Dermatitis</div><button class="ic">✎</button><button class="x">✕</button></div>
-                <div class="sel-row-badges"><span class="ptype prob">Problem</span><span class="ptype dx">Working Diagnosis (dx)</span><span class="ptype status-chronic">Chronic</span></div>
+                <div class="sel-row-badges"><span class="ptype finding">Finding</span><span class="ptype dx">Dx</span><span class="ptype status-chronic">Chronic</span><span class="last-update">09/07/26 09:18</span></div>
               </div>
               <div class="sel-row">
                 <div class="sel-row-top"><div class="num">2</div><div class="pname">Flea Allergy Dermatitis</div><button class="ic">✎</button><button class="x">✕</button></div>
-                <div class="sel-row-badges"><span class="ptype prob">Problem</span><span class="ptype prob">Clinical Sign</span><span class="ptype status-resolved">Resolved</span></div>
+                <div class="sel-row-badges"><span class="ptype finding">Finding</span><span class="ptype sign">Sign</span><span class="ptype status-resolved">Resolved/Inactive</span><span class="last-update">09/07/26 09:31</span></div>
               </div>
             </div>
             <div class="detail-banner"><div class="detail-banner-top"><div><div class="lbl">ยังไม่บันทึก</div><div class="name">Pyoderma</div><span class="tag" style="background:#f3f4f6;color:#9ca3af;">- ยังไม่บันทึก</span></div></div></div>
             <div class="detail-grid">
-              <div class="field"><label>ประเภทปัญหา (Problem Type) <span class="req">*</span></label><div class="meta-readonly">Working Diagnosis (dx)</div></div>
-              <div class="field"><label>พยากรณ์โรค (Prognosis)</label><div class="meta-readonly">Good — ตอบสนองการรักษาดี</div></div>
-              <div class="field"><label>สถานะ (Status) <span class="req">*</span></label><div class="meta-readonly">Active — กำลังรักษา</div></div>
-              <div class="field"><label>ความรุนแรง (Severity)</label><div class="meta-readonly">Mild — อาการเล็กน้อย</div></div>
+              <div class="field"><label>ประเภทปัญหา (Problem Type)</label><div class="meta-readonly"><span class="ptype dx">Dx</span></div></div>
+              <div class="field"><label>พยากรณ์โรค (Prognosis)</label><div class="meta-readonly"><span class="ptype prog-good">Good</span></div></div>
+              <div class="field"><label>สถานะ (Status)</label><div class="meta-readonly"><span class="ptype status-active">Active</span></div></div>
+              <div class="field"><label>ความรุนแรง (Severity)</label><div class="meta-readonly">อาการเล็กน้อย (Mild)</div></div>
               <div class="field"><label>ประเมินเวลา (Expected Duration)</label><div class="meta-readonly">2-4 สัปดาห์</div></div>
-              <div class="field"><label>ระดับความมั่นใจ (Confidence)</label><div class="meta-readonly">Medium — มีหลักฐานบางส่วน</div></div>
+              <div class="field"><label>ระดับความมั่นใจ (Confidence)</label><div class="meta-readonly">มีหลักฐานบางส่วน (Medium)</div></div>
               <div class="field full"><label>การยืนยัน (Confirmatory Findings)</label><div class="meta-readonly full">Skin scrape: negative for mites, bacterial culture positive</div></div>
               <div class="field full"><label>เหตุผลทางคลินิก (Clinical Reasoning)</label><div class="meta-readonly full">สัตว์มีอาการคันเรื้อรัง ผิวหนังอักเสบ ตรวจพบ pustules และ erythema ผล skin scrape ไม่พบ mites แต่ bacterial culture positive สอดคล้องกับ pyoderma</div></div>
               <div class="field full"><label>หมายเหตุรายการ (Problem Note)</label><div class="meta-readonly full">ให้ antibiotic ตามผล culture และ medicated shampoo ติดตามอาการทุก 2 สัปดาห์</div></div>
@@ -1229,7 +1273,7 @@
             <div class="form-group"><label>Department</label><div class="meta-readonly">อายุรกรรมทั่วไป (ในเวลา)</div></div>
             <hr class="meta-divider">
             <div class="meta-section-label">Assessment Note</div>
-            <div class="form-group"><label>สรุปการประเมิน (Assessment Summary) <span class="req">*</span></label><div class="meta-readonly full">สัตว์มีอาการคันเรื้อรัง ผิวหนังอักเสบ ตรวจพบ pustules ผล bacterial culture positive ยืนยันการวินิจฉัย Pyoderma แนะนำ antibiotic และ medicated shampoo</div></div>
+            <div class="form-group"><label>สรุปการประเมิน (Assessment Summary)</label><div class="meta-readonly full">สัตว์มีอาการคันเรื้อรัง ผิวหนังอักเสบ ตรวจพบ pustules ผล bacterial culture positive ยืนยันการวินิจฉัย Pyoderma แนะนำ antibiotic และ medicated shampoo</div></div>
           </div>
         </div>
       </div>
@@ -1242,9 +1286,9 @@
           <div class="data-table-bar">
             <input type="text" id="tbl-search" placeholder="ค้นหา: problem, confirmatory findings, dvm, department...">
             <select id="tbl-cat"><option value="">Categories: ทั้งหมด</option><option>General</option><option>Gastrointestinal</option><option>Respiratory</option><option>Cardiovascular</option><option>Musculoskeletal</option><option>Dermatology</option><option>Neurology</option><option>Urogenital</option><option>Endocrine</option><option>Ophthalmology</option></select>
-            <select id="tbl-type"><option value="">Type: ทั้งหมด</option><option>dx</option><option>ddx</option><option>R/O</option><option>Problem</option></select>
-            <select id="tbl-status"><option value="">Status: ทั้งหมด</option><option>Active</option><option>Pending</option><option>Resolved</option><option>Chronic</option></select>
-            <select id="tbl-prog"><option value="">Prognosis: ทั้งหมด</option><option>Good</option><option>Guarded</option><option>Poor</option><option>Grave</option></select>
+            <select id="tbl-type"><option value="">Type: ทั้งหมด</option><option>Clinical Sign (Sign)</option><option>Working Diagnosis (Dx)</option><option>Differential Diagnosis (DDx)</option><option>Rule Out (R/O)</option></select>
+            <select id="tbl-status"><option value="">Status: ทั้งหมด</option><option>กำลังรักษา (Active)</option><option>รอผลการตรวจ (Pending)</option><option>หาย/สงบ (Resolved/Inactive)</option><option>ต่อเนื่อง (Follow)</option><option>เรื้อรัง (Chronic)</option></select>
+            <select id="tbl-prog"><option value="">Prognosis: ทั้งหมด</option><option>ตอบสนองการรักษาดี (Good)</option><option>ต้องเฝ้าระวัง (Guarded)</option><option>ความคืบหน้าไม่แน่นอน (Poor)</option><option>อาการรุนแรงมาก (Grave)</option></select>
             <button class="btn-search" onclick="filterTable()">ค้นหา</button>
             <button class="btn-clear" onclick="clearFilter()">ล้างตัวกรอง</button>
           </div>
@@ -1282,12 +1326,12 @@
       <div class="logic-section">
         <div class="logic-section-title">2. Rule ของ Selected Problems/Diagnosis (Detail Grid)</div>
         <ul class="logic-list">
-          <li><b>ประเภทปัญหา (Problem Type)</b> * — บังคับเลือก: dx, ddx, R/O, Clinical Sign, Resolved/Inactive, Recurrent</li>
-          <li><b>พยากรณ์โรค (Prognosis)</b> — ไม่บังคับ (ไม่มี *): Good, Guarded, Poor, Grave</li>
-          <li><b>สถานะ (Status)</b> * — บังคับเลือก: Active, Pending, Resolved, Chronic</li>
-          <li><b>ความรุนแรง (Severity)</b> — ไม่บังคับ: Mild, Moderate, Severe, Life-threatening</li>
+          <li><b>ประเภทปัญหา (Problem Type)</b> — เลือก: Clinical Sign (Sign), Working Diagnosis (Dx), Differential Diagnosis (DDx), Rule Out (R/O)</li>
+          <li><b>พยากรณ์โรค (Prognosis)</b> — ไม่บังคับ: ตอบสนองการรักษาดี (Good), ต้องเฝ้าระวัง (Guarded), ความคืบหน้าไม่แน่นอน (Poor), อาการรุนแรงมาก (Grave) — ไม่แสดงเมื่อเลือก Rule Out (R/O)</li>
+          <li><b>สถานะ (Status)</b> — เลือก: กำลังรักษา (Active), รอผลการตรวจ (Pending), หาย/สงบ (Resolved/Inactive), ต่อเนื่อง (Follow), เรื้อรัง (Chronic)</li>
+          <li><b>ความรุนแรง (Severity)</b> — ไม่บังคับ: อาการเล็กน้อย (Mild), ปานกลาง (Moderate), รุนแรง (Severe), เสี่ยงอันตรายถึงชีวิต (Life-threatening)</li>
           <li><b>ประเมินเวลา (Expected Duration)</b> — ไม่บังคับ: text input</li>
-          <li><b>ระดับความมั่นใจ (Confidence)</b> — ไม่บังคับ: High, Medium, Low</li>
+          <li><b>ระดับความมั่นใจ (Confidence)</b> — ไม่บังคับ: มีหลักฐานสนับสนุนชัดเจน (High), มีหลักฐานบางส่วน (Medium), เป็นไปได้แต่ยังไม่ยืนยัน (Low)</li>
           <li><b>การยืนยัน (Confirmatory Findings)</b> — full width, ไม่บังคับ: textarea</li>
           <li><b>เหตุผลทางคลินิก (Clinical Reasoning)</b> — full width, ไม่บังคับ: textarea</li>
           <li><b>หมายเหตุรายการ (Problem Note)</b> — full width, ไม่บังคับ: textarea</li>
@@ -1374,19 +1418,48 @@
       textarea.style.height = textarea.scrollHeight + 'px';
     }
 
-    function createDropdown(label, placeholder) {
+    function createDropdown(label, placeholder, options, size) {
+      var opts = '';
+      if (options && options.length) {
+        opts = options.map(function(o) {
+          return '<option value="' + o.value + '">' + o.text + '</option>';
+        }).join('');
+      } else {
+        opts = '<option value="1">Option 1</option><option value="2">Option 2</option><option value="3">Option 3</option>';
+      }
+      var sizeClass = size ? ' ' + size : '';
       return `
-        <div class="dropdown-group">
+        <div class="dropdown-group${sizeClass}">
           <div class="dropdown-header">
             <span>${label}</span>
             <button type="button" class="icon-btn" title="Add">+</button>
           </div>
           <select>
-            <option value="" disabled selected>${placeholder}</option>
-            <option value="1">Option 1</option>
-            <option value="2">Option 2</option>
-            <option value="3">Option 3</option>
+            ${placeholder ? '<option value="" disabled selected>' + placeholder + '</option>' : ''}
+            ${opts}
           </select>
+        </div>
+      `;
+    }
+
+    function createCombinedDropdown(label, orderOpts, formOpts, size) {
+      var orderOptsHtml = orderOpts.map(function(o) {
+        return '<option value="' + o.value + '">' + o.text + '</option>';
+      }).join('');
+      var formOptsHtml = formOpts.map(function(o) {
+        return '<option value="' + o.value + '">' + o.text + '</option>';
+      }).join('');
+      var sizeClass = size ? ' ' + size : '';
+      return `
+        <div class="dropdown-group${sizeClass}">
+          <div class="dropdown-header">
+            <span>${label}</span>
+            <button type="button" class="icon-btn" title="Add">+</button>
+          </div>
+          <div class="combined-selects">
+            <select>${orderOptsHtml}</select>
+            <select>${formOptsHtml}</select>
+          </div>
         </div>
       `;
     }
@@ -1426,11 +1499,11 @@
 
 <div class="asm-title">--- Detail Panel (Acute Gastroenteritis — บันทึกแล้ว 09/07/26 08:15) ---</div>
 <span class="asm-label">Problem Type:</span>             Clinical Sign
-<span class="asm-label">Prognosis:</span>                   Good — ตอบสนองการรักษาดี
-<span class="asm-label">Status:</span>                         Active — กำลังรักษา
-<span class="asm-label">Severity:</span>                      Moderate — ปานกลาง
+<span class="asm-label">Prognosis:</span>                   ตอบสนองการรักษาดี (Good)
+<span class="asm-label">Status:</span>                         กำลังรักษา (Active)
+<span class="asm-label">Severity:</span>                      ปานกลาง (Moderate)
 <span class="asm-label">Expected Duration:</span>     3-5 วัน
-<span class="asm-label">Confidence:</span>                High — มีหลักฐานสนับสนุนชัดเจน
+<span class="asm-label">Confidence:</span>                มีหลักฐานสนับสนุนชัดเจน (High)
 <span class="asm-label">Confirmatory Findings:</span>
 <div class="asm-detail">- ประวัติอาเจียนและท้องเสียเฉียบพลัน 2 วัน, physical exam พบ increased bowel sounds, ไม่มี palpable mass หรือ foreign body</div>
 <span class="asm-label">Clinical Reasoning:</span>
@@ -1443,7 +1516,7 @@
 <div class="asm-title">--- Detail Panel (Dehydration (moderate) — บันทึกแล้ว 09/07/26 08:15) ---</div>
 <span class="asm-label">Problem Type:</span>             Clinical Sign
 <span class="asm-label">Prognosis:</span>                   -
-<span class="asm-label">Status:</span>                         Active — กำลังรักษา
+<span class="asm-label">Status:</span>                         กำลังรักษา (Active)
 <span class="asm-label">Severity:</span>                      -
 <span class="asm-label">Expected Duration:</span>     -
 <span class="asm-label">Confidence:</span>                -
@@ -1589,8 +1662,19 @@ ${rxDetailPanels}
               <span>Remarkable</span>
             </label>
             <div class="dropdowns">
-              ${createDropdown('My exam template', 'Select Template')}
-              ${createDropdown('Guideline', 'Select Guideline')}
+              ${createDropdown('My exam template', 'Select Template', null, 'wide')}
+              ${createDropdown('Guideline', 'Select Guideline', null, 'wide')}
+              ${createCombinedDropdown('Order', [
+                { value: 'Tx', text: 'Tx' },
+                { value: 'Rx', text: 'Rx' },
+                { value: 'LAB', text: 'LAB' },
+                { value: 'PATH', text: 'PATH' },
+                { value: 'all', text: 'all' }
+              ], [
+                { value: '1', text: 'แบบที่ 1' },
+                { value: '2', text: 'แบบที่ 2' },
+                { value: '3', text: 'แบบที่ 3' }
+              ], 'medium')}
             </div>
           </div>
         </div>
@@ -1691,9 +1775,9 @@ ${rxDetailPanels}
       var prog = document.getElementById('tab1-prognosis');
       if (!pt || !prog) return;
       var val = pt.value;
-      var active = val === 'Working Diagnosis (dx)' || val === 'Differential Diagnosis (ddx)' || val === 'Clinical Sign';
-      prog.disabled = !active;
-      if (active) {
+      var disabled = val === 'Rule Out (R/O)';
+      prog.disabled = disabled;
+      if (!disabled) {
         prog.style.background = '';
         prog.style.color = '';
       } else {
@@ -1705,75 +1789,75 @@ ${rxDetailPanels}
 
     var tableData = [];
     var problems = [
-      {n:'Pancreatitis', t:'dx', s:'Active', p:'Guarded', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'Vcheck cPL > 900 ng/ml', cat:'Gastrointestinal'},
-      {n:'Acute Gastroenteritis', t:'Problem', s:'Active', p:'Good', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
-      {n:'Dehydration (moderate)', t:'Problem', s:'Resolved', p:'Good', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'Skin tenting, PCV 55%', cat:'General'},
-      {n:'Foreign Body Ingestion', t:'ddx', s:'Resolved', p:'Good', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
-      {n:'Congestive Heart Failure', t:'dx', s:'Chronic', p:'Guarded', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Echocardiogram: LA enlargement, decreased FS%', cat:'Cardiovascular'},
-      {n:'Heart Murmur', t:'Problem', s:'Chronic', p:'Guarded', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'', cat:'Cardiovascular'},
-      {n:'Arrhythmia', t:'Problem', s:'Active', p:'Guarded', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'ECG: atrial fibrillation', cat:'Cardiovascular'},
-      {n:'Mitral Valve Disease', t:'ddx', s:'Chronic', p:'Guarded', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'', cat:'Cardiovascular'},
-      {n:'Pulmonary Edema', t:'dx', s:'Active', p:'Guarded', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'X-ray: diffuse alveolar pattern', cat:'Respiratory'},
-      {n:'Pneumonia', t:'Problem', s:'Active', p:'Guarded', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Respiratory'},
-      {n:'Bronchitis', t:'Problem', s:'Resolved', p:'Good', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'X-ray: bronchial pattern', cat:'Respiratory'},
-      {n:'Pyoderma', t:'dx', s:'Active', p:'Good', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Skin scrape: negative for mites, bacterial culture positive', cat:'Dermatology'},
-      {n:'Atopic Dermatitis', t:'Problem', s:'Chronic', p:'Guarded', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'', cat:'Dermatology'},
-      {n:'Flea Allergy Dermatitis', t:'Problem', s:'Resolved', p:'Good', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Flea comb: positive for fleas and flea dirt', cat:'Dermatology'},
-      {n:'Otitis Externa', t:'dx', s:'Active', p:'Good', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'', cat:'Dermatology'},
-      {n:'Hypothyroidism', t:'dx', s:'Chronic', p:'Good', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'T4 0.8 μg/dL, TSH elevated', cat:'Endocrine'},
-      {n:'Diabetes Mellitus', t:'dx', s:'Chronic', p:'Guarded', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'', cat:'Endocrine'},
-      {n:'Chronic Kidney Disease', t:'dx', s:'Chronic', p:'Guarded', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'BUN 65, Creatinine 3.2, USG 1.012', cat:'Urogenital'},
-      {n:'Urinary Tract Infection', t:'dx', s:'Active', p:'Good', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Urogenital'},
-      {n:'Hepatic Lipidosis', t:'ddx', s:'Pending', p:'Guarded', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'Ultrasound: hyperechoic liver, ALT 280', cat:'Gastrointestinal'},
-      {n:'Fracture (femur)', t:'dx', s:'Active', p:'Guarded', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'', cat:'Musculoskeletal'},
-      {n:'Osteoarthritis', t:'dx', s:'Chronic', p:'Guarded', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'X-ray: joint space narrowing, osteophytes', cat:'Musculoskeletal'},
-      {n:'Seizure Disorder', t:'dx', s:'Chronic', p:'Guarded', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Neurology'},
-      {n:'Intervertebral Disc Disease', t:'ddx', s:'Pending', p:'Guarded', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'MRI: T12-T13 disc compression', cat:'Neurology'},
-      {n:'Conjunctivitis', t:'dx', s:'Resolved', p:'Good', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Ophthalmology'},
-      {n:'Glaucoma', t:'R/O', s:'Pending', p:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'IOP 28 mmHg OD, 14 mmHg OS', cat:'Ophthalmology'},
-      {n:'Anemia', t:'Problem', s:'Active', p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'General'},
-      {n:'Leptospirosis', t:'R/O', s:'Pending', p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'MAT titer 1:800 Leptospira canicola', cat:'General'},
-      {n:'Tick-borne Disease', t:'ddx', s:'Active', p:'Guarded', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'General'},
-      {n:'Dental Disease', t:'Problem', s:'Chronic', p:'Good', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Oral exam: grade 3 periodontal disease', cat:'General'},
-      {n:'Obesity', t:'Problem', s:'Chronic', p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'General'},
-      {n:'Vomiting (chronic)', t:'Problem', s:'Active', p:'Good', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'CBC: eosinophilia, normal chem panel', cat:'Gastrointestinal'},
-      {n:'Diarrhea (acute)', t:'Problem', s:'Resolved', p:'Good', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
-      {n:'Weight Loss', t:'Problem', s:'Active', p:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Body condition score 3/9, muscle loss', cat:'General'},
-      {n:'Lethargy', t:'Problem', s:'Resolved', p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'General'},
-      {n:'Cushing Syndrome', t:'dx', s:'Chronic', p:'Guarded', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'LDDST: cortisol 9.5 μg/dL post-dex', cat:'Endocrine'},
-      {n:'Addison Disease', t:'ddx', s:'Pending', p:'Guarded', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Endocrine'},
-      {n:'Hyperthyroidism', t:'dx', s:'Chronic', p:'Good', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'T4 6.2 μg/dL, free T4 elevated', cat:'Endocrine'},
-      {n:'Mast Cell Tumor', t:'dx', s:'Active', p:'Poor', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Dermatology'},
-      {n:'Lymphoma', t:'dx', s:'Active', p:'Grave', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'LN aspirate: large lymphoid blasts, Ki67 high', cat:'General'},
-      {n:'Hemorrhagic Gastroenteritis', t:'dx', s:'Resolved', p:'Good', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
-      {n:'Portosystemic Shunt', t:'R/O', s:'Pending', p:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Bile acids 120 μmol/L, ammonia elevated', cat:'Gastrointestinal'},
-      {n:'Gastric Dilatation-Volvulus', t:'dx', s:'Resolved', p:'Guarded', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
-      {n:'Esophagitis', t:'ddx', s:'Active', p:'Good', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Endoscopy: esophageal erosion', cat:'Gastrointestinal'},
-      {n:'Colitis', t:'dx', s:'Chronic', p:'Good', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
-      {n:'Pancreatic Insufficiency', t:'dx', s:'Chronic', p:'Good', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'TLI 1.2 μg/L (low), B12 180 ng/L', cat:'Gastrointestinal'},
-      {n:'Rhinitis', t:'Problem', s:'Resolved', p:'Good', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Respiratory'},
-      {n:'Nasal Tumor', t:'R/O', s:'Pending', p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'CT: nasal mass, biopsy pending', cat:'Respiratory'},
-      {n:'Corneal Ulcer', t:'dx', s:'Active', p:'Good', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Ophthalmology'},
-      {n:'Uveitis', t:'ddx', s:'Active', p:'Guarded', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Slit lamp: flare and cells in anterior chamber', cat:'Ophthalmology'},
-      {n:'Hypoadrenocorticism', t:'R/O', s:'Pending', p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Endocrine'},
-      {n:'Prostatitis', t:'dx', s:'Active', p:'Good', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Urinalysis: bacteria, WBC 50+/hpf', cat:'Urogenital'},
-      {n:'Pyometra', t:'dx', s:'Resolved', p:'Good', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Urogenital'}
+      {n:'Pancreatitis', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', p:'ต้องเฝ้าระวัง (Guarded)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'Vcheck cPL > 900 ng/ml', cat:'Gastrointestinal'},
+      {n:'Acute Gastroenteritis', t:'Clinical Sign (Sign)', s:'กำลังรักษา (Active)', p:'ตอบสนองการรักษาดี (Good)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
+      {n:'Dehydration (moderate)', t:'Clinical Sign (Sign)', s:'หาย/สงบ (Resolved/Inactive)', p:'ตอบสนองการรักษาดี (Good)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'Skin tenting, PCV 55%', cat:'General'},
+      {n:'Foreign Body Ingestion', t:'Differential Diagnosis (DDx)', s:'หาย/สงบ (Resolved/Inactive)', p:'ตอบสนองการรักษาดี (Good)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
+      {n:'Congestive Heart Failure', t:'Working Diagnosis (Dx)', s:'เรื้อรัง (Chronic)', p:'ต้องเฝ้าระวัง (Guarded)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Echocardiogram: LA enlargement, decreased FS%', cat:'Cardiovascular'},
+      {n:'Heart Murmur', t:'Clinical Sign (Sign)', s:'เรื้อรัง (Chronic)', p:'ต้องเฝ้าระวัง (Guarded)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'', cat:'Cardiovascular'},
+      {n:'Arrhythmia', t:'Clinical Sign (Sign)', s:'กำลังรักษา (Active)', p:'ต้องเฝ้าระวัง (Guarded)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'ECG: atrial fibrillation', cat:'Cardiovascular'},
+      {n:'Mitral Valve Disease', t:'Differential Diagnosis (DDx)', s:'เรื้อรัง (Chronic)', p:'ต้องเฝ้าระวัง (Guarded)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'', cat:'Cardiovascular'},
+      {n:'Pulmonary Edema', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', p:'ต้องเฝ้าระวัง (Guarded)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'X-ray: diffuse alveolar pattern', cat:'Respiratory'},
+      {n:'Pneumonia', t:'Clinical Sign (Sign)', s:'กำลังรักษา (Active)', p:'ต้องเฝ้าระวัง (Guarded)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Respiratory'},
+      {n:'Bronchitis', t:'Clinical Sign (Sign)', s:'หาย/สงบ (Resolved/Inactive)', p:'ตอบสนองการรักษาดี (Good)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'X-ray: bronchial pattern', cat:'Respiratory'},
+      {n:'Pyoderma', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', p:'ตอบสนองการรักษาดี (Good)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Skin scrape: negative for mites, bacterial culture positive', cat:'Dermatology'},
+      {n:'Atopic Dermatitis', t:'Clinical Sign (Sign)', s:'เรื้อรัง (Chronic)', p:'ต้องเฝ้าระวัง (Guarded)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'', cat:'Dermatology'},
+      {n:'Flea Allergy Dermatitis', t:'Clinical Sign (Sign)', s:'หาย/สงบ (Resolved/Inactive)', p:'ตอบสนองการรักษาดี (Good)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Flea comb: positive for fleas and flea dirt', cat:'Dermatology'},
+      {n:'Otitis Externa', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', p:'ตอบสนองการรักษาดี (Good)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'', cat:'Dermatology'},
+      {n:'Hypothyroidism', t:'Working Diagnosis (Dx)', s:'เรื้อรัง (Chronic)', p:'ตอบสนองการรักษาดี (Good)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'T4 0.8 μg/dL, TSH elevated', cat:'Endocrine'},
+      {n:'Diabetes Mellitus', t:'Working Diagnosis (Dx)', s:'เรื้อรัง (Chronic)', p:'ต้องเฝ้าระวัง (Guarded)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'', cat:'Endocrine'},
+      {n:'Chronic Kidney Disease', t:'Working Diagnosis (Dx)', s:'เรื้อรัง (Chronic)', p:'ต้องเฝ้าระวัง (Guarded)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'BUN 65, Creatinine 3.2, USG 1.012', cat:'Urogenital'},
+      {n:'Urinary Tract Infection', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', p:'ตอบสนองการรักษาดี (Good)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Urogenital'},
+      {n:'Hepatic Lipidosis', t:'Differential Diagnosis (DDx)', s:'รอผลการตรวจ (Pending)', p:'ต้องเฝ้าระวัง (Guarded)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'Ultrasound: hyperechoic liver, ALT 280', cat:'Gastrointestinal'},
+      {n:'Fracture (femur)', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', p:'ต้องเฝ้าระวัง (Guarded)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'', cat:'Musculoskeletal'},
+      {n:'Osteoarthritis', t:'Working Diagnosis (Dx)', s:'เรื้อรัง (Chronic)', p:'ต้องเฝ้าระวัง (Guarded)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'X-ray: joint space narrowing, osteophytes', cat:'Musculoskeletal'},
+      {n:'Seizure Disorder', t:'Working Diagnosis (Dx)', s:'เรื้อรัง (Chronic)', p:'ต้องเฝ้าระวัง (Guarded)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Neurology'},
+      {n:'Intervertebral Disc Disease', t:'Differential Diagnosis (DDx)', s:'รอผลการตรวจ (Pending)', p:'ต้องเฝ้าระวัง (Guarded)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'MRI: T12-T13 disc compression', cat:'Neurology'},
+      {n:'Conjunctivitis', t:'Working Diagnosis (Dx)', s:'หาย/สงบ (Resolved/Inactive)', p:'ตอบสนองการรักษาดี (Good)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Ophthalmology'},
+      {n:'Glaucoma', t:'Rule Out (R/O)', s:'รอผลการตรวจ (Pending)', p:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'IOP 28 mmHg OD, 14 mmHg OS', cat:'Ophthalmology'},
+      {n:'Anemia', t:'Clinical Sign (Sign)', s:'กำลังรักษา (Active)', p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'General'},
+      {n:'Leptospirosis', t:'Rule Out (R/O)', s:'รอผลการตรวจ (Pending)', p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'MAT titer 1:800 Leptospira canicola', cat:'General'},
+      {n:'Tick-borne Disease', t:'Differential Diagnosis (DDx)', s:'กำลังรักษา (Active)', p:'ต้องเฝ้าระวัง (Guarded)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'General'},
+      {n:'Dental Disease', t:'Clinical Sign (Sign)', s:'เรื้อรัง (Chronic)', p:'ตอบสนองการรักษาดี (Good)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Oral exam: grade 3 periodontal disease', cat:'General'},
+      {n:'Obesity', t:'Clinical Sign (Sign)', s:'เรื้อรัง (Chronic)', p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'General'},
+      {n:'Vomiting (chronic)', t:'Clinical Sign (Sign)', s:'กำลังรักษา (Active)', p:'ตอบสนองการรักษาดี (Good)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'CBC: eosinophilia, normal chem panel', cat:'Gastrointestinal'},
+      {n:'Diarrhea (acute)', t:'Clinical Sign (Sign)', s:'หาย/สงบ (Resolved/Inactive)', p:'ตอบสนองการรักษาดี (Good)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
+      {n:'Weight Loss', t:'Clinical Sign (Sign)', s:'กำลังรักษา (Active)', p:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Body condition score 3/9, muscle loss', cat:'General'},
+      {n:'Lethargy', t:'Clinical Sign (Sign)', s:'หาย/สงบ (Resolved/Inactive)', p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'General'},
+      {n:'Cushing Syndrome', t:'Working Diagnosis (Dx)', s:'เรื้อรัง (Chronic)', p:'ต้องเฝ้าระวัง (Guarded)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'LDDST: cortisol 9.5 μg/dL post-dex', cat:'Endocrine'},
+      {n:'Addison Disease', t:'Differential Diagnosis (DDx)', s:'รอผลการตรวจ (Pending)', p:'ต้องเฝ้าระวัง (Guarded)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Endocrine'},
+      {n:'Hyperthyroidism', t:'Working Diagnosis (Dx)', s:'เรื้อรัง (Chronic)', p:'ตอบสนองการรักษาดี (Good)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'T4 6.2 μg/dL, free T4 elevated', cat:'Endocrine'},
+      {n:'Mast Cell Tumor', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', p:'ความคืบหน้าไม่แน่นอน (Poor)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Dermatology'},
+      {n:'Lymphoma', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', p:'อาการรุนแรงมาก (Grave)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'LN aspirate: large lymphoid blasts, Ki67 high', cat:'General'},
+      {n:'Hemorrhagic Gastroenteritis', t:'Working Diagnosis (Dx)', s:'หาย/สงบ (Resolved/Inactive)', p:'ตอบสนองการรักษาดี (Good)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
+      {n:'Portosystemic Shunt', t:'Rule Out (R/O)', s:'รอผลการตรวจ (Pending)', p:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Bile acids 120 μmol/L, ammonia elevated', cat:'Gastrointestinal'},
+      {n:'Gastric Dilatation-Volvulus', t:'Working Diagnosis (Dx)', s:'หาย/สงบ (Resolved/Inactive)', p:'ต้องเฝ้าระวัง (Guarded)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
+      {n:'Esophagitis', t:'Differential Diagnosis (DDx)', s:'กำลังรักษา (Active)', p:'ตอบสนองการรักษาดี (Good)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Endoscopy: esophageal erosion', cat:'Gastrointestinal'},
+      {n:'Colitis', t:'Working Diagnosis (Dx)', s:'เรื้อรัง (Chronic)', p:'ตอบสนองการรักษาดี (Good)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
+      {n:'Pancreatic Insufficiency', t:'Working Diagnosis (Dx)', s:'เรื้อรัง (Chronic)', p:'ตอบสนองการรักษาดี (Good)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'TLI 1.2 μg/L (low), B12 180 ng/L', cat:'Gastrointestinal'},
+      {n:'Rhinitis', t:'Clinical Sign (Sign)', s:'หาย/สงบ (Resolved/Inactive)', p:'ตอบสนองการรักษาดี (Good)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Respiratory'},
+      {n:'Nasal Tumor', t:'Rule Out (R/O)', s:'รอผลการตรวจ (Pending)', p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'CT: nasal mass, biopsy pending', cat:'Respiratory'},
+      {n:'Corneal Ulcer', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', p:'ตอบสนองการรักษาดี (Good)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Ophthalmology'},
+      {n:'Uveitis', t:'Differential Diagnosis (DDx)', s:'กำลังรักษา (Active)', p:'ต้องเฝ้าระวัง (Guarded)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Slit lamp: flare and cells in anterior chamber', cat:'Ophthalmology'},
+      {n:'Hypoadrenocorticism', t:'Rule Out (R/O)', s:'รอผลการตรวจ (Pending)', p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Endocrine'},
+      {n:'Prostatitis', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', p:'ตอบสนองการรักษาดี (Good)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Urinalysis: bacteria, WBC 50+/hpf', cat:'Urogenital'},
+      {n:'Pyometra', t:'Working Diagnosis (Dx)', s:'หาย/สงบ (Resolved/Inactive)', p:'ตอบสนองการรักษาดี (Good)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Urogenital'}
     ];
 
     var tabProblems = [
-      {n:'Pancreatitis', t:'dx', s:'Active', p:'Guarded', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'Vcheck cPL > 900 ng/ml', cat:'Gastrointestinal'},
-      {n:'Dehydration (moderate)', t:'Problem', s:'Resolved', p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'Skin tenting, PCV 55%', cat:'General'},
-      {n:'Acute Gastroenteritis', t:'Problem', s:'Active', p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
-      {n:'Foreign Body Ingestion', t:'ddx', s:'Resolved', p:'Good', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
-      {n:'Heart Murmur', t:'dx', s:'Chronic', p:'Guarded', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Auscultation: grade 4/6 left apical systolic murmur', cat:'Cardiovascular'},
-      {n:'Arrhythmia', t:'Problem', s:'Active', p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'ECG: irregular rhythm, VPCs', cat:'Cardiovascular'},
-      {n:'Congestive Heart Failure', t:'dx', s:'Chronic', p:'Guarded', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Echocardiogram: LA enlargement, decreased FS%', cat:'Cardiovascular'},
-      {n:'Pneumonia', t:'dx', s:'Active', p:'Guarded', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'X-ray: alveolar pattern right cranial lobe', cat:'Respiratory'},
-      {n:'Bronchitis', t:'Problem', s:'Resolved', p:'', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'X-ray: bronchial pattern', cat:'Respiratory'},
-      {n:'Pulmonary Edema', t:'dx', s:'Active', p:'Guarded', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'X-ray: diffuse alveolar pattern', cat:'Respiratory'},
-      {n:'Atopic Dermatitis', t:'dx', s:'Chronic', p:'Guarded', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Intradermal test: positive for dust mites, pollen', cat:'Dermatology'},
-      {n:'Flea Allergy Dermatitis', t:'Problem', s:'Resolved', p:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Flea comb: positive for fleas and flea dirt', cat:'Dermatology'},
-      {n:'Pyoderma', t:'dx', s:'Active', p:'Good', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Skin scrape: negative for mites, bacterial culture positive', cat:'Dermatology'}
+      {n:'Pancreatitis', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', p:'ต้องเฝ้าระวัง (Guarded)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'Vcheck cPL > 900 ng/ml', cat:'Gastrointestinal'},
+      {n:'Dehydration (moderate)', t:'Clinical Sign (Sign)', s:'หาย/สงบ (Resolved/Inactive)', p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'Skin tenting, PCV 55%', cat:'General'},
+      {n:'Acute Gastroenteritis', t:'Clinical Sign (Sign)', s:'กำลังรักษา (Active)', p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
+      {n:'Foreign Body Ingestion', t:'Differential Diagnosis (DDx)', s:'หาย/สงบ (Resolved/Inactive)', p:'ตอบสนองการรักษาดี (Good)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
+      {n:'Heart Murmur', t:'Working Diagnosis (Dx)', s:'เรื้อรัง (Chronic)', p:'ต้องเฝ้าระวัง (Guarded)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Auscultation: grade 4/6 left apical systolic murmur', cat:'Cardiovascular'},
+      {n:'Arrhythmia', t:'Clinical Sign (Sign)', s:'กำลังรักษา (Active)', p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'ECG: irregular rhythm, VPCs', cat:'Cardiovascular'},
+      {n:'Congestive Heart Failure', t:'Working Diagnosis (Dx)', s:'เรื้อรัง (Chronic)', p:'ต้องเฝ้าระวัง (Guarded)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Echocardiogram: LA enlargement, decreased FS%', cat:'Cardiovascular'},
+      {n:'Pneumonia', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', p:'ต้องเฝ้าระวัง (Guarded)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'X-ray: alveolar pattern right cranial lobe', cat:'Respiratory'},
+      {n:'Bronchitis', t:'Clinical Sign (Sign)', s:'หาย/สงบ (Resolved/Inactive)', p:'', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'X-ray: bronchial pattern', cat:'Respiratory'},
+      {n:'Pulmonary Edema', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', p:'ต้องเฝ้าระวัง (Guarded)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'X-ray: diffuse alveolar pattern', cat:'Respiratory'},
+      {n:'Atopic Dermatitis', t:'Working Diagnosis (Dx)', s:'เรื้อรัง (Chronic)', p:'ต้องเฝ้าระวัง (Guarded)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Intradermal test: positive for dust mites, pollen', cat:'Dermatology'},
+      {n:'Flea Allergy Dermatitis', t:'Clinical Sign (Sign)', s:'หาย/สงบ (Resolved/Inactive)', p:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Flea comb: positive for fleas and flea dirt', cat:'Dermatology'},
+      {n:'Pyoderma', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', p:'ตอบสนองการรักษาดี (Good)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Skin scrape: negative for mites, bacterial culture positive', cat:'Dermatology'}
     ];
 
     var tabDate = '09/07/26';
@@ -1815,13 +1899,28 @@ ${rxDetailPanels}
       });
     }
 
+    function badgeClass(category, shortVal) {
+      var map = {
+        type: { 'Sign': 'sign', 'Dx': 'dx', 'DDx': 'ddx', 'R/O': 'ro' },
+        status: { 'Active': 'status-active', 'Pending': 'status-pending', 'Resolved/Inactive': 'status-resolved', 'Follow': 'status-follow', 'Chronic': 'status-chronic' },
+        prog: { 'Good': 'prog-good', 'Guarded': 'prog-guarded', 'Poor': 'prog-poor', 'Grave': 'prog-grave' }
+      };
+      return map[category] && map[category][shortVal] ? map[category][shortVal] : '';
+    }
+
     function renderTable(data) {
       var tbody = document.getElementById('data-table-body');
       var html = '';
       for (var i = 0; i < data.length; i++) {
+        var shortType = (data[i].type.match(/\(([^)]+)\)/) || ['', data[i].type])[1];
+        var shortStatus = (data[i].status.match(/\(([^)]+)\)/) || ['', data[i].status])[1];
+        var shortProg = data[i].prognosis ? (data[i].prognosis.match(/\(([^)]+)\)/) || ['', data[i].prognosis])[1] : '';
+        var typeBadge = shortType ? '<span class="tbl-badge ptype ' + badgeClass('type', shortType) + '">' + shortType + '</span>' : '';
+        var statusBadge = shortStatus ? '<span class="tbl-badge ptype ' + badgeClass('status', shortStatus) + '">' + shortStatus + '</span>' : '';
+        var progBadge = shortProg ? '<span class="tbl-badge ptype ' + badgeClass('prog', shortProg) + '">' + shortProg + '</span>' : '<span style="color:#d1d5db;">—</span>';
         html += '<tr><td>' + (i+1) + '</td><td>' + data[i].date + '</td><td>' + data[i].name +
           '</td><td>' + (data[i].cf || '<span style="color:#d1d5db;">—</span>') + '</td><td>' + data[i].cat +
-          '</td><td>' + data[i].type + '</td><td>' + data[i].status + '</td><td>' + (data[i].prognosis || '<span style="color:#d1d5db;">—</span>') +
+          '</td><td>' + typeBadge + '</td><td>' + statusBadge + '</td><td>' + progBadge +
           '</td><td>' + data[i].dvm + '</td><td>' + data[i].dept + '</td></tr>';
       }
       tbody.innerHTML = html;
@@ -1973,9 +2072,9 @@ ${rxDetailPanels}
         var prog = document.getElementById(prefix + '-tab1-prognosis');
         if (!pt || !prog) return;
         var val = pt.value;
-        var active = val === 'Working Diagnosis (dx)' || val === 'Differential Diagnosis (ddx)' || val === 'Clinical Sign';
-        prog.disabled = !active;
-        if (active) {
+        var disabled = val === 'Rule Out (R/O)';
+        prog.disabled = disabled;
+        if (!disabled) {
           prog.style.background = '';
           prog.style.color = '';
         } else {

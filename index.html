@@ -392,7 +392,7 @@
   </style>
 </head>
 <body>
-  <div class="app">
+  <div class="app hidden">
     <aside class="sidebar">
       <div class="sidebar-header">Explorer</div>
       <div class="sidebar-tree" id="explorerTree"></div>
@@ -425,7 +425,7 @@
   <div class="modal-overlay" id="pinModal">
     <div class="modal">
       <div class="modal-title" id="pinTitle">Enter PIN</div>
-      <div class="pin-display" id="pinDisplay">••••</div>
+      <div class="pin-display" id="pinDisplay">••••••••</div>
       <div class="pin-error" id="pinError"></div>
       <div class="keypad">
         <button data-key="1">1</button>
@@ -448,7 +448,7 @@
   <script src="NP/list.js"></script>
   <script src="NP/files.js"></script>
   <script>
-    const CORRECT_PIN = '2557';
+    const CORRECT_PIN = '53027918';
     const STORAGE_KEY = 'kahis_notes';
 
     const noteInput = document.getElementById('noteInput');
@@ -605,6 +605,9 @@
       icon.className = 'file-icon';
       const text = document.createElement('span');
       text.textContent = node.name;
+      if (node.name === 'module-map.md' || node.name === 'subject.html') {
+        text.style.color = '#facc15';
+      }
       a.appendChild(icon);
       a.appendChild(text);
       a.addEventListener('click', () => {
@@ -707,7 +710,7 @@
     }
 
     function updatePinDisplay() {
-      pinDisplay.textContent = '•'.repeat(currentPin.length) || '••••';
+      pinDisplay.textContent = '•'.repeat(currentPin.length) || '••••••••';
     }
 
     function openPinModal(action, data) {
@@ -715,7 +718,7 @@
       pendingAction = { action, data };
       pinError.textContent = '';
       updatePinDisplay();
-      pinTitle.textContent = action === 'delete' ? 'Enter PIN to delete' : 'Enter PIN to save';
+      pinTitle.textContent = action === 'delete' ? 'Enter PIN to delete' : action === 'enter' ? 'Enter PIN to access KAHIS' : 'Enter PIN to save';
       pinModal.classList.add('active');
     }
 
@@ -738,6 +741,8 @@
         notes = notes.filter(n => n.id !== pendingAction.data);
         setNotes(notes);
         renderNotes();
+      } else if (pendingAction.action === 'enter') {
+        document.querySelector('.app').classList.remove('hidden');
       }
       closePinModal();
     }
@@ -757,7 +762,7 @@
     });
 
     pinModal.addEventListener('click', e => {
-      if (e.target === pinModal) closePinModal();
+      if (e.target === pinModal && pendingAction && pendingAction.action !== 'enter') closePinModal();
     });
 
     document.querySelector('.keypad').addEventListener('click', e => {
@@ -776,7 +781,7 @@
           pinError.textContent = 'Incorrect PIN. Try again.';
           currentPin = '';
         }
-      } else if (currentPin.length < 4) {
+      } else if (currentPin.length < 8) {
         currentPin += key;
         pinError.textContent = '';
       }
@@ -859,6 +864,7 @@
     renderNotes();
     renderSessions();
     renderExplorer(filesTree, explorerTree);
+    openPinModal('enter');
   </script>
 </body>
 </html>
