@@ -596,6 +596,9 @@
     }
 
     function createFileItem(node) {
+      if (node.name.endsWith('.py') || node.name.endsWith('.js')) {
+        return document.createElement('li');
+      }
       const li = document.createElement('li');
       const a = document.createElement('a');
       a.href = node.path;
@@ -605,8 +608,10 @@
       icon.className = 'file-icon';
       const text = document.createElement('span');
       text.textContent = node.name;
-      if (node.name === 'module-map.md' || node.name === 'subject.html') {
+      if (node.name.endsWith('.html')) {
         text.style.color = '#facc15';
+      } else if (node.name.endsWith('.md')) {
+        text.style.color = '#7dd3fc';
       }
       a.appendChild(icon);
       a.appendChild(text);

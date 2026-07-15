@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAHIS - Exam Forms Editor</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-elevated: #ffffff;
+      --bg-card: #e1e8f0;
+      --bg-card-hover: #d9e3ef;
+      --border: #d9d9d9;
+      --border-light: #eaeef3;
+      --text: #3d4e60;
+      --text-muted: #5c6d7d;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --text-blue: #2563eb;
+      --green: #10b981;
+      --green-hover: #1ab784;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 0; background: var(--bg); color: var(--text);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh; overflow-y: auto;
+    }
+    .assessment-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 16px; border: 1px solid #c4b5fd; border-radius: 999px;
+      font-size: 13px; background: #f5f3ff; color: #7c3aed;
+      font-family: inherit; cursor: pointer; font-weight: 500; transition: all .15s;
+    }
+    .assessment-badge:hover { background: #ede9fe; border-color: #a78bfa; }
+    .assessment-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #7c3aed; }
+    .tag-med { background: #e0e7ff; color: #3730a3; }
+    .tag-fluid { background: #dcfce7; color: #166534; }
+    .tag-proc { background: #fef3c7; color: #92400e; }
+    .dose-row { display: flex; gap: 8px; }
+    .dose-row .amt { flex: 0 0 35%; }
+    .dose-row .unit { flex: 1; }
+    .meta-readonly.full { white-space: pre-wrap; line-height: 1.6; font-size: 14px; color: #374151; padding: 8px 0; }
+    .modal-overlay {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,.4); z-index: 1000; align-items: center; justify-content: center;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal-box {
+      background: #f0f2f5; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,.3);
+      width: 95%; max-width: 1400px; max-height: 95vh; overflow: hidden;
+      padding: 16px; position: relative; display: flex; flex-direction: column;
+    }
+    .modal-close {
+      background: #fff; border: 1px solid #fca5a5; border-radius: 8px;
+      padding: 6px 12px; font-size: 13px; cursor: pointer;
+      color: #dc2626; font-family: inherit; font-weight: 500;
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+    .modal-close:hover { background: #fef2f2; border-color: #f87171; }
+    .confirm-overlay {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,.4); z-index: 2000; align-items: center; justify-content: center;
+    }
+    .confirm-overlay.show { display: flex; }
+    .confirm-box {
+      background: #fff; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,.3);
+      padding: 24px 28px; max-width: 420px; text-align: center;
+    }
+    .confirm-box .confirm-icon { font-size: 28px; margin-bottom: 12px; }
+    .confirm-box .confirm-title { font-size: 16px; font-weight: 600; color: #374151; margin-bottom: 8px; }
+    .confirm-box .confirm-msg { font-size: 13px; color: #6b7280; line-height: 1.6; margin-bottom: 20px; }
+    .confirm-box .confirm-actions { display: flex; gap: 10px; justify-content: center; }
+    .confirm-back {
+      padding: 8px 18px; border: 1px solid #86efac; border-radius: 8px;
+      font-size: 13px; background: #f0fdf4; color: #16a34a; font-family: inherit; cursor: pointer; font-weight: 500;
+    }
+    .confirm-back:hover { background: #dcfce7; border-color: #4ade80; }
+    .confirm-close {
+      padding: 8px 18px; border: 1px solid #fca5a5; border-radius: 8px;
+      font-size: 13px; background: #fef2f2; color: #dc2626; font-family: inherit; cursor: pointer; font-weight: 500;
+    }
+    .confirm-close:hover { background: #fee2e2; border-color: #f87171; }
+    .assess-toast {
+      position: fixed; top: 20px; right: 20px; z-index: 3000;
+      background: #f0fdf4; border: 1px solid #86efac; border-radius: 10px;
+      padding: 14px 20px; box-shadow: 0 8px 24px rgba(0,0,0,.12);
+      display: none; flex-direction: column; gap: 4px; min-width: 280px; animation: toastSlide .3s ease;
+    }
+    .assess-toast.show { display: flex; }
+    .assess-toast .toast-title { font-size: 14px; font-weight: 700; color: #16a34a; display: flex; align-items: center; gap: 6px; }
+    .assess-toast .toast-row { font-size: 12px; color: #374151; line-height: 1.5; }
+    .assess-toast .toast-row b { font-weight: 600; }
+    @keyframes toastSlide { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+    .examcard-bar { display: flex; align-items: center; gap: 6px; }
+    .examcard-btn-blue {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 8px 16px; border: 1px solid #fca5a5; border-radius: 8px;
+      font-size: 13px; background: #fff; color: #dc2626; font-family: inherit; cursor: pointer; font-weight: 500;
+    }
+    .examcard-btn-blue:hover { background: #fef2f2; border-color: #f87171; }
+    .examcard-btn-blue .arrow { font-size: 10px; color: #f87171; }
+    .examcard-btn-out {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 8px 16px; border: 1px solid #86efac; border-radius: 8px;
+      font-size: 13px; background: #fff; color: #16a34a; font-family: inherit; cursor: pointer; font-weight: 500;
+    }
+    .examcard-btn-out:hover { background: #f0fdf4; border-color: #4ade80; }
+    .examcard-btn-out .arrow { font-size: 10px; color: #4ade80; }
+    .examcard-pick {
+      padding: 8px 12px; border: 1px solid #93c5fd; border-radius: 8px;
+      font-size: 13px; background: #fff; font-family: inherit; cursor: pointer; color: #2563eb;
+    }
+    .examcard-pick:hover { background: #eff6ff; }
+    .examcard-select {
+      padding: 7px 10px; border: 1px solid #d1d5db; border-radius: 4px;
+      font-size: 12px; background: #fff; font-family: inherit; cursor: pointer; color: #4b5563;
+    }
+    .examcard-go {
+      padding: 6px; border: none; background: transparent; color: #9ca3af; font-family: inherit; cursor: pointer;
+      display: inline-flex; align-items: center;
+    }
+    .examcard-go:hover { color: #6b7280; }
+    .assess-editor-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; flex-shrink: 0; }
+    .visit-tabs {
+      display: flex; gap: 2px; padding: 0; background: #f0f2f5; border-bottom: 2px solid #2563eb; flex-shrink: 0;
+    }
+    .vtab {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 6px 14px; border-radius: 8px 8px 0 0; cursor: pointer; font-size: 11px; color: #6b7280;
+      background: #f9fafb; border: 1px solid #e5e7eb; border-bottom: none; min-width: 130px; line-height: 1.3;
+    }
+    .vtab:hover { background: #eff6ff; }
+    .vtab.active { background: #eff6ff; color: #2563eb; border-color: #93c5fd; border-bottom: 2px solid #eff6ff; }
+    .vtab.active .line2 { color: #60a5fa; }
+    .vtab .new-badge { background: #dc2626; color: #fff; font-size: 9px; font-weight: 600; padding: 1px 5px; border-radius: 3px; }
+    .vtab.add-visit { background: #f0fdf4; color: #16a34a; border-color: #86efac; }
+    .vtab.add-visit:hover { background: #dcfce7; border-color: #4ade80; }
+    .vtab.add-visit .line2 { color: #16a34a; }
+    .visit-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 6px 16px; background: #fff; border-bottom: 1px solid #e5e7eb;
+      font-size: 11px; color: #9ca3af; flex-shrink: 0;
+    }
+    .visit-topbar b { color: #374151; font-weight: 600; }
+    .visit-topbar .for-date { color: #1d4ed8; font-weight: 600; }
+    .section-title { font-size: 16px; font-weight: 600; color: #444; margin-bottom: 0; display: flex; align-items: center; gap: 8px; }
+    .grid { display: grid; grid-template-columns: 1fr 3.2fr 1.1fr; gap: 16px; }
+    .editor-panel {
+      background: #fff; border: 1px solid #e5e7eb; border-radius: 10px;
+      display: flex; flex-direction: column; height: calc(95vh - 180px); min-height: 400px;
+    }
+    .editor-panel-head {
+      padding: 10px 14px; border-bottom: 1px solid #eee; font-weight: 600; font-size: 13px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .editor-panel-body { padding: 10px 12px; overflow-y: auto; flex: 1; }
+    .cat { padding: 8px 12px; border-radius: 6px; margin-bottom: 4px; cursor: pointer; }
+    .cat:hover { background: #f5f7fa; }
+    .cat.active { background: #eef4ff; border: 1px solid #cdddff; }
+    .cat .name { font-size: 14px; color: #333; }
+    .cat .count { font-size: 12px; color: #9ca3af; }
+    .search { width: 100%; padding: 9px 12px; margin-bottom: 12px; border: 1px solid #d0d5dd; border-radius: 8px; font-size: 13px; }
+    .item { padding: 8px 4px; border-bottom: 1px solid #f0f0f0; cursor: pointer; }
+    .item:hover { background: #f9fafb; }
+    .item.active { background: #eef4ff; }
+    .item .t { font-size: 14px; color: #333; }
+    .item .s { font-size: 11px; color: #9ca3af; }
+    .badge { background: #f3f4f6; border-radius: 20px; padding: 4px 10px; font-size: 12px; color: #555; margin-left: 6px; }
+    .sel-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+    .sel-row {
+      display: flex; flex-direction: column; gap: 4px; padding: 8px 10px; border-radius: 6px; cursor: pointer;
+      border: 1px solid #e5e7eb; background: #fff;
+    }
+    .sel-row:hover { background: #f6f7fb; }
+    .sel-row.active { background: #eef2ff; border-color: #c7d0f7; }
+    .sel-row .sel-row-top { display: flex; align-items: center; gap: 8px; }
+    .sel-row .num { width: 22px; height: 22px; border-radius: 5px; background: #e0e7ff; color: #4338ca; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex: none; }
+    .sel-row.active .num { background: #4338ca; color: #fff; }
+    .sel-row .pname { font-size: 13px; font-weight: 500; color: #1e293b; flex: 1; }
+    .sel-row .sel-row-badges { display: flex; gap: 4px; flex-wrap: wrap; padding-left: 30px; align-items: center; }
+    .sel-row .last-update { margin-left: auto; font-size: 10px; color: #9ca3af; white-space: nowrap; }
+    .sel-row .ptype { font-size: 9px; padding: 1px 7px; border-radius: 999px; font-weight: 600; white-space: nowrap; }
+    .ptype.sign { background: #e0f2fe; color: #075985; border: 1px solid #bae6fd; }
+    .ptype.dx { background: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
+    .ptype.ddx { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+    .ptype.ro { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+    .ptype.status-active { background: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
+    .ptype.status-pending { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+    .ptype.status-resolved { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+    .ptype.status-follow { background: #e0f2fe; color: #075985; border: 1px solid #bae6fd; }
+    .ptype.status-chronic { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+    .ptype.prog-good { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+    .ptype.prog-guarded { background: #e0f2fe; color: #075985; border: 1px solid #bae6fd; }
+    .ptype.prog-poor { background: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
+    .ptype.prog-grave { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+    .ptype.prob { background: #ede9fe; color: #5b21b6; border: 1px solid #ddd6fe; }
+    .ptype.finding { background: #ede9fe; color: #5b21b6; border: 1px solid #ddd6fe; }
+    .ptype.disorder { background: #fce7f3; color: #9d174d; border: 1px solid #fbcfe8; }
+    .tbl-badge { font-size: 11px; padding: 2px 8px; border-radius: 999px; font-weight: 600; white-space: nowrap; display: inline-block; }
+    .sel-row .ic { color: #6b7280; font-size: 14px; cursor: pointer; border: none; background: none; padding: 2px; }
+    .sel-row .ic:hover { color: #2563eb; }
+    .sel-row .x { color: #9ca3af; font-size: 14px; cursor: pointer; border: none; background: none; }
+    .sel-row .x:hover { color: #ef4444; }
+    .detail-banner { background: #f5f6fd; border: 1px solid #e7e9f8; border-radius: 10px; padding: 10px 14px; margin-bottom: 12px; }
+    .detail-banner-top { display: flex; align-items: flex-start; justify-content: space-between; }
+    .detail-banner .lbl { font-size: 12px; color: #6b7280; margin-bottom: 4px; }
+    .detail-banner .name { font-size: 16px; font-weight: 700; color: #312e81; }
+    .btn-new-record { border: 1px solid #a7f3d0; color: #34d399; background: #fff; padding: 6px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; white-space: nowrap; font-family: inherit; }
+    .btn-new-record:hover { background: #f0fdf4; }
+    .detail-banner .tag { display: inline-block; margin-top: 6px; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 999px; }
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; }
+    .field label { display: block; font-size: 12px; color: #7c8698; margin-bottom: 6px; }
+    .field.full { grid-column: 1 / -1; }
+    .ctrl { width: 100%; height: 40px; border: 1px solid #d9dee7; border-radius: 8px; background: #fff; padding: 0 12px; font-size: 13px; font-family: inherit; color: #1f2937; }
+    textarea.ctrl { height: auto; padding: 10px 12px; line-height: 1.6; resize: none; min-height: 40px; overflow: hidden; field-sizing: content; }
+    select.ctrl {
+      appearance: none;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+      background-repeat: no-repeat; background-position: right 10px center; padding-right: 34px;
+    }
+    .ctrl:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,.12); }
+    .ctrl::placeholder { color: #9ca3af; }
+    select.ctrl:invalid { color: #9ca3af; }
+    .req-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; align-items: center; }
+    .tag { font-size: 11px; padding: 3px 8px; border-radius: 6px; }
+    .tag.ok { background: #e6f7ee; color: #16a34a; }
+    .tag.no { background: #fdeef0; color: #e53935; }
+    .tag.visit { background: #f3e8ff; color: #7c3aed; }
+    .btn-confirm { background: #22c55e; color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+    .form-group { margin-bottom: 10px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #444; }
+    .req { color: #e53935; font-size: 12px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 9px 10px; border: 1px solid #d0d5dd; border-radius: 8px; font-size: 13px; background: #fff; font-family: inherit; }
+    .form-group textarea { min-height: 40px; resize: none; overflow: hidden; field-sizing: content; }
+    .meta-divider { border: none; border-top: 1px solid #eee; margin: 10px 0; }
+    .meta-section-label { font-size: 12px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 12px; }
+    .meta-readonly { padding: 9px 10px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 13px; background: #f9fafb; color: #6b7280; }
+    .meta-readonly.full { white-space: pre-wrap; word-break: break-word; line-height: 1.5; }
+    .data-table-bar { display: flex; gap: 8px; align-items: center; padding: 12px 14px; border-bottom: 1px solid #eee; flex-wrap: wrap; }
+    .data-table-bar input, .data-table-bar select { padding: 7px 10px; border: 1px solid #d0d5dd; border-radius: 8px; font-size: 13px; background: #fff; font-family: inherit; }
+    .data-table-bar input { flex: 1; min-width: 200px; }
+    .data-table-bar .btn-search { padding: 7px 16px; border: 1px solid #93c5fd; border-radius: 8px; font-size: 13px; background: #eff6ff; color: #2563eb; cursor: pointer; font-family: inherit; font-weight: 500; }
+    .data-table-bar .btn-search:hover { background: #dbeafe; }
+    .data-table-bar .btn-clear { padding: 7px 16px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 13px; background: #fff; color: #6b7280; cursor: pointer; font-family: inherit; font-weight: 500; }
+    .data-table-bar .btn-clear:hover { background: #f9fafb; }
+    .data-table-wrap { overflow: auto; flex: 1; padding-bottom: 60px; }
+    .data-table { width: 100%; min-width: 1550px; border-collapse: collapse; font-size: 12px; table-layout: auto; }
+    .data-table th:nth-child(1), .data-table td:nth-child(1) { width: 120px; }
+    .data-table thead th { position: sticky; top: 0; z-index: 1; background: #f9fafb; text-align: left; padding: 10px 12px; color: #6b7280; font-weight: 600; border-bottom: 1px solid #e5e7eb; font-size: 11px; white-space: nowrap; }
+    .data-table tbody td { padding: 9px 12px; border-bottom: 1px solid #f0f0f0; white-space: nowrap; }
+    .data-table tbody tr:hover { background: #f9fafb; }
+    .filter-bar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 10px 14px; }
+    .filter-bar input, .filter-bar select { padding: 6px 8px; border: 1px solid #d0d5dd; border-radius: 6px; font-size: 12px; background: #fff; font-family: inherit; }
+    .filter-bar input { width: 60px; }
+    .filter-bar .btn-search { padding: 6px 14px; border: 1px solid #93c5fd; border-radius: 8px; font-size: 12px; background: #eff6ff; color: #2563eb; cursor: pointer; font-family: inherit; font-weight: 500; }
+    .filter-bar .btn-search:hover { background: #dbeafe; }
+    .filter-bar .btn-clear { padding: 6px 14px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 12px; background: #fff; color: #6b7280; cursor: pointer; font-family: inherit; font-weight: 500; }
+    .filter-bar .btn-clear:hover { background: #f9fafb; }
+    .num-filter { display: flex; align-items: center; gap: 0; }
+    .num-filter label { font-size: 11px; color: #6b7280; white-space: nowrap; margin-right: 4px; font-weight: 600; }
+    .num-filter select { width: 38px; height: 30px; padding: 0 4px; text-align: center; border-radius: 6px 0 0 6px; border-right: none; box-sizing: border-box; }
+    .num-filter input { height: 30px; border-radius: 0 6px 6px 0; width: 64px; box-sizing: border-box; }
+    .filter-row-2 { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 8px 14px; }
+    .multi-check { position: relative; display: inline-block; }
+    .multi-check-btn { padding: 6px 10px; border: 1px solid #d0d5dd; border-radius: 6px; font-size: 12px; background: #fff; cursor: pointer; font-family: inherit; color: #374151; white-space: nowrap; }
+    .multi-check-btn:hover { background: #f9fafb; }
+    .multi-check-btn.active { border-color: #6366f1; background: #eef2ff; color: #4338ca; }
+    .multi-check-panel { display: none; position: absolute; top: 100%; left: 0; z-index: 10; min-width: 160px; max-height: 200px; overflow-y: auto; background: #fff; border: 1px solid #d0d5dd; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,.1); padding: 6px 0; margin-top: 2px; }
+    .multi-check-panel.show { display: block; }
+    .multi-check-panel label { display: flex; align-items: center; gap: 6px; padding: 5px 12px; font-size: 12px; cursor: pointer; white-space: nowrap; }
+    .multi-check-panel label:hover { background: #f5f7fa; }
+    .multi-check-panel input { width: auto; }
+    .tab-content.inactive select, .tab-content.inactive input, .tab-content.inactive textarea, .tab-content.inactive .cat, .tab-content.inactive .item, .tab-content.inactive .sel-row button, .tab-content.inactive .forms-list-item, .tab-content.inactive .check-item input { pointer-events: none; }
+    .tab-content { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+    .tab-content > .grid { flex: 1; overflow: hidden; }
+    .tab-content > .editor-panel { flex: 1; }
+    .btn-update { padding: 6px 14px; border: 1px solid #fcd34d; border-radius: 8px; font-size: 12px; background: #fffbeb; color: #d97706; font-family: inherit; cursor: pointer; font-weight: 500; }
+    .btn-update:hover { background: #fef3c7; border-color: #fbbf24; }
+    .btn-confirm-inactive { padding: 6px 14px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 12px; background: #f3f4f6; color: #9ca3af; cursor: not-allowed; font-family: inherit; font-weight: 500; }
+    .forms-list-item { padding: 10px 12px; border-radius: 8px; margin-bottom: 4px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; border: 1px solid transparent; }
+    .forms-list-item:hover { background: #f5f7fa; }
+    .forms-list-item.active { background: #eff6ff; border-color: #93c5fd; }
+    .forms-list-item .fname { font-size: 13px; font-weight: 600; color: #374151; }
+    .forms-list-item.active .fname { color: #2563eb; }
+    .forms-list-item .check { color: #16a34a; font-size: 14px; }
+    .form-sub-header { padding: 10px 14px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+    .form-sub-header .form-name { font-size: 15px; font-weight: 700; color: #312e81; }
+    .form-sub-header .form-date { font-size: 12px; color: #9ca3af; margin-top: 2px; }
+    .form-sub-header .form-update { font-size: 11px; color: #9ca3af; text-align: right; }
+    .form-sub-header .form-update b { color: #374151; font-weight: 600; }
+    .form-section-label { font-size: 12px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: .5px; margin: 14px 0 10px; }
+    .field-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px 14px; }
+    .field-row-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px 14px; }
+    .vs-input { max-width: 120px; }
+    input[type="datetime-local"].ctrl { color: #4b5563; font-weight: 500; }
+    input[type="datetime-local"].ctrl::-webkit-calendar-picker-indicator { cursor: pointer; }
+    .check-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px 14px; margin-bottom: 4px; }
+    .check-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #374151; cursor: pointer; }
+    .check-item input { width: 16px; height: 16px; accent-color: #6366f1; cursor: pointer; }
+    .logic-badge {
+      display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border: 1px solid #f9a8d4; border-radius: 999px;
+      font-size: 13px; background: #fdf2f8; color: #db2777; font-family: inherit; cursor: pointer; font-weight: 500; transition: all .15s;
+    }
+    .logic-badge:hover { background: #fce7f3; border-color: #f472b6; }
+    .logic-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #ec4899; }
+    .logic-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.4); z-index: 3000; align-items: center; justify-content: center; }
+    .logic-overlay.show { display: flex; }
+    .logic-box { background: #fff; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,.3); width: 95%; max-width: 720px; max-height: 85vh; overflow-y: auto; padding: 28px 32px; position: relative; }
+    .logic-close { position: absolute; top: 16px; right: 16px; background: #fff; border: 1px solid #f9a8d4; border-radius: 8px; padding: 4px 10px; font-size: 13px; cursor: pointer; color: #db2777; font-family: inherit; font-weight: 500; }
+    .logic-close:hover { background: #fce7f3; border-color: #f472b6; }
+    .logic-title { font-size: 18px; font-weight: 700; color: #be185d; margin-bottom: 4px; }
+    .logic-subtitle { font-size: 12px; color: #9ca3af; margin-bottom: 20px; }
+    .logic-section { margin-bottom: 22px; }
+    .logic-section-title { font-size: 14px; font-weight: 600; color: #db2777; padding-bottom: 6px; border-bottom: 2px solid #fce7f3; margin-bottom: 10px; }
+    .logic-list { list-style: none; padding: 0; margin: 0; }
+    .logic-list li { font-size: 13px; color: #374151; line-height: 1.7; padding: 3px 0 3px 18px; position: relative; }
+    .logic-list li::before { content: ''; position: absolute; left: 4px; top: 11px; width: 6px; height: 6px; border-radius: 50%; background: #f9a8d4; }
+    .logic-list li b { color: #be185d; }
+    .launcher-bar { display: flex; align-items: center; gap: 12px; padding: 20px; }
+  </style>
+</head>
+<body>
+  <div class="launcher-bar">
+    <button class="assessment-badge" onclick="document.getElementById('assess-modal').classList.add('show')">
+      <span class="dot"></span> Exam Form
+    </button>
+  </div>
+
+  <div class="modal-overlay" id="assess-modal">
+    <div class="modal-box">
+      <div class="assess-editor-header">
+        <div class="section-title">Exam Form Editor <span>&#8635;</span></div>
+        <div class="examcard-bar">
+          <button class="examcard-btn-blue" style="display:none;">Add Exam Card <span class="arrow">&#9662;</span></button>
+          <button class="logic-badge" onclick="document.getElementById('logic-modal').classList.add('show')"><span class="dot"></span> View Logic/Rule</button>
+          <button class="examcard-btn-out" style="display:none;">Go to Today <span class="arrow">&#9662;</span></button>
+          <input type="date" class="examcard-pick" value="2026-07-09" style="display:none;">
+          <select class="examcard-select" style="display:none;"><option value="" disabled selected>— เลือกวันที่มีประวัติการตรวจ —</option><option>07 Jul 2026 — นิพนธ์ วงศ์ประเสริฐ — อายุรกรรมทั่วไป (ในเวลา)</option><option>21 Jun 2026 — นิพนธ์ วงศ์ประเสริฐ — ภาพวินิจฉัย (นอกเวลา)</option><option>10 Jun 2026 — นิพนธ์ วงศ์ประเสริฐ — อายุรกรรมทั่วไป (ในเวลา)</option></select>
+          <button class="examcard-go" style="display:none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></button>
+          <button class="modal-close" onclick="document.getElementById('assess-confirm').classList.add('show')">&#10005;</button>
+        </div>
+      </div>
+      <div class="visit-tabs">
+        <div class="vtab active" data-tab="1"><div class="line1">นิพนธ์ วงศ์ประเสริฐ <span class="new-badge">NEW</span></div><div class="line2">CA คลินิกพิเศษ โรคหัวใจ (นอกเวลา)</div></div>
+        <div class="vtab" data-tab="2" style="display:none;"><div class="line1">นิพนธ์ วงศ์ประเสริฐ</div><div class="line2">อายุรกรรมทั่วไป (ในเวลา)</div></div>
+        <div class="vtab" data-tab="3" style="display:none;"><div class="line1">วิชัย ใจดี</div><div class="line2">ภาพวินิจฉัย (นอกเวลา)</div></div>
+        <div class="vtab" data-tab="4" style="display:none;"><div class="line1">ปนัดดา ศรีสุข</div><div class="line2">อายุรกรรมทั่วไป (ในเวลา)</div></div>
+        <div class="vtab add-visit" data-tab="5"><div class="line1">HN 69001234</div><div class="line2">ตารางข้อมูลทั้งหมด</div></div>
+      </div>
+      <div class="visit-topbar"><div class="for-date">for 09 Jul 2026</div><div>last update: <b id="last-update-time">10.57</b> by <b id="last-update-name">นิพนธ์ วงศ์ประเสริฐ</b></div></div>
+
+      <!-- TAB 1 -->
+      <div class="tab-content" id="content-1"><div class="grid">
+        <div class="editor-panel"><div class="editor-panel-head">Forms</div><div class="editor-panel-body">
+          <div class="forms-list-item active"><div class="fname">Vital Sign</div><div class="check">✓</div></div>
+        </div></div>
+        <div class="editor-panel"><div class="editor-panel-head">Form Editor</div>
+          <div class="form-sub-header">
+            <div><div class="form-name">Vital Sign</div></div>
+          </div>
+          <div class="editor-panel-body">
+            <div class="form-section-label">Vital Signs</div>
+            <div class="field-row-4">
+              <div class="field"><label>Temp (°F)</label><input class="ctrl vs-input" type="text" placeholder="102"></div>
+              <div class="field"><label>HR (bpm)</label><input class="ctrl vs-input" type="text" placeholder="120"></div>
+              <div class="field"><label>RR (rpm)</label><input class="ctrl vs-input" type="text" placeholder="24"></div>
+              <div class="field"><label>BP (mmHg)</label><input class="ctrl vs-input" type="text" placeholder="140/90"></div>
+            </div>
+            <div class="field-row-4">
+              <div class="field"><label>CRT (sec)</label><input class="ctrl vs-input" type="text" placeholder="<2"></div>
+              <div class="field"><label>Pulse (bpm)</label><input class="ctrl vs-input" type="text" placeholder="120"></div>
+              <div class="field"><label>FBS (mg/dL)</label><input class="ctrl vs-input" type="text" placeholder="110"></div>
+            </div>
+            <hr class="meta-divider">
+            <div class="form-section-label">Physical Examination</div>
+            <div class="detail-grid">
+              <div class="field"><label>Mucous Membrane</label><select class="ctrl"><option value="" disabled selected>กรุณาเลือกข้อมูล</option><option>Pink (normal)</option><option>Pale</option><option>Yellow</option><option>Red</option><option>Cyanosis</option></select></div>
+              <div class="field"><label>Consciousness</label><select class="ctrl"><option value="" disabled selected>กรุณาเลือกข้อมูล</option><option>Alert</option><option>Depressed</option><option>Stupor</option><option>Comatose</option><option>Seizure</option></select></div>
+            </div>
+            <div class="detail-grid">
+              <div class="field"><label>Lung Sound</label><select class="ctrl"><option value="" disabled selected>กรุณาเลือกข้อมูล</option><option>Normal</option><option>Crackles</option><option>Wheezes</option><option>Diminished</option><option>Absent</option></select></div>
+              <div class="field"><label>Heart Sound</label><select class="ctrl"><option value="" disabled selected>กรุณาเลือกข้อมูล</option><option>Normal</option><option>Murmur</option><option>Gallop</option><option>Muffled</option><option>Arrhythmia</option></select></div>
+            </div>
+            <hr class="meta-divider">
+            <div class="form-section-label">Critical Event</div>
+            <div class="check-grid">
+              <label class="check-item"><input type="checkbox"> Cyanosis</label>
+              <label class="check-item"><input type="checkbox"> Seizure</label>
+              <label class="check-item"><input type="checkbox"> Arrest</label>
+              <label class="check-item"><input type="checkbox"> dummy</label>
+              <label class="check-item"><input type="checkbox"> dummy</label>
+              <label class="check-item"><input type="checkbox"> dummy</label>
+              <label class="check-item"><input type="checkbox"> dummy</label>
+              <label class="check-item"><input type="checkbox"> dummy</label>
+              <label class="check-item"><input type="checkbox"> dummy</label>
+            </div>
+          </div>
+        </div>
+        <div class="editor-panel"><div class="editor-panel-head"><span>Record Meta</span><button class="btn-confirm" onclick="assessConfirm(1)">&#10003; Confirm</button></div><div class="editor-panel-body">
+          <div class="req-tags"><span style="font-size:11px;color:#6b7280;">Required</span><span class="tag ok">✓ Form</span><span class="tag ok">✓ DVM/User</span><span class="tag ok">✓ Dept</span><span class="tag visit" style="font-weight:500;">exam-card-69001234</span></div>
+          <div class="form-group"><label>Processed on</label><input class="ctrl" type="datetime-local" value="2026-07-09T10:57" onkeydown="return false;"></div>
+          <div class="form-group"><label>DVM/User</label><div class="meta-readonly">นิพนธ์ วงศ์ประเสริฐ</div></div>
+          <div class="form-group"><label>Department</label><div class="meta-readonly">คลินิกพิเศษ โรคหัวใจ (นอกเวลา)</div></div>
+          <hr class="meta-divider"><div class="meta-section-label">Form Note</div>
+          <div class="form-group"><textarea class="ctrl" placeholder="บันทึกหมายเหตุเพิ่มเติมเกี่ยวกับการตรวจร่างกาย เช่น สัตว์มีอาการซึม ไม่กินอาหาร ตรวจพบ dehydration ปานกลาง แนะนำให้น้ำเกลือแร่ และติดตามอาการในวันถัดไป"></textarea></div>
+        </div></div>
+      </div></div>
+
+      <!-- TAB 2 -->
+      <div class="tab-content" id="content-2" style="display:none;"><div class="grid">
+        <div class="editor-panel"><div class="editor-panel-head">Forms</div><div class="editor-panel-body">
+          <div class="forms-list-item active"><div class="fname">Vital Sign</div><div class="check">✓</div></div>
+        </div></div>
+        <div class="editor-panel"><div class="editor-panel-head">Form Editor</div>
+          <div class="form-sub-header">
+            <div><div class="form-name">Vital Sign</div></div>
+          </div>
+          <div class="editor-panel-body">
+            <div class="form-section-label">Vital Signs</div>
+            <div class="field-row-4">
+              <div class="field"><label>Temp (°F)</label><input class="ctrl vs-input" type="text" placeholder="100.8"></div>
+              <div class="field"><label>HR (bpm)</label><input class="ctrl vs-input" type="text" placeholder="140"></div>
+              <div class="field"><label>RR (rpm)</label><input class="ctrl vs-input" type="text" placeholder="28"></div>
+              <div class="field"><label>BP (mmHg)</label><input class="ctrl vs-input" type="text" placeholder="160/100"></div>
+            </div>
+            <div class="field-row-4">
+              <div class="field"><label>CRT (sec)</label><input class="ctrl vs-input" type="text" placeholder="2"></div>
+              <div class="field"><label>Pulse (bpm)</label><input class="ctrl vs-input" type="text" placeholder="140"></div>
+              <div class="field"><label>FBS (mg/dL)</label><input class="ctrl vs-input" type="text" placeholder="95"></div>
+            </div>
+            <hr class="meta-divider">
+            <div class="form-section-label">Physical Examination</div>
+            <div class="detail-grid">
+              <div class="field"><label>Mucous Membrane</label><select class="ctrl"><option value="" disabled selected>กรุณาเลือกข้อมูล</option><option>Pink (normal)</option><option>Pale</option><option>Yellow</option><option>Red</option><option>Cyanosis</option></select></div>
+              <div class="field"><label>Consciousness</label><select class="ctrl"><option value="" disabled selected>กรุณาเลือกข้อมูล</option><option>Alert</option><option>Depressed</option><option>Stupor</option><option>Comatose</option><option>Seizure</option></select></div>
+            </div>
+            <div class="detail-grid">
+              <div class="field"><label>Lung Sound</label><select class="ctrl"><option value="" disabled selected>กรุณาเลือกข้อมูล</option><option>Normal</option><option>Crackles</option><option>Wheezes</option><option>Diminished</option><option>Absent</option></select></div>
+              <div class="field"><label>Heart Sound</label><select class="ctrl"><option value="" disabled selected>กรุณาเลือกข้อมูล</option><option>Normal</option><option>Murmur</option><option>Gallop</option><option>Muffled</option><option>Arrhythmia</option></select></div>
+            </div>
+            <hr class="meta-divider">
+            <div class="form-section-label">Critical Event</div>
+            <div class="check-grid">
+              <label class="check-item"><input type="checkbox"> Cyanosis</label>
+              <label class="check-item"><input type="checkbox"> Seizure</label>
+              <label class="check-item"><input type="checkbox"> Arrest</label>
+              <label class="check-item"><input type="checkbox"> dummy</label>
+              <label class="check-item"><input type="checkbox"> dummy</label>
+              <label class="check-item"><input type="checkbox"> dummy</label>
+              <label class="check-item"><input type="checkbox"> dummy</label>
+              <label class="check-item"><input type="checkbox"> dummy</label>
+              <label class="check-item"><input type="checkbox"> dummy</label>
+            </div>
+          </div>
+        </div>
+        <div class="editor-panel"><div class="editor-panel-head"><span>Record Meta</span><button class="btn-confirm" onclick="assessConfirm(2)">&#10003; Confirm</button></div><div class="editor-panel-body">
+          <div class="req-tags"><span style="font-size:11px;color:#6b7280;">Required</span><span class="tag ok">✓ Form</span><span class="tag ok">✓ DVM/User</span><span class="tag ok">✓ Dept</span><span class="tag visit" style="font-weight:500;">exam-card-69001235</span></div>
+          <div class="form-group"><label>Processed on</label><input class="ctrl" type="datetime-local" value="2026-07-09T08:39" onkeydown="return false;"></div>
+          <div class="form-group"><label>DVM/User</label><div class="meta-readonly">นิพนธ์ วงศ์ประเสริฐ</div></div>
+          <div class="form-group"><label>Department</label><div class="meta-readonly">อายุรกรรมทั่วไป (ในเวลา)</div></div>
+          <hr class="meta-divider"><div class="meta-section-label">Form Note</div>
+          <div class="form-group"><textarea class="ctrl" placeholder="บันทึกหมายเหตุเพิ่มเติมเกี่ยวกับการตรวจร่างกาย เช่น สัตว์มีอาการซึม ไม่กินอาหาร ตรวจพบ dehydration ปานกลาง แนะนำให้น้ำเกลือแร่ และติดตามอาการในวันถัดไป"></textarea></div>
+        </div></div>
+      </div></div>
+
+      <!-- TAB 3 -->
+      <div class="tab-content inactive" id="content-3" style="display:none;"><div class="grid">
+        <div class="editor-panel"><div class="editor-panel-head">Forms</div><div class="editor-panel-body">
+          <div class="forms-list-item active"><div class="fname">Vital Sign</div><div class="check">✓</div></div>
+        </div></div>
+        <div class="editor-panel"><div class="editor-panel-head">Form Editor</div>
+          <div class="form-sub-header">
+            <div><div class="form-name">Vital Sign</div></div>
+          </div>
+          <div class="editor-panel-body">
+            <div class="form-section-label">Vital Signs</div>
+            <div class="field-row-4">
+              <div class="field"><label>Temp (°F)</label><div class="meta-readonly">102.4</div></div>
+              <div class="field"><label>HR (bpm)</label><div class="meta-readonly">160</div></div>
+              <div class="field"><label>RR (rpm)</label><div class="meta-readonly">40</div></div>
+              <div class="field"><label>BP (mmHg)</label><div class="meta-readonly">120/80</div></div>
+            </div>
+            <div class="field-row-4">
+              <div class="field"><label>CRT (sec)</label><div class="meta-readonly">3</div></div>
+              <div class="field"><label>Pulse (bpm)</label><div class="meta-readonly">160</div></div>
+              <div class="field"><label>FBS (mg/dL)</label><div class="meta-readonly">130</div></div>
+            </div>
+            <hr class="meta-divider">
+            <div class="form-section-label">Physical Examination</div>
+            <div class="detail-grid">
+              <div class="field"><label>Mucous Membrane</label><div class="meta-readonly">Pale</div></div>
+              <div class="field"><label>Consciousness</label><div class="meta-readonly">Depressed</div></div>
+            </div>
+            <div class="detail-grid">
+              <div class="field"><label>Lung Sound</label><div class="meta-readonly">Crackles</div></div>
+              <div class="field"><label>Heart Sound</label><div class="meta-readonly">Murmur</div></div>
+            </div>
+            <hr class="meta-divider">
+            <div class="form-section-label">Critical Event</div>
+            <div class="check-grid">
+              <label class="check-item"><input type="checkbox" checked disabled> Cyanosis</label>
+              <label class="check-item"><input type="checkbox" disabled> Seizure</label>
+              <label class="check-item"><input type="checkbox" disabled> Arrest</label>
+              <label class="check-item"><input type="checkbox" disabled> dummy</label>
+              <label class="check-item"><input type="checkbox" disabled> dummy</label>
+              <label class="check-item"><input type="checkbox" disabled> dummy</label>
+              <label class="check-item"><input type="checkbox" disabled> dummy</label>
+              <label class="check-item"><input type="checkbox" disabled> dummy</label>
+              <label class="check-item"><input type="checkbox" disabled> dummy</label>
+            </div>
+          </div>
+        </div>
+        <div class="editor-panel"><div class="editor-panel-head"><span>Record Meta</span><button class="btn-confirm-inactive">&#10003; Confirm</button></div><div class="editor-panel-body">
+          <div class="req-tags"><span style="font-size:11px;color:#6b7280;">Required</span><span class="tag ok">✓ Form</span><span class="tag ok">✓ DVM/User</span><span class="tag ok">✓ Dept</span><span class="tag visit" style="font-weight:500;">exam-card-69001236</span></div>
+          <div class="form-group"><label>Processed on</label><div class="meta-readonly" style="color:#4b5563;font-weight:500;">09 Jul 2026, 09:05</div></div>
+          <div class="form-group"><label>DVM/User</label><div class="meta-readonly">วิชัย ใจดี</div></div>
+          <div class="form-group"><label>Department</label><div class="meta-readonly">ภาพวินิจฉัย (นอกเวลา)</div></div>
+          <hr class="meta-divider"><div class="meta-section-label">Form Note</div>
+          <div class="form-group"><div class="meta-readonly full">สัตว์มีอาการหอบเหนื่อย ไอ ผล X-ray พบ diffuse alveolar pattern ยืนยันการวินิจฉัย Pulmonary Edema แนะนำให้ furosemide IV oxygen therapy</div></div>
+        </div></div>
+      </div></div>
+
+      <!-- TAB 4 -->
+      <div class="tab-content inactive" id="content-4" style="display:none;"><div class="grid">
+        <div class="editor-panel"><div class="editor-panel-head">Forms</div><div class="editor-panel-body">
+          <div class="forms-list-item active"><div class="fname">Vital Sign</div><div class="check">✓</div></div>
+        </div></div>
+        <div class="editor-panel"><div class="editor-panel-head">Form Editor</div>
+          <div class="form-sub-header">
+            <div><div class="form-name">Vital Sign</div></div>
+          </div>
+          <div class="editor-panel-body">
+            <div class="form-section-label">Vital Signs</div>
+            <div class="field-row-4">
+              <div class="field"><label>Temp (°F)</label><div class="meta-readonly">100.4</div></div>
+              <div class="field"><label>HR (bpm)</label><div class="meta-readonly">100</div></div>
+              <div class="field"><label>RR (rpm)</label><div class="meta-readonly">20</div></div>
+              <div class="field"><label>BP (mmHg)</label><div class="meta-readonly">130/85</div></div>
+            </div>
+            <div class="field-row-4">
+              <div class="field"><label>CRT (sec)</label><div class="meta-readonly"><2</div></div>
+              <div class="field"><label>Pulse (bpm)</label><div class="meta-readonly">100</div></div>
+              <div class="field"><label>FBS (mg/dL)</label><div class="meta-readonly">105</div></div>
+            </div>
+            <hr class="meta-divider">
+            <div class="form-section-label">Physical Examination</div>
+            <div class="detail-grid">
+              <div class="field"><label>Mucous Membrane</label><div class="meta-readonly">Pink (normal)</div></div>
+              <div class="field"><label>Consciousness</label><div class="meta-readonly">Alert</div></div>
+            </div>
+            <div class="detail-grid">
+              <div class="field"><label>Lung Sound</label><div class="meta-readonly">Normal</div></div>
+              <div class="field"><label>Heart Sound</label><div class="meta-readonly">Normal</div></div>
+            </div>
+            <hr class="meta-divider">
+            <div class="form-section-label">Critical Event</div>
+            <div class="check-grid">
+              <label class="check-item"><input type="checkbox" disabled> Cyanosis</label>
+              <label class="check-item"><input type="checkbox" disabled> Seizure</label>
+              <label class="check-item"><input type="checkbox" disabled> Arrest</label>
+              <label class="check-item"><input type="checkbox" disabled> dummy</label>
+              <label class="check-item"><input type="checkbox" disabled> dummy</label>
+              <label class="check-item"><input type="checkbox" disabled> dummy</label>
+              <label class="check-item"><input type="checkbox" disabled> dummy</label>
+              <label class="check-item"><input type="checkbox" disabled> dummy</label>
+              <label class="check-item"><input type="checkbox" disabled> dummy</label>
+            </div>
+          </div>
+        </div>
+        <div class="editor-panel"><div class="editor-panel-head"><span>Record Meta</span><button class="btn-confirm-inactive">&#10003; Confirm</button></div><div class="editor-panel-body">
+          <div class="req-tags"><span style="font-size:11px;color:#6b7280;">Required</span><span class="tag ok">✓ Form</span><span class="tag ok">✓ DVM/User</span><span class="tag ok">✓ Dept</span><span class="tag visit" style="font-weight:500;">exam-card-69001237</span></div>
+          <div class="form-group"><label>Processed on</label><div class="meta-readonly" style="color:#4b5563;font-weight:500;">09 Jul 2026, 09:31</div></div>
+          <div class="form-group"><label>DVM/User</label><div class="meta-readonly">ปนัดดา ศรีสุข</div></div>
+          <div class="form-group"><label>Department</label><div class="meta-readonly">อายุรกรรมทั่วไป (ในเวลา)</div></div>
+          <hr class="meta-divider"><div class="meta-section-label">Form Note</div>
+          <div class="form-group"><div class="meta-readonly full">สัตว์มีอาการคันเรื้อรัง ผิวหนังอักเสบ ตรวจพบ pustules ผล bacterial culture positive ยืนยันการวินิจฉัย Pyoderma แนะนำ antibiotic และ medicated shampoo</div></div>
+        </div></div>
+      </div></div>
+
+      <!-- TAB 5 -->
+      <div class="tab-content" id="content-5" style="display:none;">
+        <div class="editor-panel" style="height: calc(95vh - 180px); min-height: 400px;">
+          <div class="editor-panel-head">ตารางข้อมูลทั้งหมด</div>
+          <div class="filter-bar">
+            <div class="num-filter"><label>Temp</label><select id="f-temp-op"><option value="">=</option><option value="gt">&gt;</option><option value="lt">&lt;</option></select><input type="number" id="f-temp-val" placeholder="°F"></div>
+            <div class="num-filter"><label>HR</label><select id="f-hr-op"><option value="">=</option><option value="gt">&gt;</option><option value="lt">&lt;</option></select><input type="number" id="f-hr-val" placeholder="bpm"></div>
+            <div class="num-filter"><label>RR</label><select id="f-rr-op"><option value="">=</option><option value="gt">&gt;</option><option value="lt">&lt;</option></select><input type="number" id="f-rr-val" placeholder="rpm"></div>
+            <div class="num-filter"><label>CRT</label><select id="f-crt-val" style="width:auto;border-radius:6px;border-right:1px solid #d0d5dd;padding:0 8px;height:30px;"><option value="">ทั้งหมด</option><option value="lt2">&lt;2</option><option value="other">อื่นๆ</option></select></div>
+            <div class="num-filter"><label>Pulse</label><select id="f-pulse-op"><option value="">=</option><option value="gt">&gt;</option><option value="lt">&lt;</option></select><input type="number" id="f-pulse-val" placeholder="bpm"></div>
+            <div class="num-filter"><label>BP</label><select id="f-bp-op"><option value="">=</option><option value="gt">&gt;</option><option value="lt">&lt;</option></select><input type="number" id="f-bp-val" placeholder="mmHg"></div>
+            <div class="num-filter"><label>FBS</label><select id="f-fbs-op"><option value="">=</option><option value="gt">&gt;</option><option value="lt">&lt;</option></select><input type="number" id="f-fbs-val" placeholder="mg/dL"></div>
+            <button class="btn-search" onclick="filterTable()">ค้นหา</button>
+            <button class="btn-clear" onclick="clearFilter()">ล้างตัวกรอง</button>
+          </div>
+          <div class="filter-row-2">
+            <div class="multi-check">
+              <button class="multi-check-btn" type="button" onclick="toggleMultiCheck('mm')">Mucous Membrane</button>
+              <div class="multi-check-panel" id="mc-mm">
+                <label><input type="checkbox" value="Pink (normal)"> Pink (normal)</label>
+                <label><input type="checkbox" value="Pale"> Pale</label>
+                <label><input type="checkbox" value="Yellow"> Yellow</label>
+                <label><input type="checkbox" value="Red"> Red</label>
+                <label><input type="checkbox" value="Cyanosis"> Cyanosis</label>
+              </div>
+            </div>
+            <div class="multi-check">
+              <button class="multi-check-btn" type="button" onclick="toggleMultiCheck('cons')">Consciousness</button>
+              <div class="multi-check-panel" id="mc-cons">
+                <label><input type="checkbox" value="Alert"> Alert</label>
+                <label><input type="checkbox" value="Depressed"> Depressed</label>
+                <label><input type="checkbox" value="Stupor"> Stupor</label>
+                <label><input type="checkbox" value="Comatose"> Comatose</label>
+              </div>
+            </div>
+            <div class="multi-check">
+              <button class="multi-check-btn" type="button" onclick="toggleMultiCheck('lung')">Lung Sound</button>
+              <div class="multi-check-panel" id="mc-lung">
+                <label><input type="checkbox" value="Normal"> Normal</label>
+                <label><input type="checkbox" value="Crackles"> Crackles</label>
+                <label><input type="checkbox" value="Wheezes"> Wheezes</label>
+                <label><input type="checkbox" value="Diminished"> Diminished</label>
+                <label><input type="checkbox" value="Absent"> Absent</label>
+              </div>
+            </div>
+            <div class="multi-check">
+              <button class="multi-check-btn" type="button" onclick="toggleMultiCheck('heart')">Heart Sound</button>
+              <div class="multi-check-panel" id="mc-heart">
+                <label><input type="checkbox" value="Normal"> Normal</label>
+                <label><input type="checkbox" value="Gallop"> Gallop</label>
+                <label><input type="checkbox" value="Murmur"> Murmur</label>
+                <label><input type="checkbox" value="Muffled"> Muffled</label>
+                <label><input type="checkbox" value="Arrhythmia"> Arrhythmia</label>
+              </div>
+            </div>
+            <div class="multi-check">
+              <button class="multi-check-btn" type="button" onclick="toggleMultiCheck('crit')">Critical Event</button>
+              <div class="multi-check-panel" id="mc-crit">
+                <label><input type="checkbox" value="Cyanosis"> Cyanosis</label>
+                <label><input type="checkbox" value="Seizure"> Seizure</label>
+                <label><input type="checkbox" value="Arrest"> Arrest</label>
+              </div>
+            </div>
+          </div>
+          <div class="data-table-wrap">
+            <table class="data-table" id="data-table">
+              <thead><tr><th>Processed On</th><th>Temp (°F)</th><th>HR (bpm)</th><th>RR (rpm)</th><th>CRT (sec)</th><th>Pulse (bpm)</th><th>BP (mmHg)</th><th>FBS (mg/dL)</th><th>Consciousness</th><th>Mucous Membrane</th><th>Lung Sound</th><th>Heart Sound</th><th>Critical Event</th><th>DVM/User</th><th>Department</th><th>Created on</th><th>Last Update</th><th>Exam Card ID</th></tr></thead>
+              <tbody id="data-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGIC/RULE MODAL -->
+  <div class="logic-overlay" id="logic-modal"><div class="logic-box">
+    <button class="logic-close" onclick="document.getElementById('logic-modal').classList.remove('show')">&#10005; ปิด</button>
+    <div class="logic-title">Exam Form Editor</div>
+    <div class="logic-subtitle">แนวคิด กฎ และการทำงาน</div>
+
+    <div class="logic-section"><div class="logic-section-title">1. แนวคิดหลัก</div><ul class="logic-list">
+      <li>เป็นการ <b>สร้างฐานข้อมูล</b> ด้วย — ไม่แนะนำให้ใช้ form ที่มีการเปลี่ยนแปลงบ่อย</li>
+      <li>ตัวอย่าง form ในระบบ: <b>Vital Sign</b></li>
+      <li>ข้อมูลที่บันทึกจะถูก <b>เรียงลำดับตาม Processed On</b> ในตารางรวม</li>
+    </ul></div>
+
+    <div class="logic-section"><div class="logic-section-title">2. การเข้าถึง Editor (2 ทาง)</div><ul class="logic-list">
+      <li><b>ทางที่ 1 — เข้าผ่าน Exam Card</b></li>
+      <li>ดึง <b>DVM/User</b> และ <b>Department</b> จาก exam card นั้นมาแสดงใน Record Meta อัตโนมัติ</li>
+      <li>แสดง badge <b>exam-card id</b> (เช่น exam-card-69001234) ใน Record Meta</li>
+      <li><b>ทางที่ 2 — เข้าผ่านปุ่มโดยไม่ระบุ Exam Card</b></li>
+      <li>ดึง <b>user ที่ login</b> มาใส่อัตโนมัติ และดึง <b>Department</b> จาก localStorage หรือแหล่งอื่น</li>
+      <li>แสดง badge เป็น <b>—</b> (ไม่มีเลข id)</li>
+    </ul></div>
+
+    <div class="logic-section"><div class="logic-section-title">3. Processed On &amp; การเรียงลำดับ</div><ul class="logic-list">
+      <li>การบันทึกจะระบุ <b>Processed On</b> เพื่อใช้ในการเรียงลำดับการแสดงผลในตารางรวม</li>
+      <li>ตารางรวมให้ความสำคัญกับ <b>Processed On</b> เพราะมักมีการกรอกผลย้อนหลัง</li>
+      <li>อนาคตจะมี <b>Schedule On</b> เพิ่มเติม</li>
+    </ul></div>
+
+    <div class="logic-section"><div class="logic-section-title">4. การแก้ไข (Edit)</div><ul class="logic-list">
+      <li>เบื้องต้นน่าจะต้องให้ <b>ลบแล้วสร้างใหม่</b> (โดยการลบเป็นสิทธิ์ระดับ <b>admin</b>)</li>
+      <li>เพื่อความชัดเจนของข้อมูล — <b>ผิดไม่ได้</b></li>
+    </ul></div>
+
+    <div class="logic-section"><div class="logic-section-title">5. การบันทึก &amp; การแสดงผล</div><ul class="logic-list">
+      <li>ถ้ามี <b>exam-card id</b> → ส่งข้อมูลไปปรากฏใน exam card นั้น (เหมือนเขียนใบตรวจปัจจุบัน ใครเขียนใบไหนก็ต้องไปอ่านใบนั้น)</li>
+      <li>ถ้า <b>ไม่มี exam-card id</b> → ดูผ่าน <b>ตารางรวม</b> (เช่น กรอกโดยยังไม่ตรวจ เช่น screen ER case)</li>
+    </ul></div>
+
+    <div class="logic-section"><div class="logic-section-title">6. Tab System</div><ul class="logic-list">
+      <li>มี <b>5 tab</b>: Tab 1-2 editable, Tab 3-4 readonly, Tab 5 ตารางข้อมูลทั้งหมด</li>
+      <li>Tab 2, 3, 4 <b>ซ่อน</b>จาก tab navigation (display:none)</li>
+      <li><b>Tab 1</b> (นิพนธ์ — คลินิกพิเศษ โรคหัวใจ นอกเวลา): editable ทั้งหมด มี badge NEW</li>
+      <li><b>Tab 2</b> (นิพนธ์ — อายุรกรรมทั่วไป ในเวลา): editable ทั้งหมด</li>
+      <li><b>Tab 3</b> (วิชัย — ภาพวินิจฉัย นอกเวลา): readonly ทุกฟิลด์, ปุ่ม Confirm inactive</li>
+      <li><b>Tab 4</b> (ปนัดดา — อายุรกรรมทั่วไป ในเวลา): readonly ทุกฟิลด์, ปุ่ม Confirm inactive</li>
+      <li><b>Tab 5</b> (HN 69001234 — ตารางข้อมูลทั้งหมด): แสดงตารางรวม มี filter</li>
+    </ul></div>
+
+    <div class="logic-section"><div class="logic-section-title">7. Layout: 3-Column Grid (Tab 1-4)</div><ul class="logic-list">
+      <li><b>คอลัมน์ 1 — Forms</b>: รายการฟอร์ม (Vital Sign) มี checkmark ✓</li>
+      <li><b>คอลัมน์ 2 — Form Editor</b>: Vital Signs, Physical Examination, Critical Event</li>
+      <li><b>คอลัมน์ 3 — Record Meta</b>: req-tags, Processed on, DVM/User, Department, Form Note</li>
+    </ul></div>
+
+    <div class="logic-section"><div class="logic-section-title">8. Tab 5 — ตารางข้อมูลทั้งหมด</div><ul class="logic-list">
+      <li><b>คอลัมน์ (18)</b>: Processed On, Temp, HR, RR, CRT, Pulse, BP, FBS, Consciousness, Mucous Membrane, Lung Sound, Heart Sound, Critical Event, DVM/User, Department, Created on, Last Update, <b>Exam Card ID</b></li>
+      <li><b>Exam Card ID</b>: แสดงเป็นสีม่วง ถ้าเป็น — แสดงเป็นสีเทา</li>
+      <li>ข้อมูล 20 แถว จำลองการทยอยใส่ (บางฟิลด์ว่าง)</li>
+      <li>Critical Event หนึ่งแถวมีหลายค่าคั่นด้วย , (comma)</li>
+      <li>ตาราง: table-layout auto, min-width 1550px, เลื่อนแนวนอนได้, เว้นพื้นที่ด้านล่าง 60px</li>
+    </ul></div>
+
+    <div class="logic-section"><div class="logic-section-title">9. Filter — แถวที่ 1 (Numeric)</div><ul class="logic-list">
+      <li><b>Temp, HR, RR, Pulse, BP, FBS</b>: เลือก =, &gt;, &lt; + กรอกค่าตัวเลข</li>
+      <li><b>CRT</b>: dropdown 3 ตัวเลือก — ทั้งหมด, &lt;2, อื่นๆ</li>
+      <li>ถ้าไม่กรอกค่า = ไม่กรองฟิลด์นั้น</li>
+      <li>ถ้ากรอกค่าแต่ข้อมูลแถวนั้นว่าง = ไม่แสดงแถว</li>
+    </ul></div>
+
+    <div class="logic-section"><div class="logic-section-title">10. Filter — แถวที่ 2 (Multi-check)</div><ul class="logic-list">
+      <li><b>Mucous Membrane</b>: Pink (normal), Pale, Yellow, Red, Cyanosis</li>
+      <li><b>Consciousness</b>: Alert, Depressed, Stupor, Comatose</li>
+      <li><b>Lung Sound</b>: Normal, Crackles, Wheezes, Diminished, Absent</li>
+      <li><b>Heart Sound</b>: Normal, Gallop, Murmur, Muffled, Arrhythmia</li>
+      <li><b>Critical Event</b>: Cyanosis, Seizure, Arrest (เช็คแบบ contains)</li>
+      <li>เลือกหลายค่าได้ (OR logic), คลิกนอก → ปิดอัตโนมัติ</li>
+    </ul></div>
+
+    <div class="logic-section"><div class="logic-section-title">11. ปุ่ม Close (✕) &amp; Confirm</div><ul class="logic-list">
+      <li>คลิก ✕ → เปิด <b>confirm overlay</b> เตือนข้อมูลที่ยังไม่บันทึก</li>
+      <li><b>ปิดโดยไม่บันทึก</b> (ปุ่มแดง) → ปิดทั้ง confirm + modal</li>
+      <li><b>กลับไปแก้ไข</b> (ปุ่มเขียว) → ปิดเฉพาะ confirm overlay</li>
+      <li>ปุ่ม <b>Confirm</b> (Tab 1-2): แสดง toast 2 วินาที แสดง DVM/User, Department, last update</li>
+      <li>ปุ่ม <b>Confirm</b> (Tab 3-4): inactive ไม่ทำงาน</li>
+    </ul></div>
+  </div></div>
+
+  <!-- CONFIRM CLOSE -->
+  <div class="confirm-overlay" id="assess-confirm"><div class="confirm-box">
+    <div class="confirm-icon">⚠</div>
+    <div class="confirm-title">ยืนยันการปิดหน้าต่าง</div>
+    <div class="confirm-msg">ยังมีการเปลี่ยนแปลงที่ไม่ได้บันทึก<br>- CA คลินิกพิเศษ โรคหัวใจ (นอกเวลา)</div>
+    <div class="confirm-actions">
+      <button class="confirm-close" onclick="document.getElementById('assess-confirm').classList.remove('show'); document.getElementById('assess-modal').classList.remove('show')">ปิดโดยไม่มีการบันทึก</button>
+      <button class="confirm-back" onclick="document.getElementById('assess-confirm').classList.remove('show')">กลับไปแก้ไข</button>
+    </div>
+  </div></div>
+
+  <!-- TOAST -->
+  <div class="assess-toast" id="assess-toast">
+    <div class="toast-title">&#10003; บันทึกสำเร็จ</div>
+    <div class="toast-row" id="toast-dvm">ชื่อ: <b>—</b></div>
+    <div class="toast-row" id="toast-dept">หน่วย: <b>—</b></div>
+    <div class="toast-row" id="toast-update">last update: <b>—</b></div>
+  </div>
+
+  <script>
+    // ====== ASSESSMENT MODAL JS ======
+    var tabMetaMap = {
+      '1': { dvm: 'นิพนธ์ วงศ์ประเสริฐ', dept: 'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', time: '10.57' },
+      '2': { dvm: 'นิพนธ์ วงศ์ประเสริฐ', dept: 'อายุรกรรมทั่วไป (ในเวลา)', time: '10.57' },
+      '3': { dvm: 'วิชัย ใจดี', dept: 'ภาพวินิจฉัย (นอกเวลา)', time: '10.57' },
+      '4': { dvm: 'ปนัดดา ศรีสุข', dept: 'อายุรกรรมทั่วไป (ในเวลา)', time: '10.57' }
+    };
+    function assessConfirm(tabNum) {
+      var meta = tabMetaMap[tabNum] || tabMetaMap['1'];
+      document.getElementById('toast-dvm').innerHTML = 'ชื่อ: <b>' + meta.dvm + '</b>';
+      document.getElementById('toast-dept').innerHTML = 'หน่วย: <b>' + meta.dept + '</b>';
+      document.getElementById('toast-update').innerHTML = 'last update: <b>' + meta.time + '</b> by <b>' + meta.dvm + '</b>';
+      var toast = document.getElementById('assess-toast');
+      toast.classList.add('show');
+      setTimeout(function() {
+        toast.classList.remove('show');
+      }, 2000);
+    }
+    var tabDvmMap = { '1':'นิพนธ์ วงศ์ประเสริฐ', '2':'นิพนธ์ วงศ์ประเสริฐ', '3':'วิชัย ใจดี', '4':'ปนัดดา ศรีสุข', '5':'นิพนธ์ วงศ์ประเสริฐ' };
+    document.querySelectorAll('#assess-modal .vtab').forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('#assess-modal .vtab').forEach(function(t) { t.classList.remove('active'); });
+        this.classList.add('active');
+        var idx = this.getAttribute('data-tab');
+        document.querySelectorAll('#assess-modal .tab-content').forEach(function(c) { c.style.display = 'none'; });
+        var target = document.getElementById('content-' + idx);
+        if (target) target.style.display = '';
+        var nameEl = document.getElementById('last-update-name');
+        if (nameEl && tabDvmMap[idx]) nameEl.textContent = tabDvmMap[idx];
+      });
+    });
+
+    function togglePrognosis() {
+      var pt = document.getElementById('tab1-problem-type');
+      var prog = document.getElementById('tab1-prognosis');
+      if (!pt || !prog) return;
+      var val = pt.value;
+      var disabled = val === 'Rule Out (R/O)';
+      prog.disabled = disabled;
+      if (!disabled) {
+        prog.style.background = '';
+        prog.style.color = '';
+      } else {
+        prog.style.background = '#f9fafb';
+        prog.style.color = '#9ca3af';
+        prog.selectedIndex = 0;
+      }
+    }
+
+    var tableData = [];
+    var vitalSigns = [
+      {proc:'09 Jul 2026, 10:57', temp:'102', hr:'120', rr:'24', crt:'<2', pulse:'120', bp:'140/90', fbs:'110', cons:'Alert', mm:'Pink (normal)', lung:'Normal', heart:'Normal', crit:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', created:'09 Jul 2026, 10:57', update:'09 Jul 2026, 11:20', cardId:'exam-card-69001234'},
+      {proc:'09 Jul 2026, 08:39', temp:'100.8', hr:'140', rr:'28', crt:'2', pulse:'140', bp:'160/100', fbs:'95', cons:'', mm:'', lung:'', heart:'Gallop', crit:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', created:'09 Jul 2026, 08:39', update:'09 Jul 2026, 09:15', cardId:'exam-card-69001235'},
+      {proc:'09 Jul 2026, 09:05', temp:'102.4', hr:'160', rr:'40', crt:'3', pulse:'160', bp:'120/80', fbs:'130', cons:'Depressed', mm:'Pale', lung:'Crackles', heart:'Murmur', crit:'Cyanosis, Seizure', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', created:'09 Jul 2026, 09:05', update:'09 Jul 2026, 09:40', cardId:'exam-card-69001236'},
+      {proc:'09 Jul 2026, 09:31', temp:'100.4', hr:'100', rr:'20', crt:'<2', pulse:'100', bp:'130/85', fbs:'105', cons:'Alert', mm:'Pink (normal)', lung:'Normal', heart:'Normal', crit:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', created:'09 Jul 2026, 09:31', update:'', cardId:'exam-card-69001237'},
+      {proc:'08 Jul 2026, 14:20', temp:'101.3', hr:'110', rr:'22', crt:'', pulse:'', bp:'', fbs:'', cons:'Alert', mm:'Pink (normal)', lung:'Normal', heart:'Normal', crit:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', created:'08 Jul 2026, 14:20', update:'08 Jul 2026, 16:00', cardId:'exam-card-69001234'},
+      {proc:'08 Jul 2026, 11:15', temp:'', hr:'150', rr:'36', crt:'2', pulse:'150', bp:'150/95', fbs:'120', cons:'Depressed', mm:'Red', lung:'Wheezes', heart:'Murmur', crit:'Cyanosis', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', created:'08 Jul 2026, 11:30', update:'08 Jul 2026, 14:00', cardId:'-'},
+      {proc:'07 Jul 2026, 10:30', temp:'100.2', hr:'90', rr:'18', crt:'<2', pulse:'90', bp:'125/80', fbs:'95', cons:'Alert', mm:'Pink (normal)', lung:'', heart:'', crit:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', created:'07 Jul 2026, 10:30', update:'07 Jul 2026, 11:10', cardId:'-'},
+      {proc:'07 Jul 2026, 09:45', temp:'102.8', hr:'170', rr:'44', crt:'3', pulse:'170', bp:'110/70', fbs:'140', cons:'Stupor', mm:'Pale', lung:'Crackles', heart:'Muffled', crit:'Seizure, Arrest', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', created:'07 Jul 2026, 10:00', update:'07 Jul 2026, 10:30', cardId:'exam-card-69001236'},
+      {proc:'06 Jul 2026, 13:10', temp:'101.5', hr:'130', rr:'26', crt:'2', pulse:'130', bp:'145/92', fbs:'108', cons:'Alert', mm:'', lung:'Diminished', heart:'Normal', crit:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', created:'06 Jul 2026, 13:10', update:'', cardId:'-'},
+      {proc:'06 Jul 2026, 08:50', temp:'99.8', hr:'85', rr:'16', crt:'<2', pulse:'85', bp:'120/78', fbs:'90', cons:'Alert', mm:'Pink (normal)', lung:'Normal', heart:'Normal', crit:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', created:'06 Jul 2026, 08:50', update:'06 Jul 2026, 09:30', cardId:'-'},
+      {proc:'05 Jul 2026, 15:00', temp:'103.5', hr:'180', rr:'48', crt:'4', pulse:'180', bp:'100/60', fbs:'155', cons:'Comatose', mm:'Cyanosis', lung:'Absent', heart:'Arrhythmia', crit:'Cyanosis, Seizure, Arrest', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', created:'05 Jul 2026, 14:30', update:'05 Jul 2026, 15:45', cardId:'exam-card-69001236'},
+      {proc:'05 Jul 2026, 10:20', temp:'101.0', hr:'115', rr:'24', crt:'2', pulse:'', bp:'138/85', fbs:'102', cons:'Depressed', mm:'Yellow', lung:'Normal', heart:'Normal', crit:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', created:'05 Jul 2026, 10:20', update:'05 Jul 2026, 11:00', cardId:'exam-card-69001234'},
+      {proc:'04 Jul 2026, 09:00', temp:'100.6', hr:'95', rr:'20', crt:'<2', pulse:'95', bp:'128/82', fbs:'98', cons:'Alert', mm:'Pink (normal)', lung:'Normal', heart:'Normal', crit:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', created:'04 Jul 2026, 09:00', update:'', cardId:'-'},
+      {proc:'04 Jul 2026, 14:40', temp:'102.2', hr:'145', rr:'32', crt:'3', pulse:'145', bp:'155/98', fbs:'125', cons:'Depressed', mm:'Pale', lung:'Crackles', heart:'Gallop', crit:'Cyanosis', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', created:'04 Jul 2026, 15:00', update:'04 Jul 2026, 16:20', cardId:'-'},
+      {proc:'03 Jul 2026, 11:25', temp:'101.8', hr:'125', rr:'28', crt:'2', pulse:'125', bp:'142/90', fbs:'112', cons:'Alert', mm:'Pink (normal)', lung:'Wheezes', heart:'Murmur', crit:'', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', created:'03 Jul 2026, 11:25', update:'03 Jul 2026, 12:00', cardId:'exam-card-69001236'},
+      {proc:'03 Jul 2026, 08:15', temp:'100.0', hr:'88', rr:'18', crt:'<2', pulse:'88', bp:'122/78', fbs:'92', cons:'Alert', mm:'Pink (normal)', lung:'Normal', heart:'Normal', crit:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', created:'03 Jul 2026, 08:15', update:'03 Jul 2026, 08:45', cardId:'-'},
+      {proc:'02 Jul 2026, 10:10', temp:'102.6', hr:'155', rr:'38', crt:'3', pulse:'155', bp:'115/72', fbs:'135', cons:'Stupor', mm:'Pale', lung:'Diminished', heart:'Murmur', crit:'Cyanosis, Seizure', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', created:'02 Jul 2026, 09:30', update:'02 Jul 2026, 11:00', cardId:'exam-card-69001236'},
+      {proc:'02 Jul 2026, 13:30', temp:'101.2', hr:'108', rr:'22', crt:'2', pulse:'108', bp:'133/86', fbs:'100', cons:'Alert', mm:'Pink (normal)', lung:'Normal', heart:'Normal', crit:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', created:'02 Jul 2026, 13:30', update:'', cardId:'exam-card-69001234'},
+      {proc:'01 Jul 2026, 09:50', temp:'100.5', hr:'92', rr:'19', crt:'<2', pulse:'92', bp:'126/80', fbs:'96', cons:'Alert', mm:'Pink (normal)', lung:'Normal', heart:'Normal', crit:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', created:'01 Jul 2026, 09:50', update:'01 Jul 2026, 10:15', cardId:'-'},
+      {proc:'01 Jul 2026, 14:55', temp:'103.0', hr:'165', rr:'42', crt:'4', pulse:'165', bp:'105/65', fbs:'145', cons:'Comatose', mm:'Cyanosis', lung:'Crackles', heart:'Arrhythmia', crit:'Seizure, Arrest', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', created:'01 Jul 2026, 14:30', update:'01 Jul 2026, 15:30', cardId:'exam-card-69001236'}
+    ];
+
+    for (var i = 0; i < vitalSigns.length; i++) {
+      tableData.push(vitalSigns[i]);
+    }
+
+    function badgeClass(category, shortVal) {
+      var map = {
+        type: { 'Sign': 'sign', 'Dx': 'dx', 'DDx': 'ddx', 'R/O': 'ro' },
+        status: { 'Active': 'status-active', 'Pending': 'status-pending', 'Resolved/Inactive': 'status-resolved', 'Follow': 'status-follow', 'Chronic': 'status-chronic' },
+        prog: { 'Good': 'prog-good', 'Guarded': 'prog-guarded', 'Poor': 'prog-poor', 'Grave': 'prog-grave' }
+      };
+      return map[category] && map[category][shortVal] ? map[category][shortVal] : '';
+    }
+
+    function renderTable(data) {
+      var tbody = document.getElementById('data-table-body');
+      var html = '';
+      for (var i = 0; i < data.length; i++) {
+        var r = data[i];
+        var dash = '<span style="color:#d1d5db;">—</span>';
+        html += '<tr><td>' + r.proc +
+          '</td><td>' + (r.temp || dash) + '</td><td>' + (r.hr || dash) + '</td><td>' + (r.rr || dash) +
+          '</td><td>' + (r.crt || dash) + '</td><td>' + (r.pulse || dash) + '</td><td>' + (r.bp || dash) +
+          '</td><td>' + (r.fbs || dash) + '</td><td>' + (r.cons || dash) + '</td><td>' + (r.mm || dash) +
+          '</td><td>' + (r.lung || dash) + '</td><td>' + (r.heart || dash) + '</td><td>' + (r.crit || dash) +
+          '</td><td>' + r.dvm + '</td><td>' + r.dept +
+          '</td><td>' + r.created + '</td><td>' + (r.update || dash) +
+          '</td><td>' + (r.cardId && r.cardId !== '-' ? '<span style="color:#7c3aed;font-weight:500;">' + r.cardId + '</span>' : '<span style="color:#d1d5db;">—</span>') + '</td></tr>';
+      }
+      tbody.innerHTML = html;
+    }
+
+    function toggleMultiCheck(key) {
+      var panel = document.getElementById('mc-' + key);
+      var btn = panel.previousElementSibling;
+      var isOpen = panel.classList.contains('show');
+      document.querySelectorAll('.multi-check-panel.show').forEach(function(p) {
+        p.classList.remove('show');
+        p.previousElementSibling.classList.remove('active');
+      });
+      if (!isOpen) {
+        panel.classList.add('show');
+        btn.classList.add('active');
+      }
+    }
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.multi-check')) {
+        document.querySelectorAll('.multi-check-panel.show').forEach(function(p) {
+          p.classList.remove('show');
+          p.previousElementSibling.classList.remove('active');
+        });
+      }
+    });
+
+    function getMultiCheckValues(key) {
+      var panel = document.getElementById('mc-' + key);
+      var vals = [];
+      panel.querySelectorAll('input:checked').forEach(function(cb) { vals.push(cb.value); });
+      return vals;
+    }
+
+    function getNumVal(id) {
+      var v = document.getElementById(id).value;
+      return v === '' ? null : parseFloat(v);
+    }
+
+    function matchNum(rowVal, op, filterVal) {
+      if (filterVal === null) return true;
+      if (!rowVal) return false;
+      var rv = parseFloat(rowVal);
+      if (op === '' || op === 'eq') return rv === filterVal;
+      if (op === 'gt') return rv > filterVal;
+      if (op === 'lt') return rv < filterVal;
+      return true;
+    }
+
+    function matchMulti(rowVal, vals) {
+      if (!vals.length) return true;
+      if (!rowVal) return false;
+      return vals.indexOf(rowVal) >= 0;
+    }
+
+    function matchMultiCrit(rowVal, vals) {
+      if (!vals.length) return true;
+      if (!rowVal) return false;
+      var items = rowVal.split(',').map(function(s) { return s.trim(); });
+      return vals.some(function(v) { return items.indexOf(v) >= 0; });
+    }
+
+    function clearFilter() {
+      ['f-temp','f-hr','f-rr','f-pulse','f-bp','f-fbs'].forEach(function(k) {
+        document.getElementById(k + '-op').value = '';
+        document.getElementById(k + '-val').value = '';
+      });
+      document.getElementById('f-crt-val').value = '';
+      document.querySelectorAll('.multi-check-panel input:checked').forEach(function(cb) { cb.checked = false; });
+      document.querySelectorAll('.multi-check-btn.active').forEach(function(b) { b.classList.remove('active'); });
+      renderTable(tableData);
+    }
+
+    function filterTable() {
+      var fTemp = getNumVal('f-temp-val'), opTemp = document.getElementById('f-temp-op').value;
+      var fHR = getNumVal('f-hr-val'), opHR = document.getElementById('f-hr-op').value;
+      var fRR = getNumVal('f-rr-val'), opRR = document.getElementById('f-rr-op').value;
+      var fPulse = getNumVal('f-pulse-val'), opPulse = document.getElementById('f-pulse-op').value;
+      var fBP = getNumVal('f-bp-val'), opBP = document.getElementById('f-bp-op').value;
+      var fFBS = getNumVal('f-fbs-val'), opFBS = document.getElementById('f-fbs-op').value;
+      var fCRT = document.getElementById('f-crt-val').value;
+      var mmVals = getMultiCheckValues('mm');
+      var consVals = getMultiCheckValues('cons');
+      var lungVals = getMultiCheckValues('lung');
+      var heartVals = getMultiCheckValues('heart');
+      var critVals = getMultiCheckValues('crit');
+
+      var filtered = tableData.filter(function(r) {
+        return matchNum(r.temp, opTemp, fTemp) &&
+          matchNum(r.hr, opHR, fHR) &&
+          matchNum(r.rr, opRR, fRR) &&
+          (fCRT === '' || (fCRT === 'lt2' ? r.crt === '<2' : r.crt !== '<2' && r.crt !== '')) &&
+          matchNum(r.pulse, opPulse, fPulse) &&
+          matchNum(r.bp, opBP, fBP) &&
+          matchNum(r.fbs, opFBS, fFBS) &&
+          matchMulti(r.mm, mmVals) &&
+          matchMulti(r.cons, consVals) &&
+          matchMulti(r.lung, lungVals) &&
+          matchMulti(r.heart, heartVals) &&
+          matchMultiCrit(r.crit, critVals);
+      });
+      renderTable(filtered);
+    }
+
+    renderTable(tableData);
+  </script>
+</body>
+</html>
