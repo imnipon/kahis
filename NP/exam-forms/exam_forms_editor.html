@@ -298,6 +298,25 @@
     .check-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px 14px; margin-bottom: 4px; }
     .check-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #374151; cursor: pointer; }
     .check-item input { width: 16px; height: 16px; accent-color: #6366f1; cursor: pointer; }
+    .section-nav { position: sticky; top: -10px; z-index: 8; display: flex; gap: 6px; overflow-x: auto; padding: 10px 0 12px; margin-bottom: 8px; background: rgba(255,255,255,.96); border-bottom: 1px solid #e5e7eb; scrollbar-width: thin; }
+    .section-nav button { flex: none; border: 1px solid #c7d2fe; border-radius: 999px; background: #fff; color: #4338ca; padding: 7px 11px; font-size: 11px; font-weight: 600; font-family: inherit; cursor: pointer; white-space: nowrap; }
+    .section-nav button:hover { background: #eef2ff; border-color: #818cf8; }
+    .assessment-section { scroll-margin-top: 64px; border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px; margin-bottom: 12px; background: #fff; }
+    .assessment-section:last-child { margin-bottom: 4px; }
+    .assessment-section-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-bottom: 8px; margin-bottom: 10px; border-bottom: 1px solid #eef0f4; }
+    .assessment-section-title { font-size: 13px; font-weight: 700; color: #312e81; }
+    .assessment-section-hint { font-size: 10px; color: #9ca3af; text-align: right; }
+    .clinical-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 10px 12px; }
+    .clinical-grid + .clinical-grid, .choice-block + .clinical-grid, .clinical-grid + .choice-block { margin-top: 10px; }
+    .field .field-hint { min-height: 14px; margin-top: 4px; color: #9ca3af; font-size: 10px; line-height: 1.4; }
+    .choice-block { margin-top: 10px; }
+    .choice-block:first-child { margin-top: 0; }
+    .choice-label { display: block; margin-bottom: 7px; color: #7c8698; font-size: 12px; }
+    .choice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 6px 10px; }
+    .choice-grid .check-item { min-height: 30px; padding: 6px 8px; border: 1px solid #e5e7eb; border-radius: 7px; background: #fafbfc; font-size: 11px; }
+    .choice-grid .check-item:has(input:checked) { border-color: #a5b4fc; background: #eef2ff; color: #3730a3; }
+    .reflex-grid { display: grid; grid-template-columns: minmax(145px, 1.3fr) 1fr 1fr; gap: 10px 12px; align-items: end; }
+    .section-note { margin-top: 10px; padding: 8px 10px; border-left: 3px solid #c7d2fe; background: #f8faff; color: #64748b; font-size: 10px; line-height: 1.5; }
     .logic-badge {
       display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border: 1px solid #f9a8d4; border-radius: 999px;
       font-size: 13px; background: #fdf2f8; color: #db2777; font-family: inherit; cursor: pointer; font-weight: 500; transition: all .15s;
@@ -353,48 +372,112 @@
       <!-- TAB 1 -->
       <div class="tab-content" id="content-1"><div class="grid">
         <div class="editor-panel"><div class="editor-panel-head">Forms</div><div class="editor-panel-body">
-          <div class="forms-list-item active"><div class="fname">Vital Sign</div><div class="check">✓</div></div>
+          <div class="forms-list-item active"><div class="fname">Vital Sign & Physical Examination</div><div class="check">✓</div></div>
         </div></div>
         <div class="editor-panel"><div class="editor-panel-head">Form Editor</div>
           <div class="form-sub-header">
-            <div><div class="form-name">Vital Sign</div></div>
+            <div><div class="form-name">Vital Sign & Physical Examination</div></div>
           </div>
           <div class="editor-panel-body">
-            <div class="form-section-label">Vital Signs</div>
-            <div class="field-row-4">
-              <div class="field"><label>Temp (°F)</label><input class="ctrl vs-input" type="text" placeholder="102"></div>
-              <div class="field"><label>HR (bpm)</label><input class="ctrl vs-input" type="text" placeholder="120"></div>
-              <div class="field"><label>RR (rpm)</label><input class="ctrl vs-input" type="text" placeholder="24"></div>
-              <div class="field"><label>BP (mmHg)</label><input class="ctrl vs-input" type="text" placeholder="140/90"></div>
-            </div>
-            <div class="field-row-4">
-              <div class="field"><label>CRT (sec)</label><input class="ctrl vs-input" type="text" placeholder="<2"></div>
-              <div class="field"><label>Pulse (bpm)</label><input class="ctrl vs-input" type="text" placeholder="120"></div>
-              <div class="field"><label>FBS (mg/dL)</label><input class="ctrl vs-input" type="text" placeholder="110"></div>
-            </div>
-            <hr class="meta-divider">
-            <div class="form-section-label">Physical Examination</div>
-            <div class="detail-grid">
-              <div class="field"><label>Mucous Membrane</label><select class="ctrl"><option value="" disabled selected>กรุณาเลือกข้อมูล</option><option>Pink (normal)</option><option>Pale</option><option>Yellow</option><option>Red</option><option>Cyanosis</option></select></div>
-              <div class="field"><label>Consciousness</label><select class="ctrl"><option value="" disabled selected>กรุณาเลือกข้อมูล</option><option>Alert</option><option>Depressed</option><option>Stupor</option><option>Comatose</option><option>Seizure</option></select></div>
-            </div>
-            <div class="detail-grid">
-              <div class="field"><label>Lung Sound</label><select class="ctrl"><option value="" disabled selected>กรุณาเลือกข้อมูล</option><option>Normal</option><option>Crackles</option><option>Wheezes</option><option>Diminished</option><option>Absent</option></select></div>
-              <div class="field"><label>Heart Sound</label><select class="ctrl"><option value="" disabled selected>กรุณาเลือกข้อมูล</option><option>Normal</option><option>Murmur</option><option>Gallop</option><option>Muffled</option><option>Arrhythmia</option></select></div>
-            </div>
-            <hr class="meta-divider">
-            <div class="form-section-label">Critical Event</div>
-            <div class="check-grid">
-              <label class="check-item"><input type="checkbox"> Cyanosis</label>
-              <label class="check-item"><input type="checkbox"> Seizure</label>
-              <label class="check-item"><input type="checkbox"> Arrest</label>
-              <label class="check-item"><input type="checkbox"> dummy</label>
-              <label class="check-item"><input type="checkbox"> dummy</label>
-              <label class="check-item"><input type="checkbox"> dummy</label>
-              <label class="check-item"><input type="checkbox"> dummy</label>
-              <label class="check-item"><input type="checkbox"> dummy</label>
-              <label class="check-item"><input type="checkbox"> dummy</label>
-            </div>
+            <div class="section-nav" aria-label="Assessment sections">            <div class="section-nav" aria-label="Assessment sections">
+              <button type="button" onclick="scrollToAssessmentSection(this, 'core-vital')">Vital Signs</button>
+              <button type="button" onclick="scrollToAssessmentSection(this, 'monitoring')">Monitoring</button>
+              <button type="button" onclick="scrollToAssessmentSection(this, 'perfusion')">Perfusion</button>
+              <button type="button" onclick="scrollToAssessmentSection(this, 'critical')">Critical Events</button>
+              <button type="button" onclick="scrollToAssessmentSection(this, 'respiratory')">Respiratory</button>
+              <button type="button" onclick="scrollToAssessmentSection(this, 'neuro')">Neuro / LOC</button>
+              <button type="button" onclick="scrollToAssessmentSection(this, 'mobility')">Mobility</button>
+              <button type="button" onclick="scrollToAssessmentSection(this, 'pain')">Pain</button>
+            </div></div>
+
+            <section class="assessment-section" id="core-vital">
+              <div class="assessment-section-head"><div class="assessment-section-title">1. Core Vital Signs</div><div class="assessment-section-hint">ค่าพื้นฐานของผู้ป่วย</div></div>
+              <div class="clinical-grid">
+                <div class="field"><label>Temp (°F)</label><input class="ctrl" type="number" step="0.1" placeholder="101.5"></div>
+                <div class="field"><label>HR (bpm)</label><input class="ctrl" type="number" min="0" step="1" placeholder="120"></div>
+                <div class="field"><label>RR (breaths/min)</label><input class="ctrl" type="number" min="0" step="1" placeholder="24"></div>
+                <div class="field"><label>Pulse (bpm)</label><input class="ctrl" type="number" min="0" step="1" placeholder="118"></div>
+                <div class="field"><label>Weight (kg)</label><input class="ctrl" type="number" min="0" step="0.01" placeholder="12.40"></div>
+                <div class="field"><label>CRT (sec)</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>&lt;1</option><option>1</option><option>&lt;2</option><option>2</option><option>3</option><option>4</option><option>&gt;4</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>FBS (mg/dL)</label><input class="ctrl" type="number" min="0" step="1" placeholder="105"></div>
+                <div class="field"><label>Hydration Status</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Normal</option><option>Dehydrated</option><option>Overhydrated</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Estimated Dehydration (%)</label><input class="ctrl" type="number" min="0" max="15" step="0.5" placeholder="7"><div class="field-hint">กรอกเมื่อประเมินว่า dehydrated</div></div>
+              </div>
+            </section><section class="assessment-section" id="monitoring">
+              <div class="assessment-section-head"><div class="assessment-section-title">2. Blood Pressure &amp; Advanced Monitoring</div><div class="assessment-section-hint">NIBP, oxygenation และ ventilation</div></div>
+              <div class="clinical-grid">
+                <div class="field"><label>NIBP SYS (mmHg)</label><input class="ctrl" type="number" min="0" step="1" placeholder="125"></div>
+                <div class="field"><label>NIBP DIA (mmHg)</label><input class="ctrl" type="number" min="0" step="1" placeholder="78"></div>
+                <div class="field"><label>NIBP MAP (mmHg)</label><input class="ctrl" type="number" min="0" step="1" placeholder="94"></div>
+                <div class="field"><label>BP Method</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Oscillometric</option><option>Doppler</option><option>Invasive</option><option>Other</option></select></div>
+                <div class="field"><label>Cuff Site</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Left forelimb</option><option>Right forelimb</option><option>Left hindlimb</option><option>Right hindlimb</option><option>Tail</option><option>Other</option></select></div>
+                <div class="field"><label>SpO2 (%)</label><input class="ctrl" type="number" min="0" max="100" step="1" placeholder="97"></div>
+                <div class="field"><label>EtCO2 (mmHg)</label><input class="ctrl" type="number" min="0" step="1" placeholder="38"></div>
+                <div class="field"><label>Oxygen Support</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Room air</option><option>Flow-by</option><option>Nasal oxygen</option><option>Mask</option><option>Oxygen cage</option><option>Intubated</option><option>Other</option></select></div>
+              </div>
+            </section><section class="assessment-section" id="perfusion">
+              <div class="assessment-section-head"><div class="assessment-section-title">3. Perfusion, Mucosa &amp; Bleeding</div><div class="assessment-section-hint">ตำแหน่งตรวจ สีเยื่อเมือก และภาวะเลือดออก</div></div>
+              <div class="choice-block"><span class="choice-label">Mucous Membrane Site</span><div class="choice-grid">
+                <label class="check-item"><input type="checkbox"> Oral mucosa</label><label class="check-item"><input type="checkbox"> Conjunctiva</label><label class="check-item"><input type="checkbox"> Prepuce</label><label class="check-item"><input type="checkbox"> Vulva</label><label class="check-item"><input type="checkbox"> Other</label>
+              </div></div>
+              <div class="clinical-grid">
+                <div class="field"><label>Mucous Membrane Color</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Pink / Normal</option><option>Pale</option><option>White</option><option>Red</option><option>Injected</option><option>Dark pink</option><option>Muddy</option><option>Jaundiced / Yellow</option><option>Cyanotic / Blue</option><option>Gray</option><option>Other</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Bleeding Status</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>No active bleeding</option><option>Active — controlled</option><option>Active — uncontrolled</option><option>Suspected internal bleeding</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Bleeding Severity</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>None</option><option>Mild</option><option>Moderate</option><option>Severe</option></select></div>
+                <div class="field"><label>Bleeding Site</label><input class="ctrl" type="text" placeholder="ระบุตำแหน่ง"></div>
+              </div>
+            </section><section class="assessment-section" id="critical">
+              <div class="assessment-section-head"><div class="assessment-section-title">4. Cardiac &amp; Critical Events</div><div class="assessment-section-hint">เสียงหัวใจและเหตุการณ์วิกฤต</div></div>
+              <div class="clinical-grid">
+                <div class="field"><label>Heart Sound</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Normal</option><option>Murmur</option><option>Gallop</option><option>Muffled</option><option>Arrhythmia</option><option>Other</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Critical Event Time</label><input class="ctrl" type="datetime-local"></div>
+              </div>
+              <div class="choice-block"><span class="choice-label">Critical Events</span><div class="choice-grid">
+                <label class="check-item"><input type="checkbox"> Cyanosis</label><label class="check-item"><input type="checkbox"> Seizure</label><label class="check-item"><input type="checkbox"> Cardiorespiratory arrest</label><label class="check-item"><input type="checkbox"> Respiratory arrest</label><label class="check-item"><input type="checkbox"> Syncope / Collapse</label><label class="check-item"><input type="checkbox"> Other</label>
+              </div></div>
+                          <div class="field"><label>Critical Events Note</label><input class="ctrl" type="text" placeholder="ข้อมูลประกอบเหตุวิกฤต"></div>
+            </section><section class="assessment-section" id="respiratory">
+              <div class="assessment-section-head"><div class="assessment-section-title">5. Respiratory Assessment</div><div class="assessment-section-hint">ประเมิน effort, depth, pattern และเสียงทางเดินหายใจ</div></div>
+              <div class="clinical-grid">
+                <div class="field"><label>Respiratory Effort</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Normal</option><option>Increased</option><option>Decreased</option><option>Labored</option><option>Paradoxical</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Respiratory Depth</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Normal</option><option>Shallow</option><option>Deep</option><option>Variable</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Respiratory Pattern</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Eupnea</option><option>Tachypnea</option><option>Bradypnea</option><option>Apnea</option><option>Rapid and shallow</option><option>Prolonged inspiration</option><option>Prolonged expiration</option><option>Prolonged inspiration and expiration</option><option>Irregular</option><option>Paradoxical</option><option>Other</option></select></div>
+                <div class="field"><label>Affected Phase</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>None</option><option>Inspiratory</option><option>Expiratory</option><option>Biphasic</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Lung Sound Side</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Left</option><option>Right</option><option>Bilateral</option><option>Unable to localize</option></select></div>
+                <div class="field"><label>Lung Region</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>All lung fields</option><option>Cranial</option><option>Middle</option><option>Caudal</option><option>Dorsal</option><option>Ventral</option></select></div>
+              </div>
+              <div class="choice-block"><span class="choice-label">Lung / Airway Sounds</span><div class="choice-grid">
+                <label class="check-item"><input type="checkbox"> Normal</label><label class="check-item"><input type="checkbox"> Upper airway / Referred</label><label class="check-item"><input type="checkbox"> Wheeze</label><label class="check-item"><input type="checkbox"> Crackles</label><label class="check-item"><input type="checkbox"> Harsh</label><label class="check-item"><input type="checkbox"> Dull</label><label class="check-item"><input type="checkbox"> Absent</label><label class="check-item"><input type="checkbox"> Other</label>
+              </div></div>
+            </section><section class="assessment-section" id="neuro">
+              <div class="assessment-section-head"><div class="assessment-section-title">6. Neurologic &amp; Mentation</div><div class="assessment-section-hint">ระดับความรู้สึกตัว การตอบสนอง และ reflex</div></div>
+              <div class="clinical-grid">
+                <div class="field"><label>Level of Consciousness / Mentation</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>BAR — Bright, Alert and Responsive</option><option>QAR — Quiet, Alert and Responsive</option><option>Depressed / Dull / Lethargic</option><option>Hyperactive / Hysterical / Irritable</option><option>Obtunded</option><option>Stuporous</option><option>Comatose</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Reaction to Stimuli &amp; Surroundings</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Appropriate</option><option>Exaggerated</option><option>Decreased</option><option>Absent</option><option>Inappropriate</option><option>Unable to assess</option></select></div>
+              </div>
+              <div class="reflex-grid">
+                <div class="field"><label>Reflex Type</label><select class="ctrl"><option>Palpebral reflex</option></select></div>
+                <div class="field"><label>Left Response</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Present</option><option>Decreased</option><option>Absent</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Right Response</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Present</option><option>Decreased</option><option>Absent</option><option>Unable to assess</option></select></div>
+              </div>
+            </section><section class="assessment-section" id="mobility">
+              <div class="assessment-section-head"><div class="assessment-section-title">7. Mobility &amp; Posture</div><div class="assessment-section-hint">สังเกตการเดินเข้าหาผู้ตรวจและท่าทาง</div></div>
+              <div class="clinical-grid">
+                <div class="field"><label>Gait</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Normal</option><option>Ambulatory with abnormality</option><option>Ataxic</option><option>Lame</option><option>Weak / Paretic</option><option>Non-ambulatory</option><option>Unable to assess</option><option>Other</option></select></div>
+                <div class="field"><label>Posture</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Normal</option><option>Standing</option><option>Sitting</option><option>Sternal recumbency</option><option>Lateral recumbency</option><option>Orthopneic</option><option>Hunched</option><option>Abnormal</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Mobility Note</label><input class="ctrl" type="text" placeholder="รายละเอียดเพิ่มเติม"></div>
+              </div>
+            </section>            <section class="assessment-section" id="pain">
+              <div class="assessment-section-head"><div class="assessment-section-title">8. Pain Assessment</div><div class="assessment-section-hint">ประเมินความเจ็บปวด</div></div>
+              <div class="clinical-grid">
+                <div class="field"><label>Pain Score</label><input class="ctrl" type="number" min="0" step="1" placeholder="3"></div>
+                <div class="field"><label>Maximum Score</label><input class="ctrl" type="number" min="1" step="1" placeholder="24"></div>
+                <div class="field"><label>Observed Pain Severity</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>None</option><option>Mild</option><option>Moderate</option><option>Severe</option></select></div>
+              </div>
+              <div class="choice-block"><span class="choice-label">Observed Pain Indicators</span><div class="choice-grid">
+                <label class="check-item"><input type="checkbox"> Vocalization</label><label class="check-item"><input type="checkbox"> Guarding</label><label class="check-item"><input type="checkbox"> Restlessness</label><label class="check-item"><input type="checkbox"> Reduced movement</label><label class="check-item"><input type="checkbox"> Aggression</label><label class="check-item"><input type="checkbox"> Abnormal posture</label>
+              </div></div>
+            </section>
           </div>
         </div>
         <div class="editor-panel"><div class="editor-panel-head"><span>Record Meta</span><button class="btn-confirm" onclick="assessConfirm(1)">&#10003; Confirm</button></div><div class="editor-panel-body">
@@ -760,6 +843,14 @@
 
   <script>
     // ====== ASSESSMENT MODAL JS ======
+    function scrollToAssessmentSection(button, sectionId) {
+      var body = button.closest('.editor-panel-body');
+      var target = body ? body.querySelector('#' + sectionId) : null;
+      if (!body || !target) return;
+      var top = target.getBoundingClientRect().top - body.getBoundingClientRect().top + body.scrollTop - 54;
+      body.scrollTo({ top: top, behavior: 'smooth' });
+    }
+
     var tabMetaMap = {
       '1': { dvm: 'นิพนธ์ วงศ์ประเสริฐ', dept: 'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', time: '10.57' },
       '2': { dvm: 'นิพนธ์ วงศ์ประเสริฐ', dept: 'อายุรกรรมทั่วไป (ในเวลา)', time: '10.57' },
