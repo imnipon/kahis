@@ -128,28 +128,41 @@
     .vtab {
       display: flex; flex-direction: column; justify-content: center;
       padding: 6px 14px; border-radius: 8px 8px 0 0; cursor: pointer; font-size: 11px; color: #6b7280;
-      background: #f9fafb; border: 1px solid #e5e7eb; border-bottom: none; min-width: 130px; line-height: 1.3;
+      background: #f9fafb; border: 1px solid #e5e7eb; border-bottom: none; border-top: 3px solid transparent;
+      box-sizing: border-box; min-width: 130px; line-height: 1.3;
     }
+    .vtab.active .line1 { font-weight: 700; }
+    .vtab.active .line1::before { content: '●'; margin-right: 4px; }
     .vtab:hover { background: #eff6ff; }
-    .vtab.active { background: #eff6ff; color: #2563eb; border-color: #93c5fd; border-bottom: 2px solid #eff6ff; }
+    .vtab.active { background: #fff; color: #2563eb; border-color: #e5e7eb; border-bottom: 2px solid #fff; border-top-color: #2563eb; }
     .vtab.active .line2 { color: #60a5fa; }
     .vtab .new-badge { background: #dc2626; color: #fff; font-size: 9px; font-weight: 600; padding: 1px 5px; border-radius: 3px; }
     .vtab.add-visit { background: #f0fdf4; color: #16a34a; border-color: #86efac; }
     .vtab.add-visit:hover { background: #dcfce7; border-color: #4ade80; }
     .vtab.add-visit .line2 { color: #16a34a; }
+    .vtab.add-visit.active { background: #fff; color: #16a34a; border-color: #86efac; border-bottom: 2px solid #fff; border-top-color: #16a34a; }
+    .vtab.basic-visit { background: #fff7ed; color: #c2410c; border-color: #fdba74; }
+    .vtab.basic-visit:hover { background: #ffedd5; border-color: #fb923c; }
+    .vtab.basic-visit.active { background: #fff; color: #c2410c; border-color: #fdba74; border-bottom: 2px solid #fff; border-top-color: #f97316; }
+    .vtab.basic-visit .line2 { color: #c2410c; }
     .visit-topbar {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 6px 16px; background: #fff; border-bottom: 1px solid #e5e7eb;
+      display: flex; align-items: center; justify-content: space-between; box-sizing: border-box;
+      padding: 6px 16px; background: #fff; border-left: 1px solid #e5e7eb; border-right: 1px solid #e5e7eb;
       font-size: 11px; color: #9ca3af; flex-shrink: 0;
     }
     .visit-topbar b { color: #374151; font-weight: 600; }
     .visit-topbar .for-date { color: #1d4ed8; font-weight: 600; }
     .section-title { font-size: 16px; font-weight: 600; color: #444; margin-bottom: 0; display: flex; align-items: center; gap: 8px; }
-    .grid { display: grid; grid-template-columns: 1fr 3.2fr 1.1fr; gap: 16px; }
+    .grid { display: grid; grid-template-columns: 1fr 3.2fr 1.1fr; grid-template-rows: 1fr; gap: 16px; height: 100%; }
     .editor-panel {
       background: #fff; border: 1px solid #e5e7eb; border-radius: 10px;
-      display: flex; flex-direction: column; height: calc(95vh - 180px); min-height: 400px;
+      display: flex; flex-direction: column; height: 100%; min-height: 400px; overflow: hidden;
     }
+    .tab-content .editor-panel { border-top: none; border-radius: 0 0 10px 10px; }
+    #content-1 { background: #fff; border-left: 1px solid #e5e7eb; border-right: 1px solid #e5e7eb; box-sizing: border-box; }
+    #content-1 .grid { gap: 0; }
+    #content-1 .editor-panel { background: transparent; border: none; border-radius: 0; }
+    #content-1 .editor-panel:not(:last-child) { border-right: 1px solid #e5e7eb; }
     .editor-panel-head {
       padding: 10px 14px; border-bottom: 1px solid #eee; font-weight: 600; font-size: 13px;
       display: flex; align-items: center; justify-content: space-between;
@@ -247,6 +260,8 @@
     .data-table-wrap { overflow: auto; flex: 1; padding-bottom: 60px; }
     .data-table { width: 100%; min-width: 1550px; border-collapse: collapse; font-size: 12px; table-layout: auto; }
     .data-table th:nth-child(1), .data-table td:nth-child(1) { width: 120px; }
+    .data-table thead th:nth-child(1) { left: 0; z-index: 3; }
+    .data-table tbody td:nth-child(1) { position: sticky; left: 0; z-index: 2; background: #fff; }
     .data-table thead th { position: sticky; top: 0; z-index: 1; background: #f9fafb; text-align: left; padding: 10px 12px; color: #6b7280; font-weight: 600; border-bottom: 1px solid #e5e7eb; font-size: 11px; white-space: nowrap; }
     .data-table tbody td { padding: 9px 12px; border-bottom: 1px solid #f0f0f0; white-space: nowrap; }
     .data-table tbody tr:hover { background: #f9fafb; }
@@ -298,9 +313,18 @@
     .check-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px 14px; margin-bottom: 4px; }
     .check-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #374151; cursor: pointer; }
     .check-item input { width: 16px; height: 16px; accent-color: #6366f1; cursor: pointer; }
-    .section-nav { position: sticky; top: -10px; z-index: 8; display: flex; gap: 6px; overflow-x: auto; padding: 10px 0 12px; margin-bottom: 8px; background: rgba(255,255,255,.96); border-bottom: 1px solid #e5e7eb; scrollbar-width: thin; }
-    .section-nav button { flex: none; border: 1px solid #c7d2fe; border-radius: 999px; background: #fff; color: #4338ca; padding: 7px 11px; font-size: 11px; font-weight: 600; font-family: inherit; cursor: pointer; white-space: nowrap; }
-    .section-nav button:hover { background: #eef2ff; border-color: #818cf8; }
+    .form-sub-header + .editor-panel-body { padding-top: 0; }
+    .section-nav { position: sticky; top: 0; z-index: 8; display: flex; flex-wrap: nowrap; gap: 4px; overflow-x: auto; overflow-y: hidden; padding: 6px 0; margin-bottom: 4px; background: #fff; border-bottom: 1px solid #e5e7eb; scrollbar-width: thin; }
+    .section-nav button { flex: none; border: 1px solid transparent; border-radius: 999px; background: #f3f4f6; color: #374151; padding: 5px 10px; font-size: 11px; font-weight: 600; font-family: inherit; cursor: pointer; white-space: nowrap; }
+    .section-nav button:hover { opacity: .92; }
+    .section-nav button.nav-vitals { background: #dbeafe; color: #1e40af; }
+    .section-nav button.nav-monitoring { background: #e0e7ff; color: #3730a3; }
+    .section-nav button.nav-perfusion { background: #ffedd5; color: #9a3412; }
+    .section-nav button.nav-critical { background: #fee2e2; color: #991b1b; }
+    .section-nav button.nav-respiratory { background: #ccfbf1; color: #115e59; }
+    .section-nav button.nav-neuro { background: #f3e8ff; color: #6b21a8; }
+    .section-nav button.nav-mobility { background: #dcfce7; color: #166534; }
+    .section-nav button.nav-pain { background: #fce7f3; color: #9d174d; }
     .assessment-section { scroll-margin-top: 64px; border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px; margin-bottom: 12px; background: #fff; }
     .assessment-section:last-child { margin-bottom: 4px; }
     .assessment-section-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-bottom: 8px; margin-bottom: 10px; border-bottom: 1px solid #eef0f4; }
@@ -337,6 +361,78 @@
     .logic-list li::before { content: ''; position: absolute; left: 4px; top: 11px; width: 6px; height: 6px; border-radius: 50%; background: #f9a8d4; }
     .logic-list li b { color: #be185d; }
     .launcher-bar { display: flex; align-items: center; gap: 12px; padding: 20px; }
+  
+    /* topic colored column headers */
+    .data-table thead th.th-date { background: #f1f5f9; color: #475569; }
+    .data-table thead th.th-vitals { background: #dbeafe; color: #1e40af; }
+    .data-table thead th.th-monitoring { background: #e0e7ff; color: #3730a3; }
+    .data-table thead th.th-perfusion { background: #ffedd5; color: #9a3412; }
+    .data-table thead th.th-critical { background: #fee2e2; color: #991b1b; }
+    .data-table thead th.th-respiratory { background: #ccfbf1; color: #115e59; }
+    .data-table thead th.th-neuro { background: #f3e8ff; color: #6b21a8; }
+    .data-table thead th.th-mobility { background: #dcfce7; color: #166534; }
+    .data-table thead th.th-pain { background: #fce7f3; color: #9d174d; }
+    .data-table thead th.th-meta { background: #f8fafc; color: #334155; }
+    .data-table thead th.th-basic { background: #fff7ed; color: #9a3412; }
+    .filter-section { border-bottom: 1px solid #eee; }
+    .filter-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 14px; }
+    .filter-toggle { padding: 6px 12px; border: 1px solid #d0d5dd; border-radius: 6px; background: #fff; cursor: pointer; font-family: inherit; font-size: 13px; }
+    .filter-actions { display: flex; gap: 6px; }
+    .filter-panel { display: none; padding: 10px 14px; background: #fafafa; border-bottom: 1px solid #eee; max-height: 40vh; overflow-y: auto; }
+    .filter-panel.show { display: block; }
+    .filter-panel.compact { padding: 0; background: #fff; }
+    .filter-panel.compact .filter-group { display: flex; flex-wrap: wrap; align-items: center; margin: 0; padding: 6px 10px; border: none; border-radius: 0; border-top: 3px solid #e5e7eb; border-bottom: 1px solid #f0f0f0; }
+    .filter-panel.compact .filter-group:last-child { border-bottom: none; }
+    .filter-panel.compact .filter-group-title { flex-shrink: 0; width: 75px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .3px; margin-right: 10px; }
+    .filter-panel.compact .filter-grid { display: contents; }
+    .filter-panel.compact .filter-control { flex-direction: row; align-items: center; min-width: auto; gap: 4px; margin: 2px 4px; }
+    .filter-panel.compact .filter-control label { font-size: 10px; color: #6b7280; margin-bottom: 0; white-space: nowrap; }
+    .filter-panel.compact .num-filter input { width: 50px; }
+    .filter-panel.compact .num-filter select { width: 30px; padding: 0 2px; }
+    .filter-panel.compact .text-filter input[type="text"] { width: 90px; }
+    .filter-panel.compact .btn-today { padding: 1px 6px; font-size: 9px; }
+    .filter-panel.compact .multi-check-btn { padding: 3px 6px; font-size: 10px; }
+    .filter-panel.compact .filter-group-date { border-top-color: #475569; }
+    .filter-panel.compact .filter-group-date .filter-group-title { color: #475569; }
+    .filter-panel.compact .filter-group-vitals { border-top-color: #1e40af; }
+    .filter-panel.compact .filter-group-vitals .filter-group-title { color: #1e40af; }
+    .filter-panel.compact .filter-group-monitoring { border-top-color: #3730a3; }
+    .filter-panel.compact .filter-group-monitoring .filter-group-title { color: #3730a3; }
+    .filter-panel.compact .filter-group-perfusion { border-top-color: #9a3412; }
+    .filter-panel.compact .filter-group-perfusion .filter-group-title { color: #9a3412; }
+    .filter-panel.compact .filter-group-critical { border-top-color: #991b1b; }
+    .filter-panel.compact .filter-group-critical .filter-group-title { color: #991b1b; }
+    .filter-panel.compact .filter-group-respiratory { border-top-color: #115e59; }
+    .filter-panel.compact .filter-group-respiratory .filter-group-title { color: #115e59; }
+    .filter-panel.compact .filter-group-neuro { border-top-color: #6b21a8; }
+    .filter-panel.compact .filter-group-neuro .filter-group-title { color: #6b21a8; }
+    .filter-panel.compact .filter-group-mobility { border-top-color: #166534; }
+    .filter-panel.compact .filter-group-mobility .filter-group-title { color: #166534; }
+    .filter-panel.compact .filter-group-pain { border-top-color: #9d174d; }
+    .filter-panel.compact .filter-group-pain .filter-group-title { color: #9d174d; }
+    .filter-panel.compact .filter-group-meta { border-top-color: #334155; }
+    .filter-panel.compact .filter-group-meta .filter-group-title { color: #334155; }
+    .filter-group { margin-bottom: 10px; padding: 10px 12px; border-radius: 8px; background: #fff; border: 1px solid #e5e7eb; border-left-width: 4px; }
+    .filter-group-title { font-size: 12px; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: .3px; }
+    .filter-grid { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; }
+    .filter-control { display: flex; flex-direction: column; gap: 2px; min-width: 120px; }
+    .filter-control label { font-size: 11px; color: #6b7280; white-space: nowrap; }
+    .filter-control .num-filter { display: flex; align-items: center; }
+    .filter-control .num-filter select { width: 38px; height: 30px; padding: 0 4px; text-align: center; border: 1px solid #d0d5dd; border-right: none; border-radius: 6px 0 0 6px; box-sizing: border-box; background: #fff; }
+    .filter-control .num-filter input { width: 64px; height: 30px; padding: 0 6px; border: 1px solid #d0d5dd; border-radius: 0 6px 6px 0; box-sizing: border-box; }
+    .filter-control input[type="text"] { width: 140px; height: 30px; padding: 0 6px; border: 1px solid #d0d5dd; border-radius: 6px; box-sizing: border-box; }
+    .filter-control .text-filter { display: flex; align-items: center; gap: 4px; }
+    .btn-today { padding: 2px 8px; border: 1px solid #93c5fd; border-radius: 999px; background: #eff6ff; color: #2563eb; font-size: 10px; font-weight: 600; cursor: pointer; }
+    .filter-group-date { border-left-color: #475569; }
+    .filter-group-vitals { border-left-color: #1e40af; }
+    .filter-group-monitoring { border-left-color: #3730a3; }
+    .filter-group-perfusion { border-left-color: #9a3412; }
+    .filter-group-critical { border-left-color: #991b1b; }
+    .filter-group-respiratory { border-left-color: #115e59; }
+    .filter-group-neuro { border-left-color: #6b21a8; }
+    .filter-group-mobility { border-left-color: #166534; }
+    .filter-group-pain { border-left-color: #9d174d; }
+    .filter-group-meta { border-left-color: #334155; }
   </style>
 </head>
 <body>
@@ -365,7 +461,8 @@
         <div class="vtab" data-tab="2" style="display:none;"><div class="line1">นิพนธ์ วงศ์ประเสริฐ</div><div class="line2">อายุรกรรมทั่วไป (ในเวลา)</div></div>
         <div class="vtab" data-tab="3" style="display:none;"><div class="line1">วิชัย ใจดี</div><div class="line2">ภาพวินิจฉัย (นอกเวลา)</div></div>
         <div class="vtab" data-tab="4" style="display:none;"><div class="line1">ปนัดดา ศรีสุข</div><div class="line2">อายุรกรรมทั่วไป (ในเวลา)</div></div>
-        <div class="vtab add-visit" data-tab="5"><div class="line1">HN 69001234</div><div class="line2">ตารางข้อมูลทั้งหมด</div></div>
+        <div class="vtab basic-visit" data-tab="5"><div class="line1">HN 69001234</div><div class="line2">ตารางข้อมูลพื้นฐาน</div></div>
+        <div class="vtab add-visit" data-tab="6"><div class="line1">HN 69001234</div><div class="line2">ตารางข้อมูลทั้งหมด</div></div>
       </div>
       <div class="visit-topbar"><div class="for-date">for 09 Jul 2026</div><div>last update: <b id="last-update-time">10.57</b> by <b id="last-update-name">นิพนธ์ วงศ์ประเสริฐ</b></div></div>
 
@@ -379,23 +476,23 @@
             <div><div class="form-name">Vital Sign & Physical Examination</div></div>
           </div>
           <div class="editor-panel-body">
-            <div class="section-nav" aria-label="Assessment sections">            <div class="section-nav" aria-label="Assessment sections">
-              <button type="button" onclick="scrollToAssessmentSection(this, 'core-vital')">Vital Signs</button>
-              <button type="button" onclick="scrollToAssessmentSection(this, 'monitoring')">Monitoring</button>
-              <button type="button" onclick="scrollToAssessmentSection(this, 'perfusion')">Perfusion</button>
-              <button type="button" onclick="scrollToAssessmentSection(this, 'critical')">Critical Events</button>
-              <button type="button" onclick="scrollToAssessmentSection(this, 'respiratory')">Respiratory</button>
-              <button type="button" onclick="scrollToAssessmentSection(this, 'neuro')">Neuro / LOC</button>
-              <button type="button" onclick="scrollToAssessmentSection(this, 'mobility')">Mobility</button>
-              <button type="button" onclick="scrollToAssessmentSection(this, 'pain')">Pain</button>
-            </div></div>
+            <div class="section-nav" aria-label="Assessment sections">
+              <button type="button" class="nav-vitals" onclick="scrollToAssessmentSection(this, 'core-vital')">Vital Signs</button>
+              <button type="button" class="nav-monitoring" onclick="scrollToAssessmentSection(this, 'monitoring')">Monitoring</button>
+              <button type="button" class="nav-perfusion" onclick="scrollToAssessmentSection(this, 'perfusion')">Perfusion</button>
+              <button type="button" class="nav-critical" onclick="scrollToAssessmentSection(this, 'critical')">Critical Events</button>
+              <button type="button" class="nav-respiratory" onclick="scrollToAssessmentSection(this, 'respiratory')">Respiratory</button>
+              <button type="button" class="nav-neuro" onclick="scrollToAssessmentSection(this, 'neuro')">Neuro / LOC</button>
+              <button type="button" class="nav-mobility" onclick="scrollToAssessmentSection(this, 'mobility')">Mobility</button>
+              <button type="button" class="nav-pain" onclick="scrollToAssessmentSection(this, 'pain')">Pain</button>
+            </div>
 
             <section class="assessment-section" id="core-vital">
               <div class="assessment-section-head"><div class="assessment-section-title">1. Core Vital Signs</div><div class="assessment-section-hint">ค่าพื้นฐานของผู้ป่วย</div></div>
               <div class="clinical-grid">
                 <div class="field"><label>Temp (°F)</label><input class="ctrl" type="number" step="0.1" placeholder="101.5"></div>
                 <div class="field"><label>HR (bpm)</label><input class="ctrl" type="number" min="0" step="1" placeholder="120"></div>
-                <div class="field"><label>RR (breaths/min)</label><input class="ctrl" type="number" min="0" step="1" placeholder="24"></div>
+                <div class="field"><label>RR (bpm)</label><input class="ctrl" type="number" min="0" step="1" placeholder="24"></div>
                 <div class="field"><label>Pulse (bpm)</label><input class="ctrl" type="number" min="0" step="1" placeholder="118"></div>
                 <div class="field"><label>Weight (kg)</label><input class="ctrl" type="number" min="0" step="0.01" placeholder="12.40"></div>
                 <div class="field"><label>CRT (sec)</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>&lt;1</option><option>1</option><option>&lt;2</option><option>2</option><option>3</option><option>4</option><option>&gt;4</option><option>Unable to assess</option></select></div>
@@ -663,71 +760,39 @@
 
       <!-- TAB 5 -->
       <div class="tab-content" id="content-5" style="display:none;">
-        <div class="editor-panel" style="height: calc(95vh - 180px); min-height: 400px;">
-          <div class="editor-panel-head">ตารางข้อมูลทั้งหมด</div>
-          <div class="filter-bar">
-            <div class="num-filter"><label>Temp</label><select id="f-temp-op"><option value="">=</option><option value="gt">&gt;</option><option value="lt">&lt;</option></select><input type="number" id="f-temp-val" placeholder="°F"></div>
-            <div class="num-filter"><label>HR</label><select id="f-hr-op"><option value="">=</option><option value="gt">&gt;</option><option value="lt">&lt;</option></select><input type="number" id="f-hr-val" placeholder="bpm"></div>
-            <div class="num-filter"><label>RR</label><select id="f-rr-op"><option value="">=</option><option value="gt">&gt;</option><option value="lt">&lt;</option></select><input type="number" id="f-rr-val" placeholder="rpm"></div>
-            <div class="num-filter"><label>CRT</label><select id="f-crt-val" style="width:auto;border-radius:6px;border-right:1px solid #d0d5dd;padding:0 8px;height:30px;"><option value="">ทั้งหมด</option><option value="lt2">&lt;2</option><option value="other">อื่นๆ</option></select></div>
-            <div class="num-filter"><label>Pulse</label><select id="f-pulse-op"><option value="">=</option><option value="gt">&gt;</option><option value="lt">&lt;</option></select><input type="number" id="f-pulse-val" placeholder="bpm"></div>
-            <div class="num-filter"><label>BP</label><select id="f-bp-op"><option value="">=</option><option value="gt">&gt;</option><option value="lt">&lt;</option></select><input type="number" id="f-bp-val" placeholder="mmHg"></div>
-            <div class="num-filter"><label>FBS</label><select id="f-fbs-op"><option value="">=</option><option value="gt">&gt;</option><option value="lt">&lt;</option></select><input type="number" id="f-fbs-val" placeholder="mg/dL"></div>
-            <button class="btn-search" onclick="filterTable()">ค้นหา</button>
-            <button class="btn-clear" onclick="clearFilter()">ล้างตัวกรอง</button>
+        <div class="editor-panel">
+          <div class="filter-section">
+            <div class="filter-header">
+              <button class="filter-toggle" type="button" onclick="toggleFilterPanel('basic-filter-panel', this)">แสดงตัวกรอง</button>
+              <div class="filter-actions">
+                <button class="btn-search" onclick="filterBasicTable()">ค้นหา</button>
+                <button class="btn-clear" onclick="clearBasicFilter()">ล้างตัวกรอง</button>
+              </div>
+            </div>
+            <div class="filter-panel compact" id="basic-filter-panel"></div>
           </div>
-          <div class="filter-row-2">
-            <div class="multi-check">
-              <button class="multi-check-btn" type="button" onclick="toggleMultiCheck('mm')">Mucous Membrane</button>
-              <div class="multi-check-panel" id="mc-mm">
-                <label><input type="checkbox" value="Pink (normal)"> Pink (normal)</label>
-                <label><input type="checkbox" value="Pale"> Pale</label>
-                <label><input type="checkbox" value="Yellow"> Yellow</label>
-                <label><input type="checkbox" value="Red"> Red</label>
-                <label><input type="checkbox" value="Cyanosis"> Cyanosis</label>
+          <div class="data-table-wrap">
+            <table class="data-table" id="basic-table"><thead id="basic-table-head"></thead><tbody id="basic-table-body"></tbody></table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 6 -->
+      <div class="tab-content" id="content-6" style="display:none;">
+        <div class="editor-panel">
+          <div class="filter-section">
+            <div class="filter-header">
+              <button class="filter-toggle" type="button" onclick="toggleFilterPanel('data-filter-panel', this)">แสดงตัวกรอง</button>
+              <div class="filter-actions">
+                <button class="btn-search" onclick="filterTable()">ค้นหา</button>
+                <button class="btn-clear" onclick="clearFilter()">ล้างตัวกรอง</button>
               </div>
             </div>
-            <div class="multi-check">
-              <button class="multi-check-btn" type="button" onclick="toggleMultiCheck('cons')">Consciousness</button>
-              <div class="multi-check-panel" id="mc-cons">
-                <label><input type="checkbox" value="Alert"> Alert</label>
-                <label><input type="checkbox" value="Depressed"> Depressed</label>
-                <label><input type="checkbox" value="Stupor"> Stupor</label>
-                <label><input type="checkbox" value="Comatose"> Comatose</label>
-              </div>
-            </div>
-            <div class="multi-check">
-              <button class="multi-check-btn" type="button" onclick="toggleMultiCheck('lung')">Lung Sound</button>
-              <div class="multi-check-panel" id="mc-lung">
-                <label><input type="checkbox" value="Normal"> Normal</label>
-                <label><input type="checkbox" value="Crackles"> Crackles</label>
-                <label><input type="checkbox" value="Wheezes"> Wheezes</label>
-                <label><input type="checkbox" value="Diminished"> Diminished</label>
-                <label><input type="checkbox" value="Absent"> Absent</label>
-              </div>
-            </div>
-            <div class="multi-check">
-              <button class="multi-check-btn" type="button" onclick="toggleMultiCheck('heart')">Heart Sound</button>
-              <div class="multi-check-panel" id="mc-heart">
-                <label><input type="checkbox" value="Normal"> Normal</label>
-                <label><input type="checkbox" value="Gallop"> Gallop</label>
-                <label><input type="checkbox" value="Murmur"> Murmur</label>
-                <label><input type="checkbox" value="Muffled"> Muffled</label>
-                <label><input type="checkbox" value="Arrhythmia"> Arrhythmia</label>
-              </div>
-            </div>
-            <div class="multi-check">
-              <button class="multi-check-btn" type="button" onclick="toggleMultiCheck('crit')">Critical Event</button>
-              <div class="multi-check-panel" id="mc-crit">
-                <label><input type="checkbox" value="Cyanosis"> Cyanosis</label>
-                <label><input type="checkbox" value="Seizure"> Seizure</label>
-                <label><input type="checkbox" value="Arrest"> Arrest</label>
-              </div>
-            </div>
+            <div class="filter-panel" id="data-filter-panel"></div>
           </div>
           <div class="data-table-wrap">
             <table class="data-table" id="data-table">
-              <thead><tr><th>Processed On</th><th>Temp (°F)</th><th>HR (bpm)</th><th>RR (rpm)</th><th>CRT (sec)</th><th>Pulse (bpm)</th><th>BP (mmHg)</th><th>FBS (mg/dL)</th><th>Consciousness</th><th>Mucous Membrane</th><th>Lung Sound</th><th>Heart Sound</th><th>Critical Event</th><th>DVM/User</th><th>Department</th><th>Created on</th><th>Last Update</th><th>Exam Card ID</th></tr></thead>
+              <thead id="data-table-head"></thead>
               <tbody id="data-table-body"></tbody>
             </table>
           </div>
@@ -847,7 +912,9 @@
       var body = button.closest('.editor-panel-body');
       var target = body ? body.querySelector('#' + sectionId) : null;
       if (!body || !target) return;
-      var top = target.getBoundingClientRect().top - body.getBoundingClientRect().top + body.scrollTop - 54;
+      var nav = body.querySelector('.section-nav');
+      var offset = nav ? nav.offsetHeight + 8 : 54;
+      var top = target.getBoundingClientRect().top - body.getBoundingClientRect().top + body.scrollTop - offset;
       body.scrollTo({ top: top, behavior: 'smooth' });
     }
 
@@ -868,11 +935,15 @@
         toast.classList.remove('show');
       }, 2000);
     }
-    var tabDvmMap = { '1':'นิพนธ์ วงศ์ประเสริฐ', '2':'นิพนธ์ วงศ์ประเสริฐ', '3':'วิชัย ใจดี', '4':'ปนัดดา ศรีสุข', '5':'นิพนธ์ วงศ์ประเสริฐ' };
+    var tabDvmMap = { '1':'นิพนธ์ วงศ์ประเสริฐ', '2':'นิพนธ์ วงศ์ประเสริฐ', '3':'วิชัย ใจดี', '4':'ปนัดดา ศรีสุข', '5':'นิพนธ์ วงศ์ประเสริฐ', '6':'นิพนธ์ วงศ์ประเสริฐ' };
     document.querySelectorAll('#assess-modal .vtab').forEach(function(tab) {
       tab.addEventListener('click', function() {
         document.querySelectorAll('#assess-modal .vtab').forEach(function(t) { t.classList.remove('active'); });
         this.classList.add('active');
+        var tabColor = '#2563eb';
+        if (this.classList.contains('basic-visit')) tabColor = '#f97316';
+        if (this.classList.contains('add-visit')) tabColor = '#16a34a';
+        document.querySelector('.visit-tabs').style.borderBottomColor = tabColor;
         var idx = this.getAttribute('data-tab');
         document.querySelectorAll('#assess-modal .tab-content').forEach(function(c) { c.style.display = 'none'; });
         var target = document.getElementById('content-' + idx);
@@ -881,6 +952,14 @@
         if (nameEl && tabDvmMap[idx]) nameEl.textContent = tabDvmMap[idx];
       });
     });
+
+    var activeTab = document.querySelector('#assess-modal .vtab.active');
+    if (activeTab) {
+      var initColor = '#2563eb';
+      if (activeTab.classList.contains('basic-visit')) initColor = '#f97316';
+      if (activeTab.classList.contains('add-visit')) initColor = '#16a34a';
+      document.querySelector('.visit-tabs').style.borderBottomColor = initColor;
+    }
 
     function togglePrognosis() {
       var pt = document.getElementById('tab1-problem-type');
@@ -899,29 +978,129 @@
       }
     }
 
+    function generateMockData(count) {
+      var dvms = ["นิพนธ์ วงศ์ประเสริฐ", "วิชัย ใจดี", "ปนัดดา ศรีสุข"];
+      var depts = ["อายุรกรรมทั่วไป (ในเวลา)", "ภาพวินิจฉัย (นอกเวลา)", "คลินิกพิเศษ โรคหัวใจ (นอกเวลา)"];
+      var critNoteOpts = ["witnessed post-seizure", "during recovery", "noted pre-op", "on presentation"];
+      var mobilityNoteOpts = ["ambulating well", "reluctant to move", "non-ambulatory", "requires assistance"];
+      var bleedingSiteOpts = ["Ear", "Oral", "Limb", "Abdomen", "Tail", "Other"];
+      var reflexTypeOpts = ["Palpebral reflex"];
+
+      function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+      function pickMulti(arr) {
+        var n = Math.floor(Math.random() * 3);
+        var res = [];
+        var used = {};
+        for (var k = 0; k < n; k++) {
+          var idx = Math.floor(Math.random() * arr.length);
+          if (used[idx]) continue;
+          used[idx] = true;
+          res.push(arr[idx]);
+        }
+        return res.join(', ');
+      }
+      function maybe(fn) { return Math.random() < 0.2 ? '' : fn(); }
+      function maybePick(key) { return Math.random() < 0.2 ? '' : pick(filterOptions[key]); }
+      function maybeMulti(key) { return Math.random() < 0.2 ? '' : pickMulti(filterOptions[key]); }
+      function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+      function randFloat(min, max, dec) { return (Math.random() * (max - min) + min).toFixed(dec); }
+      function dateStr(d) { return d.toLocaleString('en-GB', {day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit', hour12:false}); }
+
+      var data = [];
+      var now = new Date('2026-07-19T00:00:00');
+      for (var i = 0; i < count; i++) {
+        var d = new Date(now.getTime() - i * 86400000 - Math.floor(Math.random() * 86400000));
+        var created = dateStr(d);
+        var updated = Math.random() < 0.3 ? '' : dateStr(new Date(d.getTime() + Math.floor(Math.random() * 7200000)));
+        var sys = randInt(90, 180);
+        var dia = randInt(50, 110);
+        var map = Math.round((sys + 2 * dia) / 3);
+        data.push({
+          proc: created,
+          temp: maybe(function() { return randFloat(99.0, 104.5, 1); }),
+          hr: maybe(function() { return randInt(60, 190); }),
+          rr: maybe(function() { return randInt(10, 50); }),
+          pulse: maybe(function() { return randInt(60, 190); }),
+          weight: maybe(function() { return randFloat(2.5, 45.0, 1); }),
+          crt: maybePick('crt'),
+          fbs: maybe(function() { return randInt(70, 180); }),
+          hydration: maybePick('hydration'),
+          dehydration: maybe(function() { return randFloat(0, 12, 1); }),
+          nibpSys: sys.toString(),
+          nibpDia: dia.toString(),
+          nibpMap: map.toString(),
+          bpMethod: maybePick('bpMethod'),
+          cuffSite: maybePick('cuffSite'),
+          spo2: maybe(function() { return randInt(90, 100); }),
+          etco2: maybe(function() { return randInt(25, 50); }),
+          oxygenSupport: maybePick('oxygenSupport'),
+          mm: maybePick('mm'),
+          mmSite: maybeMulti('mmSite'),
+          bleedingStatus: maybePick('bleedingStatus'),
+          bleedingSeverity: maybePick('bleedingSeverity'),
+          bleedingSite: maybe(function() { return pick(bleedingSiteOpts); }),
+          heart: maybePick('heart'),
+          crit: maybeMulti('crit'),
+          critTime: maybe(function() { return pick(['10:15','14:30','21:00','03:45']); }),
+          critNote: maybe(function() { return pick(critNoteOpts); }),
+          respEffort: maybePick('respEffort'),
+          respDepth: maybePick('respDepth'),
+          respPattern: maybePick('respPattern'),
+          affectedPhase: maybePick('affectedPhase'),
+          lungSide: maybePick('lungSide'),
+          lungRegion: maybePick('lungRegion'),
+          lung: maybeMulti('lung'),
+          cons: maybePick('cons'),
+          stimuli: maybePick('stimuli'),
+          reflexType: maybe(function() { return pick(reflexTypeOpts); }),
+          leftResponse: maybePick('leftResponse'),
+          rightResponse: maybePick('rightResponse'),
+          gait: maybePick('gait'),
+          posture: maybePick('posture'),
+          mobilityNote: maybe(function() { return pick(mobilityNoteOpts); }),
+          painScore: maybe(function() { return randInt(0, 10); }),
+          painSeverity: maybePick('painSeverity'),
+          painIndicators: maybeMulti('painIndicators'),
+          dvm: pick(dvms),
+          dept: pick(depts),
+          created: created,
+          update: updated,
+          cardId: Math.random() < 0.3 ? '-' : 'exam-card-690012' + (34 + i)
+        });
+      }
+      return data;
+    }
+    var filterOptions = {
+      crt: ['<1', '1', '<2', '2', '3', '4', '>4', 'Unable to assess'],
+      hydration: ['Normal', 'Dehydrated', 'Overhydrated', 'Unable to assess'],
+      bpMethod: ['Oscillometric', 'Doppler', 'Invasive', 'Other'],
+      cuffSite: ['Left forelimb', 'Right forelimb', 'Left hindlimb', 'Right hindlimb', 'Tail', 'Other'],
+      oxygenSupport: ['Room air', 'Flow-by', 'Nasal oxygen', 'Mask', 'Oxygen cage', 'Intubated', 'Other'],
+      mm: ['Pink / Normal', 'Pale', 'White', 'Red', 'Injected', 'Dark pink', 'Muddy', 'Jaundiced / Yellow', 'Cyanotic / Blue', 'Gray', 'Other', 'Unable to assess'],
+      mmSite: ['Oral mucosa', 'Conjunctiva', 'Prepuce', 'Vulva', 'Other'],
+      bleedingStatus: ['No active bleeding', 'Active — controlled', 'Active — uncontrolled', 'Suspected internal bleeding', 'Unable to assess'],
+      bleedingSeverity: ['None', 'Mild', 'Moderate', 'Severe'],
+      heart: ['Normal', 'Murmur', 'Gallop', 'Muffled', 'Arrhythmia', 'Other', 'Unable to assess'],
+      crit: ['Cyanosis', 'Seizure', 'Cardiorespiratory arrest', 'Respiratory arrest', 'Syncope / Collapse', 'Other'],
+      respEffort: ['Normal', 'Increased', 'Decreased', 'Labored', 'Paradoxical', 'Unable to assess'],
+      respDepth: ['Normal', 'Shallow', 'Deep', 'Variable', 'Unable to assess'],
+      respPattern: ['Eupnea', 'Tachypnea', 'Bradypnea', 'Apnea', 'Rapid and shallow', 'Prolonged inspiration', 'Prolonged expiration', 'Prolonged inspiration and expiration', 'Irregular', 'Paradoxical', 'Other'],
+      affectedPhase: ['None', 'Inspiratory', 'Expiratory', 'Biphasic', 'Unable to assess'],
+      lungSide: ['Left', 'Right', 'Bilateral', 'Unable to localize'],
+      lungRegion: ['All lung fields', 'Cranial', 'Middle', 'Caudal', 'Dorsal', 'Ventral'],
+      lung: ['Normal', 'Upper airway / Referred', 'Wheeze', 'Crackles', 'Harsh', 'Dull', 'Absent', 'Other'],
+      cons: ['BAR — Bright, Alert and Responsive', 'QAR — Quiet, Alert and Responsive', 'Depressed / Dull / Lethargic', 'Hyperactive / Hysterical / Irritable', 'Obtunded', 'Stuporous', 'Comatose', 'Unable to assess'],
+      stimuli: ['Appropriate', 'Exaggerated', 'Decreased', 'Absent', 'Inappropriate', 'Unable to assess'],
+      leftResponse: ['Present', 'Decreased', 'Absent', 'Unable to assess'],
+      rightResponse: ['Present', 'Decreased', 'Absent', 'Unable to assess'],
+      gait: ['Normal', 'Ambulatory with abnormality', 'Ataxic', 'Lame', 'Weak / Paretic', 'Non-ambulatory', 'Unable to assess', 'Other'],
+      posture: ['Normal', 'Standing', 'Sitting', 'Sternal recumbency', 'Lateral recumbency', 'Orthopneic', 'Hunched', 'Abnormal', 'Unable to assess'],
+      painSeverity: ['None', 'Mild', 'Moderate', 'Severe'],
+      painIndicators: ['Vocalization', 'Guarding', 'Restlessness', 'Reduced movement', 'Aggression', 'Abnormal posture']
+    };
+
     var tableData = [];
-    var vitalSigns = [
-      {proc:'09 Jul 2026, 10:57', temp:'102', hr:'120', rr:'24', crt:'<2', pulse:'120', bp:'140/90', fbs:'110', cons:'Alert', mm:'Pink (normal)', lung:'Normal', heart:'Normal', crit:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', created:'09 Jul 2026, 10:57', update:'09 Jul 2026, 11:20', cardId:'exam-card-69001234'},
-      {proc:'09 Jul 2026, 08:39', temp:'100.8', hr:'140', rr:'28', crt:'2', pulse:'140', bp:'160/100', fbs:'95', cons:'', mm:'', lung:'', heart:'Gallop', crit:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', created:'09 Jul 2026, 08:39', update:'09 Jul 2026, 09:15', cardId:'exam-card-69001235'},
-      {proc:'09 Jul 2026, 09:05', temp:'102.4', hr:'160', rr:'40', crt:'3', pulse:'160', bp:'120/80', fbs:'130', cons:'Depressed', mm:'Pale', lung:'Crackles', heart:'Murmur', crit:'Cyanosis, Seizure', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', created:'09 Jul 2026, 09:05', update:'09 Jul 2026, 09:40', cardId:'exam-card-69001236'},
-      {proc:'09 Jul 2026, 09:31', temp:'100.4', hr:'100', rr:'20', crt:'<2', pulse:'100', bp:'130/85', fbs:'105', cons:'Alert', mm:'Pink (normal)', lung:'Normal', heart:'Normal', crit:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', created:'09 Jul 2026, 09:31', update:'', cardId:'exam-card-69001237'},
-      {proc:'08 Jul 2026, 14:20', temp:'101.3', hr:'110', rr:'22', crt:'', pulse:'', bp:'', fbs:'', cons:'Alert', mm:'Pink (normal)', lung:'Normal', heart:'Normal', crit:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', created:'08 Jul 2026, 14:20', update:'08 Jul 2026, 16:00', cardId:'exam-card-69001234'},
-      {proc:'08 Jul 2026, 11:15', temp:'', hr:'150', rr:'36', crt:'2', pulse:'150', bp:'150/95', fbs:'120', cons:'Depressed', mm:'Red', lung:'Wheezes', heart:'Murmur', crit:'Cyanosis', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', created:'08 Jul 2026, 11:30', update:'08 Jul 2026, 14:00', cardId:'-'},
-      {proc:'07 Jul 2026, 10:30', temp:'100.2', hr:'90', rr:'18', crt:'<2', pulse:'90', bp:'125/80', fbs:'95', cons:'Alert', mm:'Pink (normal)', lung:'', heart:'', crit:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', created:'07 Jul 2026, 10:30', update:'07 Jul 2026, 11:10', cardId:'-'},
-      {proc:'07 Jul 2026, 09:45', temp:'102.8', hr:'170', rr:'44', crt:'3', pulse:'170', bp:'110/70', fbs:'140', cons:'Stupor', mm:'Pale', lung:'Crackles', heart:'Muffled', crit:'Seizure, Arrest', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', created:'07 Jul 2026, 10:00', update:'07 Jul 2026, 10:30', cardId:'exam-card-69001236'},
-      {proc:'06 Jul 2026, 13:10', temp:'101.5', hr:'130', rr:'26', crt:'2', pulse:'130', bp:'145/92', fbs:'108', cons:'Alert', mm:'', lung:'Diminished', heart:'Normal', crit:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', created:'06 Jul 2026, 13:10', update:'', cardId:'-'},
-      {proc:'06 Jul 2026, 08:50', temp:'99.8', hr:'85', rr:'16', crt:'<2', pulse:'85', bp:'120/78', fbs:'90', cons:'Alert', mm:'Pink (normal)', lung:'Normal', heart:'Normal', crit:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', created:'06 Jul 2026, 08:50', update:'06 Jul 2026, 09:30', cardId:'-'},
-      {proc:'05 Jul 2026, 15:00', temp:'103.5', hr:'180', rr:'48', crt:'4', pulse:'180', bp:'100/60', fbs:'155', cons:'Comatose', mm:'Cyanosis', lung:'Absent', heart:'Arrhythmia', crit:'Cyanosis, Seizure, Arrest', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', created:'05 Jul 2026, 14:30', update:'05 Jul 2026, 15:45', cardId:'exam-card-69001236'},
-      {proc:'05 Jul 2026, 10:20', temp:'101.0', hr:'115', rr:'24', crt:'2', pulse:'', bp:'138/85', fbs:'102', cons:'Depressed', mm:'Yellow', lung:'Normal', heart:'Normal', crit:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', created:'05 Jul 2026, 10:20', update:'05 Jul 2026, 11:00', cardId:'exam-card-69001234'},
-      {proc:'04 Jul 2026, 09:00', temp:'100.6', hr:'95', rr:'20', crt:'<2', pulse:'95', bp:'128/82', fbs:'98', cons:'Alert', mm:'Pink (normal)', lung:'Normal', heart:'Normal', crit:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', created:'04 Jul 2026, 09:00', update:'', cardId:'-'},
-      {proc:'04 Jul 2026, 14:40', temp:'102.2', hr:'145', rr:'32', crt:'3', pulse:'145', bp:'155/98', fbs:'125', cons:'Depressed', mm:'Pale', lung:'Crackles', heart:'Gallop', crit:'Cyanosis', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', created:'04 Jul 2026, 15:00', update:'04 Jul 2026, 16:20', cardId:'-'},
-      {proc:'03 Jul 2026, 11:25', temp:'101.8', hr:'125', rr:'28', crt:'2', pulse:'125', bp:'142/90', fbs:'112', cons:'Alert', mm:'Pink (normal)', lung:'Wheezes', heart:'Murmur', crit:'', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', created:'03 Jul 2026, 11:25', update:'03 Jul 2026, 12:00', cardId:'exam-card-69001236'},
-      {proc:'03 Jul 2026, 08:15', temp:'100.0', hr:'88', rr:'18', crt:'<2', pulse:'88', bp:'122/78', fbs:'92', cons:'Alert', mm:'Pink (normal)', lung:'Normal', heart:'Normal', crit:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', created:'03 Jul 2026, 08:15', update:'03 Jul 2026, 08:45', cardId:'-'},
-      {proc:'02 Jul 2026, 10:10', temp:'102.6', hr:'155', rr:'38', crt:'3', pulse:'155', bp:'115/72', fbs:'135', cons:'Stupor', mm:'Pale', lung:'Diminished', heart:'Murmur', crit:'Cyanosis, Seizure', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', created:'02 Jul 2026, 09:30', update:'02 Jul 2026, 11:00', cardId:'exam-card-69001236'},
-      {proc:'02 Jul 2026, 13:30', temp:'101.2', hr:'108', rr:'22', crt:'2', pulse:'108', bp:'133/86', fbs:'100', cons:'Alert', mm:'Pink (normal)', lung:'Normal', heart:'Normal', crit:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', created:'02 Jul 2026, 13:30', update:'', cardId:'exam-card-69001234'},
-      {proc:'01 Jul 2026, 09:50', temp:'100.5', hr:'92', rr:'19', crt:'<2', pulse:'92', bp:'126/80', fbs:'96', cons:'Alert', mm:'Pink (normal)', lung:'Normal', heart:'Normal', crit:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', created:'01 Jul 2026, 09:50', update:'01 Jul 2026, 10:15', cardId:'-'},
-      {proc:'01 Jul 2026, 14:55', temp:'103.0', hr:'165', rr:'42', crt:'4', pulse:'165', bp:'105/65', fbs:'145', cons:'Comatose', mm:'Cyanosis', lung:'Crackles', heart:'Arrhythmia', crit:'Seizure, Arrest', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', created:'01 Jul 2026, 14:30', update:'01 Jul 2026, 15:30', cardId:'exam-card-69001236'}
-    ];
+    var vitalSigns = generateMockData(25);
 
     for (var i = 0; i < vitalSigns.length; i++) {
       tableData.push(vitalSigns[i]);
@@ -936,26 +1115,102 @@
       return map[category] && map[category][shortVal] ? map[category][shortVal] : '';
     }
 
-    function renderTable(data) {
-      var tbody = document.getElementById('data-table-body');
+            var tableColumns = [
+      {key:"proc", label:"Processed On", topic:"date"},
+      {key:"temp", label:"Temp<br>(°F)", topic:"vitals"},
+      {key:"hr", label:"HR<br>(bpm)", topic:"vitals"},
+      {key:"rr", label:"RR<br>(bpm)", topic:"vitals"},
+      {key:"pulse", label:"Pulse<br>(bpm)", topic:"vitals"},
+      {key:"weight", label:"Wt.<br>(kg)", topic:"vitals"},
+      {key:"crt", label:"CRT<br>(sec)", topic:"vitals"},
+      {key:"fbs", label:"FBS<br>(mg/dL)", topic:"vitals"},
+      {key:"hydration", label:"Hydration Status", topic:"vitals"},
+      {key:"dehydration", label:"Dehydration<br>(%)", topic:"vitals"},
+      {key:"nibpSys", label:"NIBP SYS<br>(mmHg)", topic:"monitoring"},
+      {key:"nibpDia", label:"NIBP DIA<br>(mmHg)", topic:"monitoring"},
+      {key:"nibpMap", label:"NIBP MAP<br>(mmHg)", topic:"monitoring"},
+      {key:"bpMethod", label:"BP Method", topic:"monitoring"},
+      {key:"cuffSite", label:"Cuff Site", topic:"monitoring"},
+      {key:"spo2", label:"SpO2<br>(%)", topic:"monitoring"},
+      {key:"etco2", label:"EtCO2<br>(mmHg)", topic:"monitoring"},
+      {key:"oxygenSupport", label:"Oxygen Support", topic:"monitoring"},
+      {key:"mm", label:"Mucous Membrane<br>Color", topic:"perfusion"},
+      {key:"mmSite", label:"Mucous Membrane<br>Site", topic:"perfusion"},
+      {key:"bleedingStatus", label:"Bleeding<br>Status", topic:"perfusion"},
+      {key:"bleedingSeverity", label:"Bleeding<br>Severity", topic:"perfusion"},
+      {key:"bleedingSite", label:"Bleeding<br>Site", topic:"perfusion"},
+      {key:"heart", label:"Heart Sound", topic:"critical"},
+      {key:"crit", label:"Critical Events", topic:"critical"},
+      {key:"critTime", label:"Critical Event<br>Time", topic:"critical"},
+      {key:"critNote", label:"Critical Events<br>Note", topic:"critical"},
+      {key:"respEffort", label:"Respiratory Effort", topic:"respiratory"},
+      {key:"respDepth", label:"Respiratory Depth", topic:"respiratory"},
+      {key:"respPattern", label:"Respiratory Pattern", topic:"respiratory"},
+      {key:"affectedPhase", label:"Affected Phase", topic:"respiratory"},
+      {key:"lungSide", label:"Lung Sound Side", topic:"respiratory"},
+      {key:"lungRegion", label:"Lung Region", topic:"respiratory"},
+      {key:"lung", label:"Lung Sounds", topic:"respiratory"},
+      {key:"cons", label:"LOC", topic:"neuro"},
+      {key:"stimuli", label:"Reaction to Stimuli &amp; Surroundings", topic:"neuro"},
+      {key:"reflexType", label:"Reflex Type", topic:"neuro"},
+      {key:"leftResponse", label:"Left Response", topic:"neuro"},
+      {key:"rightResponse", label:"Right Response", topic:"neuro"},
+      {key:"gait", label:"Gait", topic:"mobility"},
+      {key:"posture", label:"Posture", topic:"mobility"},
+      {key:"mobilityNote", label:"Mobility Note", topic:"mobility"},
+      {key:"painScore", label:"Pain Score", topic:"pain"},
+      {key:"painSeverity", label:"Observed Pain Severity", topic:"pain"},
+      {key:"painIndicators", label:"Observed Pain Indicators", topic:"pain"},
+      {key:"dvm", label:"DVM/User", topic:"meta"},
+      {key:"dept", label:"Department", topic:"meta"},
+      {key:"created", label:"Created on", topic:"date"},
+      {key:"update", label:"Last Update", topic:"date"},
+      {key:"cardId", label:"Exam Card ID", topic:"meta"}
+    ];
+
+    var basicKeys = ['proc','temp','hr','rr','pulse','weight','crt','fbs','hydration','nibpSys','nibpDia','spo2','mm','heart','critTime','crit','lung','cons','painScore','dvm','dept','created','update','cardId'];
+    var basicColumns = basicKeys.map(function(k) {
+      for (var i = 0; i < tableColumns.length; i++) {
+        if (tableColumns[i].key === k) return tableColumns[i];
+      }
+    });
+
+    function renderTable(data, columns, tbodyId, headId) {
+      columns = columns || tableColumns;
+      tbodyId = tbodyId || 'data-table-body';
+      var tbody = document.getElementById(tbodyId);
       var html = '';
+      var dash = '<span style=color:#d1d5db;>—</span>';
       for (var i = 0; i < data.length; i++) {
         var r = data[i];
-        var dash = '<span style="color:#d1d5db;">—</span>';
-        html += '<tr><td>' + r.proc +
-          '</td><td>' + (r.temp || dash) + '</td><td>' + (r.hr || dash) + '</td><td>' + (r.rr || dash) +
-          '</td><td>' + (r.crt || dash) + '</td><td>' + (r.pulse || dash) + '</td><td>' + (r.bp || dash) +
-          '</td><td>' + (r.fbs || dash) + '</td><td>' + (r.cons || dash) + '</td><td>' + (r.mm || dash) +
-          '</td><td>' + (r.lung || dash) + '</td><td>' + (r.heart || dash) + '</td><td>' + (r.crit || dash) +
-          '</td><td>' + r.dvm + '</td><td>' + r.dept +
-          '</td><td>' + r.created + '</td><td>' + (r.update || dash) +
-          '</td><td>' + (r.cardId && r.cardId !== '-' ? '<span style="color:#7c3aed;font-weight:500;">' + r.cardId + '</span>' : '<span style="color:#d1d5db;">—</span>') + '</td></tr>';
+        html += '<tr>';
+        for (var j = 0; j < columns.length; j++) {
+          var col = columns[j];
+          var v = r[col.key];
+          if (col.key === 'cardId') {
+            html += '<td>' + (v && v !== '-' ? '<span style=color:#7c3aed;font-weight:500;>' + v + '</span>' : dash) + '</td>';
+          } else {
+            html += '<td>' + (v || dash) + '</td>';
+          }
+        }
+        html += '</tr>';
       }
       tbody.innerHTML = html;
+      if (headId) {
+        var head = document.getElementById(headId);
+        var hrow = '<tr>';
+        for (var k = 0; k < columns.length; k++) {
+          hrow += '<th class="th-' + (columns[k].topic || 'basic') + '">' + columns[k].label + '</th>';
+        }
+        hrow += '</tr>';
+        head.innerHTML = hrow;
+      }
     }
 
-    function toggleMultiCheck(key) {
-      var panel = document.getElementById('mc-' + key);
+    function toggleMultiCheck(key, idPrefix) {
+      idPrefix = idPrefix || '';
+      var panel = document.getElementById(idPrefix + 'mc-' + key);
+      if (!panel) return;
       var btn = panel.previousElementSibling;
       var isOpen = panel.classList.contains('show');
       document.querySelectorAll('.multi-check-panel.show').forEach(function(p) {
@@ -976,9 +1231,11 @@
       }
     });
 
-    function getMultiCheckValues(key) {
-      var panel = document.getElementById('mc-' + key);
+    function getMultiCheckValues(key, idPrefix) {
+      idPrefix = idPrefix || '';
+      var panel = document.getElementById(idPrefix + 'mc-' + key);
       var vals = [];
+      if (!panel) return vals;
       panel.querySelectorAll('input:checked').forEach(function(cb) { vals.push(cb.value); });
       return vals;
     }
@@ -1011,49 +1268,139 @@
       return vals.some(function(v) { return items.indexOf(v) >= 0; });
     }
 
-    function clearFilter() {
-      ['f-temp','f-hr','f-rr','f-pulse','f-bp','f-fbs'].forEach(function(k) {
-        document.getElementById(k + '-op').value = '';
-        document.getElementById(k + '-val').value = '';
-      });
-      document.getElementById('f-crt-val').value = '';
-      document.querySelectorAll('.multi-check-panel input:checked').forEach(function(cb) { cb.checked = false; });
-      document.querySelectorAll('.multi-check-btn.active').forEach(function(b) { b.classList.remove('active'); });
-      renderTable(tableData);
+    var topicColors = { date:'#475569', vitals:'#1e40af', monitoring:'#3730a3', perfusion:'#9a3412', critical:'#991b1b', respiratory:'#115e59', neuro:'#6b21a8', mobility:'#166534', pain:'#9d174d', meta:'#334155' };
+    var topicNames = { date:'Date', vitals:'Vital Signs', monitoring:'Monitoring', perfusion:'Perfusion', critical:'Critical Events', respiratory:'Respiratory', neuro:'Neuro / LOC', mobility:'Mobility', pain:'Pain', meta:'Meta' };
+    var filterConfig = {
+      proc:{type:'text'}, temp:{type:'num'}, hr:{type:'num'}, rr:{type:'num'}, pulse:{type:'num'}, weight:{type:'num'}, crt:{type:'multi'}, fbs:{type:'num'}, hydration:{type:'multi'}, dehydration:{type:'num'},
+      nibpSys:{type:'num'}, nibpDia:{type:'num'}, nibpMap:{type:'num'}, bpMethod:{type:'multi'}, cuffSite:{type:'multi'}, spo2:{type:'num'}, etco2:{type:'num'}, oxygenSupport:{type:'multi'},
+      mm:{type:'multi'}, mmSite:{type:'multi-crit'}, bleedingStatus:{type:'multi'}, bleedingSeverity:{type:'multi'}, bleedingSite:{type:'text'},
+      heart:{type:'multi'}, crit:{type:'multi-crit'}, critTime:{type:'text'}, critNote:{type:'text'},
+      respEffort:{type:'multi'}, respDepth:{type:'multi'}, respPattern:{type:'multi'}, affectedPhase:{type:'multi'}, lungSide:{type:'multi'}, lungRegion:{type:'multi'}, lung:{type:'multi-crit'},
+      cons:{type:'multi'}, stimuli:{type:'multi'}, reflexType:{type:'text'}, leftResponse:{type:'multi'}, rightResponse:{type:'multi'},
+      gait:{type:'multi'}, posture:{type:'multi'}, mobilityNote:{type:'text'},
+      painScore:{type:'num'}, painSeverity:{type:'multi'}, painIndicators:{type:'multi-crit'},
+      dvm:{type:'text'}, dept:{type:'text'}
+    };
+    function toggleFilterPanel(panelId, btn) {
+      var panel = document.getElementById(panelId);
+      if (!panel || !btn) return;
+      panel.classList.toggle('show');
+      btn.textContent = panel.classList.contains('show') ? 'ซ่อนตัวกรอง' : 'แสดงตัวกรอง';
     }
 
-    function filterTable() {
-      var fTemp = getNumVal('f-temp-val'), opTemp = document.getElementById('f-temp-op').value;
-      var fHR = getNumVal('f-hr-val'), opHR = document.getElementById('f-hr-op').value;
-      var fRR = getNumVal('f-rr-val'), opRR = document.getElementById('f-rr-op').value;
-      var fPulse = getNumVal('f-pulse-val'), opPulse = document.getElementById('f-pulse-op').value;
-      var fBP = getNumVal('f-bp-val'), opBP = document.getElementById('f-bp-op').value;
-      var fFBS = getNumVal('f-fbs-val'), opFBS = document.getElementById('f-fbs-op').value;
-      var fCRT = document.getElementById('f-crt-val').value;
-      var mmVals = getMultiCheckValues('mm');
-      var consVals = getMultiCheckValues('cons');
-      var lungVals = getMultiCheckValues('lung');
-      var heartVals = getMultiCheckValues('heart');
-      var critVals = getMultiCheckValues('crit');
+    function setToday(btn) {
+      var key = btn.dataset.key;
+      var idPrefix = btn.dataset.prefix || '';
+      var input = document.getElementById(idPrefix + key + '-text');
+      if (!input) return;
+      var d = new Date();
+      var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var dd = ('0' + d.getDate()).slice(-2);
+      var m = months[d.getMonth()];
+      var yyyy = d.getFullYear();
+      input.value = dd + ' ' + m + ' ' + yyyy;
+      if (idPrefix === 'bf-') filterBasicTable();
+      else filterTable();
+    }
 
+    function renderFilters(panelId, columns, idPrefix) {
+      idPrefix = idPrefix || '';
+      var panel = document.getElementById(panelId);
+      if (!panel) return;
+      var topicByKey = {};
+      for (var k = 0; k < tableColumns.length; k++) { topicByKey[tableColumns[k].key] = tableColumns[k].topic; }
+      var topics = ['date','vitals','monitoring','perfusion','critical','respiratory','neuro','mobility','pain','meta'];
+      var topicsUsed = {};
+      for (var iu = 0; iu < columns.length; iu++) {
+        var tp = columns[iu].topic || topicByKey[columns[iu].key];
+        if (tp) topicsUsed[tp] = true;
+      }
+      for (var t = 0; t < topics.length; t++) {
+        if (!topicsUsed[topics[t]]) continue;
+        var g = document.createElement('div');
+        g.className = 'filter-group filter-group-' + topics[t];
+        g.innerHTML = '<div class="filter-group-title" style="color:' + topicColors[topics[t]] + ';">' + topicNames[topics[t]] + '</div><div class="filter-grid" id="' + idPrefix + 'filter-grid-' + topics[t] + '"></div>';
+        panel.appendChild(g);
+      }
+      for (var i = 0; i < columns.length; i++) {
+        var col = columns[i];
+        if (col.key === 'created' || col.key === 'update' || col.key === 'cardId') continue;
+        var cfg = filterConfig[col.key];
+        if (!cfg) continue;
+        var topic = col.topic || topicByKey[col.key];
+        var grid = document.getElementById(idPrefix + 'filter-grid-' + topic);
+        if (!grid) continue;
+        var label = col.label.replace(/<br>/g, ' ').replace(/&amp;/g, '&');
+        var wrap = document.createElement('div');
+        wrap.className = 'filter-control';
+        if (cfg.type === 'num') {
+          wrap.innerHTML = '<label>' + label + '</label><div class="num-filter"><select id="' + idPrefix + col.key + '-op"><option value="">=</option><option value="gt">&gt;</option><option value="lt">&lt;</option></select><input type="number" id="' + idPrefix + col.key + '-val"></div>';
+        } else if (cfg.type === 'text') {
+          var todayBtn = (col.key === 'proc' ? '<button type="button" class="btn-today" data-key="' + col.key + '" data-prefix="' + idPrefix + '" onclick="setToday(this)">Today</button>' : '');
+          wrap.innerHTML = '<label>' + label + '</label><div class="text-filter"><input type="text" id="' + idPrefix + col.key + '-text" placeholder="ค้นหา">' + todayBtn + '</div>';
+        } else if (cfg.type === 'multi' || cfg.type === 'multi-crit') {
+          var opts = filterOptions[col.key] || [];
+          var html = '<label>' + label + '</label><div class="multi-check"><button class="multi-check-btn" type="button" onclick="toggleMultiCheck(\'' + col.key + '\', \'' + idPrefix + '\', this)">เลือก</button><div class="multi-check-panel" id="' + idPrefix + 'mc-' + col.key + '">';
+          for (var o = 0; o < opts.length; o++) {
+            html += '<label><input type="checkbox" value="' + opts[o] + '"> ' + opts[o] + '</label>';
+          }
+          html += '</div></div>';
+          wrap.innerHTML = html;
+        }
+        grid.appendChild(wrap);
+      }
+    }
+
+    function clearFilterFor(panelId, idPrefix, tbodyId, headId, columns) {
+      idPrefix = idPrefix || '';
+      var panel = document.getElementById(panelId);
+      if (!panel) return;
+      var inputs = panel.querySelectorAll('input');
+      for (var i = 0; i < inputs.length; i++) {
+        if (inputs[i].type === 'checkbox') inputs[i].checked = false;
+        else inputs[i].value = '';
+      }
+      var selects = panel.querySelectorAll('select');
+      for (var s = 0; s < selects.length; s++) { selects[s].value = ''; }
+      panel.querySelectorAll('.multi-check-btn.active').forEach(function(b) { b.classList.remove('active'); });
+      renderTable(tableData, columns, tbodyId, headId);
+    }
+    function clearFilter() { clearFilterFor('data-filter-panel', 'f-', 'data-table-body', 'data-table-head', tableColumns); }
+    function clearBasicFilter() { clearFilterFor('basic-filter-panel', 'bf-', 'basic-table-body', 'basic-table-head', basicColumns); }
+
+    function filterTableFor(columns, idPrefix, tbodyId, headId) {
       var filtered = tableData.filter(function(r) {
-        return matchNum(r.temp, opTemp, fTemp) &&
-          matchNum(r.hr, opHR, fHR) &&
-          matchNum(r.rr, opRR, fRR) &&
-          (fCRT === '' || (fCRT === 'lt2' ? r.crt === '<2' : r.crt !== '<2' && r.crt !== '')) &&
-          matchNum(r.pulse, opPulse, fPulse) &&
-          matchNum(r.bp, opBP, fBP) &&
-          matchNum(r.fbs, opFBS, fFBS) &&
-          matchMulti(r.mm, mmVals) &&
-          matchMulti(r.cons, consVals) &&
-          matchMulti(r.lung, lungVals) &&
-          matchMulti(r.heart, heartVals) &&
-          matchMultiCrit(r.crit, critVals);
+        for (var i = 0; i < columns.length; i++) {
+          var col = columns[i];
+          if (col.key === 'created' || col.key === 'update' || col.key === 'cardId') continue;
+          var cfg = filterConfig[col.key];
+          if (!cfg) continue;
+          if (cfg.type === 'num') {
+            var op = document.getElementById(idPrefix + col.key + '-op').value;
+            var val = getNumVal(idPrefix + col.key + '-val');
+            if (!matchNum(r[col.key], op, val)) return false;
+          } else if (cfg.type === 'text') {
+            var q = document.getElementById(idPrefix + col.key + '-text').value.trim().toLowerCase();
+            if (q && ((r[col.key] || '').toLowerCase().indexOf(q) < 0)) return false;
+          } else if (cfg.type === 'multi' || cfg.type === 'multi-crit') {
+            var vals = getMultiCheckValues(col.key, idPrefix);
+            if (vals.length) {
+              if (cfg.type === 'multi-crit') { if (!matchMultiCrit(r[col.key], vals)) return false; }
+              else { if (!matchMulti(r[col.key], vals)) return false; }
+            }
+          }
+        }
+        return true;
       });
-      renderTable(filtered);
+      renderTable(filtered, columns, tbodyId, headId);
     }
+    function filterTable() { filterTableFor(tableColumns, 'f-', 'data-table-body', 'data-table-head'); }
+    function filterBasicTable() { filterTableFor(basicColumns, 'bf-', 'basic-table-body', 'basic-table-head'); }
 
-    renderTable(tableData);
+    renderFilters('data-filter-panel', tableColumns, 'f-');
+    renderFilters('basic-filter-panel', basicColumns, 'bf-');
+    renderTable(tableData, tableColumns, 'data-table-body', 'data-table-head');
+    renderTable(tableData, basicColumns, 'basic-table-body', 'basic-table-head');
   </script>
 </body>
 </html>
