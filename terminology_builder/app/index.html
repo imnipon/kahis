@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAHIS terminology master</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">LOCAL TERMINOLOGY BUILDER</p>
+        <h1>KAHIS terminology master</h1>
+        <p class="subtitle">ตรวจสอบ release, เปรียบเทียบ SA-PDT / VSCT / SCT International และ export ข้อมูลสำหรับ HIS โดยไม่ส่งข้อมูลออกจากเครื่อง</p>
+      </div>
+      <div class="privacy-badge">OFFLINE · LOCAL ONLY</div>
+    </header>
+
+    <section class="panel source-panel">
+      <div class="panel-heading">
+        <div>
+          <p class="section-kicker">01 / SOURCE FOLDERS</p>
+          <h2>เลือกโฟลเดอร์ต้นฉบับ</h2>
+        </div>
+        <div class="button-row source-actions">
+          <button id="scanButton" class="primary" type="button" title="อ่าน source files และสร้างหรืออัปเดต Local Master">Scan sources / Import Master</button>
+          <button id="clearMasterButton" class="danger" type="button" title="ลบ Local Master ใน browser เครื่องนี้เท่านั้น">Clear Local Master</button>
+        </div>
+      </div>
+      <p class="hint">เลือก folder ที่มีไฟล์ release ระบบจะค้นหาจาก path, ชื่อไฟล์ และ header ไม่บังคับวันที่หรือ module version ในชื่อไฟล์</p>
+      <div class="folder-grid">
+        <label class="folder-card">
+          <span class="folder-title">SA-PDT</span>
+          <span class="folder-description">XML, full release, change release</span>
+          <input id="sapdtInput" type="file" webkitdirectory directory multiple>
+          <span id="sapdtLabel" class="file-label">ยังไม่ได้เลือก folder</span>
+        </label>
+        <label class="folder-card">
+          <span class="folder-title">VSCT</span>
+          <span class="folder-description">SNOMED CT Veterinary Extension RF2</span>
+          <input id="vsctInput" type="file" webkitdirectory directory multiple>
+          <span id="vsctLabel" class="file-label">ยังไม่ได้เลือก folder</span>
+        </label>
+        <label class="folder-card">
+          <span class="folder-title">SCT International</span>
+          <span class="folder-description">SNOMED CT International RF2</span>
+          <input id="sctInput" type="file" webkitdirectory directory multiple>
+          <span id="sctLabel" class="file-label">ยังไม่ได้เลือก folder</span>
+        </label>
+        <label class="folder-card secondary-card">
+          <span class="folder-title">Existing database</span>
+          <span class="folder-description">optional: CSV / JSON / prior export</span>
+          <input id="databaseInput" type="file" webkitdirectory directory multiple>
+          <span id="databaseLabel" class="file-label">ไม่มีฐานเดิม (initial build)</span>
+        </label>
+      </div>
+      <div id="scanStatus" class="status neutral">พร้อมตรวจสอบ source</div>
+      <div id="scanProgress" class="scan-progress" hidden>
+        <div class="progress-heading"><span id="scanProgressText">กำลังเตรียมการ…</span><strong id="scanProgressPercent">0%</strong></div>
+        <div class="progress-track"><span id="scanProgressBar"></span></div>
+        <div id="scanProgressFile" class="progress-file">ยังไม่มีไฟล์ที่กำลังอ่าน</div>
+      </div>
+    </section>
+
+    <section class="stats-grid" aria-label="สรุปข้อมูล">
+      <article class="stat-card"><span>SA-PDT concepts</span><strong id="sapdtConceptCount">—</strong></article>
+      <article class="stat-card"><span>SA-PDT descriptions</span><strong id="sapdtDescriptionCount">—</strong></article>
+      <article class="stat-card"><span>VSCT files</span><strong id="vsctFileCount">—</strong></article>
+      <article class="stat-card"><span>SCT Intl files</span><strong id="sctFileCount">—</strong></article>
+      <article class="stat-card"><span>Existing database</span><strong id="databaseState">—</strong></article>
+    </section>
+
+    <section class="panel">
+      <div class="panel-heading">
+        <div>
+          <p class="section-kicker">02 / DISCOVERY</p>
+          <h2>ไฟล์ที่ระบบค้นพบ</h2>
+        </div>
+        <span id="modeBadge" class="mode-badge">ยังไม่ scan</span>
+      </div>
+      <div id="fileTable" class="table-wrap empty-state">เลือก source folders แล้วกด Scan sources</div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-heading">
+        <div>
+          <p class="section-kicker">03 / PREVIEW</p>
+          <h2>ตัวอย่างข้อมูล Master แบบหนึ่ง row ต่อหนึ่ง Description</h2>
+        </div>
+        <div class="button-row">
+          <button id="exportDescriptions" class="secondary" type="button" title="ไฟล์รายละเอียด หนึ่ง row ต่อหนึ่ง Description ใช้ตรวจสอบหรือส่งให้ทีมข้อมูล" disabled>Export detail: descriptions CSV</button>
+          <button id="exportConcepts" class="primary" type="button" title="ไฟล์ terminology_master 30 คอลัมน์ หนึ่ง row ต่อหนึ่ง Description" disabled>Export MAIN: terminology_master 30cols CSV</button>
+        </div>
+      </div>
+      <div id="previewTable" class="table-wrap empty-state">ยังไม่มีข้อมูล preview</div>
+      <div class="output-explanation">
+        <div><strong>MAIN Master</strong><span>ใช้เป็นไฟล์หลัก หนึ่ง row ต่อหนึ่ง Description</span></div>
+        <div><strong>Detail descriptions</strong><span>ใช้ตรวจสอบคำศัพท์และ Description ID หนึ่ง row ต่อหนึ่ง Description</span></div>
+        <div><strong>Local Master</strong><span>ข้อมูลที่ใช้งานจริงถูกเก็บใน IndexedDB ของ browser เครื่องนี้</span></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-heading">
+        <div>
+          <p class="section-kicker">04 / ADMIN MASTER DATA</p>
+          <h2>synonym_alias</h2>
+        </div>
+        <button id="saveAlias" class="primary" type="button" title="บันทึกคำพ้องส่วนกลางลง Local Master">เพิ่ม synonym_alias</button>
+      </div>
+      <p class="hint">ข้อมูลนี้ใช้ร่วมกันทั้งระบบและจัดการโดย Admin ไม่ใช่ synonym ส่วนตัวของผู้ใช้</p>
+      <div class="alias-form">
+        <input id="aliasConceptId" type="text" placeholder="Concept ID เช่น 350281000009108">
+        <input id="aliasText" type="text" placeholder="คำพ้องหรือคำค้นเพิ่มเติม">
+        <select id="aliasType"><option value="synonym">synonym</option><option value="clinical">clinical</option><option value="abbreviation">abbreviation</option><option value="local">local</option></select>
+      </div>
+      <div id="aliasTable" class="table-wrap empty-state">ยังไม่มี synonym_alias</div>
+    </section>
+
+    <section class="panel report-panel">
+      <div class="panel-heading">
+        <div>
+          <p class="section-kicker">05 / REPORT</p>
+          <h2>ผลการตรวจสอบ</h2>
+        </div>
+        <button id="exportReport" class="secondary" type="button" title="รายงานสรุปการ Import และ source files แบบละเอียด plain text" disabled>Export REPORT: detailed TXT</button>
+      </div>
+      <pre id="reportOutput" class="report-output">ยังไม่มีผลการตรวจสอบ</pre>
+    </section>
+
+    <footer>
+      <span>KAHIS terminology master</span>
+      <span>อ่านข้อมูลใน browser เท่านั้น · export เป็นไฟล์ download</span>
+    </footer>
+  </main>
+  <script src="production.js"></script>
+</body>
+</html>

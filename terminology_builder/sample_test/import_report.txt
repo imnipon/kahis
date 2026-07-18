@@ -1,0 +1,100 @@
+KAHIS TERMINOLOGY MASTER - DETAILED IMPORT REPORT
+=================================================
+Generated at                              : 2026-07-18T13:09:59.982Z
+Application                               : KAHIS_terminology_master
+Mode                                      : update_existing_database
+
+1. EXECUTIVE SUMMARY
+---------------------
+Master output file                        : terminology_master_30cols.csv
+Master row count                          : 103967
+Master column count                       : 30
+SA-PDT description rows                   : 8009
+VSCT-only description rows                : 95958
+SCT-only rows appended                    : 0
+Total imported descriptions in local database: 140334
+
+2. SOURCE PRIORITY AND MASTER LOGIC
+-----------------------------------
+1) SA-PDT is the base dataset and all SA-PDT Description rows are retained.
+2) VSCT is used before SCT International for SNOMED enrichment.
+3) VSCT Description rows are appended only when their Concept is absent from SA-PDT.
+4) SCT International is used as a field-level fallback for an existing SA-PDT or VSCT Concept.
+5) SCT-only Concepts are not appended as new Master rows.
+6) The Master grain is one row per Description, not one row per Concept.
+Source priority                           : SA-PDT > VSCT > SCT International
+Inclusion rule                            : SA-PDT descriptions plus VSCT-only descriptions; SCT-only descriptions excluded
+
+3. SOURCE FILES USED
+--------------------
+Discovered file count                     : 15
+Role - full release TXT                   : 1
+Role - change release TXT                 : 1
+Role - release XML                        : 2
+Role - documentation DOCX                 : 1
+Role - Concept RF2                        : 2
+Role - Description RF2                    : 2
+Role - Relationship RF2                   : 2
+Role - Language refset RF2                : 2
+Role - Association refset RF2             : 2
+1. [SA-PDT] full release TXT | 534128 bytes | Current Version (March 31, 2026) Distribution/SA-PDTReleaseFile_full_20260331.txt
+2. [SA-PDT] change release TXT | 3349 bytes | Current Version (March 31, 2026) Distribution/SA-PDTReleaseFile_20250401to20260331.txt
+3. [SA-PDT] release XML | 40452 bytes | Current Version (March 31, 2026) Distribution/SA-PDT Apr 2026 Release/ReleaseFile_20250331to20260331.xml
+4. [SA-PDT] release XML | 7199559 bytes | Current Version (March 31, 2026) Distribution/SA-PDT Apr 2026 Release/ReleaseFile_full_20260331.xml
+5. [SA-PDT] documentation DOCX | 540079 bytes | Current Version (March 31, 2026) Distribution/SA-PDT Document.docx
+6. [VSCT] Concept RF2 | 2330057 bytes | SnomedCT_VETExtension_PRODUCTION_INT1000009_20260331T120000Z/Snapshot/Terminology/sct2_Concept_Snapshot_INT1000009_20260331.txt
+7. [VSCT] Description RF2 | 13109379 bytes | SnomedCT_VETExtension_PRODUCTION_INT1000009_20260331T120000Z/Snapshot/Terminology/sct2_Description_Snapshot-en_INT1000009_20260331.txt
+8. [VSCT] Relationship RF2 | 7651765 bytes | SnomedCT_VETExtension_PRODUCTION_INT1000009_20260331T120000Z/Snapshot/Terminology/sct2_Relationship_Snapshot_INT1000009_20260331.txt
+9. [VSCT] Language refset RF2 | 20963706 bytes | SnomedCT_VETExtension_PRODUCTION_INT1000009_20260331T120000Z/Snapshot/Refset/Language/der2_cRefset_LanguageSnapshot-en_INT1000009_20260331.txt
+10. [VSCT] Association refset RF2 | 418569 bytes | SnomedCT_VETExtension_PRODUCTION_INT1000009_20260331T120000Z/Snapshot/Refset/Content/der2_cRefset_AssociationSnapshot_INT1000009_20260331.txt
+11. [SCT International] Concept RF2 | 32174689 bytes | SnomedCT_InternationalRF2_PRODUCTION_20260701T120000Z/Snapshot/Terminology/sct2_Concept_Snapshot_INT_20260701.txt
+12. [SCT International] Description RF2 | 229392395 bytes | SnomedCT_InternationalRF2_PRODUCTION_20260701T120000Z/Snapshot/Terminology/sct2_Description_Snapshot-en_INT_20260701.txt
+13. [SCT International] Relationship RF2 | 399654142 bytes | SnomedCT_InternationalRF2_PRODUCTION_20260701T120000Z/Snapshot/Terminology/sct2_Relationship_Snapshot_INT_20260701.txt
+14. [SCT International] Language refset RF2 | 390843964 bytes | SnomedCT_InternationalRF2_PRODUCTION_20260701T120000Z/Snapshot/Refset/Language/der2_cRefset_LanguageSnapshot-en_INT_20260701.txt
+15. [SCT International] Association refset RF2 | 23935846 bytes | SnomedCT_InternationalRF2_PRODUCTION_20260701T120000Z/Snapshot/Refset/Content/der2_cRefset_AssociationSnapshot_INT_20260701.txt
+
+4. RF2 FULL VS SNAPSHOT
+-----------------------
+Full release contains the historical rows for components across releases.
+A component can appear multiple times in Full with different effectiveTime values and active states.
+Snapshot contains the latest effective state for each component at the release date.
+Snapshot is the correct input for the operational Master and current terminology lookup.
+Full is retained for history, audit, release comparison, and reconstructing changes; it must not be merged directly with Snapshot.
+The current importer selects Snapshot Concept, Description, Relationship, Language refset, and Association refset files.
+
+5. SOURCE COUNTS
+----------------
+SA-PDT Concepts                           : 4489
+SA-PDT Descriptions                       : 8009
+VSCT Concepts                             : 40830
+VSCT-only Concepts                        : 37810
+VSCT-only Descriptions                    : 95958
+SCT International Concepts                : 534402
+SCT-only Concepts appended                : 0
+Approved synonym aliases                  : 0
+
+6. FIELD MAPPING LOGIC
+-----------------------
+display_name: SA-PDT preferred term, then first SA-PDT term, then VSCT preferred/FSN, then SCT International, then Concept ID.
+sapdt_* fields: populated from the current SA-PDT Description or Concept data; blank for VSCT-only rows where no SA-PDT exists.
+snomed_* fields: populated from VSCT first, then filled field-by-field from SCT International when VSCT has no value.
+match_type: Concept ID match when a SNOMED Concept ID is available; otherwise No match.
+match_confidence: Exact for Concept ID match; None when no SNOMED ID is available.
+synonym: current row term plus source synonyms and approved searchable synonym_alias values.
+
+7. FUTURE RELEASE UPDATE PROCEDURE
+-----------------------------------
+1) Store the new release in a separate dated directory; never overwrite the previous release.
+2) Select the new Snapshot directory for operational import.
+3) Keep the matching Full directory for history and audit, but do not load both into one import.
+4) Verify release date, module ID, language, and file role before scanning.
+5) Export the previous Master and this report before updating.
+6) Clear/rebuild the Local Master when changing release families; use update mode only for the same logical database.
+7) Compare row counts, Description IDs, Concept IDs, active states, retired/replacement mappings, and warnings.
+8) Keep the new Master, detail export, report, Snapshot, and Full release together as one release package.
+
+8. VALIDATION AND WARNINGS
+--------------------------
+Warnings count                            : 0
+
+END OF REPORT

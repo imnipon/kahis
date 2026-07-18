@@ -6,3 +6,5 @@ Small Animal Problem and Diagnosis Terms Full/
 terminology-app/
 resource/Small Animal Problem and Diagnosis Terms/
 resource/Terminology/
+.DS_Store
+terminology_builder/sample_test/*.csv
