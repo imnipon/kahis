@@ -608,7 +608,10 @@
       icon.className = 'file-icon';
       const text = document.createElement('span');
       text.textContent = node.name;
-      if (node.name.endsWith('.html')) {
+      if (node.name === 'subject.html') {
+        text.style.color = '#9ca3af';
+        text.textContent = node.name + ' (ไม่ใช้งาน)';
+      } else if (node.name.endsWith('.html')) {
         text.style.color = '#facc15';
       } else if (node.name.endsWith('.md')) {
         text.style.color = '#7dd3fc';
@@ -648,12 +651,21 @@
         const titleEl = document.createElement('div');
         titleEl.className = 'session-title';
         titleEl.textContent = title;
+        if (item.file.endsWith('subject.html')) {
+          titleEl.textContent = title + ' (ไม่ใช้งาน)';
+          titleEl.style.color = '#9ca3af';
+        }
         const desc = document.createElement('div');
         desc.className = 'session-desc';
         desc.textContent = 'Open in new tab';
         const path = document.createElement('div');
         path.className = 'session-path';
         path.textContent = item.file;
+        if (item.file.endsWith('subject.html')) {
+          path.style.color = '#9ca3af';
+        } else if (item.file.endsWith('.html')) {
+          path.style.color = '#facc15';
+        }
         a.appendChild(titleEl);
         a.appendChild(desc);
         a.appendChild(path);

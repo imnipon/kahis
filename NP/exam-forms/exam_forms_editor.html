@@ -24,7 +24,7 @@
     body {
       margin: 0; padding: 0; background: var(--bg); color: var(--text);
       font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      min-height: 100vh; overflow-y: auto;
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
     }
     .assessment-badge {
       display: inline-flex; align-items: center; gap: 6px;
@@ -360,7 +360,7 @@
     .logic-list li { font-size: 13px; color: #374151; line-height: 1.7; padding: 3px 0 3px 18px; position: relative; }
     .logic-list li::before { content: ''; position: absolute; left: 4px; top: 11px; width: 6px; height: 6px; border-radius: 50%; background: #f9a8d4; }
     .logic-list li b { color: #be185d; }
-    .launcher-bar { display: flex; align-items: center; gap: 12px; padding: 20px; }
+    .launcher-bar { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 20px; }
   
     /* topic colored column headers */
     .data-table thead th.th-date { background: #f1f5f9; color: #475569; }
@@ -438,7 +438,7 @@
 <body>
   <div class="launcher-bar">
     <button class="assessment-badge" onclick="document.getElementById('assess-modal').classList.add('show')">
-      <span class="dot"></span> Exam Form
+      <span class="dot"></span> Vital & PE
     </button>
   </div>
 
