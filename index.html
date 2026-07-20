@@ -243,6 +243,29 @@
       letter-spacing: 0.5px;
     }
 
+    .featured-mock {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 28px;
+      padding: 18px 20px;
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.18), rgba(30, 41, 59, 0.85));
+      border: 1px solid rgba(167, 139, 250, 0.45);
+      border-radius: 14px;
+    }
+
+    .featured-mock-copy { min-width: 0; }
+    .featured-mock-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .featured-mock-desc { color: var(--text-muted); font-size: 13px; line-height: 1.5; }
+    .featured-mock-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+    .featured-mock-actions a { text-decoration: none; }
+
+    @media (max-width: 640px) {
+      .featured-mock { align-items: flex-start; flex-direction: column; }
+      .featured-mock-actions { justify-content: flex-start; }
+    }
+
     .sessions {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -415,6 +438,17 @@
             </div>
           </div>
 
+          <div class="featured-mock">
+            <div class="featured-mock-copy">
+              <div class="featured-mock-title">Vital &amp; PE Editor Mock</div>
+              <div class="featured-mock-desc">Mock สำหรับ Vital &amp; Physical Examination พร้อม Form Editor, Basic Table, All Data Table, topic filters และ View Logic/Rule</div>
+            </div>
+            <div class="featured-mock-actions">
+              <a class="btn" href="NP/vital_pe/vital_pe_editor.html" target="_blank" rel="noopener">เปิด Mock</a>
+              <a class="btn btn-ghost" href="NP/vital_pe/vital_pe_manual.md" target="_blank" rel="noopener">Manual</a>
+              <a class="btn btn-ghost" href="NP/vital_pe/ref_pe.md" target="_blank" rel="noopener">Field Reference</a>
+            </div>
+          </div>
           <div class="section-title">Recent Sessions</div>
           <div class="sessions" id="sessions"></div>
         </div>

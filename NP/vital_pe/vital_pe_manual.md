@@ -2,7 +2,7 @@
 
 ไฟล์: `vital_pe_editor.html`
 
-> **อ้างอิงตัวเลือกฟิลด์และ Reference Ranges**: ดูรายละเอียดทั้งหมด 52 ฟิลด์ (Placeholder/Options และมาตรฐานสากล) ได้ที่ `ref_pe.md`
+> **อ้างอิงตัวเลือกฟิลด์และ Reference Ranges**: ดูรายละเอียดฟิลด์แบบฟอร์มทั้งหมด 51 ฟิลด์ (Field Hint/Placeholder/Options และมาตรฐานสากล) ได้ที่ `ref_pe.md`
 
 ---
 
@@ -10,7 +10,7 @@
 
 - เป็นการ **สร้างฐานข้อมูล** ด้วย — ไม่แนะนำให้ใช้ form ที่มีการเปลี่ยนแปลงบ่อย
 - ตัวอย่าง form ในระบบ: **Vital Sign**
-- ข้อมูลที่บันทึกจะถูก **เรียงลำดับตาม Processed On** ในตารางรวม
+- ข้อมูลแต่ละแถวมีค่า **Processed On** เพื่อแสดงวันที่ประมวลผล/วันที่ตรวจในตารางรวม
 
 ---
 
@@ -28,8 +28,8 @@
 
 ## 3. Processed On & การเรียงลำดับ
 
-- การบันทึกจะระบุ **Processed On** เพื่อใช้ในการเรียงลำดับการแสดงผลในตารางรวม
-- ตารางรวมให้ความสำคัญกับ **Processed On** เพราะมักมีการกรอกผลย้อนหลัง
+- การบันทึกจะระบุ **Processed On** เพื่อแสดงวันที่ประมวลผล/วันที่ตรวจในตารางรวม
+- ข้อมูลตัวอย่างสร้างวันที่ย้อนหลังและบางแถวมี offset เพื่อจำลองการกรอกผลย้อนหลัง
 - อนาคตจะมี **Schedule On** เพิ่มเติม
 
 ---
@@ -57,19 +57,16 @@
 
 ---
 
-## 7. Tab System (5 Tabs)
+## 7. Tab System (3 Tabs)
 
-- **Tab 1** (นิพนธ์ — คลินิกพิเศษ โรคหัวใจ นอกเวลา): **editable** ทั้งหมด, มี badge **NEW**
-- **Tab 2** (นิพนธ์ — อายุรกรรมทั่วไป ในเวลา): **editable** ทั้งหมด
-- **Tab 3** (วิชัย — ภาพวินิจฉัย นอกเวลา): **readonly** ทุกฟิลด์ (`meta-readonly`), ปุ่ม Confirm inactive
-- **Tab 4** (ปนัดดา — อายุรกรรมทั่วไป ในเวลา): **readonly** ทุกฟิลด์, ปุ่ม Confirm inactive
-- **Tab 5** (HN 69001234 — ตารางข้อมูลทั้งหมด): ตารางรวม + filter
-- **Tab 2, 3, 4 ซ่อน** จาก tab navigation (`display:none`)
-- คลิก tab → ซ่อน content อื่น, แสดง tab ที่เลือก, อัปเดต `last update by` ตาม DVM/User ของ tab
+- **Tab 1** (HN 69001234 — การบันทึกข้อมูล): Form Editor แบบแก้ไขได้ และมีปุ่ม Confirm
+- **Tab 5** (HN 69001234 — ตารางข้อมูลพื้นฐาน): ตารางพื้นฐาน 28 คอลัมน์ + Basic Filter แบบไม่แยก topic
+- **Tab 6** (HN 69001234 — ตารางข้อมูลทั้งหมด): ตารางรวม 53 คอลัมน์ + Filter แยกตาม topic
+- คลิก tab → ซ่อน content อื่น แสดง tab ที่เลือก และอัปเดต `last update by` ตาม DVM/User ของ tab
 
 ---
 
-## 8. Layout: 3-Column Grid (Tab 1–4)
+## 8. Layout: 3-Column Grid (Tab 1)
 
 ### คอลัมน์ 1 — Forms
 - รายการฟอร์ม (Vital Sign) มี checkmark ✓
@@ -84,39 +81,42 @@
 - **5. Respiratory Assessment**: Lung/Airway Sounds (checkbox), Lung Sound Side, Lung Region, Respiratory Effort, Depth, Affected Phase
 - **6. Neurologic & Mentation**: Level of Consciousness, Reaction to Stimuli, Palpebral L/R, Menace L/R, PLR L/R, Pedal L/R
 - **7. Mobility & Posture**: Gait, Posture, Mobility Note
-- **8. Pain Assessment**: Pain Score, Observed Pain Severity, Observed Pain Indicators (checkbox)
+- **8. Pain Assessment**: Pain Score, Observed Pain Indicators (checkbox)
 
-> รวม 48 ฟิลด์ใน Form Editor + 4 ฟิลด์ Record Meta = **52 ฟิลด์** (ดูรายละเอียดที่ `ref_pe.md`)
+> รวม 47 ฟิลด์ใน Form Editor + 4 ฟิลด์ Record Meta = **51 ฟิลด์** (ดูรายละเอียดที่ `ref_pe.md`)
 
 ### คอลัมน์ 3 — Record Meta
 - **req-tags**: ✓ Form, ✓ DVM/User, ✓ Dept, exam-card-ID
-- **Processed on**: `datetime-local` (Tab 1–2) / readonly text (Tab 3–4)
-- **DVM/User**: readonly ทุก tab
-- **Department**: readonly ทุก tab
-- **Form Note**: textarea (Tab 1–2) / readonly text (Tab 3–4)
+- **Processed on**: `datetime-local` ใน Tab 1
+- **DVM/User**: readonly
+- **Department**: readonly
+- **Form Note**: textarea ใน Tab 1
 
 ---
 
-## 9. Placeholder & Styling
+## 9. Field Hint, Placeholder & Styling
 
-- ค่าตัวอย่างใน input ทั้งหมดเป็น **placeholder** สีเทา (`#9ca3af`)
-- `<select>` มี `<option value="" disabled selected>กรุณาเลือกข้อมูล</option>` เป็นค่า default
+- ค่าช่วงอ้างอิงของ numeric fields แสดงเป็น **field hint ใต้ช่องกรอก** ไม่ใช่ค่าที่กรอกไว้ล่วงหน้า
+- ช่อง text ที่ต้องการตัวอย่างการกรอกใช้ placeholder เช่น Bleeding Site, Critical Events Note และ Mobility Note
+- `<select>` ใช้ `กรุณาเลือกข้อมูล` เป็นค่าเริ่มต้น
 - Form Note textarea มี placeholder ตัวอย่างประโยคยาว
 - **Mucous Membrane Site**: Oral mucosa เป็นค่าเริ่มต้นที่เช็คไว้ใน UI
+- Field ที่มีข้อมูลหรือถูกเลือกจะแสดงสถานะ active ด้วยสี เพื่อให้เห็นว่ามีการกรอกข้อมูลแล้ว
 
 ---
 
-## 10. Processed on
+## 10. Processed On
 
-- **Tab 1–2** (editable): `<input type="datetime-local">` ป้องกันแก้ไขด้วยตัวอักษรโดยตรง (`onkeydown="return false"`) เลือกจากปฏิทินเท่านั้น
-- **Tab 3–4** (readonly): แสดงเป็น text สีเทาเข้ม (`#4b5563`, `font-weight: 500`)
+- Tab 1 ใช้ `<input type="datetime-local">` และป้องกันการพิมพ์ด้วยแป้นพิมพ์ (`onkeydown="return false"`) ให้เลือกจาก date/time picker
+- ตารางใช้ค่า Processed On เป็นข้อมูลวันที่ประมวลผล/วันที่ตรวจ และใช้แสดงในคอลัมน์ Date
 
 ---
 
 ## 11. Confirm & Toast
 
-- ปุ่ม **Confirm** (Tab 1–2): เรียก `assessConfirm(tabNum)` → แสดง toast 2 วินาที แสดง DVM/User, Department, last update
-- ปุ่ม **Confirm** (Tab 3–4): ปุ่ม inactive ไม่ทำงาน
+- ปุ่ม **Confirm** ของ Tab 1 เรียก `assessConfirm(1)`
+- แสดง toast ประมาณ 2 วินาที พร้อม DVM/User, Department และ last update
+- Tab ตารางไม่มีปุ่ม Confirm
 
 ---
 
@@ -128,39 +128,51 @@
 
 ---
 
-## 13. Tab 5 — ตารางข้อมูลทั้งหมด
+## 13. Tab 5 — ตารางข้อมูลพื้นฐาน (Basic)
 
-> คอลัมน์ในตารางรวมอาจต้องเพิ่ม/ปรับให้สอดคล้องกับ 52 ฟิลด์ใน `ref_pe.md` (ปัจจุบันมี 18 คอลัมน์)
+> ตารางพื้นฐานแสดง 28 คอลัมน์สำคัญจากทั้งหมด 53 คอลัมน์ในตารางทั้งหมด (Tab 6) และมี filter เฉพาะ 28 คอลัมน์นี้แบบ Flat Filter ไม่แบ่ง topic
 
-### คอลัมน์ (18 คอลัมน์ ปัจจุบัน)
+### คอลัมน์ตารางพื้นฐาน (28 คอลัมน์)
 
 | # | คอลัมน์ | หมายเหตุ |
 |---|---------|----------|
-| 1 | Processed On | วันเวลาที่ประมวลผล (ใช้เรียงลำดับ) |
+| 1 | Processed On | วันเวลาที่ประมวลผล/วันที่ตรวจ |
 | 2 | Temp (°F) | อุณหภูมิ |
 | 3 | HR (bpm) | อัตราการเต้นหัวใจ |
 | 4 | RR (rpm) | อัตราการหายใจ |
-| 5 | CRT (sec) | Capillary Refill Time |
-| 6 | Pulse (bpm) | ชีพจร |
-| 7 | BP (mmHg) | ความดันเลือด |
+| 5 | Pulse (bpm) | ชีพจร |
+| 6 | Wt. (kg) | น้ำหนัก |
+| 7 | CRT (sec) | Capillary Refill Time |
 | 8 | FBS (mg/dL) | น้ำตาลในเลือด |
-| 9 | Consciousness | ระดับสติ |
-| 10 | Mucous Membrane | เยื่อเมือก |
-| 11 | Lung Sound | เสียงปอด |
-| 12 | Heart Sound | เสียงหัวใจ |
-| 13 | Critical Event | เหตุวิกฤต (หลายค่าคั่นด้วย `,`) |
-| 14 | DVM/User | สัตวแพทย์/ผู้ใช้ |
-| 15 | Department | แผนก |
-| 16 | Created on | วันที่สร้าง |
-| 17 | Last Update | วันที่แก้ไขล่าสุด (บางแถวว่าง) |
-| 18 | Exam Card ID | สีม่วง ถ้าไม่มีแสดง — สีเทา |
+| 9 | Hydration Status | สถานะน้ำในร่างกาย |
+| 10 | NIBP SYS (mmHg) | ความดันบน |
+| 11 | NIBP DIA (mmHg) | ความดันล่าง |
+| 12 | SpO2 (%) | ออกซิเจนในเลือด |
+| 13 | Mucous Membrane Color | สีเยื่อเมือก |
+| 14 | Heart Sound | เสียงหัวใจ |
+| 15 | Critical Event Time | เวลาเหตุวิกฤต |
+| 16 | Critical Events | เหตุวิกฤต (หลายค่าคั่นด้วย `,`) |
+| 17 | Respiratory Effort | ความพยายามหายใจ |
+| 18 | Lung Sounds | เสียงปอด (หลายค่าคั่นด้วย `,`) |
+| 19 | LOC | ระดับสติ |
+| 20 | Palpebral L | Palpebral reflex — Left |
+| 21 | Palpebral R | Palpebral reflex — Right |
+| 22 | Gait | การเดิน |
+| 23 | Pain Score | คะแนนความปวด (0–4) |
+| 24 | DVM/User | สัตวแพทย์/ผู้ใช้ |
+| 25 | Department | แผนก |
+| 26 | Created on | วันที่สร้าง |
+| 27 | Last Update | วันที่แก้ไขล่าสุด (บางแถวว่าง) |
+| 28 | Exam Card ID | สีม่วง ถ้าไม่มีแสดง — สีเทา |
 
 ### ข้อมูล
-- 20 แถว จำลองการทยอยใส่ (บางฟิลด์ว่าง)
-- Processed On บางแถวตรง/ไม่ตรง Created on (ทั้งก่อนและหลัง)
-- Last Update บางแถวว่าง (สุ่ม)
+- 25 แถว จำลองการทยอยใส่ (บางฟิลด์ว่าง 20%)
+- Processed On บางแถวตรง/ไม่ตรง Created on (35% ของแถวมี offset ±2.5 วัน)
+- Last Update บางแถวว่าง (30%)
 - Critical Event หนึ่งแถวมีหลายค่าคั่นด้วย `,` (comma)
 - Exam Card ID: บางแถวมี id (เช่น `exam-card-69001234`), บางแถวเป็น `—` (ไม่มี exam card)
+- Palpebral L/R: บางแถวเหมือนกัน (correlated), บางแถวต่างกัน
+- Pain Score และ Pain Indicators: สุ่มอิสระ
 
 ### CSS ตาราง
 - `table-layout: auto`, `min-width: 1550px` — ตารางไม่ซ้อน, เลื่อนแนวนอนได้
@@ -169,48 +181,35 @@
 
 ---
 
-## 14. Filter — แถวที่ 1 (Numeric)
+## 14. Filter Design & Behavior
 
-| ฟิลด์ | ประเภท | ตัวเลือก |
-|-------|--------|----------|
-| Temp (°F) | Numeric | `=`, `>`, `<` + กรอกค่า |
-| HR (bpm) | Numeric | `=`, `>`, `<` + กรอกค่า |
-| RR (rpm) | Numeric | `=`, `>`, `<` + กรอกค่า |
-| CRT (sec) | Dropdown | ทั้งหมด, `<2`, อื่นๆ |
-| Pulse (bpm) | Numeric | `=`, `>`, `<` + กรอกค่า |
-| BP (mmHg) | Numeric | `=`, `>`, `<` + กรอกค่า |
-| FBS (mg/dL) | Numeric | `=`, `>`, `<` + กรอกค่า |
+### ตารางพื้นฐาน (Tab 5)
 
-### Logic
-- ถ้าไม่กรอกค่า = ไม่กรองฟิลด์นั้น
-- ถ้ากรอกค่าแต่ข้อมูลแถวนั้นว่าง = ไม่แสดงแถว
-- CRT ใช้ dropdown เพราะมีค่า `<2` ที่ไม่ใช่ตัวเลขล้วน
-  - **ทั้งหมด** = ไม่กรอง
-  - **`<2`** = แสดงเฉพาะแถวที่ CRT = `<2`
-  - **อื่นๆ** = แสดงแถวที่ CRT ไม่ใช่ `<2` และไม่ใช่ค่าว่าง
-- ขอบ `select` + `input` ต่อเนื่องกัน (`height: 30px`, `box-sizing: border-box`)
+- ใช้ **Flat Filter** ไม่แยก topic เพื่อให้ค้นหา field สำคัญได้เร็วและไม่รก
+- แสดงเฉพาะ filter ของ 28 คอลัมน์ใน `basicColumns`
+- Field เรียงแบบ wrap ในกรอบเดียว และ panel มี scroll ภายใน
+- แต่ละ field มีกรอบย่อยและสีตาม topic
 
----
+### ตารางทั้งหมด (Tab 6)
 
-## 15. Filter — แถวที่ 2 (Multi-check Dropdown)
+- แสดง filter ครบทุกคอลัมน์ที่มี filter configuration
+- แยกเป็น topic: Date, Vital Signs, Monitoring, Perfusion, Critical Events, Respiratory, Neuro/LOC, Mobility, Pain และ Meta
+- แต่ละ field มีกรอบย่อยและสีตาม topic
+- panel มี scroll แนวตั้ง/แนวนอนภายในกรอบ
 
-| กลุ่ม | ตัวเลือก |
-|-------|----------|
-| Mucous Membrane | Pink (normal), Pale, Yellow, Red, Cyanosis |
-| Consciousness | Alert, Depressed, Stupor, Comatose |
-| Lung Sound | Normal, Crackles, Wheezes, Diminished, Absent |
-| Heart Sound | Normal, Gallop, Murmur, Muffled, Arrhythmia |
-| Critical Event | Cyanosis, Seizure, Arrest |
+### ประเภท filter
+
+- **Numeric**: operator `=`, `>`, `<` และช่องกรอกค่า
+- **Text**: ช่องค้นหาข้อความแบบ contains
+- **Multi-check**: เลือกได้หลายค่า โดยปุ่มแสดง `ยังไม่เลือก` หรือ `เลือก x รายการ`
+- Multi-check dropdown ใช้ fixed overlay เพื่อไม่ให้ถูกตารางบัง
+- Date text filter มีปุ่ม `Today` สำหรับ Processed On
 
 ### Logic
-- คลิกปุ่ม → เปิด panel, คลิกนอก → ปิดอัตโนมัติ
-- เลือกหลายค่าได้ (**OR logic**)
-- Critical Event เช็คแบบ **contains** เพราะหนึ่งแถวมีหลายค่าคั่นด้วย `,`
-- Filter 2 แถว **ไม่มีเส้นแบ่ง** (`border-bottom` ถูกลบออก)
 
----
-
-## 16. ปุ่ม Filter
-
-- **ค้นหา**: กรองข้อมูลตามเงื่อนไขทั้งหมด (AND ระหว่างฟิลด์, OR ภายใน multi-check)
-- **ล้างตัวกรอง**: รีเซ็ตค่าทั้งหมด (numeric, CRT, multi-check) แล้วแสดงข้อมูลทั้งหมด
+- ไม่กรอกค่า = ไม่กรอง field นั้น
+- กรอกหลาย field = ใช้ **AND logic** ระหว่าง field
+- เลือกหลายค่าใน multi-check = ใช้ **OR logic** ภายใน field เดียวกัน
+- ฟิลด์แบบ multi-crit เช่น Critical Events และ Lung Sounds ตรวจแบบ contains จากค่าที่คั่นด้วย comma
+- ปุ่ม **ค้นหา** ใช้กรองข้อมูลตามค่าปัจจุบัน
+- ปุ่ม **ล้างตัวกรอง** รีเซ็ต numeric, text, select, multi-check, สี active และข้อความ `เลือก x รายการ` แล้วแสดงข้อมูลทั้งหมด

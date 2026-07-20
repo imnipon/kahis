@@ -11,6 +11,6 @@ const assessmentFiles = [
   { title: "Search HN", file: "NP/assessment/search-hn.html", lastUpdate: "2026-07-08T11:08:11.343821" },
   { title: "Subject Editor", file: "NP/subjective/subject.html", lastUpdate: "2026-07-19T09:30:00.000000" },
   { title: "Subjective Editor", file: "NP/subjective/subjective_editor.html", lastUpdate: "2026-07-19T09:30:00.000000" },
-  { title: "Vital & PE Editor", file: "NP/vital_pe/vital_pe_editor.html", lastUpdate: "2026-07-15T16:30:00.000000" },
+  { title: "Vital & PE Editor", file: "NP/vital_pe/vital_pe_editor.html", lastUpdate: "2026-07-20T16:32:00.000000" },
   { title: "Module Map", file: "NP/subjective/module-map.md", lastUpdate: "2026-07-13T10:00:00.000000" },
 ];
