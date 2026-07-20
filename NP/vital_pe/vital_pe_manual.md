@@ -1,6 +1,8 @@
-# Vital & PE Editor — Logic & Rule Summary
+# Vital & PE Editor — Manual & Rule Summary
 
 ไฟล์: `vital_pe_editor.html`
+
+> **อ้างอิงตัวเลือกฟิลด์และ Reference Ranges**: ดูรายละเอียดทั้งหมด 52 ฟิลด์ (Placeholder/Options และมาตรฐานสากล) ได้ที่ `ref_pe.md`
 
 ---
 
@@ -73,11 +75,18 @@
 - รายการฟอร์ม (Vital Sign) มี checkmark ✓
 
 ### คอลัมน์ 2 — Form Editor
-แบ่งเป็น 3 ส่วน:
+แบ่งเป็น 8 ส่วน (section navigation ด้านบน):
 
-- **Vital Signs**: Temp, HR, RR, BP, CRT, Pulse, FBS — 4 ฟิลด์/บรรทัด (`field-row-4`), input สั้น (`vs-input`), ค่าตัวอย่างเป็น placeholder สีเทา
-- **Physical Examination**: Mucous Membrane, Consciousness, Lung Sound, Heart Sound — เป็น `<select>` ค่า default "กรุณาเลือกข้อมูล" (Tab 1–2), readonly text (Tab 3–4)
-- **Critical Event**: checkbox grid (Cyanosis, Seizure, Arrest + dummy)
+- **1. Core Vital Signs**: Temp, HR, RR, Pulse, Weight, CRT, FBS, Hydration Status, Estimated Dehydration
+- **2. Blood Pressure & Advanced Monitoring**: NIBP SYS/DIA/MAP, BP Method, Cuff Site, SpO2, EtCO2, Oxygen Support
+- **3. Perfusion, Mucosa & Bleeding**: Mucous Membrane Site (checkbox), Mucous Membrane Color, Bleeding Status, Bleeding Severity, Bleeding Site
+- **4. Cardiac & Critical Events**: Heart Sound, Critical Event Time, Critical Events (checkbox), Critical Events Note
+- **5. Respiratory Assessment**: Lung/Airway Sounds (checkbox), Lung Sound Side, Lung Region, Respiratory Effort, Depth, Affected Phase
+- **6. Neurologic & Mentation**: Level of Consciousness, Reaction to Stimuli, Palpebral L/R, Menace L/R, PLR L/R, Pedal L/R
+- **7. Mobility & Posture**: Gait, Posture, Mobility Note
+- **8. Pain Assessment**: Pain Score, Observed Pain Severity, Observed Pain Indicators (checkbox)
+
+> รวม 48 ฟิลด์ใน Form Editor + 4 ฟิลด์ Record Meta = **52 ฟิลด์** (ดูรายละเอียดที่ `ref_pe.md`)
 
 ### คอลัมน์ 3 — Record Meta
 - **req-tags**: ✓ Form, ✓ DVM/User, ✓ Dept, exam-card-ID
@@ -91,8 +100,9 @@
 ## 9. Placeholder & Styling
 
 - ค่าตัวอย่างใน input ทั้งหมดเป็น **placeholder** สีเทา (`#9ca3af`)
-- Physical Examination `<select>` มี `<option value="" disabled selected>กรุณาเลือกข้อมูล</option>`
+- `<select>` มี `<option value="" disabled selected>กรุณาเลือกข้อมูล</option>` เป็นค่า default
 - Form Note textarea มี placeholder ตัวอย่างประโยคยาว
+- **Mucous Membrane Site**: Oral mucosa เป็นค่าเริ่มต้นที่เช็คไว้ใน UI
 
 ---
 
@@ -120,7 +130,9 @@
 
 ## 13. Tab 5 — ตารางข้อมูลทั้งหมด
 
-### คอลัมน์ (18 คอลัมน์)
+> คอลัมน์ในตารางรวมอาจต้องเพิ่ม/ปรับให้สอดคล้องกับ 52 ฟิลด์ใน `ref_pe.md` (ปัจจุบันมี 18 คอลัมน์)
+
+### คอลัมน์ (18 คอลัมน์ ปัจจุบัน)
 
 | # | คอลัมน์ | หมายเหตุ |
 |---|---------|----------|

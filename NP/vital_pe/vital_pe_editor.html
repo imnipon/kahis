@@ -333,33 +333,52 @@
     .clinical-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 10px 12px; }
     .clinical-grid + .clinical-grid, .choice-block + .clinical-grid, .clinical-grid + .choice-block { margin-top: 10px; }
     .field .field-hint { min-height: 14px; margin-top: 4px; color: #9ca3af; font-size: 10px; line-height: 1.4; }
+    .ctrl::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .clinical-grid .field { min-height: 64px; }
     .choice-block { margin-top: 10px; }
     .choice-block:first-child { margin-top: 0; }
     .choice-label { display: block; margin-bottom: 7px; color: #7c8698; font-size: 12px; }
     .choice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 6px 10px; }
     .choice-grid .check-item { min-height: 30px; padding: 6px 8px; border: 1px solid #e5e7eb; border-radius: 7px; background: #fafbfc; font-size: 11px; }
     .choice-grid .check-item:has(input:checked) { border-color: #a5b4fc; background: #eef2ff; color: #3730a3; }
-    .reflex-grid { display: grid; grid-template-columns: minmax(145px, 1.3fr) 1fr 1fr; gap: 10px 12px; align-items: end; }
+    .reflex-grid { display: grid; grid-template-columns: minmax(140px, 1.2fr) 1fr 1fr; gap: 8px 12px; align-items: end; }
+    .reflex-row-label { font-size: 12px; font-weight: 600; color: #374151; padding-bottom: 6px; }
     .section-note { margin-top: 10px; padding: 8px 10px; border-left: 3px solid #c7d2fe; background: #f8faff; color: #64748b; font-size: 10px; line-height: 1.5; }
     .logic-badge {
-      display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border: 1px solid #f9a8d4; border-radius: 999px;
-      font-size: 13px; background: #fdf2f8; color: #db2777; font-family: inherit; cursor: pointer; font-weight: 500; transition: all .15s;
+      display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border: 1px solid #a0b070; border-radius: 999px;
+      font-size: 13px; background: #f5f7f0; color: #556b2f; font-family: inherit; cursor: pointer; font-weight: 500; transition: all .15s;
     }
-    .logic-badge:hover { background: #fce7f3; border-color: #f472b6; }
-    .logic-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #ec4899; }
+    .logic-badge:hover { background: #eef2e6; border-color: #8a9a5a; }
+    .logic-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #556b2f; }
     .logic-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.4); z-index: 3000; align-items: center; justify-content: center; }
     .logic-overlay.show { display: flex; }
-    .logic-box { background: #fff; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,.3); width: 95%; max-width: 720px; max-height: 85vh; overflow-y: auto; padding: 28px 32px; position: relative; }
-    .logic-close { position: absolute; top: 16px; right: 16px; background: #fff; border: 1px solid #f9a8d4; border-radius: 8px; padding: 4px 10px; font-size: 13px; cursor: pointer; color: #db2777; font-family: inherit; font-weight: 500; }
-    .logic-close:hover { background: #fce7f3; border-color: #f472b6; }
-    .logic-title { font-size: 18px; font-weight: 700; color: #be185d; margin-bottom: 4px; }
+    .logic-box { background: #fff; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,.3); width: 95%; max-width: 1100px; max-height: 85vh; overflow-y: auto; padding: 28px 32px; position: relative; }
+    .logic-title { font-size: 18px; font-weight: 700; color: #3d4e1a; margin-bottom: 4px; }
     .logic-subtitle { font-size: 12px; color: #9ca3af; margin-bottom: 20px; }
     .logic-section { margin-bottom: 22px; }
-    .logic-section-title { font-size: 14px; font-weight: 600; color: #db2777; padding-bottom: 6px; border-bottom: 2px solid #fce7f3; margin-bottom: 10px; }
+    .logic-section-title { font-size: 14px; font-weight: 600; color: #556b2f; padding-bottom: 6px; border-bottom: 2px solid #e8ecd8; margin-bottom: 10px; }
     .logic-list { list-style: none; padding: 0; margin: 0; }
     .logic-list li { font-size: 13px; color: #374151; line-height: 1.7; padding: 3px 0 3px 18px; position: relative; }
-    .logic-list li::before { content: ''; position: absolute; left: 4px; top: 11px; width: 6px; height: 6px; border-radius: 50%; background: #f9a8d4; }
-    .logic-list li b { color: #be185d; }
+    .logic-list li::before { content: ''; position: absolute; left: 4px; top: 11px; width: 6px; height: 6px; border-radius: 50%; background: #a0b070; }
+    .logic-list li b { color: #3d4e1a; }
+    .logic-part-header { font-size: 16px; font-weight: 700; color: #fff; background: #556b2f; border-radius: 8px; padding: 10px 18px; margin: 28px 0 16px; }
+    .logic-intro { font-size: 13px; color: #4b5563; line-height: 1.7; margin-bottom: 18px; padding: 12px 16px; background: #f5f7f0; border-left: 4px solid #a0b070; border-radius: 4px; }
+    .ref-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 18px; }
+    .ref-table th { background: #556b2f; color: #fff; padding: 8px 10px; text-align: left; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .03em; }
+    .ref-table th:first-child { width: 32px; text-align: center; }
+    .ref-table td { padding: 7px 10px; border-bottom: 1px solid #e8ecd8; color: #374151; line-height: 1.6; vertical-align: top; }
+    .ref-table td:first-child { text-align: center; color: #8a9a5a; font-weight: 600; }
+    .ref-table tr:hover td { background: #f9faf3; }
+    .ref-table .ftype { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px; color: #6b7d3a; background: #eef2e6; padding: 2px 6px; border-radius: 4px; white-space: nowrap; }
+    .ref-table .fopts { color: #4b5563; }
+    .ref-table .fref { font-size: 11px; color: #6b7280; }
+    .ref-source-list { list-style: none; padding: 0; margin: 0; }
+    .ref-source-list li { font-size: 12px; color: #374151; line-height: 1.7; padding: 6px 0 6px 20px; position: relative; border-bottom: 1px solid #f0f4e8; }
+    .ref-source-list li:last-child { border-bottom: none; }
+    .ref-source-list li::before { content: '📖'; position: absolute; left: 0; top: 5px; font-size: 13px; }
+    .ref-source-list li b { color: #3d4e1a; }
+    .logic-sub-group { font-size: 13px; font-weight: 600; color: #556b2f; margin: 14px 0 6px; }
+    .logic-note { font-size: 12px; color: #6b7280; font-style: italic; padding: 8px 12px; background: #f9faf3; border-radius: 6px; margin: 8px 0; }
     .launcher-bar { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 20px; }
   
     /* topic colored column headers */
@@ -488,91 +507,98 @@
             </div>
 
             <section class="assessment-section" id="core-vital">
-              <div class="assessment-section-head"><div class="assessment-section-title">1. Core Vital Signs</div><div class="assessment-section-hint">ค่าพื้นฐานของผู้ป่วย</div></div>
+              <div class="assessment-section-head"><div class="assessment-section-title">1. Core Vital Signs</div><div class="assessment-section-hint">ค่าพื้นฐานของสัตว์ป่วย</div></div>
               <div class="clinical-grid">
-                <div class="field"><label>Temp (°F)</label><input class="ctrl" type="number" step="0.1" placeholder="101.5"></div>
-                <div class="field"><label>HR (bpm)</label><input class="ctrl" type="number" min="0" step="1" placeholder="120"></div>
-                <div class="field"><label>RR (bpm)</label><input class="ctrl" type="number" min="0" step="1" placeholder="24"></div>
-                <div class="field"><label>Pulse (bpm)</label><input class="ctrl" type="number" min="0" step="1" placeholder="118"></div>
-                <div class="field"><label>Weight (kg)</label><input class="ctrl" type="number" min="0" step="0.01" placeholder="12.40"></div>
-                <div class="field"><label>CRT (sec)</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>&lt;1</option><option>1</option><option>&lt;2</option><option>2</option><option>3</option><option>4</option><option>&gt;4</option><option>Unable to assess</option></select></div>
-                <div class="field"><label>FBS (mg/dL)</label><input class="ctrl" type="number" min="0" step="1" placeholder="105"></div>
-                <div class="field"><label>Hydration Status</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Normal</option><option>Dehydrated</option><option>Overhydrated</option><option>Unable to assess</option></select></div>
-                <div class="field"><label>Estimated Dehydration (%)</label><input class="ctrl" type="number" min="0" max="15" step="0.5" placeholder="7"><div class="field-hint">กรอกเมื่อประเมินว่า dehydrated</div></div>
+                <div class="field"><label>Temp (°F)</label><input class="ctrl" type="text" inputmode="decimal"><div class="field-hint">Canine: 100.0–102.5 °F · Feline: 100.5–102.5 °F</div></div>
+                <div class="field"><label>HR (bpm)</label><input class="ctrl" type="text" inputmode="numeric"><div class="field-hint">Canine: 60–140 bpm · Feline: 140–220 bpm</div></div>
+                <div class="field"><label>RR (rpm)</label><input class="ctrl" type="text" inputmode="numeric"><div class="field-hint">Canine: 15–30 rpm · Feline: 20–30 rpm</div></div>
+                <div class="field"><label>Pulse (bpm)</label><input class="ctrl" type="text" inputmode="numeric"><div class="field-hint">Canine: 60–140 bpm · Feline: 140–220 bpm</div></div>
+                <div class="field"><label>Weight (kg)</label><input class="ctrl" type="text" inputmode="decimal"><div class="field-hint">บันทึกน้ำหนักปัจจุบัน (kg)</div></div>
+                <div class="field"><label>CRT (sec)</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>&lt; 2 sec (Normal)</option><option>2–3 sec (Mildly Prolonged)</option><option>&gt; 3 sec (Prolonged)</option><option>&lt; 1 sec (Hyperdynamic / Brick Red)</option><option>Unable to assess</option></select><div class="field-hint">Normal: &lt; 2 sec</div></div>
+                <div class="field"><label>FBS (mg/dL)</label><input class="ctrl" type="text" inputmode="numeric"><div class="field-hint">Canine: 75–120 mg/dL · Feline: 70–150 mg/dL</div></div>
+                <div class="field"><label>Hydration Status</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Normal (&lt;5%)</option><option>Mild Dehydration (5–6%)</option><option>Moderate Dehydration (7–9%)</option><option>Severe Dehydration (≥10–12%)</option><option>Overhydrated (Fluid Overload)</option><option>Unable to assess</option></select><div class="field-hint">Normal: &lt; 5%</div></div>
+                <div class="field"><label>Est. Dehydration (%)</label><input class="ctrl" type="text" inputmode="decimal"><div class="field-hint">ช่วง 0–12% · กรอกเมื่อประเมินว่า dehydrated</div></div>
               </div>
             </section><section class="assessment-section" id="monitoring">
               <div class="assessment-section-head"><div class="assessment-section-title">2. Blood Pressure &amp; Advanced Monitoring</div><div class="assessment-section-hint">NIBP, oxygenation และ ventilation</div></div>
               <div class="clinical-grid">
-                <div class="field"><label>NIBP SYS (mmHg)</label><input class="ctrl" type="number" min="0" step="1" placeholder="125"></div>
-                <div class="field"><label>NIBP DIA (mmHg)</label><input class="ctrl" type="number" min="0" step="1" placeholder="78"></div>
-                <div class="field"><label>NIBP MAP (mmHg)</label><input class="ctrl" type="number" min="0" step="1" placeholder="94"></div>
-                <div class="field"><label>BP Method</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Oscillometric</option><option>Doppler</option><option>Invasive</option><option>Other</option></select></div>
+                <div class="field"><label>NIBP SYS (mmHg)</label><input class="ctrl" type="text" inputmode="numeric"><div class="field-hint">Canine: 110–140 mmHg · Feline: 120–140 mmHg</div></div>
+                <div class="field"><label>NIBP DIA (mmHg)</label><input class="ctrl" type="text" inputmode="numeric"><div class="field-hint">Canine: 60–90 mmHg · Feline: 70–90 mmHg</div></div>
+                <div class="field"><label>NIBP MAP (mmHg)</label><input class="ctrl" type="text" inputmode="numeric"><div class="field-hint">Canine: 70–110 mmHg · Feline: 80–110 mmHg</div></div>
+                <div class="field"><label>BP Method</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Oscillometric</option><option>Doppler</option><option>High-Definition Oscillometry (HDO)</option><option>Invasive / Direct</option><option>Other</option></select></div>
                 <div class="field"><label>Cuff Site</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Left forelimb</option><option>Right forelimb</option><option>Left hindlimb</option><option>Right hindlimb</option><option>Tail</option><option>Other</option></select></div>
-                <div class="field"><label>SpO2 (%)</label><input class="ctrl" type="number" min="0" max="100" step="1" placeholder="97"></div>
-                <div class="field"><label>EtCO2 (mmHg)</label><input class="ctrl" type="number" min="0" step="1" placeholder="38"></div>
-                <div class="field"><label>Oxygen Support</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Room air</option><option>Flow-by</option><option>Nasal oxygen</option><option>Mask</option><option>Oxygen cage</option><option>Intubated</option><option>Other</option></select></div>
+                <div class="field"><label>SpO2 (%)</label><input class="ctrl" type="text" inputmode="numeric"><div class="field-hint">Normal: 95–100%</div></div>
+                <div class="field"><label>EtCO2 (mmHg)</label><input class="ctrl" type="text" inputmode="numeric"><div class="field-hint">Normal: 35–45 mmHg</div></div>
+                <div class="field"><label>Oxygen Support</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Room air</option><option>Flow-by</option><option>Nasal cannula</option><option>Mask</option><option>Oxygen cage / Hood</option><option>Mechanical Ventilation / Intubated</option><option>Other</option></select></div>
               </div>
             </section><section class="assessment-section" id="perfusion">
               <div class="assessment-section-head"><div class="assessment-section-title">3. Perfusion, Mucosa &amp; Bleeding</div><div class="assessment-section-hint">ตำแหน่งตรวจ สีเยื่อเมือก และภาวะเลือดออก</div></div>
               <div class="choice-block"><span class="choice-label">Mucous Membrane Site</span><div class="choice-grid">
-                <label class="check-item"><input type="checkbox"> Oral mucosa</label><label class="check-item"><input type="checkbox"> Conjunctiva</label><label class="check-item"><input type="checkbox"> Prepuce</label><label class="check-item"><input type="checkbox"> Vulva</label><label class="check-item"><input type="checkbox"> Other</label>
+                <label class="check-item"><input type="checkbox" checked> Oral mucosa</label><label class="check-item"><input type="checkbox"> Conjunctiva</label><label class="check-item"><input type="checkbox"> Prepuce</label><label class="check-item"><input type="checkbox"> Vulva</label><label class="check-item"><input type="checkbox"> Other</label>
               </div></div>
               <div class="clinical-grid">
-                <div class="field"><label>Mucous Membrane Color</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Pink / Normal</option><option>Pale</option><option>White</option><option>Red</option><option>Injected</option><option>Dark pink</option><option>Muddy</option><option>Jaundiced / Yellow</option><option>Cyanotic / Blue</option><option>Gray</option><option>Other</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Mucous Membrane Color</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Pink (Normal)</option><option>Pale / Porcelain White</option><option>Hyperemic / Injected / Red</option><option>Muddy / Brick Red</option><option>Jaundiced / Icteric / Yellow</option><option>Cyanotic / Blue</option><option>Gray / Ashen</option><option>Unable to assess</option></select></div>
                 <div class="field"><label>Bleeding Status</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>No active bleeding</option><option>Active — controlled</option><option>Active — uncontrolled</option><option>Suspected internal bleeding</option><option>Unable to assess</option></select></div>
                 <div class="field"><label>Bleeding Severity</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>None</option><option>Mild</option><option>Moderate</option><option>Severe</option></select></div>
-                <div class="field"><label>Bleeding Site</label><input class="ctrl" type="text" placeholder="ระบุตำแหน่ง"></div>
+                <div class="field"><label>Bleeding Site</label><input class="ctrl" type="text" placeholder="e.g., Left forelimb / Oral cavity"></div>
               </div>
             </section><section class="assessment-section" id="critical">
-              <div class="assessment-section-head"><div class="assessment-section-title">4. Cardiac &amp; Critical Events</div><div class="assessment-section-hint">เสียงหัวใจและเหตุการณ์วิกฤต</div></div>
+              <div class="assessment-section-head"><div class="assessment-section-title">4. Cardiac &amp; Critical Events</div><div class="assessment-section-hint">เสียงหัวใจและภาวะวิกฤต</div></div>
               <div class="clinical-grid">
-                <div class="field"><label>Heart Sound</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Normal</option><option>Murmur</option><option>Gallop</option><option>Muffled</option><option>Arrhythmia</option><option>Other</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Heart Sound</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Normal (S1/S2 clear)</option><option>Systolic Murmur</option><option>Diastolic Murmur</option><option>Continuous Murmur (เช่น PDA)</option><option>Gallop Rhythm (S3/S4)</option><option>Muffled / Distant</option><option>Arrhythmia / Irregular</option><option>Unable to assess</option></select></div>
                 <div class="field"><label>Critical Event Time</label><input class="ctrl" type="datetime-local"></div>
               </div>
               <div class="choice-block"><span class="choice-label">Critical Events</span><div class="choice-grid">
-                <label class="check-item"><input type="checkbox"> Cyanosis</label><label class="check-item"><input type="checkbox"> Seizure</label><label class="check-item"><input type="checkbox"> Cardiorespiratory arrest</label><label class="check-item"><input type="checkbox"> Respiratory arrest</label><label class="check-item"><input type="checkbox"> Syncope / Collapse</label><label class="check-item"><input type="checkbox"> Other</label>
+                <label class="check-item"><input type="checkbox"> Cyanosis</label><label class="check-item"><input type="checkbox"> Seizure</label><label class="check-item"><input type="checkbox"> Cardiopulmonary Arrest (CPA)</label><label class="check-item"><input type="checkbox"> Respiratory Arrest</label><label class="check-item"><input type="checkbox"> Severe Dyspnea / Distress</label><label class="check-item"><input type="checkbox"> Syncope / Collapse</label><label class="check-item"><input type="checkbox"> Other</label>
               </div></div>
-                          <div class="field"><label>Critical Events Note</label><input class="ctrl" type="text" placeholder="ข้อมูลประกอบเหตุวิกฤต"></div>
+                          <div class="field"><label>Critical Events Note</label><input class="ctrl" type="text" placeholder="e.g., Generalized tonic-clonic seizure lasting 2 mins"></div>
             </section><section class="assessment-section" id="respiratory">
-              <div class="assessment-section-head"><div class="assessment-section-title">5. Respiratory Assessment</div><div class="assessment-section-hint">ประเมิน effort, depth, pattern และเสียงทางเดินหายใจ</div></div>
-              <div class="clinical-grid">
-                <div class="field"><label>Respiratory Effort</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Normal</option><option>Increased</option><option>Decreased</option><option>Labored</option><option>Paradoxical</option><option>Unable to assess</option></select></div>
-                <div class="field"><label>Respiratory Depth</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Normal</option><option>Shallow</option><option>Deep</option><option>Variable</option><option>Unable to assess</option></select></div>
-                <div class="field"><label>Respiratory Pattern</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Eupnea</option><option>Tachypnea</option><option>Bradypnea</option><option>Apnea</option><option>Rapid and shallow</option><option>Prolonged inspiration</option><option>Prolonged expiration</option><option>Prolonged inspiration and expiration</option><option>Irregular</option><option>Paradoxical</option><option>Other</option></select></div>
-                <div class="field"><label>Affected Phase</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>None</option><option>Inspiratory</option><option>Expiratory</option><option>Biphasic</option><option>Unable to assess</option></select></div>
-                <div class="field"><label>Lung Sound Side</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Left</option><option>Right</option><option>Bilateral</option><option>Unable to localize</option></select></div>
-                <div class="field"><label>Lung Region</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>All lung fields</option><option>Cranial</option><option>Middle</option><option>Caudal</option><option>Dorsal</option><option>Ventral</option></select></div>
-              </div>
+              <div class="assessment-section-head"><div class="assessment-section-title">5. Respiratory Assessment</div><div class="assessment-section-hint">ประเมินเสียงทางเดินหายใจ</div></div>
               <div class="choice-block"><span class="choice-label">Lung / Airway Sounds</span><div class="choice-grid">
-                <label class="check-item"><input type="checkbox"> Normal</label><label class="check-item"><input type="checkbox"> Upper airway / Referred</label><label class="check-item"><input type="checkbox"> Wheeze</label><label class="check-item"><input type="checkbox"> Crackles</label><label class="check-item"><input type="checkbox"> Harsh</label><label class="check-item"><input type="checkbox"> Dull</label><label class="check-item"><input type="checkbox"> Absent</label><label class="check-item"><input type="checkbox"> Other</label>
+                <label class="check-item"><input type="checkbox"> Normal (Vesiculobronchial)</label><label class="check-item"><input type="checkbox"> Referred Upper Airway Sound (Stertor/Stridor)</label><label class="check-item"><input type="checkbox"> Wheezes (Rhonchi)</label><label class="check-item"><input type="checkbox"> Crackles (Fine/Coarse)</label><label class="check-item"><input type="checkbox"> Harsh</label><label class="check-item"><input type="checkbox"> Dull / Diminished</label><label class="check-item"><input type="checkbox"> Absent</label><label class="check-item"><input type="checkbox"> Other</label>
               </div></div>
+              <div class="clinical-grid">
+                <div class="field"><label>Lung Sound Side</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Left</option><option>Right</option><option>Bilateral</option><option>Unable to localize</option></select></div>
+                <div class="field"><label>Lung Region</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>All lung fields (Diffuse)</option><option>Cranioventral</option><option>Caudodorsal</option><option>Cranial</option><option>Caudal</option><option>Dorsal</option><option>Ventral</option></select></div>
+                <div class="field"><label>Respiratory Effort</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Normal (Eupneic)</option><option>Increased (Mild-Moderate)</option><option>Severe Labored (Dyspneic)</option><option>Paradoxical Effort</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Respiratory Depth</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Normal</option><option>Shallow (Hypopnea)</option><option>Deep (Hyperpnea)</option><option>Variable</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Affected Phase</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>None</option><option>Inspiratory</option><option>Expiratory</option><option>Biphasic</option><option>Unable to assess</option></select></div>
+              </div>
             </section><section class="assessment-section" id="neuro">
               <div class="assessment-section-head"><div class="assessment-section-title">6. Neurologic &amp; Mentation</div><div class="assessment-section-hint">ระดับความรู้สึกตัว การตอบสนอง และ reflex</div></div>
               <div class="clinical-grid">
-                <div class="field"><label>Level of Consciousness / Mentation</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>BAR — Bright, Alert and Responsive</option><option>QAR — Quiet, Alert and Responsive</option><option>Depressed / Dull / Lethargic</option><option>Hyperactive / Hysterical / Irritable</option><option>Obtunded</option><option>Stuporous</option><option>Comatose</option><option>Unable to assess</option></select></div>
-                <div class="field"><label>Reaction to Stimuli &amp; Surroundings</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Appropriate</option><option>Exaggerated</option><option>Decreased</option><option>Absent</option><option>Inappropriate</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Level of Consciousness / Mentation</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>BAR (Bright, Alert, Responsive)</option><option>QAR (Quiet, Alert, Responsive)</option><option>Lethargic / Dull / Depressed</option><option>Obtunded</option><option>Stuporous</option><option>Comatose</option><option>Hyperactive / Agitated</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Reaction to Stimuli &amp; Surroundings</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Appropriate / Normal</option><option>Hyper-reactive / Exaggerated</option><option>Hypo-reactive / Decreased</option><option>Absent</option><option>Inappropriate</option><option>Unable to assess</option></select></div>
               </div>
               <div class="reflex-grid">
-                <div class="field"><label>Reflex Type</label><select class="ctrl"><option>Palpebral reflex</option></select></div>
-                <div class="field"><label>Left Response</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Present</option><option>Decreased</option><option>Absent</option><option>Unable to assess</option></select></div>
-                <div class="field"><label>Right Response</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Present</option><option>Decreased</option><option>Absent</option><option>Unable to assess</option></select></div>
+                <div class="reflex-row-label">Palpebral reflex</div>
+                <div class="field"><label>Left</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Intact / Normal (Present)</option><option>Decreased / Sluggish</option><option>Absent</option><option>Exaggerated / Hyperreflexic</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Right</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Intact / Normal (Present)</option><option>Decreased / Sluggish</option><option>Absent</option><option>Exaggerated / Hyperreflexic</option><option>Unable to assess</option></select></div>
+                <div class="reflex-row-label">Menace response</div>
+                <div class="field"><label>Left</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Intact / Normal (Present)</option><option>Decreased / Sluggish</option><option>Absent</option><option>Exaggerated / Hyperreflexic</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Right</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Intact / Normal (Present)</option><option>Decreased / Sluggish</option><option>Absent</option><option>Exaggerated / Hyperreflexic</option><option>Unable to assess</option></select></div>
+                <div class="reflex-row-label">Pupillary Light Reflex (PLR)</div>
+                <div class="field"><label>Left</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Intact / Normal (Present)</option><option>Decreased / Sluggish</option><option>Absent</option><option>Exaggerated / Hyperreflexic</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Right</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Intact / Normal (Present)</option><option>Decreased / Sluggish</option><option>Absent</option><option>Exaggerated / Hyperreflexic</option><option>Unable to assess</option></select></div>
+                <div class="reflex-row-label">Pedal Withdrawal reflex</div>
+                <div class="field"><label>Left</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Intact / Normal (Present)</option><option>Decreased / Sluggish</option><option>Absent</option><option>Exaggerated / Hyperreflexic</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Right</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Intact / Normal (Present)</option><option>Decreased / Sluggish</option><option>Absent</option><option>Exaggerated / Hyperreflexic</option><option>Unable to assess</option></select></div>
               </div>
             </section><section class="assessment-section" id="mobility">
-              <div class="assessment-section-head"><div class="assessment-section-title">7. Mobility &amp; Posture</div><div class="assessment-section-hint">สังเกตการเดินเข้าหาผู้ตรวจและท่าทาง</div></div>
+              <div class="assessment-section-head"><div class="assessment-section-title">7. Mobility &amp; Posture</div><div class="assessment-section-hint">การเดินและท่าทาง</div></div>
               <div class="clinical-grid">
-                <div class="field"><label>Gait</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Normal</option><option>Ambulatory with abnormality</option><option>Ataxic</option><option>Lame</option><option>Weak / Paretic</option><option>Non-ambulatory</option><option>Unable to assess</option><option>Other</option></select></div>
-                <div class="field"><label>Posture</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Normal</option><option>Standing</option><option>Sitting</option><option>Sternal recumbency</option><option>Lateral recumbency</option><option>Orthopneic</option><option>Hunched</option><option>Abnormal</option><option>Unable to assess</option></select></div>
-                <div class="field"><label>Mobility Note</label><input class="ctrl" type="text" placeholder="รายละเอียดเพิ่มเติม"></div>
+                <div class="field"><label>Gait</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Normal / Ambulatory</option><option>Ataxic (Proprioceptive/Vestibular/Cerebellar)</option><option>Paresis (Weakness)</option><option>Plegia (Paralysis)</option><option>Lameness (Grade 1–5)</option><option>Non-ambulatory</option><option>Unable to assess</option><option>Other</option></select></div>
+                <div class="field"><label>Posture</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Normal</option><option>Orthopneic stance</option><option>Schiff-Sherrington posture</option><option>Decerebrate posture</option><option>Decerebellate posture</option><option>Head tilt / Turn</option><option>Kyphosis / Hunched</option><option>Recumbent (Sternal/Lateral)</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Mobility Note</label><input class="ctrl" type="text" placeholder="e.g., Grade 2/5 CP deficit on left hindlimb"></div>
               </div>
             </section>            <section class="assessment-section" id="pain">
               <div class="assessment-section-head"><div class="assessment-section-title">8. Pain Assessment</div><div class="assessment-section-hint">ประเมินความเจ็บปวด</div></div>
               <div class="clinical-grid">
-                <div class="field"><label>Pain Score</label><input class="ctrl" type="number" min="0" step="1" placeholder="3"></div>
-                <div class="field"><label>Maximum Score</label><input class="ctrl" type="number" min="1" step="1" placeholder="24"></div>
-                <div class="field"><label>Observed Pain Severity</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>None</option><option>Mild</option><option>Moderate</option><option>Severe</option></select></div>
+                <div class="field"><label>Pain Score</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option></select><div class="field-hint">Scale 0–4 (0 = None · 4 = Severe)</div></div>
+                <div class="field"><label>Observed Pain Severity</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>None (0)</option><option>Mild (1)</option><option>Moderate (2)</option><option>Severe (3–4)</option></select></div>
               </div>
               <div class="choice-block"><span class="choice-label">Observed Pain Indicators</span><div class="choice-grid">
-                <label class="check-item"><input type="checkbox"> Vocalization</label><label class="check-item"><input type="checkbox"> Guarding</label><label class="check-item"><input type="checkbox"> Restlessness</label><label class="check-item"><input type="checkbox"> Reduced movement</label><label class="check-item"><input type="checkbox"> Aggression</label><label class="check-item"><input type="checkbox"> Abnormal posture</label>
+                <label class="check-item"><input type="checkbox"> Vocalization</label><label class="check-item"><input type="checkbox"> Facial Expression (Grimace)</label><label class="check-item"><input type="checkbox"> Abnormal Posture / Guarding</label><label class="check-item"><input type="checkbox"> Restlessness / Agitation</label><label class="check-item"><input type="checkbox"> Reduced Movement / Lethargy</label><label class="check-item"><input type="checkbox"> Aggression / Resistance to touch</label><label class="check-item"><input type="checkbox"> Anorexia</label>
               </div></div>
             </section>
           </div>
@@ -594,44 +620,115 @@
         </div></div>
         <div class="editor-panel"><div class="editor-panel-head">Form Editor</div>
           <div class="form-sub-header">
-            <div><div class="form-name">Vital Sign</div></div>
+            <div><div class="form-name">Vital Sign & Physical Examination</div></div>
           </div>
           <div class="editor-panel-body">
-            <div class="form-section-label">Vital Signs</div>
-            <div class="field-row-4">
-              <div class="field"><label>Temp (°F)</label><input class="ctrl vs-input" type="text" placeholder="100.8"></div>
-              <div class="field"><label>HR (bpm)</label><input class="ctrl vs-input" type="text" placeholder="140"></div>
-              <div class="field"><label>RR (rpm)</label><input class="ctrl vs-input" type="text" placeholder="28"></div>
-              <div class="field"><label>BP (mmHg)</label><input class="ctrl vs-input" type="text" placeholder="160/100"></div>
+            <div class="section-nav" aria-label="Assessment sections">
+              <button type="button" class="nav-vitals" onclick="scrollToAssessmentSection(this, 'core-vital-2')">Vital Signs</button>
+              <button type="button" class="nav-monitoring" onclick="scrollToAssessmentSection(this, 'monitoring-2')">Monitoring</button>
+              <button type="button" class="nav-perfusion" onclick="scrollToAssessmentSection(this, 'perfusion-2')">Perfusion</button>
+              <button type="button" class="nav-critical" onclick="scrollToAssessmentSection(this, 'critical-2')">Critical Events</button>
+              <button type="button" class="nav-respiratory" onclick="scrollToAssessmentSection(this, 'respiratory-2')">Respiratory</button>
+              <button type="button" class="nav-neuro" onclick="scrollToAssessmentSection(this, 'neuro-2')">Neuro / LOC</button>
+              <button type="button" class="nav-mobility" onclick="scrollToAssessmentSection(this, 'mobility-2')">Mobility</button>
+              <button type="button" class="nav-pain" onclick="scrollToAssessmentSection(this, 'pain-2')">Pain</button>
             </div>
-            <div class="field-row-4">
-              <div class="field"><label>CRT (sec)</label><input class="ctrl vs-input" type="text" placeholder="2"></div>
-              <div class="field"><label>Pulse (bpm)</label><input class="ctrl vs-input" type="text" placeholder="140"></div>
-              <div class="field"><label>FBS (mg/dL)</label><input class="ctrl vs-input" type="text" placeholder="95"></div>
-            </div>
-            <hr class="meta-divider">
-            <div class="form-section-label">Physical Examination</div>
-            <div class="detail-grid">
-              <div class="field"><label>Mucous Membrane</label><select class="ctrl"><option value="" disabled selected>กรุณาเลือกข้อมูล</option><option>Pink (normal)</option><option>Pale</option><option>Yellow</option><option>Red</option><option>Cyanosis</option></select></div>
-              <div class="field"><label>Consciousness</label><select class="ctrl"><option value="" disabled selected>กรุณาเลือกข้อมูล</option><option>Alert</option><option>Depressed</option><option>Stupor</option><option>Comatose</option><option>Seizure</option></select></div>
-            </div>
-            <div class="detail-grid">
-              <div class="field"><label>Lung Sound</label><select class="ctrl"><option value="" disabled selected>กรุณาเลือกข้อมูล</option><option>Normal</option><option>Crackles</option><option>Wheezes</option><option>Diminished</option><option>Absent</option></select></div>
-              <div class="field"><label>Heart Sound</label><select class="ctrl"><option value="" disabled selected>กรุณาเลือกข้อมูล</option><option>Normal</option><option>Murmur</option><option>Gallop</option><option>Muffled</option><option>Arrhythmia</option></select></div>
-            </div>
-            <hr class="meta-divider">
-            <div class="form-section-label">Critical Event</div>
-            <div class="check-grid">
-              <label class="check-item"><input type="checkbox"> Cyanosis</label>
-              <label class="check-item"><input type="checkbox"> Seizure</label>
-              <label class="check-item"><input type="checkbox"> Arrest</label>
-              <label class="check-item"><input type="checkbox"> dummy</label>
-              <label class="check-item"><input type="checkbox"> dummy</label>
-              <label class="check-item"><input type="checkbox"> dummy</label>
-              <label class="check-item"><input type="checkbox"> dummy</label>
-              <label class="check-item"><input type="checkbox"> dummy</label>
-              <label class="check-item"><input type="checkbox"> dummy</label>
-            </div>
+
+            <section class="assessment-section" id="core-vital-2">
+              <div class="assessment-section-head"><div class="assessment-section-title">1. Core Vital Signs</div><div class="assessment-section-hint">ค่าพื้นฐานของสัตว์ป่วย</div></div>
+              <div class="clinical-grid">
+                <div class="field"><label>Temp (°F)</label><input class="ctrl" type="text" inputmode="decimal"><div class="field-hint">Canine: 100.0–102.5 °F · Feline: 100.5–102.5 °F</div></div>
+                <div class="field"><label>HR (bpm)</label><input class="ctrl" type="text" inputmode="numeric"><div class="field-hint">Canine: 60–140 bpm · Feline: 140–220 bpm</div></div>
+                <div class="field"><label>RR (rpm)</label><input class="ctrl" type="text" inputmode="numeric"><div class="field-hint">Canine: 15–30 rpm · Feline: 20–30 rpm</div></div>
+                <div class="field"><label>Pulse (bpm)</label><input class="ctrl" type="text" inputmode="numeric"><div class="field-hint">Canine: 60–140 bpm · Feline: 140–220 bpm</div></div>
+                <div class="field"><label>Weight (kg)</label><input class="ctrl" type="text" inputmode="decimal"><div class="field-hint">บันทึกน้ำหนักปัจจุบัน (kg)</div></div>
+                <div class="field"><label>CRT (sec)</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>&lt; 2 sec (Normal)</option><option>2–3 sec (Mildly Prolonged)</option><option>&gt; 3 sec (Prolonged)</option><option>&lt; 1 sec (Hyperdynamic / Brick Red)</option><option>Unable to assess</option></select><div class="field-hint">Normal: &lt; 2 sec</div></div>
+                <div class="field"><label>FBS (mg/dL)</label><input class="ctrl" type="text" inputmode="numeric"><div class="field-hint">Canine: 75–120 mg/dL · Feline: 70–150 mg/dL</div></div>
+                <div class="field"><label>Hydration Status</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Normal (&lt;5%)</option><option>Mild Dehydration (5–6%)</option><option>Moderate Dehydration (7–9%)</option><option>Severe Dehydration (≥10–12%)</option><option>Overhydrated (Fluid Overload)</option><option>Unable to assess</option></select><div class="field-hint">Normal: &lt; 5%</div></div>
+                <div class="field"><label>Est. Dehydration (%)</label><input class="ctrl" type="text" inputmode="decimal"><div class="field-hint">ช่วง 0–12% · กรอกเมื่อประเมินว่า dehydrated</div></div>
+              </div>
+            </section><section class="assessment-section" id="monitoring-2">
+              <div class="assessment-section-head"><div class="assessment-section-title">2. Blood Pressure &amp; Advanced Monitoring</div><div class="assessment-section-hint">NIBP, oxygenation และ ventilation</div></div>
+              <div class="clinical-grid">
+                <div class="field"><label>NIBP SYS (mmHg)</label><input class="ctrl" type="text" inputmode="numeric"><div class="field-hint">Canine: 110–140 mmHg · Feline: 120–140 mmHg</div></div>
+                <div class="field"><label>NIBP DIA (mmHg)</label><input class="ctrl" type="text" inputmode="numeric"><div class="field-hint">Canine: 60–90 mmHg · Feline: 70–90 mmHg</div></div>
+                <div class="field"><label>NIBP MAP (mmHg)</label><input class="ctrl" type="text" inputmode="numeric"><div class="field-hint">Canine: 70–110 mmHg · Feline: 80–110 mmHg</div></div>
+                <div class="field"><label>BP Method</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Oscillometric</option><option>Doppler</option><option>High-Definition Oscillometry (HDO)</option><option>Invasive / Direct</option><option>Other</option></select></div>
+                <div class="field"><label>Cuff Site</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Left forelimb</option><option>Right forelimb</option><option>Left hindlimb</option><option>Right hindlimb</option><option>Tail</option><option>Other</option></select></div>
+                <div class="field"><label>SpO2 (%)</label><input class="ctrl" type="text" inputmode="numeric"><div class="field-hint">Normal: 95–100%</div></div>
+                <div class="field"><label>EtCO2 (mmHg)</label><input class="ctrl" type="text" inputmode="numeric"><div class="field-hint">Normal: 35–45 mmHg</div></div>
+                <div class="field"><label>Oxygen Support</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Room air</option><option>Flow-by</option><option>Nasal cannula</option><option>Mask</option><option>Oxygen cage / Hood</option><option>Mechanical Ventilation / Intubated</option><option>Other</option></select></div>
+              </div>
+            </section><section class="assessment-section" id="perfusion-2">
+              <div class="assessment-section-head"><div class="assessment-section-title">3. Perfusion, Mucosa &amp; Bleeding</div><div class="assessment-section-hint">ตำแหน่งตรวจ สีเยื่อเมือก และภาวะเลือดออก</div></div>
+              <div class="choice-block"><span class="choice-label">Mucous Membrane Site</span><div class="choice-grid">
+                <label class="check-item"><input type="checkbox" checked> Oral mucosa</label><label class="check-item"><input type="checkbox"> Conjunctiva</label><label class="check-item"><input type="checkbox"> Prepuce</label><label class="check-item"><input type="checkbox"> Vulva</label><label class="check-item"><input type="checkbox"> Other</label>
+              </div></div>
+              <div class="clinical-grid">
+                <div class="field"><label>Mucous Membrane Color</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Pink (Normal)</option><option>Pale / Porcelain White</option><option>Hyperemic / Injected / Red</option><option>Muddy / Brick Red</option><option>Jaundiced / Icteric / Yellow</option><option>Cyanotic / Blue</option><option>Gray / Ashen</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Bleeding Status</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>No active bleeding</option><option>Active — controlled</option><option>Active — uncontrolled</option><option>Suspected internal bleeding</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Bleeding Severity</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>None</option><option>Mild</option><option>Moderate</option><option>Severe</option></select></div>
+                <div class="field"><label>Bleeding Site</label><input class="ctrl" type="text" placeholder="e.g., Left forelimb / Oral cavity"></div>
+              </div>
+            </section><section class="assessment-section" id="critical-2">
+              <div class="assessment-section-head"><div class="assessment-section-title">4. Cardiac &amp; Critical Events</div><div class="assessment-section-hint">เสียงหัวใจและภาวะวิกฤต</div></div>
+              <div class="clinical-grid">
+                <div class="field"><label>Heart Sound</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Normal (S1/S2 clear)</option><option>Systolic Murmur</option><option>Diastolic Murmur</option><option>Continuous Murmur (เช่น PDA)</option><option>Gallop Rhythm (S3/S4)</option><option>Muffled / Distant</option><option>Arrhythmia / Irregular</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Critical Event Time</label><input class="ctrl" type="datetime-local"></div>
+              </div>
+              <div class="choice-block"><span class="choice-label">Critical Events</span><div class="choice-grid">
+                <label class="check-item"><input type="checkbox"> Cyanosis</label><label class="check-item"><input type="checkbox"> Seizure</label><label class="check-item"><input type="checkbox"> Cardiopulmonary Arrest (CPA)</label><label class="check-item"><input type="checkbox"> Respiratory Arrest</label><label class="check-item"><input type="checkbox"> Severe Dyspnea / Distress</label><label class="check-item"><input type="checkbox"> Syncope / Collapse</label><label class="check-item"><input type="checkbox"> Other</label>
+              </div></div>
+              <div class="field"><label>Critical Events Note</label><input class="ctrl" type="text" placeholder="e.g., Generalized tonic-clonic seizure lasting 2 mins"></div>
+            </section><section class="assessment-section" id="respiratory-2">
+              <div class="assessment-section-head"><div class="assessment-section-title">5. Respiratory Assessment</div><div class="assessment-section-hint">ประเมินเสียงทางเดินหายใจ</div></div>
+              <div class="choice-block"><span class="choice-label">Lung / Airway Sounds</span><div class="choice-grid">
+                <label class="check-item"><input type="checkbox"> Normal (Vesiculobronchial)</label><label class="check-item"><input type="checkbox"> Referred Upper Airway Sound (Stertor/Stridor)</label><label class="check-item"><input type="checkbox"> Wheezes (Rhonchi)</label><label class="check-item"><input type="checkbox"> Crackles (Fine/Coarse)</label><label class="check-item"><input type="checkbox"> Harsh</label><label class="check-item"><input type="checkbox"> Dull / Diminished</label><label class="check-item"><input type="checkbox"> Absent</label><label class="check-item"><input type="checkbox"> Other</label>
+              </div></div>
+              <div class="clinical-grid">
+                <div class="field"><label>Lung Sound Side</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Left</option><option>Right</option><option>Bilateral</option><option>Unable to localize</option></select></div>
+                <div class="field"><label>Lung Region</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>All lung fields (Diffuse)</option><option>Cranioventral</option><option>Caudodorsal</option><option>Cranial</option><option>Caudal</option><option>Dorsal</option><option>Ventral</option></select></div>
+                <div class="field"><label>Respiratory Effort</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Normal (Eupneic)</option><option>Increased (Mild-Moderate)</option><option>Severe Labored (Dyspneic)</option><option>Paradoxical Effort</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Respiratory Depth</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Normal</option><option>Shallow (Hypopnea)</option><option>Deep (Hyperpnea)</option><option>Variable</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Affected Phase</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>None</option><option>Inspiratory</option><option>Expiratory</option><option>Biphasic</option><option>Unable to assess</option></select></div>
+              </div>
+            </section><section class="assessment-section" id="neuro-2">
+              <div class="assessment-section-head"><div class="assessment-section-title">6. Neurologic &amp; Mentation</div><div class="assessment-section-hint">ระดับความรู้สึกตัว การตอบสนอง และ reflex</div></div>
+              <div class="clinical-grid">
+                <div class="field"><label>Level of Consciousness / Mentation</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>BAR (Bright, Alert, Responsive)</option><option>QAR (Quiet, Alert, Responsive)</option><option>Lethargic / Dull / Depressed</option><option>Obtunded</option><option>Stuporous</option><option>Comatose</option><option>Hyperactive / Agitated</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Reaction to Stimuli &amp; Surroundings</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Appropriate / Normal</option><option>Hyper-reactive / Exaggerated</option><option>Hypo-reactive / Decreased</option><option>Absent</option><option>Inappropriate</option><option>Unable to assess</option></select></div>
+              </div>
+              <div class="reflex-grid">
+                <div class="reflex-row-label">Palpebral reflex</div>
+                <div class="field"><label>Left</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Intact / Normal (Present)</option><option>Decreased / Sluggish</option><option>Absent</option><option>Exaggerated / Hyperreflexic</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Right</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Intact / Normal (Present)</option><option>Decreased / Sluggish</option><option>Absent</option><option>Exaggerated / Hyperreflexic</option><option>Unable to assess</option></select></div>
+                <div class="reflex-row-label">Menace response</div>
+                <div class="field"><label>Left</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Intact / Normal (Present)</option><option>Decreased / Sluggish</option><option>Absent</option><option>Exaggerated / Hyperreflexic</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Right</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Intact / Normal (Present)</option><option>Decreased / Sluggish</option><option>Absent</option><option>Exaggerated / Hyperreflexic</option><option>Unable to assess</option></select></div>
+                <div class="reflex-row-label">Pupillary Light Reflex (PLR)</div>
+                <div class="field"><label>Left</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Intact / Normal (Present)</option><option>Decreased / Sluggish</option><option>Absent</option><option>Exaggerated / Hyperreflexic</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Right</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Intact / Normal (Present)</option><option>Decreased / Sluggish</option><option>Absent</option><option>Exaggerated / Hyperreflexic</option><option>Unable to assess</option></select></div>
+                <div class="reflex-row-label">Pedal Withdrawal reflex</div>
+                <div class="field"><label>Left</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Intact / Normal (Present)</option><option>Decreased / Sluggish</option><option>Absent</option><option>Exaggerated / Hyperreflexic</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Right</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Intact / Normal (Present)</option><option>Decreased / Sluggish</option><option>Absent</option><option>Exaggerated / Hyperreflexic</option><option>Unable to assess</option></select></div>
+              </div>
+            </section><section class="assessment-section" id="mobility-2">
+              <div class="assessment-section-head"><div class="assessment-section-title">7. Mobility &amp; Posture</div><div class="assessment-section-hint">การเดินและท่าทาง</div></div>
+              <div class="clinical-grid">
+                <div class="field"><label>Gait</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Normal / Ambulatory</option><option>Ataxic (Proprioceptive/Vestibular/Cerebellar)</option><option>Paresis (Weakness)</option><option>Plegia (Paralysis)</option><option>Lameness (Grade 1–5)</option><option>Non-ambulatory</option><option>Unable to assess</option><option>Other</option></select></div>
+                <div class="field"><label>Posture</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>Normal</option><option>Orthopneic stance</option><option>Schiff-Sherrington posture</option><option>Decerebrate posture</option><option>Decerebellate posture</option><option>Head tilt / Turn</option><option>Kyphosis / Hunched</option><option>Recumbent (Sternal/Lateral)</option><option>Unable to assess</option></select></div>
+                <div class="field"><label>Mobility Note</label><input class="ctrl" type="text" placeholder="e.g., Grade 2/5 CP deficit on left hindlimb"></div>
+              </div>
+            </section><section class="assessment-section" id="pain-2">
+              <div class="assessment-section-head"><div class="assessment-section-title">8. Pain Assessment</div><div class="assessment-section-hint">ประเมินความเจ็บปวด</div></div>
+              <div class="clinical-grid">
+                <div class="field"><label>Pain Score</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option></select><div class="field-hint">Scale 0–4 (0 = None · 4 = Severe)</div></div>
+                <div class="field"><label>Observed Pain Severity</label><select class="ctrl"><option value="" selected>กรุณาเลือกข้อมูล</option><option>None (0)</option><option>Mild (1)</option><option>Moderate (2)</option><option>Severe (3–4)</option></select></div>
+              </div>
+              <div class="choice-block"><span class="choice-label">Observed Pain Indicators</span><div class="choice-grid">
+                <label class="check-item"><input type="checkbox"> Vocalization</label><label class="check-item"><input type="checkbox"> Facial Expression (Grimace)</label><label class="check-item"><input type="checkbox"> Abnormal Posture / Guarding</label><label class="check-item"><input type="checkbox"> Restlessness / Agitation</label><label class="check-item"><input type="checkbox"> Reduced Movement / Lethargy</label><label class="check-item"><input type="checkbox"> Aggression / Resistance to touch</label><label class="check-item"><input type="checkbox"> Anorexia</label>
+              </div></div>
+            </section>
           </div>
         </div>
         <div class="editor-panel"><div class="editor-panel-head"><span>Record Meta</span><button class="btn-confirm" onclick="assessConfirm(2)">&#10003; Confirm</button></div><div class="editor-panel-body">
@@ -669,25 +766,23 @@
             <hr class="meta-divider">
             <div class="form-section-label">Physical Examination</div>
             <div class="detail-grid">
-              <div class="field"><label>Mucous Membrane</label><div class="meta-readonly">Pale</div></div>
-              <div class="field"><label>Consciousness</label><div class="meta-readonly">Depressed</div></div>
+              <div class="field"><label>Mucous Membrane Color</label><div class="meta-readonly">Pale / Porcelain White</div></div>
+              <div class="field"><label>Level of Consciousness / Mentation</label><div class="meta-readonly">Lethargic / Dull / Depressed</div></div>
             </div>
             <div class="detail-grid">
-              <div class="field"><label>Lung Sound</label><div class="meta-readonly">Crackles</div></div>
-              <div class="field"><label>Heart Sound</label><div class="meta-readonly">Murmur</div></div>
+              <div class="field"><label>Lung / Airway Sounds</label><div class="meta-readonly">Crackles (Fine/Coarse)</div></div>
+              <div class="field"><label>Heart Sound</label><div class="meta-readonly">Systolic Murmur</div></div>
             </div>
             <hr class="meta-divider">
             <div class="form-section-label">Critical Event</div>
             <div class="check-grid">
               <label class="check-item"><input type="checkbox" checked disabled> Cyanosis</label>
               <label class="check-item"><input type="checkbox" disabled> Seizure</label>
-              <label class="check-item"><input type="checkbox" disabled> Arrest</label>
-              <label class="check-item"><input type="checkbox" disabled> dummy</label>
-              <label class="check-item"><input type="checkbox" disabled> dummy</label>
-              <label class="check-item"><input type="checkbox" disabled> dummy</label>
-              <label class="check-item"><input type="checkbox" disabled> dummy</label>
-              <label class="check-item"><input type="checkbox" disabled> dummy</label>
-              <label class="check-item"><input type="checkbox" disabled> dummy</label>
+              <label class="check-item"><input type="checkbox" disabled> Cardiopulmonary Arrest (CPA)</label>
+              <label class="check-item"><input type="checkbox" disabled> Respiratory Arrest</label>
+              <label class="check-item"><input type="checkbox" disabled> Severe Dyspnea / Distress</label>
+              <label class="check-item"><input type="checkbox" disabled> Syncope / Collapse</label>
+              <label class="check-item"><input type="checkbox" disabled> Other</label>
             </div>
           </div>
         </div>
@@ -726,25 +821,23 @@
             <hr class="meta-divider">
             <div class="form-section-label">Physical Examination</div>
             <div class="detail-grid">
-              <div class="field"><label>Mucous Membrane</label><div class="meta-readonly">Pink (normal)</div></div>
-              <div class="field"><label>Consciousness</label><div class="meta-readonly">Alert</div></div>
+              <div class="field"><label>Mucous Membrane Color</label><div class="meta-readonly">Pink (Normal)</div></div>
+              <div class="field"><label>Level of Consciousness / Mentation</label><div class="meta-readonly">BAR (Bright, Alert, Responsive)</div></div>
             </div>
             <div class="detail-grid">
-              <div class="field"><label>Lung Sound</label><div class="meta-readonly">Normal</div></div>
-              <div class="field"><label>Heart Sound</label><div class="meta-readonly">Normal</div></div>
+              <div class="field"><label>Lung / Airway Sounds</label><div class="meta-readonly">Normal (Vesiculobronchial)</div></div>
+              <div class="field"><label>Heart Sound</label><div class="meta-readonly">Normal (S1/S2 clear)</div></div>
             </div>
             <hr class="meta-divider">
             <div class="form-section-label">Critical Event</div>
             <div class="check-grid">
               <label class="check-item"><input type="checkbox" disabled> Cyanosis</label>
               <label class="check-item"><input type="checkbox" disabled> Seizure</label>
-              <label class="check-item"><input type="checkbox" disabled> Arrest</label>
-              <label class="check-item"><input type="checkbox" disabled> dummy</label>
-              <label class="check-item"><input type="checkbox" disabled> dummy</label>
-              <label class="check-item"><input type="checkbox" disabled> dummy</label>
-              <label class="check-item"><input type="checkbox" disabled> dummy</label>
-              <label class="check-item"><input type="checkbox" disabled> dummy</label>
-              <label class="check-item"><input type="checkbox" disabled> dummy</label>
+              <label class="check-item"><input type="checkbox" disabled> Cardiopulmonary Arrest (CPA)</label>
+              <label class="check-item"><input type="checkbox" disabled> Respiratory Arrest</label>
+              <label class="check-item"><input type="checkbox" disabled> Severe Dyspnea / Distress</label>
+              <label class="check-item"><input type="checkbox" disabled> Syncope / Collapse</label>
+              <label class="check-item"><input type="checkbox" disabled> Other</label>
             </div>
           </div>
         </div>
@@ -802,10 +895,161 @@
   </div>
 
   <!-- LOGIC/RULE MODAL -->
-  <div class="logic-overlay" id="logic-modal"><div class="logic-box">
-    <button class="logic-close" onclick="document.getElementById('logic-modal').classList.remove('show')">&#10005; ปิด</button>
-    <div class="logic-title">Vital & PE Editor</div>
-    <div class="logic-subtitle">แนวคิด กฎ และการทำงาน</div>
+  <div class="logic-overlay" id="logic-modal" onclick="this.classList.remove('show')"><div class="logic-box" onclick="event.stopPropagation()">
+    <div class="logic-title">Vital &amp; PE Editor — Reference &amp; Manual</div>
+    <div class="logic-subtitle">รวมเอกสาร Field Reference (ref_pe.md) และ Manual &amp; Rule Summary (vital_pe_manual.md)</div>
+
+    <!-- ==================== PART 1: FIELD REFERENCE ==================== -->
+    <div class="logic-part-header">Part 1: Field Reference &amp; Reference Ranges</div>
+    <div class="logic-intro">เอกสารนี้ระบุตารางฟิลด์ข้อมูลทั้งหมด <b>52 ฟิลด์</b> (แบ่งเป็น 9 ตารางย่อย ครอบคลุม 8 เซกชัน และข้อมูลผู้ใช้) สำหรับระบบ Vital &amp; PE Editor โดยอ้างอิงตามแนวทางมาตรฐานขององค์กรสัตวแพทย์สากล เช่น AAHA, ACVIM, WSAVA, RECOVER, Merck Veterinary Manual และ UC Davis School of Veterinary Medicine</div>
+
+    <div class="logic-section">
+      <div class="logic-section-title">Section 1: Core Vital Signs</div>
+      <table class="ref-table">
+        <thead><tr><th>#</th><th>ฟิลด์ข้อมูล</th><th>ประเภท</th><th>Placeholder/Options</th><th>มาตรฐานสากลที่ใช้อ้างอิง</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Temp</td><td><span class="ftype">number</span></td><td class="fopts">100.0–102.5 °F (Canine) / 100.5–102.5 °F (Feline)</td><td class="fref">Merck Vet Manual / AAHA Vital Signs Guidelines</td></tr>
+          <tr><td>2</td><td>HR</td><td><span class="ftype">number</span></td><td class="fopts">60–140 bpm (Canine) / 140–220 bpm (Feline)</td><td class="fref">UC Davis Small Animal Practice / VIN</td></tr>
+          <tr><td>3</td><td>RR</td><td><span class="ftype">number</span></td><td class="fopts">15–30 rpm (Canine) / 20–30 rpm (Feline)</td><td class="fref">ACVIM Pulmonology / Merck Vet Manual</td></tr>
+          <tr><td>4</td><td>Pulse</td><td><span class="ftype">number</span></td><td class="fopts">60–140 bpm (Canine) / 140–220 bpm (Feline)</td><td class="fref">Matches Heart Rate / Core Physical Assessment</td></tr>
+          <tr><td>5</td><td>Weight</td><td><span class="ftype">number</span></td><td class="fopts">10.00 kg (Canine) / 4.50 kg (Feline)</td><td class="fref">Clinical Practice Baseline</td></tr>
+          <tr><td>6</td><td>CRT</td><td><span class="ftype">select</span></td><td class="fopts">กรุณาเลือกข้อมูล<br>&lt; 2 sec (Normal)<br>2–3 sec (Mildly Prolonged)<br>&gt; 3 sec (Prolonged)<br>&lt; 1 sec (Hyperdynamic / Brick Red)<br>Unable to assess</td><td class="fref">AAHA Emergency Standards / VECCS Triage Guidelines</td></tr>
+          <tr><td>7</td><td>FBS</td><td><span class="ftype">number</span></td><td class="fopts">75–120 mg/dL (Canine) / 70–150 mg/dL (Feline) — ความเครียดทำให้แมวน้ำตาลขึ้นสูงชั่วคราวได้ง่าย</td><td class="fref">Merck Vet Manual / Plumb's Veterinary Drugs</td></tr>
+          <tr><td>8</td><td>Hydration Status</td><td><span class="ftype">select</span></td><td class="fopts">กรุณาเลือกข้อมูล<br>Normal (&lt;5%)<br>Mild Dehydration (5–6%)<br>Moderate Dehydration (7–9%)<br>Severe Dehydration (≥10–12%)<br>Overhydrated (Fluid Overload)<br>Unable to assess</td><td class="fref">AAHA Fluid Therapy Guidelines for Dogs and Cats</td></tr>
+          <tr><td>9</td><td>Estimated Dehydration</td><td><span class="ftype">number</span></td><td class="fopts">0% (ช่วงที่กรอกได้คือ 0–12%)</td><td class="fref">AAHA Fluid Therapy Guidelines</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="logic-section">
+      <div class="logic-section-title">Section 2: Blood Pressure &amp; Advanced Monitoring</div>
+      <table class="ref-table">
+        <thead><tr><th>#</th><th>ฟิลด์ข้อมูล</th><th>ประเภท</th><th>Placeholder/Options</th><th>มาตรฐานสากลที่ใช้อ้างอิง</th></tr></thead>
+        <tbody>
+          <tr><td>10</td><td>NIBP SYS</td><td><span class="ftype">number</span></td><td class="fopts">110–140 mmHg (Canine) / 120–140 mmHg (Feline)</td><td class="fref">ACVIM Consensus Statement (Hypertension)</td></tr>
+          <tr><td>11</td><td>NIBP DIA</td><td><span class="ftype">number</span></td><td class="fopts">60–90 mmHg (Canine) / 70–90 mmHg (Feline)</td><td class="fref">ACVIM Consensus Statement (Hypertension)</td></tr>
+          <tr><td>12</td><td>NIBP MAP</td><td><span class="ftype">number</span></td><td class="fopts">70–110 mmHg (Canine) / 80–110 mmHg (Feline)</td><td class="fref">ACVIM Consensus Statement (Hypertension)</td></tr>
+          <tr><td>13</td><td>BP Method</td><td><span class="ftype">select</span></td><td class="fopts">กรุณาเลือกข้อมูล<br>Oscillometric<br>Doppler<br>High-Definition Oscillometry (HDO)<br>Invasive / Direct<br>Other</td><td class="fref">ACVIM Consensus Guidelines / TVP Journal</td></tr>
+          <tr><td>14</td><td>Cuff Site</td><td><span class="ftype">select</span></td><td class="fopts">กรุณาเลือกข้อมูล<br>Left forelimb<br>Right forelimb<br>Left hindlimb<br>Right hindlimb<br>Tail<br>Other</td><td class="fref">Today's Veterinary Practice (TVP Journal)</td></tr>
+          <tr><td>15</td><td>SpO2</td><td><span class="ftype">number</span></td><td class="fopts">95–100%</td><td class="fref">VECCS Critical Care / Anesthesia Monitoring</td></tr>
+          <tr><td>16</td><td>EtCO2</td><td><span class="ftype">number</span></td><td class="fopts">35–45 mmHg</td><td class="fref">ACVIM Consensus / ACVA Anesthesia Guidelines</td></tr>
+          <tr><td>17</td><td>Oxygen Support</td><td><span class="ftype">select</span></td><td class="fopts">กรุณาเลือกข้อมูล<br>Room air<br>Flow-by<br>Nasal cannula<br>Mask<br>Oxygen cage / Hood<br>Mechanical Ventilation / Intubated<br>Other</td><td class="fref">VECCS Critical Care Oxygenation Guidelines</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="logic-section">
+      <div class="logic-section-title">Section 3: Perfusion, Mucosa &amp; Bleeding</div>
+      <table class="ref-table">
+        <thead><tr><th>#</th><th>ฟิลด์ข้อมูล</th><th>ประเภท</th><th>Placeholder/Options</th><th>มาตรฐานสากลที่ใช้อ้างอิง</th></tr></thead>
+        <tbody>
+          <tr><td>18</td><td>Mucous Membrane Site</td><td><span class="ftype">checkbox</span></td><td class="fopts">Oral mucosa<br>Conjunctiva<br>Prepuce<br>Vulva<br>Other — Oral mucosa เป็นค่าเริ่มต้นที่เช็คไว้ใน UI</td><td class="fref">Today's Veterinary Practice Physical Exam</td></tr>
+          <tr><td>19</td><td>Mucous Membrane Color</td><td><span class="ftype">select</span></td><td class="fopts">กรุณาเลือกข้อมูล<br>Pink (Normal)<br>Pale / Porcelain White<br>Hyperemic / Injected / Red<br>Muddy / Brick Red<br>Jaundiced / Icteric / Yellow<br>Cyanotic / Blue<br>Gray / Ashen<br>Unable to assess</td><td class="fref">UC Davis Core Physical Exam Protocol / AAHA</td></tr>
+          <tr><td>20</td><td>Bleeding Status</td><td><span class="ftype">select</span></td><td class="fopts">กรุณาเลือกข้อมูล<br>No active bleeding<br>Active — controlled<br>Active — uncontrolled<br>Suspected internal bleeding<br>Unable to assess</td><td class="fref">Veterinary Standard Emergency Triage Protocols</td></tr>
+          <tr><td>21</td><td>Bleeding Severity</td><td><span class="ftype">select</span></td><td class="fopts">กรุณาเลือกข้อมูล<br>None<br>Mild<br>Moderate<br>Severe</td><td class="fref">Veterinary Standard Emergency Triage Protocols</td></tr>
+          <tr><td>22</td><td>Bleeding Site</td><td><span class="ftype">text</span></td><td class="fopts">e.g., Left forelimb / Oral cavity</td><td class="fref">Clinical Practice Documentation Standards</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="logic-section">
+      <div class="logic-section-title">Section 4: Cardiac &amp; Critical Events</div>
+      <table class="ref-table">
+        <thead><tr><th>#</th><th>ฟิลด์ข้อมูล</th><th>ประเภท</th><th>Placeholder/Options</th><th>มาตรฐานสากลที่ใช้อ้างอิง</th></tr></thead>
+        <tbody>
+          <tr><td>23</td><td>Heart Sound</td><td><span class="ftype">select</span></td><td class="fopts">กรุณาเลือกข้อมูล<br>Normal (S1/S2 clear)<br>Systolic Murmur<br>Diastolic Murmur<br>Continuous Murmur (เช่น PDA)<br>Gallop Rhythm (S3/S4)<br>Muffled / Distant<br>Arrhythmia / Irregular<br>Unable to assess</td><td class="fref">ACVIM Cardiology Consensus / TVP Journal</td></tr>
+          <tr><td>24</td><td>Critical Event Time</td><td><span class="ftype">datetime-local</span></td><td class="fopts">YYYY-MM-DD hh:mm</td><td class="fref">Clinical Documentation System Standard</td></tr>
+          <tr><td>25</td><td>Critical Events</td><td><span class="ftype">checkbox</span></td><td class="fopts">Cyanosis<br>Seizure<br>Cardiopulmonary Arrest (CPA)<br>Respiratory Arrest<br>Severe Dyspnea / Distress<br>Syncope / Collapse<br>Other</td><td class="fref">RECOVER Initiative CPR Guidelines / VECCS</td></tr>
+          <tr><td>26</td><td>Critical Events Note</td><td><span class="ftype">text</span></td><td class="fopts">e.g., Generalized tonic-clonic seizure lasting 2 mins</td><td class="fref">Clinical Practice Documentation Standards</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="logic-section">
+      <div class="logic-section-title">Section 5: Respiratory Assessment</div>
+      <table class="ref-table">
+        <thead><tr><th>#</th><th>ฟิลด์ข้อมูล</th><th>ประเภท</th><th>Placeholder/Options</th><th>มาตรฐานสากลที่ใช้อ้างอิง</th></tr></thead>
+        <tbody>
+          <tr><td>27</td><td>Lung / Airway Sounds</td><td><span class="ftype">checkbox</span></td><td class="fopts">Normal (Vesiculobronchial)<br>Referred Upper Airway Sound (Stertor/Stridor)<br>Wheezes (Rhonchi)<br>Crackles (Fine/Coarse)<br>Harsh<br>Dull / Diminished<br>Absent<br>Other</td><td class="fref">ACVIM Pulmonary Diagnostics Consensus</td></tr>
+          <tr><td>28</td><td>Lung Sound Side</td><td><span class="ftype">select</span></td><td class="fopts">กรุณาเลือกข้อมูล<br>Left<br>Right<br>Bilateral<br>Unable to localize</td><td class="fref">Today's Veterinary Practice Physical Exam</td></tr>
+          <tr><td>29</td><td>Lung Region</td><td><span class="ftype">select</span></td><td class="fopts">กรุณาเลือกข้อมูล<br>All lung fields (Diffuse)<br>Cranioventral<br>Caudodorsal<br>Cranial<br>Caudal<br>Dorsal<br>Ventral</td><td class="fref">Today's Veterinary Practice / UC Davis Protocol</td></tr>
+          <tr><td>30</td><td>Respiratory Effort</td><td><span class="ftype">select</span></td><td class="fopts">กรุณาเลือกข้อมูล<br>Normal (Eupneic)<br>Increased (Mild-Moderate)<br>Severe Labored (Dyspneic)<br>Paradoxical Effort<br>Unable to assess</td><td class="fref">VECCS Respiratory Emergency &amp; Triage</td></tr>
+          <tr><td>31</td><td>Respiratory Depth</td><td><span class="ftype">select</span></td><td class="fopts">กรุณาเลือกข้อมูล<br>Normal<br>Shallow (Hypopnea)<br>Deep (Hyperpnea)<br>Variable<br>Unable to assess</td><td class="fref">VECCS Respiratory Emergency Guidelines</td></tr>
+          <tr><td>32</td><td>Affected Phase</td><td><span class="ftype">select</span></td><td class="fopts">กรุณาเลือกข้อมูล<br>None<br>Inspiratory<br>Expiratory<br>Biphasic<br>Unable to assess</td><td class="fref">ACVIM Pulmonary Consensus Statement</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="logic-section">
+      <div class="logic-section-title">Section 6: Neurologic &amp; Mentation</div>
+      <table class="ref-table">
+        <thead><tr><th>#</th><th>ฟิลด์ข้อมูล</th><th>ประเภท</th><th>Placeholder/Options</th><th>มาตรฐานสากลที่ใช้อ้างอิง</th></tr></thead>
+        <tbody>
+          <tr><td>33</td><td>Level of Consciousness / Mentation</td><td><span class="ftype">select</span></td><td class="fopts">กรุณาเลือกข้อมูล<br>BAR (Bright, Alert, Responsive)<br>QAR (Quiet, Alert, Responsive)<br>Lethargic / Dull / Depressed<br>Obtunded<br>Stuporous<br>Comatose<br>Hyperactive / Agitated<br>Unable to assess</td><td class="fref">ACVIM Neurology Consensus / MGCS</td></tr>
+          <tr><td>34</td><td>Reaction to Stimuli &amp; Surroundings</td><td><span class="ftype">select</span></td><td class="fopts">กรุณาเลือกข้อมูล<br>Appropriate / Normal<br>Hyper-reactive / Exaggerated<br>Hypo-reactive / Decreased<br>Absent<br>Inappropriate<br>Unable to assess</td><td class="fref">ACVIM Neurology Core Examination Protocol</td></tr>
+          <tr><td>35</td><td>Palpebral Reflex — Left</td><td><span class="ftype">select</span></td><td class="fopts">กรุณาเลือกข้อมูล<br>Intact / Normal (Present)<br>Decreased / Sluggish<br>Absent<br>Exaggerated / Hyperreflexic<br>Unable to assess</td><td class="fref">ACVIM Neurology Protocols</td></tr>
+          <tr><td>36</td><td>Palpebral Reflex — Right</td><td><span class="ftype">select</span></td><td class="fopts">กรุณาเลือกข้อมูล<br>Intact / Normal (Present)<br>Decreased / Sluggish<br>Absent<br>Exaggerated / Hyperreflexic<br>Unable to assess</td><td class="fref">ACVIM Neurology Protocols</td></tr>
+          <tr><td>37</td><td>Menace Response — Left</td><td><span class="ftype">select</span></td><td class="fopts">กรุณาเลือกข้อมูล<br>Intact / Normal (Present)<br>Decreased / Sluggish<br>Absent<br>Exaggerated / Hyperreflexic<br>Unable to assess</td><td class="fref">ACVIM Neurology Protocols</td></tr>
+          <tr><td>38</td><td>Menace Response — Right</td><td><span class="ftype">select</span></td><td class="fopts">กรุณาเลือกข้อมูล<br>Intact / Normal (Present)<br>Decreased / Sluggish<br>Absent<br>Exaggerated / Hyperreflexic<br>Unable to assess</td><td class="fref">ACVIM Neurology Protocols</td></tr>
+          <tr><td>39</td><td>Pupillary Light Reflex (PLR) — Left</td><td><span class="ftype">select</span></td><td class="fopts">กรุณาเลือกข้อมูล<br>Intact / Normal (Present)<br>Decreased / Sluggish<br>Absent<br>Exaggerated / Hyperreflexic<br>Unable to assess</td><td class="fref">ACVIM Neurology Protocols</td></tr>
+          <tr><td>40</td><td>Pupillary Light Reflex (PLR) — Right</td><td><span class="ftype">select</span></td><td class="fopts">กรุณาเลือกข้อมูล<br>Intact / Normal (Present)<br>Decreased / Sluggish<br>Absent<br>Exaggerated / Hyperreflexic<br>Unable to assess</td><td class="fref">ACVIM Neurology Protocols</td></tr>
+          <tr><td>41</td><td>Pedal Withdrawal Reflex — Left</td><td><span class="ftype">select</span></td><td class="fopts">กรุณาเลือกข้อมูล<br>Intact / Normal (Present)<br>Decreased / Sluggish<br>Absent<br>Exaggerated / Hyperreflexic<br>Unable to assess</td><td class="fref">ACVIM Neurology Protocols</td></tr>
+          <tr><td>42</td><td>Pedal Withdrawal Reflex — Right</td><td><span class="ftype">select</span></td><td class="fopts">กรุณาเลือกข้อมูล<br>Intact / Normal (Present)<br>Decreased / Sluggish<br>Absent<br>Exaggerated / Hyperreflexic<br>Unable to assess</td><td class="fref">ACVIM Neurology Protocols</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="logic-section">
+      <div class="logic-section-title">Section 7: Mobility &amp; Posture</div>
+      <table class="ref-table">
+        <thead><tr><th>#</th><th>ฟิลด์ข้อมูล</th><th>ประเภท</th><th>Placeholder/Options</th><th>มาตรฐานสากลที่ใช้อ้างอิง</th></tr></thead>
+        <tbody>
+          <tr><td>43</td><td>Gait</td><td><span class="ftype">select</span></td><td class="fopts">กรุณาเลือกข้อมูล<br>Normal / Ambulatory<br>Ataxic (Proprioceptive/Vestibular/Cerebellar)<br>Paresis (Weakness)<br>Plegia (Paralysis)<br>Lameness (Grade 1–5)<br>Non-ambulatory<br>Unable to assess<br>Other</td><td class="fref">ACVIM Neurology / Orthopedics Clinical Gait Analysis</td></tr>
+          <tr><td>44</td><td>Posture</td><td><span class="ftype">select</span></td><td class="fopts">กรุณาเลือกข้อมูล<br>Normal<br>Orthopneic stance<br>Schiff-Sherrington posture<br>Decerebrate posture<br>Decerebellate posture<br>Head tilt / Turn<br>Kyphosis / Hunched<br>Recumbent (Sternal/Lateral)<br>Unable to assess</td><td class="fref">ACVIM Neurology Clinical Localization</td></tr>
+          <tr><td>45</td><td>Mobility Note</td><td><span class="ftype">text</span></td><td class="fopts">e.g., Grade 2/5 CP deficit on left hindlimb</td><td class="fref">Clinical Practice Documentation Standards</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="logic-section">
+      <div class="logic-section-title">Section 8: Pain Assessment</div>
+      <table class="ref-table">
+        <thead><tr><th>#</th><th>ฟิลด์ข้อมูล</th><th>ประเภท</th><th>Placeholder/Options</th><th>มาตรฐานสากลที่ใช้อ้างอิง</th></tr></thead>
+        <tbody>
+          <tr><td>46</td><td>Pain Score</td><td><span class="ftype">select</span></td><td class="fopts">กรุณาเลือกข้อมูล<br>0<br>1<br>2<br>3<br>4</td><td class="fref">WSAVA Pain Management Guidelines / Glasgow Pain Scale</td></tr>
+          <tr><td>47</td><td>Observed Pain Severity</td><td><span class="ftype">select</span></td><td class="fopts">กรุณาเลือกข้อมูล<br>None (0)<br>Mild (1)<br>Moderate (2)<br>Severe (3–4)</td><td class="fref">WSAVA Global Pain Guidelines / CSU Scales</td></tr>
+          <tr><td>48</td><td>Observed Pain Indicators</td><td><span class="ftype">checkbox</span></td><td class="fopts">Vocalization<br>Facial Expression (Grimace)<br>Abnormal Posture / Guarding<br>Restlessness / Agitation<br>Reduced Movement / Lethargy<br>Aggression / Resistance to touch<br>Anorexia</td><td class="fref">WSAVA / Feline Grimace Scale Guidelines</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="logic-section">
+      <div class="logic-section-title">Section 9: Record Meta</div>
+      <table class="ref-table">
+        <thead><tr><th>#</th><th>ฟิลด์ข้อมูล</th><th>ประเภท</th><th>Placeholder/Options</th><th>มาตรฐานสากลที่ใช้อ้างอิง</th></tr></thead>
+        <tbody>
+          <tr><td>49</td><td>Processed on</td><td><span class="ftype">datetime-local</span></td><td class="fopts">value: 2026-07-09T10:57</td><td class="fref">Clinical System Standard Specification</td></tr>
+          <tr><td>50</td><td>DVM/User</td><td><span class="ftype">readonly</span></td><td class="fopts">readonly text</td><td class="fref">Clinical System Architecture Standard</td></tr>
+          <tr><td>51</td><td>Department</td><td><span class="ftype">readonly</span></td><td class="fopts">readonly text</td><td class="fref">Clinical System Architecture Standard</td></tr>
+          <tr><td>52</td><td>Form Note</td><td><span class="ftype">textarea</span></td><td class="fopts">บันทึกหมายเหตุเพิ่มเติมเกี่ยวกับการตรวจร่างกาย...</td><td class="fref">Clinical Practice Documentation Standards</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="logic-section">
+      <div class="logic-section-title">สรุปหลักเกณฑ์การอ้างอิงสากล (Global Veterinary Reference Sources)</div>
+      <ul class="ref-source-list">
+        <li><b>AAHA (American Animal Hospital Association) &amp; AAFP Guidelines</b> — อ้างอิงช่วงประเมิน Vital Signs, Fluid Therapy, และ Pain Management Scale</li>
+        <li><b>ACVIM (American College of Veterinary Internal Medicine) Consensus</b> — อ้างอิงเกณฑ์การวัดความดันโลหิต (Hypertension/BP), ระบบหัวใจ (Cardiology), ระบบประสาท (Neurology), และระบบหายใจ (Pulmonary)</li>
+        <li><b>Merck Veterinary Manual (MSD Vet Manual) &amp; UC Davis School of Veterinary Medicine</b> — อ้างอิงช่วงค่าปกติทางสรีรวิทยา (Physiological Reference Ranges) ของสุนัขและแมว</li>
+        <li><b>RECOVER Initiative / VECCS (Veterinary Emergency and Critical Care Society)</b> — อ้างอิงศัพท์ทางคลินิกสำหรับสภาวะฉุกเฉินและ Critical Events</li>
+        <li><b>WSAVA (World Small Animal Veterinary Association)</b> — อ้างอิง Pain Assessment Scale และการสังเกตพฤติกรรมแสดงความเจ็บปวด</li>
+      </ul>
+    </div>
+
+    <!-- ==================== PART 2: MANUAL & RULE SUMMARY ==================== -->
+    <div class="logic-part-header">Part 2: Manual &amp; Rule Summary</div>
+    <div class="logic-intro">ไฟล์: <code>vital_pe_editor.html</code> — แนวคิด กฎ และการทำงานของระบบ</div>
 
     <div class="logic-section"><div class="logic-section-title">1. แนวคิดหลัก</div><ul class="logic-list">
       <li>เป็นการ <b>สร้างฐานข้อมูล</b> ด้วย — ไม่แนะนำให้ใช้ form ที่มีการเปลี่ยนแปลงบ่อย</li>
@@ -838,52 +1082,158 @@
       <li>ถ้า <b>ไม่มี exam-card id</b> → ดูผ่าน <b>ตารางรวม</b> (เช่น กรอกโดยยังไม่ตรวจ เช่น screen ER case)</li>
     </ul></div>
 
-    <div class="logic-section"><div class="logic-section-title">6. Tab System</div><ul class="logic-list">
-      <li>มี <b>5 tab</b>: Tab 1-2 editable, Tab 3-4 readonly, Tab 5 ตารางข้อมูลทั้งหมด</li>
-      <li>Tab 2, 3, 4 <b>ซ่อน</b>จาก tab navigation (display:none)</li>
-      <li><b>Tab 1</b> (นิพนธ์ — คลินิกพิเศษ โรคหัวใจ นอกเวลา): editable ทั้งหมด มี badge NEW</li>
-      <li><b>Tab 2</b> (นิพนธ์ — อายุรกรรมทั่วไป ในเวลา): editable ทั้งหมด</li>
-      <li><b>Tab 3</b> (วิชัย — ภาพวินิจฉัย นอกเวลา): readonly ทุกฟิลด์, ปุ่ม Confirm inactive</li>
-      <li><b>Tab 4</b> (ปนัดดา — อายุรกรรมทั่วไป ในเวลา): readonly ทุกฟิลด์, ปุ่ม Confirm inactive</li>
-      <li><b>Tab 5</b> (HN 69001234 — ตารางข้อมูลทั้งหมด): แสดงตารางรวม มี filter</li>
+    <div class="logic-section"><div class="logic-section-title">6. ปุ่มเข้าหน้า Vital &amp; PE</div><ul class="logic-list">
+      <li>ปุ่ม <b>"Vital &amp; PE"</b> โทนสีม่วง (<code>#7c3aed</code>) คลิกแล้วเปิด modal <code>assess-modal</code></li>
+      <li>มี <b>View Logic/Rule</b> badge เปิด modal สรุปแนวคิด กฎ และการทำงาน</li>
+      <li>มี <b>date picker</b> สำหรับเลือกวันที่</li>
+      <li>มี <b>select</b> เลือกวันที่มีประวัติการตรวจ</li>
     </ul></div>
 
-    <div class="logic-section"><div class="logic-section-title">7. Layout: 3-Column Grid (Tab 1-4)</div><ul class="logic-list">
-      <li><b>คอลัมน์ 1 — Forms</b>: รายการฟอร์ม (Vital Sign) มี checkmark ✓</li>
-      <li><b>คอลัมน์ 2 — Form Editor</b>: Vital Signs, Physical Examination, Critical Event</li>
-      <li><b>คอลัมน์ 3 — Record Meta</b>: req-tags, Processed on, DVM/User, Department, Form Note</li>
+    <div class="logic-section"><div class="logic-section-title">7. Tab System (5 Tabs)</div><ul class="logic-list">
+      <li><b>Tab 1</b> (นิพนธ์ — คลินิกพิเศษ โรคหัวใจ นอกเวลา): <b>editable</b> ทั้งหมด, มี badge <b>NEW</b></li>
+      <li><b>Tab 2</b> (นิพนธ์ — อายุรกรรมทั่วไป ในเวลา): <b>editable</b> ทั้งหมด</li>
+      <li><b>Tab 3</b> (วิชัย — ภาพวินิจฉัย นอกเวลา): <b>readonly</b> ทุกฟิลด์ (<code>meta-readonly</code>), ปุ่ม Confirm inactive</li>
+      <li><b>Tab 4</b> (ปนัดดา — อายุรกรรมทั่วไป ในเวลา): <b>readonly</b> ทุกฟิลด์, ปุ่ม Confirm inactive</li>
+      <li><b>Tab 5</b> (HN 69001234 — ตารางข้อมูลทั้งหมด): ตารางรวม + filter</li>
+      <li><b>Tab 2, 3, 4 ซ่อน</b> จาก tab navigation (<code>display:none</code>)</li>
+      <li>คลิก tab → ซ่อน content อื่น, แสดง tab ที่เลือก, อัปเดต <code>last update by</code> ตาม DVM/User ของ tab</li>
     </ul></div>
 
-    <div class="logic-section"><div class="logic-section-title">8. Tab 5 — ตารางข้อมูลทั้งหมด</div><ul class="logic-list">
-      <li><b>คอลัมน์ (18)</b>: Processed On, Temp, HR, RR, CRT, Pulse, BP, FBS, Consciousness, Mucous Membrane, Lung Sound, Heart Sound, Critical Event, DVM/User, Department, Created on, Last Update, <b>Exam Card ID</b></li>
-      <li><b>Exam Card ID</b>: แสดงเป็นสีม่วง ถ้าเป็น — แสดงเป็นสีเทา</li>
-      <li>ข้อมูล 20 แถว จำลองการทยอยใส่ (บางฟิลด์ว่าง)</li>
-      <li>Critical Event หนึ่งแถวมีหลายค่าคั่นด้วย , (comma)</li>
-      <li>ตาราง: table-layout auto, min-width 1550px, เลื่อนแนวนอนได้, เว้นพื้นที่ด้านล่าง 60px</li>
+    <div class="logic-section"><div class="logic-section-title">8. Layout: 3-Column Grid (Tab 1–4)</div>
+      <div class="logic-sub-group">คอลัมน์ 1 — Forms</div>
+      <ul class="logic-list"><li>รายการฟอร์ม (Vital Sign) มี checkmark ✓</li></ul>
+      <div class="logic-sub-group">คอลัมน์ 2 — Form Editor (8 ส่วน, 48 ฟิลด์)</div>
+      <ul class="logic-list">
+        <li><b>1. Core Vital Signs</b>: Temp, HR, RR, Pulse, Weight, CRT, FBS, Hydration Status, Estimated Dehydration</li>
+        <li><b>2. Blood Pressure &amp; Advanced Monitoring</b>: NIBP SYS/DIA/MAP, BP Method, Cuff Site, SpO2, EtCO2, Oxygen Support</li>
+        <li><b>3. Perfusion, Mucosa &amp; Bleeding</b>: Mucous Membrane Site (checkbox), Mucous Membrane Color, Bleeding Status, Bleeding Severity, Bleeding Site</li>
+        <li><b>4. Cardiac &amp; Critical Events</b>: Heart Sound, Critical Event Time, Critical Events (checkbox), Critical Events Note</li>
+        <li><b>5. Respiratory Assessment</b>: Lung/Airway Sounds (checkbox), Lung Sound Side, Lung Region, Respiratory Effort, Depth, Affected Phase</li>
+        <li><b>6. Neurologic &amp; Mentation</b>: Level of Consciousness, Reaction to Stimuli, Palpebral L/R, Menace L/R, PLR L/R, Pedal L/R</li>
+        <li><b>7. Mobility &amp; Posture</b>: Gait, Posture, Mobility Note</li>
+        <li><b>8. Pain Assessment</b>: Pain Score, Observed Pain Severity, Observed Pain Indicators (checkbox)</li>
+      </ul>
+      <div class="logic-note">รวม 48 ฟิลด์ใน Form Editor + 4 ฟิลด์ Record Meta = <b>52 ฟิลด์</b> (ดูรายละเอียดที่ Part 1 ด้านบน)</div>
+      <div class="logic-sub-group">คอลัมน์ 3 — Record Meta</div>
+      <ul class="logic-list">
+        <li><b>req-tags</b>: ✓ Form, ✓ DVM/User, ✓ Dept, exam-card-ID</li>
+        <li><b>Processed on</b>: <code>datetime-local</code> (Tab 1–2) / readonly text (Tab 3–4)</li>
+        <li><b>DVM/User</b>: readonly ทุก tab</li>
+        <li><b>Department</b>: readonly ทุก tab</li>
+        <li><b>Form Note</b>: textarea (Tab 1–2) / readonly text (Tab 3–4)</li>
+      </ul>
+    </div>
+
+    <div class="logic-section"><div class="logic-section-title">9. Placeholder &amp; Styling</div><ul class="logic-list">
+      <li>ค่าตัวอย่างใน input ทั้งหมดเป็น <b>placeholder</b> สีเทา (<code>#9ca3af</code>)</li>
+      <li><code>&lt;select&gt;</code> มี <code>&lt;option value="" disabled selected&gt;กรุณาเลือกข้อมูล&lt;/option&gt;</code> เป็นค่า default</li>
+      <li>Form Note textarea มี placeholder ตัวอย่างประโยคยาว</li>
+      <li><b>Mucous Membrane Site</b>: Oral mucosa เป็นค่าเริ่มต้นที่เช็คไว้ใน UI</li>
     </ul></div>
 
-    <div class="logic-section"><div class="logic-section-title">9. Filter — แถวที่ 1 (Numeric)</div><ul class="logic-list">
-      <li><b>Temp, HR, RR, Pulse, BP, FBS</b>: เลือก =, &gt;, &lt; + กรอกค่าตัวเลข</li>
-      <li><b>CRT</b>: dropdown 3 ตัวเลือก — ทั้งหมด, &lt;2, อื่นๆ</li>
-      <li>ถ้าไม่กรอกค่า = ไม่กรองฟิลด์นั้น</li>
-      <li>ถ้ากรอกค่าแต่ข้อมูลแถวนั้นว่าง = ไม่แสดงแถว</li>
+    <div class="logic-section"><div class="logic-section-title">10. Processed on</div><ul class="logic-list">
+      <li><b>Tab 1–2</b> (editable): <code>&lt;input type="datetime-local"&gt;</code> ป้องกันแก้ไขด้วยตัวอักษรโดยตรง (<code>onkeydown="return false"</code>) เลือกจากปฏิทินเท่านั้น</li>
+      <li><b>Tab 3–4</b> (readonly): แสดงเป็น text สีเทาเข้ม (<code>#4b5563</code>, <code>font-weight: 500</code>)</li>
     </ul></div>
 
-    <div class="logic-section"><div class="logic-section-title">10. Filter — แถวที่ 2 (Multi-check)</div><ul class="logic-list">
-      <li><b>Mucous Membrane</b>: Pink (normal), Pale, Yellow, Red, Cyanosis</li>
-      <li><b>Consciousness</b>: Alert, Depressed, Stupor, Comatose</li>
-      <li><b>Lung Sound</b>: Normal, Crackles, Wheezes, Diminished, Absent</li>
-      <li><b>Heart Sound</b>: Normal, Gallop, Murmur, Muffled, Arrhythmia</li>
-      <li><b>Critical Event</b>: Cyanosis, Seizure, Arrest (เช็คแบบ contains)</li>
-      <li>เลือกหลายค่าได้ (OR logic), คลิกนอก → ปิดอัตโนมัติ</li>
+    <div class="logic-section"><div class="logic-section-title">11. Confirm &amp; Toast</div><ul class="logic-list">
+      <li>ปุ่ม <b>Confirm</b> (Tab 1–2): เรียก <code>assessConfirm(tabNum)</code> → แสดง toast 2 วินาที แสดง DVM/User, Department, last update</li>
+      <li>ปุ่ม <b>Confirm</b> (Tab 3–4): ปุ่ม inactive ไม่ทำงาน</li>
     </ul></div>
 
-    <div class="logic-section"><div class="logic-section-title">11. ปุ่ม Close (✕) &amp; Confirm</div><ul class="logic-list">
+    <div class="logic-section"><div class="logic-section-title">12. ปุ่ม Close (✕)</div><ul class="logic-list">
       <li>คลิก ✕ → เปิด <b>confirm overlay</b> เตือนข้อมูลที่ยังไม่บันทึก</li>
       <li><b>ปิดโดยไม่บันทึก</b> (ปุ่มแดง) → ปิดทั้ง confirm + modal</li>
       <li><b>กลับไปแก้ไข</b> (ปุ่มเขียว) → ปิดเฉพาะ confirm overlay</li>
-      <li>ปุ่ม <b>Confirm</b> (Tab 1-2): แสดง toast 2 วินาที แสดง DVM/User, Department, last update</li>
-      <li>ปุ่ม <b>Confirm</b> (Tab 3-4): inactive ไม่ทำงาน</li>
+    </ul></div>
+
+    <div class="logic-section"><div class="logic-section-title">13. Tab 5 — ตารางข้อมูลทั้งหมด</div>
+      <div class="logic-note">คอลัมน์ในตารางรวมอาจต้องเพิ่ม/ปรับให้สอดคล้องกับ 48 ฟิลด์ใน Part 1 (ปัจจุบันมี 18 คอลัมน์)</div>
+      <div class="logic-sub-group">คอลัมน์ (18 คอลัมน์ ปัจจุบัน)</div>
+      <table class="ref-table">
+        <thead><tr><th>#</th><th>คอลัมน์</th><th>หมายเหตุ</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Processed On</td><td class="fref">วันเวลาที่ประมวลผล (ใช้เรียงลำดับ)</td></tr>
+          <tr><td>2</td><td>Temp (°F)</td><td class="fref">อุณหภูมิ</td></tr>
+          <tr><td>3</td><td>HR (bpm)</td><td class="fref">อัตราการเต้นหัวใจ</td></tr>
+          <tr><td>4</td><td>RR (rpm)</td><td class="fref">อัตราการหายใจ</td></tr>
+          <tr><td>5</td><td>CRT (sec)</td><td class="fref">Capillary Refill Time</td></tr>
+          <tr><td>6</td><td>Pulse (bpm)</td><td class="fref">ชีพจร</td></tr>
+          <tr><td>7</td><td>BP (mmHg)</td><td class="fref">ความดันเลือด</td></tr>
+          <tr><td>8</td><td>FBS (mg/dL)</td><td class="fref">น้ำตาลในเลือด</td></tr>
+          <tr><td>9</td><td>Consciousness</td><td class="fref">ระดับสติ</td></tr>
+          <tr><td>10</td><td>Mucous Membrane</td><td class="fref">เยื่อเมือก</td></tr>
+          <tr><td>11</td><td>Lung Sound</td><td class="fref">เสียงปอด</td></tr>
+          <tr><td>12</td><td>Heart Sound</td><td class="fref">เสียงหัวใจ</td></tr>
+          <tr><td>13</td><td>Critical Event</td><td class="fref">เหตุวิกฤต (หลายค่าคั่นด้วย ,)</td></tr>
+          <tr><td>14</td><td>DVM/User</td><td class="fref">สัตวแพทย์/ผู้ใช้</td></tr>
+          <tr><td>15</td><td>Department</td><td class="fref">แผนก</td></tr>
+          <tr><td>16</td><td>Created on</td><td class="fref">วันที่สร้าง</td></tr>
+          <tr><td>17</td><td>Last Update</td><td class="fref">วันที่แก้ไขล่าสุด (บางแถวว่าง)</td></tr>
+          <tr><td>18</td><td>Exam Card ID</td><td class="fref">สีม่วง ถ้าไม่มีแสดง — สีเทา</td></tr>
+        </tbody>
+      </table>
+      <div class="logic-sub-group">ข้อมูล</div>
+      <ul class="logic-list">
+        <li>20 แถว จำลองการทยอยใส่ (บางฟิลด์ว่าง)</li>
+        <li>Processed On บางแถวตรง/ไม่ตรง Created on (ทั้งก่อนและหลัง)</li>
+        <li>Last Update บางแถวว่าง (สุ่ม)</li>
+        <li>Critical Event หนึ่งแถวมีหลายค่าคั่นด้วย <code>,</code> (comma)</li>
+        <li>Exam Card ID: บางแถวมี id (เช่น <code>exam-card-69001234</code>), บางแถวเป็น <code>—</code></li>
+      </ul>
+      <div class="logic-sub-group">CSS ตาราง</div>
+      <ul class="logic-list">
+        <li><code>table-layout: auto</code>, <code>min-width: 1550px</code> — ตารางไม่ซ้อน, เลื่อนแนวนอนได้</li>
+        <li><code>padding-bottom: 60px</code> ที่ <code>.data-table-wrap</code> — เว้นพื้นที่ด้านล่าง</li>
+        <li><code>white-space: nowrap</code> สำหรับทุก cell</li>
+      </ul>
+    </div>
+
+    <div class="logic-section"><div class="logic-section-title">14. Filter — แถวที่ 1 (Numeric)</div>
+      <table class="ref-table">
+        <thead><tr><th>ฟิลด์</th><th>ประเภท</th><th>ตัวเลือก</th></tr></thead>
+        <tbody>
+          <tr><td>Temp (°F)</td><td><span class="ftype">Numeric</span></td><td class="fopts"><code>=</code>, <code>&gt;</code>, <code>&lt;</code> + กรอกค่า</td></tr>
+          <tr><td>HR (bpm)</td><td><span class="ftype">Numeric</span></td><td class="fopts"><code>=</code>, <code>&gt;</code>, <code>&lt;</code> + กรอกค่า</td></tr>
+          <tr><td>RR (rpm)</td><td><span class="ftype">Numeric</span></td><td class="fopts"><code>=</code>, <code>&gt;</code>, <code>&lt;</code> + กรอกค่า</td></tr>
+          <tr><td>CRT (sec)</td><td><span class="ftype">Dropdown</span></td><td class="fopts">ทั้งหมด, &lt;2, อื่นๆ</td></tr>
+          <tr><td>Pulse (bpm)</td><td><span class="ftype">Numeric</span></td><td class="fopts"><code>=</code>, <code>&gt;</code>, <code>&lt;</code> + กรอกค่า</td></tr>
+          <tr><td>BP (mmHg)</td><td><span class="ftype">Numeric</span></td><td class="fopts"><code>=</code>, <code>&gt;</code>, <code>&lt;</code> + กรอกค่า</td></tr>
+          <tr><td>FBS (mg/dL)</td><td><span class="ftype">Numeric</span></td><td class="fopts"><code>=</code>, <code>&gt;</code>, <code>&lt;</code> + กรอกค่า</td></tr>
+        </tbody>
+      </table>
+      <div class="logic-sub-group">Logic</div>
+      <ul class="logic-list">
+        <li>ถ้าไม่กรอกค่า = ไม่กรองฟิลด์นั้น</li>
+        <li>ถ้ากรอกค่าแต่ข้อมูลแถวนั้นว่าง = ไม่แสดงแถว</li>
+        <li>CRT ใช้ dropdown เพราะมีค่า <code>&lt;2</code> ที่ไม่ใช่ตัวเลขล้วน</li>
+        <li>ขอบ <code>select</code> + <code>input</code> ต่อเนื่องกัน (<code>height: 30px</code>, <code>box-sizing: border-box</code>)</li>
+      </ul>
+    </div>
+
+    <div class="logic-section"><div class="logic-section-title">15. Filter — แถวที่ 2 (Multi-check Dropdown)</div>
+      <table class="ref-table">
+        <thead><tr><th>กลุ่ม</th><th>ตัวเลือก</th></tr></thead>
+        <tbody>
+          <tr><td>Mucous Membrane</td><td class="fopts">Pink (normal), Pale, Yellow, Red, Cyanosis</td></tr>
+          <tr><td>Consciousness</td><td class="fopts">Alert, Depressed, Stupor, Comatose</td></tr>
+          <tr><td>Lung Sound</td><td class="fopts">Normal, Crackles, Wheezes, Diminished, Absent</td></tr>
+          <tr><td>Heart Sound</td><td class="fopts">Normal, Gallop, Murmur, Muffled, Arrhythmia</td></tr>
+          <tr><td>Critical Event</td><td class="fopts">Cyanosis, Seizure, Arrest</td></tr>
+        </tbody>
+      </table>
+      <div class="logic-sub-group">Logic</div>
+      <ul class="logic-list">
+        <li>คลิกปุ่ม → เปิด panel, คลิกนอก → ปิดอัตโนมัติ</li>
+        <li>เลือกหลายค่าได้ (<b>OR logic</b>)</li>
+        <li>Critical Event เช็คแบบ <b>contains</b> เพราะหนึ่งแถวมีหลายค่าคั่นด้วย <code>,</code></li>
+        <li>Filter 2 แถว <b>ไม่มีเส้นแบ่ง</b> (<code>border-bottom</code> ถูกลบออก)</li>
+      </ul>
+    </div>
+
+    <div class="logic-section"><div class="logic-section-title">16. ปุ่ม Filter</div><ul class="logic-list">
+      <li><b>ค้นหา</b>: กรองข้อมูลตามเงื่อนไขทั้งหมด (AND ระหว่างฟิลด์, OR ภายใน multi-check)</li>
+      <li><b>ล้างตัวกรอง</b>: รีเซ็ตค่าทั้งหมด (numeric, CRT, multi-check) แล้วแสดงข้อมูลทั้งหมด</li>
     </ul></div>
   </div></div>
 
@@ -984,7 +1334,6 @@
       var critNoteOpts = ["witnessed post-seizure", "during recovery", "noted pre-op", "on presentation"];
       var mobilityNoteOpts = ["ambulating well", "reluctant to move", "non-ambulatory", "requires assistance"];
       var bleedingSiteOpts = ["Ear", "Oral", "Limb", "Abdomen", "Tail", "Other"];
-      var reflexTypeOpts = ["Palpebral reflex"];
 
       function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
       function pickMulti(arr) {
@@ -1045,20 +1394,24 @@
           critNote: maybe(function() { return pick(critNoteOpts); }),
           respEffort: maybePick('respEffort'),
           respDepth: maybePick('respDepth'),
-          respPattern: maybePick('respPattern'),
           affectedPhase: maybePick('affectedPhase'),
           lungSide: maybePick('lungSide'),
           lungRegion: maybePick('lungRegion'),
           lung: maybeMulti('lung'),
           cons: maybePick('cons'),
           stimuli: maybePick('stimuli'),
-          reflexType: maybe(function() { return pick(reflexTypeOpts); }),
-          leftResponse: maybePick('leftResponse'),
-          rightResponse: maybePick('rightResponse'),
+          palpebralL: maybePick('reflexResponse'),
+          palpebralR: maybePick('reflexResponse'),
+          menaceL: maybePick('reflexResponse'),
+          menaceR: maybePick('reflexResponse'),
+          plrL: maybePick('reflexResponse'),
+          plrR: maybePick('reflexResponse'),
+          pedalL: maybePick('reflexResponse'),
+          pedalR: maybePick('reflexResponse'),
           gait: maybePick('gait'),
           posture: maybePick('posture'),
           mobilityNote: maybe(function() { return pick(mobilityNoteOpts); }),
-          painScore: maybe(function() { return randInt(0, 10); }),
+          painScore: maybePick('painScore'),
           painSeverity: maybePick('painSeverity'),
           painIndicators: maybeMulti('painIndicators'),
           dvm: pick(dvms),
@@ -1071,32 +1424,31 @@
       return data;
     }
     var filterOptions = {
-      crt: ['<1', '1', '<2', '2', '3', '4', '>4', 'Unable to assess'],
-      hydration: ['Normal', 'Dehydrated', 'Overhydrated', 'Unable to assess'],
-      bpMethod: ['Oscillometric', 'Doppler', 'Invasive', 'Other'],
+      crt: ['< 2 sec (Normal)', '2–3 sec (Mildly Prolonged)', '> 3 sec (Prolonged)', '< 1 sec (Hyperdynamic / Brick Red)', 'Unable to assess'],
+      hydration: ['Normal (<5%)', 'Mild Dehydration (5–6%)', 'Moderate Dehydration (7–9%)', 'Severe Dehydration (≥10–12%)', 'Overhydrated (Fluid Overload)', 'Unable to assess'],
+      bpMethod: ['Oscillometric', 'Doppler', 'High-Definition Oscillometry (HDO)', 'Invasive / Direct', 'Other'],
       cuffSite: ['Left forelimb', 'Right forelimb', 'Left hindlimb', 'Right hindlimb', 'Tail', 'Other'],
-      oxygenSupport: ['Room air', 'Flow-by', 'Nasal oxygen', 'Mask', 'Oxygen cage', 'Intubated', 'Other'],
-      mm: ['Pink / Normal', 'Pale', 'White', 'Red', 'Injected', 'Dark pink', 'Muddy', 'Jaundiced / Yellow', 'Cyanotic / Blue', 'Gray', 'Other', 'Unable to assess'],
+      oxygenSupport: ['Room air', 'Flow-by', 'Nasal cannula', 'Mask', 'Oxygen cage / Hood', 'Mechanical Ventilation / Intubated', 'Other'],
+      mm: ['Pink (Normal)', 'Pale / Porcelain White', 'Hyperemic / Injected / Red', 'Muddy / Brick Red', 'Jaundiced / Icteric / Yellow', 'Cyanotic / Blue', 'Gray / Ashen', 'Unable to assess'],
       mmSite: ['Oral mucosa', 'Conjunctiva', 'Prepuce', 'Vulva', 'Other'],
       bleedingStatus: ['No active bleeding', 'Active — controlled', 'Active — uncontrolled', 'Suspected internal bleeding', 'Unable to assess'],
       bleedingSeverity: ['None', 'Mild', 'Moderate', 'Severe'],
-      heart: ['Normal', 'Murmur', 'Gallop', 'Muffled', 'Arrhythmia', 'Other', 'Unable to assess'],
-      crit: ['Cyanosis', 'Seizure', 'Cardiorespiratory arrest', 'Respiratory arrest', 'Syncope / Collapse', 'Other'],
-      respEffort: ['Normal', 'Increased', 'Decreased', 'Labored', 'Paradoxical', 'Unable to assess'],
-      respDepth: ['Normal', 'Shallow', 'Deep', 'Variable', 'Unable to assess'],
-      respPattern: ['Eupnea', 'Tachypnea', 'Bradypnea', 'Apnea', 'Rapid and shallow', 'Prolonged inspiration', 'Prolonged expiration', 'Prolonged inspiration and expiration', 'Irregular', 'Paradoxical', 'Other'],
+      heart: ['Normal (S1/S2 clear)', 'Systolic Murmur', 'Diastolic Murmur', 'Continuous Murmur (เช่น PDA)', 'Gallop Rhythm (S3/S4)', 'Muffled / Distant', 'Arrhythmia / Irregular', 'Unable to assess'],
+      crit: ['Cyanosis', 'Seizure', 'Cardiopulmonary Arrest (CPA)', 'Respiratory Arrest', 'Severe Dyspnea / Distress', 'Syncope / Collapse', 'Other'],
+      respEffort: ['Normal (Eupneic)', 'Increased (Mild-Moderate)', 'Severe Labored (Dyspneic)', 'Paradoxical Effort', 'Unable to assess'],
+      respDepth: ['Normal', 'Shallow (Hypopnea)', 'Deep (Hyperpnea)', 'Variable', 'Unable to assess'],
       affectedPhase: ['None', 'Inspiratory', 'Expiratory', 'Biphasic', 'Unable to assess'],
       lungSide: ['Left', 'Right', 'Bilateral', 'Unable to localize'],
-      lungRegion: ['All lung fields', 'Cranial', 'Middle', 'Caudal', 'Dorsal', 'Ventral'],
-      lung: ['Normal', 'Upper airway / Referred', 'Wheeze', 'Crackles', 'Harsh', 'Dull', 'Absent', 'Other'],
-      cons: ['BAR — Bright, Alert and Responsive', 'QAR — Quiet, Alert and Responsive', 'Depressed / Dull / Lethargic', 'Hyperactive / Hysterical / Irritable', 'Obtunded', 'Stuporous', 'Comatose', 'Unable to assess'],
-      stimuli: ['Appropriate', 'Exaggerated', 'Decreased', 'Absent', 'Inappropriate', 'Unable to assess'],
-      leftResponse: ['Present', 'Decreased', 'Absent', 'Unable to assess'],
-      rightResponse: ['Present', 'Decreased', 'Absent', 'Unable to assess'],
-      gait: ['Normal', 'Ambulatory with abnormality', 'Ataxic', 'Lame', 'Weak / Paretic', 'Non-ambulatory', 'Unable to assess', 'Other'],
-      posture: ['Normal', 'Standing', 'Sitting', 'Sternal recumbency', 'Lateral recumbency', 'Orthopneic', 'Hunched', 'Abnormal', 'Unable to assess'],
-      painSeverity: ['None', 'Mild', 'Moderate', 'Severe'],
-      painIndicators: ['Vocalization', 'Guarding', 'Restlessness', 'Reduced movement', 'Aggression', 'Abnormal posture']
+      lungRegion: ['All lung fields (Diffuse)', 'Cranioventral', 'Caudodorsal', 'Cranial', 'Caudal', 'Dorsal', 'Ventral'],
+      lung: ['Normal (Vesiculobronchial)', 'Referred Upper Airway Sound (Stertor/Stridor)', 'Wheezes (Rhonchi)', 'Crackles (Fine/Coarse)', 'Harsh', 'Dull / Diminished', 'Absent', 'Other'],
+      cons: ['BAR (Bright, Alert, Responsive)', 'QAR (Quiet, Alert, Responsive)', 'Lethargic / Dull / Depressed', 'Obtunded', 'Stuporous', 'Comatose', 'Hyperactive / Agitated', 'Unable to assess'],
+      stimuli: ['Appropriate / Normal', 'Hyper-reactive / Exaggerated', 'Hypo-reactive / Decreased', 'Absent', 'Inappropriate', 'Unable to assess'],
+      reflexResponse: ['Intact / Normal (Present)', 'Decreased / Sluggish', 'Absent', 'Exaggerated / Hyperreflexic', 'Unable to assess'],
+      gait: ['Normal / Ambulatory', 'Ataxic (Proprioceptive/Vestibular/Cerebellar)', 'Paresis (Weakness)', 'Plegia (Paralysis)', 'Lameness (Grade 1–5)', 'Non-ambulatory', 'Unable to assess', 'Other'],
+      posture: ['Normal', 'Orthopneic stance', 'Schiff-Sherrington posture', 'Decerebrate posture', 'Decerebellate posture', 'Head tilt / Turn', 'Kyphosis / Hunched', 'Recumbent (Sternal/Lateral)', 'Unable to assess'],
+      painScore: ['0', '1', '2', '3', '4'],
+      painSeverity: ['None (0)', 'Mild (1)', 'Moderate (2)', 'Severe (3–4)'],
+      painIndicators: ['Vocalization', 'Facial Expression (Grimace)', 'Abnormal Posture / Guarding', 'Restlessness / Agitation', 'Reduced Movement / Lethargy', 'Aggression / Resistance to touch', 'Anorexia']
     };
 
     var tableData = [];
@@ -1145,16 +1497,20 @@
       {key:"critNote", label:"Critical Events<br>Note", topic:"critical"},
       {key:"respEffort", label:"Respiratory Effort", topic:"respiratory"},
       {key:"respDepth", label:"Respiratory Depth", topic:"respiratory"},
-      {key:"respPattern", label:"Respiratory Pattern", topic:"respiratory"},
       {key:"affectedPhase", label:"Affected Phase", topic:"respiratory"},
       {key:"lungSide", label:"Lung Sound Side", topic:"respiratory"},
       {key:"lungRegion", label:"Lung Region", topic:"respiratory"},
       {key:"lung", label:"Lung Sounds", topic:"respiratory"},
       {key:"cons", label:"LOC", topic:"neuro"},
       {key:"stimuli", label:"Reaction to Stimuli &amp; Surroundings", topic:"neuro"},
-      {key:"reflexType", label:"Reflex Type", topic:"neuro"},
-      {key:"leftResponse", label:"Left Response", topic:"neuro"},
-      {key:"rightResponse", label:"Right Response", topic:"neuro"},
+      {key:"palpebralL", label:"Palpebral<br>L", topic:"neuro"},
+      {key:"palpebralR", label:"Palpebral<br>R", topic:"neuro"},
+      {key:"menaceL", label:"Menace<br>L", topic:"neuro"},
+      {key:"menaceR", label:"Menace<br>R", topic:"neuro"},
+      {key:"plrL", label:"PLR<br>L", topic:"neuro"},
+      {key:"plrR", label:"PLR<br>R", topic:"neuro"},
+      {key:"pedalL", label:"Pedal<br>L", topic:"neuro"},
+      {key:"pedalR", label:"Pedal<br>R", topic:"neuro"},
       {key:"gait", label:"Gait", topic:"mobility"},
       {key:"posture", label:"Posture", topic:"mobility"},
       {key:"mobilityNote", label:"Mobility Note", topic:"mobility"},
@@ -1275,10 +1631,11 @@
       nibpSys:{type:'num'}, nibpDia:{type:'num'}, nibpMap:{type:'num'}, bpMethod:{type:'multi'}, cuffSite:{type:'multi'}, spo2:{type:'num'}, etco2:{type:'num'}, oxygenSupport:{type:'multi'},
       mm:{type:'multi'}, mmSite:{type:'multi-crit'}, bleedingStatus:{type:'multi'}, bleedingSeverity:{type:'multi'}, bleedingSite:{type:'text'},
       heart:{type:'multi'}, crit:{type:'multi-crit'}, critTime:{type:'text'}, critNote:{type:'text'},
-      respEffort:{type:'multi'}, respDepth:{type:'multi'}, respPattern:{type:'multi'}, affectedPhase:{type:'multi'}, lungSide:{type:'multi'}, lungRegion:{type:'multi'}, lung:{type:'multi-crit'},
-      cons:{type:'multi'}, stimuli:{type:'multi'}, reflexType:{type:'text'}, leftResponse:{type:'multi'}, rightResponse:{type:'multi'},
+      respEffort:{type:'multi'}, respDepth:{type:'multi'}, affectedPhase:{type:'multi'}, lungSide:{type:'multi'}, lungRegion:{type:'multi'}, lung:{type:'multi-crit'},
+      cons:{type:'multi'}, stimuli:{type:'multi'},
+      palpebralL:{type:'multi'}, palpebralR:{type:'multi'}, menaceL:{type:'multi'}, menaceR:{type:'multi'}, plrL:{type:'multi'}, plrR:{type:'multi'}, pedalL:{type:'multi'}, pedalR:{type:'multi'},
       gait:{type:'multi'}, posture:{type:'multi'}, mobilityNote:{type:'text'},
-      painScore:{type:'num'}, painSeverity:{type:'multi'}, painIndicators:{type:'multi-crit'},
+      painScore:{type:'multi'}, painSeverity:{type:'multi'}, painIndicators:{type:'multi-crit'},
       dvm:{type:'text'}, dept:{type:'text'}
     };
     function toggleFilterPanel(panelId, btn) {
