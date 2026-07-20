@@ -1,6 +1,6 @@
-# Exam Form Editor — Logic & Rule Summary
+# Vital & PE Editor — Logic & Rule Summary
 
-ไฟล์: `exam_forms_editor.html`
+ไฟล์: `vital_pe_editor.html`
 
 ---
 
@@ -46,9 +46,9 @@
 
 ---
 
-## 6. ปุ่มเข้าหน้า Exam Form
+## 6. ปุ่มเข้าหน้า Vital & PE
 
-- ปุ่ม **"Exam Form"** โทนสีม่วง (`#7c3aed`) คลิกแล้วเปิด modal `assess-modal`
+- ปุ่ม **"Vital & PE"** โทนสีม่วง (`#7c3aed`) คลิกแล้วเปิด modal `assess-modal`
 - มี **View Logic/Rule** badge เปิด modal สรุปแนวคิด กฎ และการทำงาน
 - มี **date picker** สำหรับเลือกวันที่
 - มี **select** เลือกวันที่มีประวัติการตรวจ

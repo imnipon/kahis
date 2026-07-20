@@ -18,20 +18,20 @@ const filesTree = [
         ]
       },
       {
-        "name": "exam-forms",
+        "name": "vital_pe",
         "type": "folder",
-        "path": "NP/exam-forms",
+        "path": "NP/vital_pe",
         "children": [
           {
-            "name": "exam_forms_editor.html",
+            "name": "vital_pe_editor.html",
             "type": "file",
-            "path": "NP/exam-forms/exam_forms_editor.html",
+            "path": "NP/vital_pe/vital_pe_editor.html",
             "lastUpdate": "2026-07-15T16:30:00.000000"
           },
           {
-            "name": "exam_forms_logic.md",
+            "name": "vital_pe_logic.md",
             "type": "file",
-            "path": "NP/exam-forms/exam_forms_logic.md",
+            "path": "NP/vital_pe/vital_pe_logic.md",
             "lastUpdate": "2026-07-15T16:30:00.000000"
           }
         ]
