@@ -111,10 +111,18 @@
 
 | # | ฟิลด์ข้อมูล | ประเภท | Field Hint / Placeholder / Options | มาตรฐานสากลที่ใช้อ้างอิง |
 |---|-------------|--------|---------------------|--------------------------|
-| 48 | Processed on | `datetime-local` | value: `2026-07-09T10:57` | Clinical System Standard Specification |
+| 48 | Processed on | `datetime-local + checkbox` | เริ่มต้นว่าง ไม่มี placeholder วันที่/เวลา และ inactive; check หลัง title เพื่อเปิดใช้งาน calendar input | Clinical System Standard Specification |
 | 49 | DVM/User | readonly | readonly text | Clinical System Architecture Standard |
 | 50 | Department | readonly | readonly text | Clinical System Architecture Standard |
 | 51 | Form Note | `textarea` | placeholder: `บันทึกหมายเหตุเพิ่มเติมเกี่ยวกับการตรวจร่างกาย...` | Clinical Practice Documentation Standards |
+
+### All Data Table Filter Visibility
+
+- All Data Table มี checkbox ที่มุมขวาของชื่อแต่ละ filter field เพื่อแสดง/ซ่อน table column ที่สัมพันธ์กัน
+- แต่ละ topic มี 3 บรรทัด: ชื่อ topic, `Preview [checkbox]` และ `(เลือกทั้งหมด)`
+- ค่าเริ่มต้นของทุก field และทุก topic คือ checked
+- Topic checkbox รองรับ checked, unchecked และ indeterminate เมื่อเลือกเพียงบาง field
+- Checkbox ใช้พื้นหลังสีขาว เส้นขอบ เครื่องหมายถูก และข้อความ `Preview` / `(เลือกทั้งหมด)` เป็นสีเทาอ่อนเดียวกัน
 
 ---
 

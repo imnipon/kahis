@@ -87,7 +87,7 @@
 
 ### คอลัมน์ 3 — Record Meta
 - **req-tags**: ✓ Form, ✓ DVM/User, ✓ Dept, exam-card-ID
-- **Processed on**: `datetime-local` ใน Tab 1
+- **Processed on**: `datetime-local` ใน Tab 1 เริ่มต้นว่างและ inactive; มี checkbox หลัง title เพื่อเปิดใช้งาน calendar input
 - **DVM/User**: readonly
 - **Department**: readonly
 - **Form Note**: textarea ใน Tab 1
@@ -108,6 +108,10 @@
 ## 10. Processed On
 
 - Tab 1 ใช้ `<input type="datetime-local">` และป้องกันการพิมพ์ด้วยแป้นพิมพ์ (`onkeydown="return false"`) ให้เลือกจาก date/time picker
+- เริ่มต้นช่องเป็นค่าว่างจริง ไม่มี `dd/mm/yyyy` หรือ `--:--` และเป็น inactive
+- checkbox หลัง title `Processed on` ใช้เปิด/ปิดการใช้งาน input
+- เมื่อ uncheck จะล้างค่า datetime และ disable input
+- สถานะ inactive ใช้สีเดียวกับ DVM/User (`background: #f9fafb`, `border: #e5e7eb`, `color: #6b7280`)
 - ตารางใช้ค่า Processed On เป็นข้อมูลวันที่ประมวลผล/วันที่ตรวจ และใช้แสดงในคอลัมน์ Date
 
 ---
@@ -196,6 +200,12 @@
 - แยกเป็น topic: Date, Vital Signs, Monitoring, Perfusion, Critical Events, Respiratory, Neuro/LOC, Mobility, Pain และ Meta
 - แต่ละ field มีกรอบย่อยและสีตาม topic
 - panel มี scroll แนวตั้ง/แนวนอนภายในกรอบ
+- แต่ละ field มี checkbox มุมขวาของชื่อ filter เพื่อแสดง/ซ่อน table column ที่สัมพันธ์กัน
+- หัวข้อ topic เรียง 3 บรรทัด: ชื่อ topic, `Preview [checkbox]`, และ `(เลือกทั้งหมด)`
+- checkbox topic ใช้เลือก/ยกเลิกทุก field ใน topic และแสดง indeterminate เมื่อเลือกบาง field
+- ค่าเริ่มต้นทุก field และทุก topic คือ checked
+- มีปุ่ม `เลือกทั้งหมด` และ `ยกเลิกทั้งหมด` ที่ส่วนหัวของ All Data Filter
+- Preview, `(เลือกทั้งหมด)`, เส้นขอบ checkbox และเครื่องหมายถูกใช้สีเทาอ่อนเดียวกัน; checkbox มีพื้นหลังสีขาว
 
 ### ประเภท filter
 

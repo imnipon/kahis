@@ -415,7 +415,7 @@
     .filter-panel.compact { padding: 8px 10px; background: #fff; max-height: 40vh; overflow-x: auto; overflow-y: auto; }
     .filter-panel.compact .filter-group { display: grid; grid-template-columns: 118px minmax(0, 1fr); align-items: start; width: max-content; min-width: 100%; margin: 0; padding: 7px 0; border: none; border-bottom: 1px solid #eef0f4; border-radius: 0; }
     .filter-panel.compact .filter-group:last-child { border-bottom: none; }
-    .filter-panel.compact .filter-group-title { align-self: start; flex-shrink: 0; width: auto; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .3px; margin: 2px 10px 0 0; padding: 0 8px 0 2px; border-right: 2px solid currentColor; }
+    .filter-panel.compact .filter-group-title { align-self: start; flex-shrink: 0; width: 118px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .3px; margin: 2px 10px 0 0; padding: 0 8px 0 2px; border-right: 2px solid currentColor; }
     .filter-panel.compact .filter-grid { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 8px 10px; min-width: 0; }
     .filter-panel.compact.flat-filter-panel { padding: 10px 12px; }
     .filter-panel.compact.flat-filter-panel .filter-grid { gap: 10px 12px; padding: 2px; }
@@ -470,7 +470,28 @@
     .filter-group-title { font-size: 12px; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: .3px; }
     .filter-grid { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; }
     .filter-control { display: flex; flex-direction: column; gap: 2px; min-width: 120px; }
+    .filter-control { position: relative; }
     .filter-control label { font-size: 11px; color: #6b7280; white-space: nowrap; }
+    .filter-control-title { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding-right: 2px; font-size: 11px; color: #6b7280; white-space: nowrap; }
+    .filter-control-title > span { overflow: hidden; text-overflow: ellipsis; }
+    .filter-panel.compact .filter-control.has-value > .filter-control-title { color: #4338ca; font-weight: 700; }
+    .filter-column-toggle, .filter-topic-toggle { appearance: none; -webkit-appearance: none; width: 13px; height: 13px; margin: 0; background: #fff; border: 1px solid #b8bec8; border-radius: 3px; cursor: pointer; flex: 0 0 auto; position: relative; }
+    .filter-column-toggle:checked::after, .filter-topic-toggle:checked::after { content: ''; position: absolute; left: 3px; top: 1px; width: 4px; height: 7px; border: solid #b8bec8; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+    .filter-column-toggle:indeterminate, .filter-topic-toggle:indeterminate { background: #fff; }
+    .filter-column-toggle:indeterminate::after, .filter-topic-toggle:indeterminate::after { content: ''; position: absolute; left: 2px; top: 5px; width: 7px; height: 1px; background: #b8bec8; }
+    .filter-group-title { display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 2px; }
+    .filter-topic-preview { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 500; text-transform: none; letter-spacing: 0; color: #b8bec8; white-space: nowrap; }
+    .filter-topic-select-all { padding: 0; border: none; background: transparent; color: #b8bec8; font: inherit; font-size: 10px; cursor: pointer; }
+    .filter-topic-select-all:hover { color: #b8bec8; text-decoration: underline; }
+    .filter-control-title input, .filter-group-title input { position: relative; z-index: 2; }
+    .processed-on-label { display: flex; align-items: center; gap: 6px; }
+    .processed-on-toggle { display: inline-flex; align-items: center; cursor: pointer; }
+    .processed-on-toggle input { width: 14px; height: 14px; margin: 0; accent-color: #9ca3af; filter: grayscale(1); }
+    .ctrl:disabled { background: #f9fafb; border-color: #e5e7eb; color: #6b7280; cursor: not-allowed; }
+    #processed-on-input:disabled { color: transparent; -webkit-text-fill-color: transparent; }
+    #processed-on-input:enabled { color: inherit; -webkit-text-fill-color: initial; }
+    .filter-visibility-actions { display: flex; gap: 6px; margin-left: auto; }
+    .filter-visibility-actions .filter-toggle { padding: 4px 8px; font-size: 11px; }
     .filter-control .num-filter { display: flex; align-items: center; }
     .filter-control .num-filter select { width: 38px; height: 30px; padding: 0 4px; text-align: center; border: 1px solid #d0d5dd; border-right: none; border-radius: 6px 0 0 6px; box-sizing: border-box; background: #fff; }
     .filter-control .num-filter input { width: 64px; height: 30px; padding: 0 6px; border: 1px solid #d0d5dd; border-radius: 0 6px 6px 0; box-sizing: border-box; }
@@ -636,7 +657,7 @@
         </div>
         <div class="editor-panel"><div class="editor-panel-head"><span>Record Meta</span><button class="btn-confirm" onclick="assessConfirm(1)">&#10003; Confirm</button></div><div class="editor-panel-body">
           <div class="req-tags"><span style="font-size:11px;color:#6b7280;">Required</span><span class="tag ok">✓ Form</span><span class="tag ok">✓ DVM/User</span><span class="tag ok">✓ Dept</span><span class="tag visit" style="font-weight:500;">exam-card-69001234</span></div>
-          <div class="form-group"><label>Processed on</label><input class="ctrl" type="datetime-local" value="2026-07-09T10:57" onkeydown="return false;"></div>
+          <div class="form-group"><div class="processed-on-label"><span>Processed on</span><label class="processed-on-toggle" title="เปิดใช้งาน Processed on"><input type="checkbox" onchange="toggleProcessedOn(this.checked)"></label></div><input class="ctrl" id="processed-on-input" type="datetime-local" disabled onkeydown="return false;"></div>
           <div class="form-group"><label>DVM/User</label><div class="meta-readonly">นิพนธ์ วงศ์ประเสริฐ</div></div>
           <div class="form-group"><label>Department</label><div class="meta-readonly">คลินิกพิเศษ โรคหัวใจ (นอกเวลา)</div></div>
           <hr class="meta-divider"><div class="meta-section-label">Form Note</div>
@@ -669,6 +690,10 @@
               <button class="filter-toggle" type="button" onclick="toggleFilterPanel('data-filter-panel', this)">แสดงตัวกรอง</button>
               <button class="filter-toggle" type="button" onclick="filterTable()">ค้นหา</button>
               <button class="filter-toggle" type="button" onclick="clearFilter()">ล้างตัวกรอง</button>
+              <div class="filter-visibility-actions">
+                <button class="filter-toggle" type="button" onclick="setAllColumnVisibility(true)">เลือกทั้งหมด</button>
+                <button class="filter-toggle" type="button" onclick="setAllColumnVisibility(false)">ยกเลิกทั้งหมด</button>
+              </div>
             </div>
             <div class="filter-panel compact" id="data-filter-panel"></div>
           </div>
@@ -816,7 +841,7 @@
       <table class="ref-table">
         <thead><tr><th>#</th><th>ฟิลด์ข้อมูล</th><th>ประเภท</th><th>Field Hint / Placeholder / Options</th><th>มาตรฐานสากลที่ใช้อ้างอิง</th></tr></thead>
         <tbody>
-          <tr><td>48</td><td>Processed on</td><td><span class="ftype">datetime-local</span></td><td class="fopts">value: 2026-07-09T10:57</td><td class="fref">Clinical System Standard Specification</td></tr>
+          <tr><td>48</td><td>Processed on</td><td><span class="ftype">datetime-local + checkbox</span></td><td class="fopts">เริ่มว่างและ inactive; check เพื่อเปิดใช้งาน calendar input</td><td class="fref">Clinical System Standard Specification</td></tr>
           <tr><td>49</td><td>DVM/User</td><td><span class="ftype">readonly</span></td><td class="fopts">readonly text</td><td class="fref">Clinical System Architecture Standard</td></tr>
           <tr><td>50</td><td>Department</td><td><span class="ftype">readonly</span></td><td class="fopts">readonly text</td><td class="fref">Clinical System Architecture Standard</td></tr>
           <tr><td>51</td><td>Form Note</td><td><span class="ftype">textarea</span></td><td class="fopts">บันทึกหมายเหตุเพิ่มเติมเกี่ยวกับการตรวจร่างกาย...</td><td class="fref">Clinical Practice Documentation Standards</td></tr>
@@ -911,6 +936,7 @@
 
     <div class="logic-section"><div class="logic-section-title">9. Field Hint, Placeholder &amp; Styling</div><ul class="logic-list">
       <li>ค่าช่วงอ้างอิงของ numeric fields แสดงเป็น <b>field hint ใต้ช่องกรอก</b> ไม่ใช่ค่าที่กรอกล่วงหน้า</li>
+      <li><b>Processed on</b> เริ่มต้นว่างและ inactive; checkbox หลัง title ใช้เปิดใช้งาน calendar input</li>
       <li>ช่อง text ที่ต้องการตัวอย่างใช้ placeholder เช่น Bleeding Site, Critical Events Note และ Mobility Note</li>
       <li><code>&lt;select&gt;</code> ใช้ <code>กรุณาเลือกข้อมูล</code> เป็นค่าเริ่มต้น</li>
       <li>Form Note textarea มี placeholder ตัวอย่างประโยคยาว</li>
@@ -920,6 +946,9 @@
 
     <div class="logic-section"><div class="logic-section-title">10. Processed on</div><ul class="logic-list">
       <li><b>Tab 1</b> (editable): <code>&lt;input type="datetime-local"&gt;</code> ป้องกันแก้ไขด้วยตัวอักษรโดยตรง (<code>onkeydown="return false"</code>) เลือกจากปฏิทินเท่านั้น</li>
+      <li>เริ่มต้น Processed on เป็นค่าว่างจริง ไม่มี <code>dd/mm/yyyy</code> หรือ <code>--:--</code> และ inactive</li>
+      <li>checkbox หลัง title ใช้ enable/disable input; เมื่อ uncheck จะล้างค่า datetime</li>
+      <li>สี inactive ใช้ชุดเดียวกับ DVM/User: <code>background #f9fafb</code>, <code>border #e5e7eb</code>, <code>color #6b7280</code></li>
     </ul></div>
 
     <div class="logic-section"><div class="logic-section-title">11. Confirm &amp; Toast</div><ul class="logic-list">
@@ -984,7 +1013,7 @@
       </ul>
     </div>
 
-    <div class="logic-section"><div class="logic-section-title">14. Filter Design &amp; Behavior</div>
+    <div class="logic-section"><div class="logic-section-title">14. Filter Design &amp; Column Visibility</div>
       <div class="logic-sub-group">Tab 5 — ตารางข้อมูลพื้นฐาน</div>
       <ul class="logic-list">
         <li>ใช้ <b>Flat Filter</b> ไม่แยก topic เพื่อให้ค้นหา field สำคัญได้เร็วและไม่รก</li>
@@ -996,6 +1025,12 @@
         <li>แสดง filter ครบทุกคอลัมน์ที่มี filter configuration</li>
         <li>แยก topic: Date, Vital Signs, Monitoring, Perfusion, Critical Events, Respiratory, Neuro/LOC, Mobility, Pain และ Meta</li>
         <li>แต่ละ field มีกรอบย่อยและสีตาม topic</li>
+        <li>หัวข้อแต่ละ topic เรียงเป็น 3 บรรทัด: ชื่อ topic, <code>Preview [checkbox]</code> และ <code>(เลือกทั้งหมด)</code></li>
+        <li>มี checkbox มุมขวาของชื่อแต่ละ field เพื่อแสดง/ซ่อน table column ที่สัมพันธ์กัน</li>
+        <li>มี checkbox ที่หัวข้อ topic เพื่อเลือกหรือยกเลิกทุก field ใน topic; ถ้าเลือกบาง field จะแสดง indeterminate state</li>
+        <li>ค่าเริ่มต้นของทุก field และทุก topic คือ checked</li>
+        <li>มีปุ่ม <b>เลือกทั้งหมด</b> และ <b>ยกเลิกทั้งหมด</b> สำหรับจัดการ column visibility</li>
+        <li>visibility checkbox มีพื้นหลังสีขาว และใช้สีเทาอ่อนเดียวกันสำหรับ Preview, (เลือกทั้งหมด), เส้นขอบ, เครื่องหมายถูก และ indeterminate mark</li>
       </ul>
     </div>
 
@@ -1416,6 +1451,7 @@
         hasValue = multiPanel.querySelectorAll('input:checked').length > 0;
       } else {
         control.querySelectorAll('input, select').forEach(function(input) {
+          if (input.classList.contains('filter-column-toggle')) return;
           if (input.type === 'checkbox') hasValue = hasValue || input.checked;
           else if (input.value.trim() !== '') hasValue = true;
         });
@@ -1488,6 +1524,60 @@
       painScore:{type:'multi'}, painIndicators:{type:'multi-crit'},
       dvm:{type:'text'}, dept:{type:'text'}, cardId:{type:'text'}
     };
+
+    var columnVisibility = {};
+    for (var visibilityIndex = 0; visibilityIndex < tableColumns.length; visibilityIndex++) {
+      columnVisibility[tableColumns[visibilityIndex].key] = true;
+    }
+
+    function getVisibleColumns(columns) {
+      return columns.filter(function(col) {
+        return columnVisibility[col.key] !== false;
+      });
+    }
+
+    function syncColumnVisibilityControls() {
+      var panel = document.getElementById('data-filter-panel');
+      if (!panel) return;
+      panel.querySelectorAll('.filter-column-toggle').forEach(function(input) {
+        input.checked = columnVisibility[input.dataset.column] !== false;
+      });
+      panel.querySelectorAll('.filter-topic-toggle').forEach(function(input) {
+        var topic = input.dataset.topic;
+        var topicColumns = tableColumns.filter(function(col) { return col.topic === topic; });
+        var checkedCount = topicColumns.filter(function(col) { return columnVisibility[col.key] !== false; }).length;
+        input.checked = checkedCount === topicColumns.length;
+        input.indeterminate = checkedCount > 0 && checkedCount < topicColumns.length;
+      });
+    }
+
+    function toggleColumnVisibility(key, checked) {
+      columnVisibility[key] = checked;
+      syncColumnVisibilityControls();
+      filterTable();
+    }
+
+    function toggleTopicVisibility(topic, checked) {
+      tableColumns.forEach(function(col) {
+        if (col.topic === topic) columnVisibility[col.key] = checked;
+      });
+      syncColumnVisibilityControls();
+      filterTable();
+    }
+
+    function setAllColumnVisibility(checked) {
+      tableColumns.forEach(function(col) { columnVisibility[col.key] = checked; });
+      syncColumnVisibilityControls();
+      filterTable();
+    }
+
+    function toggleProcessedOn(enabled) {
+      var input = document.getElementById('processed-on-input');
+      if (!input) return;
+      input.disabled = !enabled;
+      if (!enabled) input.value = '';
+    }
+
     function toggleFilterPanel(panelId, btn) {
       var panel = document.getElementById(panelId);
       if (!panel || !btn) return;
@@ -1534,7 +1624,8 @@
           if (!topicsUsed[topics[t]]) continue;
           var g = document.createElement('div');
           g.className = 'filter-group filter-group-' + topics[t];
-          g.innerHTML = '<div class="filter-group-title" style="color:' + topicColors[topics[t]] + ';">' + topicNames[topics[t]] + '</div><div class="filter-grid" id="' + idPrefix + 'filter-grid-' + topics[t] + '"></div>';
+          var topicToggle = idPrefix === 'f-' ? '<div class="filter-topic-preview">Preview <input class="filter-topic-toggle" type="checkbox" data-topic="' + topics[t] + '" checked aria-label="แสดงคอลัมน์ทั้งหมดของ ' + topicNames[topics[t]] + '" onchange="toggleTopicVisibility(\'' + topics[t] + '\', this.checked)"></div><button class="filter-topic-select-all" type="button" onclick="toggleTopicVisibility(\'' + topics[t] + '\', true)">(เลือกทั้งหมด)</button>' : '';
+          g.innerHTML = '<div class="filter-group-title" style="color:' + topicColors[topics[t]] + ';">' + topicNames[topics[t]] + topicToggle + '</div><div class="filter-grid" id="' + idPrefix + 'filter-grid-' + topics[t] + '"></div>';
           panel.appendChild(g);
         }
       }
@@ -1549,14 +1640,16 @@
         var label = col.label.replace(/<br>/g, ' ').replace(/&amp;/g, '&');
         var wrap = document.createElement('div');
         wrap.className = 'filter-control filter-topic-' + topic;
+        var visibilityToggle = idPrefix === 'f-' ? '<input class="filter-column-toggle" type="checkbox" data-column="' + col.key + '" checked aria-label="แสดงคอลัมน์ ' + label + '" onchange="toggleColumnVisibility(\'' + col.key + '\', this.checked)">' : '';
+        var titleHtml = '<div class="filter-control-title"><span>' + label + '</span>' + visibilityToggle + '</div>';
         if (cfg.type === 'num') {
-          wrap.innerHTML = '<label>' + label + '</label><div class="num-filter"><select id="' + idPrefix + col.key + '-op"><option value="">=</option><option value="gt">&gt;</option><option value="lt">&lt;</option></select><input type="number" id="' + idPrefix + col.key + '-val"></div>';
+          wrap.innerHTML = titleHtml + '<div class="num-filter"><select id="' + idPrefix + col.key + '-op"><option value="">=</option><option value="gt">&gt;</option><option value="lt">&lt;</option></select><input type="number" id="' + idPrefix + col.key + '-val"></div>';
         } else if (cfg.type === 'text') {
           var todayBtn = (col.key === 'proc' ? '<button type="button" class="btn-today" data-key="' + col.key + '" data-prefix="' + idPrefix + '" onclick="setToday(this)">Today</button>' : '');
-          wrap.innerHTML = '<label>' + label + '</label><div class="text-filter"><input type="text" id="' + idPrefix + col.key + '-text" placeholder="ค้นหา">' + todayBtn + '</div>';
+          wrap.innerHTML = titleHtml + '<div class="text-filter"><input type="text" id="' + idPrefix + col.key + '-text" placeholder="ค้นหา">' + todayBtn + '</div>';
         } else if (cfg.type === 'multi' || cfg.type === 'multi-crit') {
           var opts = filterOptions[col.key] || [];
-          var html = '<label>' + label + '</label><div class="multi-check"><span class="chip-container" id="' + idPrefix + 'chips-' + col.key + '"></span><button class="multi-check-btn" type="button" onclick="toggleMultiCheck(\'' + col.key + '\', \'' + idPrefix + '\')">ยังไม่เลือก ▾</button><div class="multi-check-panel" id="' + idPrefix + 'mc-' + col.key + '">';
+          var html = titleHtml + '<div class="multi-check"><span class="chip-container" id="' + idPrefix + 'chips-' + col.key + '"></span><button class="multi-check-btn" type="button" onclick="toggleMultiCheck(\'' + col.key + '\', \'' + idPrefix + '\')">ยังไม่เลือก ▾</button><div class="multi-check-panel" id="' + idPrefix + 'mc-' + col.key + '">';
           for (var o = 0; o < opts.length; o++) {
             html += '<label><input type="checkbox" value="' + opts[o] + '" onchange="updateChips(\'' + col.key + '\', \'' + idPrefix + '\')"> ' + opts[o] + '</label>';
           }
@@ -1573,6 +1666,7 @@
       if (!panel) return;
       var inputs = panel.querySelectorAll('input');
       for (var i = 0; i < inputs.length; i++) {
+        if (inputs[i].classList.contains('filter-column-toggle') || inputs[i].classList.contains('filter-topic-toggle')) continue;
         if (inputs[i].type === 'checkbox') inputs[i].checked = false;
         else inputs[i].value = '';
       }
@@ -1581,7 +1675,8 @@
       panel.querySelectorAll('.multi-check-btn').forEach(function(b) { b.classList.remove('active'); b.textContent = 'ยังไม่เลือก ▾'; });
       panel.querySelectorAll('.chip-container').forEach(function(c) { c.innerHTML = ''; });
       panel.querySelectorAll('.filter-control.has-value').forEach(function(c) { c.classList.remove('has-value'); });
-      renderTable(tableData, columns, tbodyId, headId);
+      if (idPrefix === 'f-') syncColumnVisibilityControls();
+      renderTable(tableData, idPrefix === 'f-' ? getVisibleColumns(columns) : columns, tbodyId, headId);
     }
     function clearFilter() { clearFilterFor('data-filter-panel', 'f-', 'data-table-body', 'data-table-head', tableColumns); }
     function clearBasicFilter() { clearFilterFor('basic-filter-panel', 'bf-', 'basic-table-body', 'basic-table-head', basicColumns); }
@@ -1610,14 +1705,15 @@
         }
         return true;
       });
-      renderTable(filtered, columns, tbodyId, headId);
+      renderTable(filtered, idPrefix === 'f-' ? getVisibleColumns(columns) : columns, tbodyId, headId);
     }
     function filterTable() { filterTableFor(tableColumns, 'f-', 'data-table-body', 'data-table-head'); }
     function filterBasicTable() { filterTableFor(basicColumns, 'bf-', 'basic-table-body', 'basic-table-head'); }
 
     renderFilters('data-filter-panel', tableColumns, 'f-');
     renderFilters('basic-filter-panel', basicColumns, 'bf-');
-    renderTable(tableData, tableColumns, 'data-table-body', 'data-table-head');
+    syncColumnVisibilityControls();
+    renderTable(tableData, getVisibleColumns(tableColumns), 'data-table-body', 'data-table-head');
     renderTable(tableData, basicColumns, 'basic-table-body', 'basic-table-head');
   </script>
 </body>

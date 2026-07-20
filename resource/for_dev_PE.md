@@ -253,7 +253,7 @@ painIndicators: [
 
 ### Record Meta
 
-- Processed On
+- Processed On — เริ่มว่างและ inactive; checkbox หลัง title ใช้เปิด calendar input
 - DVM/User
 - Department
 - Form Note
@@ -305,6 +305,14 @@ painIndicators: [
 - แต่ละ topic เป็น row/group แยกชัดเจน
 - แต่ละ field มี sub-card และสีตาม topic
 - Filter panel มี vertical และ horizontal scroll ภายใน
+- เพิ่ม checkbox มุมขวาของชื่อแต่ละ filter field เพื่อควบคุมการแสดง/ซ่อน table column ที่สัมพันธ์กัน
+- Topic header มี 3 บรรทัด:
+  1. ชื่อ topic
+  2. `Preview [checkbox]`
+  3. `(เลือกทั้งหมด)`
+- Topic checkbox รองรับ checked, unchecked และ indeterminate
+- ค่าเริ่มต้นทุก field และทุก topic คือ checked
+- มีปุ่ม `เลือกทั้งหมด` และ `ยกเลิกทั้งหมด` สำหรับ All Data Table
 
 ### Table display
 
@@ -329,7 +337,9 @@ painIndicators: [
 
 - ใช้ contains search
 - ไม่กรอก = ไม่กรอง
-- Processed On มีปุ่ม `Today`
+- Processed On มีปุ่ม `Today` ใน filter ของตาราง และใน Form Editor เริ่มต้นเป็นค่าว่าง/inactive; checkbox หลัง title ใช้เปิดใช้งาน calendar input
+- เมื่อ uncheck Processed On ให้ล้างค่า datetime และ disable input
+- ค่า inactive ต้องไม่แสดง placeholder `dd/mm/yyyy` หรือ `--:--`
 
 #### Multi-check
 
@@ -472,8 +482,16 @@ styles/
   --radius-lg: 12px;
   --control-height: 40px;
   --filter-control-height: 30px;
+  --column-toggle-gray: #b8bec8;
 }
 ```
+
+Column visibility checkbox styling:
+
+- พื้นหลัง checkbox เป็นสีขาว
+- เส้นขอบ checkbox, เครื่องหมายถูก และ indeterminate mark ใช้ `var(--column-toggle-gray)` เดียวกัน
+- ข้อความ `Preview` และ `(เลือกทั้งหมด)` ใช้สีเดียวกับ checkbox
+- ไม่ใช้สี topic หรือสี primary กับ visibility checkbox
 
 ### Topic Field Styles
 
