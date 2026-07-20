@@ -398,6 +398,30 @@
 
     .hidden { display: none; }
 
+    .public-resource-link {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 10;
+    }
+
+    .public-resource-link a {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 12px;
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      background: var(--bg-card);
+      color: var(--text-muted);
+      font-size: 12px;
+      text-decoration: none;
+    }
+
+    .public-resource-link a:hover {
+      color: var(--text);
+      border-color: var(--accent);
+    }
+
     .btn-block { width: 100%; }
     .backup-section { margin-top: 16px; }
     .message { position: relative; }
@@ -415,6 +439,10 @@
   </style>
 </head>
 <body>
+  <div class="public-resource-link">
+    <a href="resource/for_dev_PE.md" target="_blank" rel="noopener">For Dev (Vue) — Vital &amp; PE</a>
+  </div>
+
   <div class="app hidden">
     <aside class="sidebar">
       <div class="sidebar-header">Explorer</div>
