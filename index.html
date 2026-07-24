@@ -75,6 +75,31 @@
       margin-bottom: 8px;
     }
 
+    .folder-download {
+      margin-left: 4px;
+      padding: 1px 7px;
+      border: 1px solid var(--border-light);
+      border-radius: 999px;
+      background: var(--bg-elevated);
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      line-height: 1.4;
+    }
+
+    .folder-download:hover {
+      color: var(--text);
+      border-color: var(--accent);
+      background: rgba(124, 58, 237, 0.15);
+    }
+
+    .folder-download:disabled {
+      opacity: 0.55;
+      cursor: wait;
+    }
+
     .folder-icon {
       width: 0;
       height: 0;
@@ -478,6 +503,16 @@
               <a class="btn btn-ghost" href="resource/for_dev_PE.md" target="_blank" rel="noopener">For Dev (Vue)</a>
             </div>
           </div>
+
+          <div class="featured-mock">
+            <div class="featured-mock-copy">
+              <div class="featured-mock-title">Objective Module Mock</div>
+              <div class="featured-mock-desc">สรุป visit ตาม Exam Card — Exam Card, Vital Sign &amp; PE, TX/LAB/RX, Assessment พร้อมตารางข้อมูลและ View Logic/Rule</div>
+            </div>
+            <div class="featured-mock-actions">
+              <a class="btn" href="NP/objective/objective.html" target="_blank" rel="noopener">เปิด Mock</a>
+            </div>
+          </div>
           <div class="section-title">Recent Sessions</div>
           <div class="sessions" id="sessions"></div>
         </div>
@@ -508,11 +543,13 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="NP/list.js"></script>
   <script src="NP/files.js"></script>
   <script>
     const CORRECT_PIN = '53027918';
     const STORAGE_KEY = 'kahis_notes';
+    const DOWNLOADABLE_FOLDERS = new Set(['assessment', 'vital_pe', 'subjective', 'objective']);
 
     const noteInput = document.getElementById('noteInput');
     const saveBtn = document.getElementById('saveBtn');
@@ -601,6 +638,73 @@
       renderSessions();
     }
 
+    function collectFolderFiles(node, out) {
+      out = out || [];
+      if (!node) return out;
+      if (node.type === 'file') {
+        if (node.name && !node.name.startsWith('.') && node.name !== '.DS_Store') {
+          out.push(node);
+        }
+        return out;
+      }
+      (node.children || []).forEach(child => collectFolderFiles(child, out));
+      return out;
+    }
+
+    async function downloadFolderZip(folderNode, button) {
+      if (typeof JSZip === 'undefined') {
+        alert('JSZip ยังโหลดไม่สำเร็จ กรุณารีเฟรชหน้าแล้วลองใหม่');
+        return;
+      }
+      const files = collectFolderFiles(folderNode);
+      if (!files.length) {
+        alert('ไม่พบไฟล์ในโฟลเดอร์นี้');
+        return;
+      }
+      const prev = button.textContent;
+      button.disabled = true;
+      button.textContent = '...';
+      try {
+        const zip = new JSZip();
+        const folder = zip.folder(folderNode.name) || zip;
+        await Promise.all(files.map(async (fileNode) => {
+          const res = await fetch(fileNode.path);
+          if (!res.ok) throw new Error('โหลดไม่ได้: ' + fileNode.path);
+          const buf = await res.arrayBuffer();
+          folder.file(fileNode.name, buf);
+        }));
+        const blob = await zip.generateAsync({ type: 'blob' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = folderNode.name + '.zip';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        alert('Download ไม่สำเร็จ: ' + (err && err.message ? err.message : err));
+      } finally {
+        button.disabled = false;
+        button.textContent = prev;
+      }
+    }
+
+    function appendFolderDownload(nameEl, folderNode) {
+      if (!DOWNLOADABLE_FOLDERS.has(folderNode.name)) return;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'folder-download';
+      btn.textContent = 'zip';
+      btn.title = 'Download ' + folderNode.name + '.zip';
+      btn.addEventListener('click', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        downloadFolderZip(folderNode, btn);
+      });
+      nameEl.appendChild(btn);
+    }
+
     function renderExplorer(tree, container) {
       container.innerHTML = '';
       if (!tree || !tree.length) {
@@ -619,6 +723,7 @@
           text.textContent = node.name;
           name.appendChild(icon);
           name.appendChild(text);
+          appendFolderDownload(name, node);
           folder.appendChild(name);
           const ul = document.createElement('ul');
           ul.className = 'file-list';
@@ -645,6 +750,7 @@
           text.textContent = node.name;
           name.appendChild(icon);
           name.appendChild(text);
+          appendFolderDownload(name, node);
           folder.appendChild(name);
           const ul = document.createElement('ul');
           ul.className = 'file-list';
