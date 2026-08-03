@@ -14,6 +14,12 @@ const filesTree = [
             "type": "file",
             "path": "NP/assessment/assessment_editor.html",
             "lastUpdate": "2026-07-24T13:45:00.000000"
+          },
+          {
+            "name": "ref_assessment.md",
+            "type": "file",
+            "path": "NP/assessment/ref_assessment.md",
+            "lastUpdate": "2026-08-03T10:47:00.000000"
           }
         ]
       },
