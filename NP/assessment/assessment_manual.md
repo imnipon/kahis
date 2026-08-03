@@ -25,7 +25,7 @@
 | :--- | :--- | :--- | :--- |
 | **ประเภทปัญหา (Problem Type)** | ประเภทปัญหาทางคลินิก | • การวินิจฉัยเบื้องต้น (*Working Diagnosis*)<br>• อาการและอาการแสดง (*Clinical Sign*)<br>• การวินิจฉัยแยกโรค (*Differential Diagnosis*)<br>• สงสัยเพื่อพิสูจน์ขจัด (*Rule Out*) | `Clinical Condition Category`<br>• Working diagnosis (`148006`)<br>• Clinical sign (`60955000`)<br>• Differential diagnosis (`82298002`)<br>• Rule out (`415684004`) |
 | **ลักษณะการดำเนินโรคและการรับบริการ (Course & Encounter)** | สภาพการดำเนินโรค และประเภทการมารับบริการ | • `[ ]` เฉียบพลัน (*Acute*)<br>• `[ ]` เรื้อรัง (*Chronic*)<br>• `[ ]` กลับเป็นซ้ำ (*Recurrent*)<br>• `[ ]` ติดตามอาการ (*Follow-up*) | `Course (qualifier value)` & `Encounter`<br>• Acute course (`373933003`)<br>• Chronic course (`90734009`)<br>• Recurrent course (`255227004`)<br>• Follow-up visit (`390906007`) |
-| **สถานะ (Status)** | สถานะปัจจุบันของปัญหาทางคลินิก | • ยังเป็นอยู่/กำลังรักษา (*Active*)<br>• อยู่ระหว่างตรวจสืบค้น (*Under Investigation / Pending*)<br>• หายแล้ว/สงบ (*Resolved*) | `Clinical Status (qualifier value)`<br>• Active (`55561003`)<br>• Pending/Investigation (`7087005`)<br>• Resolved (`410513005`) |
+| **สถานะ (Status)** | สถานะปัจจุบันของปัญหาทางคลินิก | • กำลังรักษา (*Active*)<br>• อยู่ระหว่างการตรวจ (*Pending*)<br>• หายแล้ว/สงบ (*Resolved / Inactive*) | `Clinical Status`<br>• Active (`55561003`)<br>• Pending (`7087005`)<br>• Resolved (`410513005`) |
 | **ความรุนแรง (Severity)** | ระดับความรุนแรงของโรค | • เล็กน้อย (*Mild*)<br>• ปานกลาง (*Moderate*)<br>• รุนแรง (*Severe*)<br>• วิกฤต/อันตรายถึงชีวิต (*Life-threatening*) | `Severity (qualifier value)`<br>• Mild (`255604002`)<br>• Moderate (`6736007`)<br>• Severe (`24484000`)<br>• Life threatening (`442452003`) |
 | **พยากรณ์โรค (Prognosis)** | การคาดการณ์แนวโน้มการรักษา | • พยากรณ์โรคดี (*Good Prognosis*)<br>• ต้องเฝ้าระวัง (*Guarded Prognosis*)<br>• พยากรณ์โรคไม่ดี (*Poor Prognosis*)<br>• วิกฤต/ทรุดหนัก (*Grave Prognosis*) | `Prognosis (qualifier value)`<br>• Good prognosis (`170969009`)<br>• Guarded prognosis (`170971004`)<br>• Poor prognosis (`170970005`)<br>• Grave prognosis (`170972006`) |
 | **ระดับความมั่นใจ (Confidence)** | ความแน่นอนของการวินิจฉัย | • ยืนยันชัดเจน (*Confirmed / High Certainty*)<br>• น่าจะใช่/มีหลักฐานบางส่วน (*Probable / Medium*)<br>• สงสัย/ยังไม่ยืนยัน (*Possible / Low*) | `Verification Status`<br>• Confirmed (`410605003`)<br>• Probable (`2931005`)<br>• Possible (`415684004`) |
@@ -106,7 +106,7 @@
 * **Concept ที่เลือก:** `Feline Infectious Peritonitis`
 * **ประเภทปัญหา (Problem Type):** `สงสัยเพื่อพิสูจน์ขจัด (Rule Out)`
 * **ลักษณะการดำเนินโรค (Course & Encounter):** `[x] เฉียบพลัน (Acute)`
-* **สถานะ (Status):** `อยู่ระหว่างตรวจสืบค้น (Under Investigation / Pending)`
+* **สถานะ (Status):** `อยู่ระหว่างการตรวจ (Pending)`
 * **ความรุนแรง (Severity):** `วิกฤต/อันตรายถึงชีวิต (Life-threatening)`
 * **พยากรณ์โรค (Prognosis):** `พยากรณ์โรคไม่ดี (Poor Prognosis)`
 * **ระดับความมั่นใจ (Confidence):** `สงสัย/ยังไม่ยืนยัน (Possible / Low)`
