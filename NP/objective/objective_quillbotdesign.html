@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KAHIS — Objective Daily View</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --qb-green: #499557;
+  --qb-green-dark: #1B5E20;
+  --qb-green-soft: #E8F5E9;
+  --qb-link: #2E7D32;
+  --qb-bg: #F0F2F5;
+  --qb-surface: #FFFFFF;
+  --qb-text: #252525;
+  --qb-muted: #676D75;
+  --qb-border: #E5E7EB;
+  --qb-shadow: 0 4px 24px rgba(0,0,0,.08);
+  --left-w: 148px;
+  --strip-w: 58px;
+  --drawer-w: min(380px, 36vw);
+  --font: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: var(--font);
+  background: var(--qb-bg);
+  color: var(--qb-text);
+  min-height: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ===== Top bar ===== */
+.topbar {
+  height: 56px; background: transparent; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 20px 0; gap: 12px; z-index: 40;
+}
+.brand { display: flex; align-items: center; gap: 14px; min-width: 0; flex-wrap: wrap; }
+.brand-logo,
+.brand-sub {
+  font-weight: 700; font-size: 22px; letter-spacing: -0.02em; line-height: 1.1;
+}
+.brand-logo { color: var(--qb-green); }
+.brand-sub { color: var(--qb-text); }
+.top-actions { display: flex; align-items: center; gap: 12px; position: relative; }
+
+/* Filters = solid green pill (swapped) */
+.filter-trigger {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--qb-green); color: #fff; border: none;
+  border-radius: 999px; padding: 8px 16px; font: inherit; font-size: 13px;
+  font-weight: 600; cursor: pointer; white-space: nowrap; position: relative;
+}
+.filter-trigger:hover { background: var(--qb-green-dark); }
+.filter-trigger .chev { font-size: 10px; opacity: .9; }
+
+/* View Logic = text link style (swapped) */
+.btn-logic {
+  background: none; border: none; color: var(--qb-link); font: inherit;
+  font-size: 14px; font-weight: 500; cursor: pointer; display: inline-flex;
+  align-items: center; gap: 4px; padding: 6px 8px; border-radius: 8px;
+}
+.btn-logic:hover { background: var(--qb-green-soft); }
+
+.filter-pop {
+  display: none; position: absolute; top: calc(100% + 8px); left: 0;
+  width: 360px; background: #fff; border: 1px solid var(--qb-border);
+  border-radius: 12px; box-shadow: var(--qb-shadow); padding: 14px; z-index: 50;
+  text-align: left;
+}
+.filter-pop.show { display: block; }
+.filter-section {
+  padding: 10px 0; border-bottom: 1px solid #f0f2f4;
+}
+.filter-section:first-child { padding-top: 2px; }
+.filter-section:last-child { border-bottom: none; padding-bottom: 2px; }
+.filter-section label {
+  display: block; font-size: 12px; font-weight: 700; color: var(--qb-text); margin: 0 0 8px;
+}
+.filter-section .hint {
+  font-size: 11px; font-weight: 500; color: var(--qb-muted); margin: -4px 0 8px;
+}
+.filter-row {
+  display: flex; align-items: stretch; gap: 6px;
+}
+.filter-row select, .filter-row input[type="date"] {
+  flex: 1; min-width: 0; padding: 8px 10px; border: 1px solid var(--qb-border);
+  border-radius: 8px; font: inherit; font-size: 13px; background: #fff; color: var(--qb-text);
+}
+.btn-cal {
+  flex-shrink: 0; width: 38px; border: 1px solid var(--qb-border); border-radius: 8px;
+  background: #fff; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+  color: var(--qb-muted); padding: 0;
+}
+.btn-cal:hover { background: #f3f4f6; color: var(--qb-text); border-color: #c5cad3; }
+.btn-cal svg { display: block; }
+.btn-search-sec {
+  flex-shrink: 0; background: var(--qb-green); color: #fff; border: none; border-radius: 8px;
+  padding: 8px 12px; font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap;
+}
+.btn-search-sec:hover { background: var(--qb-green-dark); }
+.filter-section.active-mode {
+  background: var(--qb-green-soft); margin: 0 -10px; padding-left: 10px; padding-right: 10px;
+  border-radius: 10px; border-bottom-color: transparent;
+}
+.filter-hidden-date {
+  position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0; border: 0;
+}
+.filter-trigger.has-mode::after {
+  content: attr(data-mode-label);
+  display: inline-block; margin-left: 6px; font-size: 11px; font-weight: 600;
+  background: rgba(255,255,255,.22); padding: 2px 8px; border-radius: 999px;
+}
+
+/* ===== Shell: left on page bg + white card ===== */
+.shell {
+  flex: 1; display: flex; min-height: 0; overflow: hidden;
+  padding: 12px 16px 16px; gap: 14px;
+}
+
+/* Left Visit Tabs — scroll แยก (Visit Tabs Panel) */
+.left-nav {
+  width: var(--left-w); background: transparent; border: none;
+  display: flex; flex-direction: column; align-items: stretch; padding: 4px 2px 24px;
+  gap: 8px; flex-shrink: 0;
+  overflow-x: hidden; overflow-y: auto;
+  min-height: 0; height: 100%;
+  overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+}
+.nav-new {
+  width: 100%; min-height: 52px; border-radius: 12px; border: none;
+  background: var(--qb-green-soft); color: var(--qb-green-dark);
+  cursor: pointer; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 1px; margin-bottom: 4px; font: inherit;
+  line-height: 1.2; padding: 8px 6px;
+}
+.nav-new:hover { background: #d4edda; }
+.nav-new .go-l1 { font-size: 13px; font-weight: 700; }
+.nav-new .go-l2 { font-size: 11px; font-weight: 500; opacity: .85; }
+.visit-tab {
+  width: 100%; border: 1px solid transparent; background: rgba(255,255,255,.55);
+  cursor: pointer; padding: 10px 8px; border-radius: 12px; text-align: left;
+  color: var(--qb-muted); font: inherit; position: relative;
+}
+.visit-tab:hover { background: #fff; border-color: #e8eaed; }
+.visit-tab.active {
+  background: #fff; color: var(--qb-green-dark);
+  border-color: #c8e6c9; box-shadow: 0 1px 4px rgba(0,0,0,.04);
+}
+.visit-tab .vt-name {
+  font-size: 12px; font-weight: 700; color: var(--qb-text); line-height: 1.3;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.visit-tab.active .vt-name { color: var(--qb-green-dark); }
+.visit-tab .vt-dept {
+  margin-top: 3px; font-size: 10px; line-height: 1.35; color: var(--qb-muted);
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden; word-break: break-word;
+}
+.visit-tab.active .vt-dept { color: #3d6b45; }
+.visit-tab .vt-tip {
+  display: none; position: fixed; z-index: 200;
+  min-width: 220px; max-width: 300px; padding: 10px 12px;
+  background: #1f2937; color: #fff; border-radius: 10px; text-align: left;
+  box-shadow: 0 8px 24px rgba(0,0,0,.18); pointer-events: none;
+}
+.visit-tab .vt-tip.show { display: block; }
+.visit-tab .vt-tip .tip-name { font-size: 12px; font-weight: 700; margin-bottom: 4px; }
+.visit-tab .vt-tip .tip-dept { font-size: 11px; line-height: 1.45; opacity: .92; white-space: normal; }
+
+/* ONE white card: content + sticky strip + nested drawer */
+.main-card {
+  flex: 1; min-width: 0; background: #fff; border-radius: 16px;
+  border: 1px solid var(--qb-border); display: flex; flex-direction: column;
+  overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,.06); position: relative;
+}
+.card-inner {
+  flex: 1; min-height: 0; display: flex; position: relative;
+}
+.card-main {
+  flex: 1; min-width: 0; display: flex; flex-direction: column; min-height: 0;
+  overflow: hidden; position: relative; z-index: 1;
+}
+.main-toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px; border-bottom: 1px solid var(--qb-border); flex-shrink: 0;
+  gap: 12px;
+}
+.main-toolbar h1 { font-size: 15px; font-weight: 600; }
+.main-toolbar-right { display: flex; align-items: center; gap: 10px; }
+.main-meta { font-size: 12px; color: var(--qb-muted); }
+.btn-refresh {
+  border: none; background: transparent; cursor: pointer; color: var(--qb-muted);
+  padding: 4px; display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 6px;
+}
+.btn-refresh:hover { color: var(--qb-text); background: #f3f4f6; }
+.btn-refresh svg { display: block; }
+/* Exam Card Panel — scroll แยก */
+.main-body {
+  flex: 1 1 auto; overflow-x: hidden; overflow-y: auto;
+  padding: 20px 24px 72px; min-height: 0;
+  overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+}
+.hist-topic { font-size: 14px; font-weight: 600; color: var(--qb-text); }
+.hist-line { height: 1px; background: var(--qb-border); margin: 6px 0 10px; }
+.hist-body { font-size: 14px; line-height: 1.65; color: #3d4450; margin-bottom: 8px; }
+.hist-body div { margin-bottom: 2px; }
+.hist-sub { font-weight: 600; color: var(--qb-muted); margin-top: 8px; }
+.hist-block { margin-bottom: 20px; }
+.empty-state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 220px; color: var(--qb-muted); text-align: center; gap: 8px; padding: 40px;
+}
+.empty-state .icon { font-size: 40px; opacity: .35; }
+.empty-state p { font-size: 14px; max-width: 280px; line-height: 1.5; }
+
+/* Module Icon Rail — bg ขาว, scroll แยกถ้าสูงเกิน */
+.right-rail {
+  width: var(--strip-w); flex-shrink: 0; z-index: 20;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 10px 6px 24px; gap: 6px;
+  background: #fff; border-left: 1px solid var(--qb-border);
+  overflow-x: hidden; overflow-y: auto; min-height: 0;
+  overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+}
+.strip-btn {
+  width: 46px; min-height: 42px; border-radius: 10px; border: 1px solid transparent;
+  cursor: pointer; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; position: relative; font-family: inherit;
+  padding: 6px 2px; flex-shrink: 0; background: transparent; gap: 1px;
+}
+.strip-btn .lbl {
+  font-size: 10px; font-weight: 700; line-height: 1.15; text-align: center;
+  color: #4b5563;
+}
+.strip-btn[data-mod="vpe"] .lbl { color: #6b21a8; }
+.strip-btn[data-mod="tx"] .lbl { color: #1d4ed8; }
+.strip-btn[data-mod="rx"] .lbl { color: #047857; }
+.strip-btn[data-mod="lab"] .lbl { color: #b45309; }
+.strip-btn[data-mod="path"] .lbl { color: #be185d; }
+.strip-btn[data-mod="assess"] .lbl { color: #c2410c; }
+.strip-btn.active {
+  background: #fff; box-shadow: inset 0 0 0 2px var(--qb-green);
+  border-color: transparent;
+}
+.strip-btn:hover { background: #fff; }
+.strip-sep { width: 28px; height: 1px; background: var(--qb-border); margin: 4px 0; flex-shrink: 0; }
+.strip-btn.tbl-btn {
+  min-height: 44px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px;
+}
+.strip-btn.tbl-btn .tl1 { font-size: 9px; font-weight: 700; line-height: 1.1; color: #78350f; }
+.strip-btn.tbl-btn .tl2 { font-size: 9px; font-weight: 600; line-height: 1.1; color: #a16207; }
+.strip-btn.tbl-btn:hover { background: #fef3c7; }
+.strip-tip {
+  display: none; position: absolute; right: calc(100% + 10px); top: 50%;
+  transform: translateY(-50%); background: #1f2937; color: #fff;
+  font-size: 11px; font-weight: 500; padding: 6px 10px; border-radius: 8px;
+  white-space: nowrap; pointer-events: none; z-index: 40;
+}
+.strip-btn:hover .strip-tip { display: block; }
+
+/* Module Drawer Panel (popup) — scroll แยก */
+.right-drawer {
+  position: absolute; top: 0; bottom: 0; right: var(--strip-w);
+  width: var(--drawer-w); max-width: calc(100% - var(--strip-w) - 24px);
+  z-index: 15; display: flex; flex-direction: column;
+  background: #fff; border-left: 1px solid var(--qb-border);
+  box-shadow: -6px 0 24px rgba(0,0,0,.08);
+  transform: translateX(105%); opacity: 0; pointer-events: none;
+  transition: transform .22s ease, opacity .22s ease;
+  overflow: hidden;
+}
+.right-drawer.open { transform: translateX(0); opacity: 1; pointer-events: auto; }
+.drawer-handle-desk { display: none; }
+.rp-head {
+  padding: 14px 16px 10px; border-bottom: 1px solid var(--qb-border); flex-shrink: 0;
+}
+.rp-head h2 { font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.rp-head h2 .dot {
+  width: 22px; height: 22px; border-radius: 8px; flex-shrink: 0;
+  background: linear-gradient(135deg, #a78bfa, #7c3aed);
+}
+.rp-sub { font-size: 12px; color: var(--qb-muted); margin-top: 4px; }
+.rp-body {
+  flex: 1 1 auto; overflow-x: hidden; overflow-y: auto;
+  padding: 12px 14px 72px; min-height: 0;
+  overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+}
+.rp-foot {
+  border-top: 1px solid var(--qb-border); padding: 10px 14px; flex-shrink: 0;
+  background: #f8faf8;
+}
+.rp-status {
+  font-size: 11px; color: var(--qb-muted);
+  display: flex; align-items: center; justify-content: space-between; gap: 6px;
+}
+
+.snap-card, .sel-block {
+  border: 1px solid var(--qb-border); border-radius: 10px; padding: 10px 12px;
+  margin-bottom: 14px; background: #fafbfc;
+}
+.snap-card:last-child, .sel-block:last-child { margin-bottom: 24px; }
+.snap-time { font-size: 13px; font-weight: 700; color: var(--qb-green-dark); }
+.snap-line { height: 2px; background: linear-gradient(90deg, var(--qb-green), transparent); margin: 6px 0 8px; }
+.snap-field { font-size: 12px; color: #3d4450; margin-bottom: 3px; }
+.snap-field b { color: var(--qb-muted); font-weight: 600; margin-right: 6px; }
+.sel-title { font-size: 12px; font-weight: 700; margin-bottom: 4px; }
+.sel-dline { height: 2px; background: #cbd5e1; margin: 0 0 8px; }
+.sel-name { font-size: 12px; font-weight: 600; margin-top: 8px; }
+.sel-meta { font-size: 11px; color: var(--qb-muted); margin-left: 4px; line-height: 1.4; }
+.det-title { font-size: 12px; font-weight: 700; margin: 14px 0 6px; color: var(--qb-text); }
+.det-line { height: 1px; background: var(--qb-border); margin: 6px 0; }
+.det-note { font-size: 12px; color: #3d4450; line-height: 1.5; margin-bottom: 8px; }
+.det-drug { font-size: 12px; font-weight: 600; margin-top: 8px; }
+.det-field { font-size: 11px; color: var(--qb-muted); margin-left: 4px; }
+.det-bullet { font-size: 11px; color: #3d4450; margin-left: 12px; line-height: 1.45; margin-bottom: 4px; }
+.rp-body > :last-child { margin-bottom: 28px; }
+.main-body > :last-child { margin-bottom: 28px; }
+
+.fab-dock { display: none; }
+
+/* Modals */
+.overlay {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45);
+  z-index: 1000; align-items: center; justify-content: center; padding: 16px;
+}
+.overlay.show { display: flex; }
+.modal-box {
+  background: #fff; border-radius: 14px; width: min(1400px, 96vw);
+  height: min(92vh, 900px); display: flex; flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0,0,0,.25); overflow: hidden;
+}
+.modal-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px; border-bottom: 1px solid var(--qb-border); flex-shrink: 0;
+}
+.modal-head h3 { font-size: 16px; font-weight: 600; }
+.modal-x {
+  border: 1px solid #fca5a5; background: #fff; color: #dc2626;
+  border-radius: 8px; padding: 6px 12px; cursor: pointer; font: inherit; font-size: 13px;
+}
+.modal-x:hover { background: #fef2f2; }
+.modal-body { flex: 1; overflow: auto; padding: 12px 16px 40px; }
+.logic-box { width: min(560px, 94vw); height: auto; max-height: 85vh; }
+.logic-box .modal-body { font-size: 13px; line-height: 1.55; color: #3d4450; }
+.logic-box h4 { margin: 14px 0 6px; color: var(--qb-green-dark); font-size: 14px; }
+.logic-box ul { padding-left: 18px; margin-bottom: 8px; }
+.logic-box li { margin-bottom: 4px; }
+
+.data-table-bar {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; align-items: center;
+}
+.data-table-bar input, .data-table-bar select {
+  padding: 7px 10px; border: 1px solid var(--qb-border); border-radius: 8px;
+  font: inherit; font-size: 12px; background: #fff;
+}
+.data-table-bar input { flex: 1; min-width: 180px; }
+.btn-search {
+  padding: 7px 12px; border: 1px solid #93c5fd; border-radius: 8px;
+  background: #eff6ff; color: #1d4ed8; font: inherit; font-size: 12px; cursor: pointer;
+}
+.btn-clear {
+  padding: 7px 12px; border: 1px solid var(--qb-border); border-radius: 8px;
+  background: #fff; color: var(--qb-muted); font: inherit; font-size: 12px; cursor: pointer;
+}
+.data-table-wrap { overflow: auto; border: 1px solid var(--qb-border); border-radius: 10px; }
+.data-table { width: 100%; min-width: 1100px; border-collapse: collapse; font-size: 12px; }
+.data-table thead th {
+  position: sticky; top: 0; background: #f8fafc; padding: 10px 12px;
+  text-align: left; border-bottom: 1px solid var(--qb-border); white-space: nowrap;
+  font-weight: 600; color: #475569; z-index: 1;
+}
+.data-table tbody td { padding: 9px 12px; border-bottom: 1px solid #f0f0f0; white-space: nowrap; }
+.data-table tbody tr:hover { background: #f9fafb; }
+.tbl-badge { font-size: 11px; padding: 2px 8px; border-radius: 999px; font-weight: 600; display: inline-block; margin: 1px; }
+.ptype.sign { background: #e0f2fe; color: #075985; border: 1px solid #bae6fd; }
+.ptype.dx { background: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
+.ptype.ddx { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+.ptype.ro { background: #f3e8ff; color: #6b21a8; border: 1px solid #e9d5ff; }
+.ptype.status-active { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+.ptype.status-pending { background: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+.ptype.status-resolved { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+.ptype.prog-good { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+.ptype.prog-guarded { background: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
+.ptype.prog-poor { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+.ptype.prog-grave { background: #450a0a; color: #fecaca; border: 1px solid #7f1d1d; }
+.th-vitals { background: #dbeafe !important; color: #1e40af !important; }
+.th-meta { background: #f8fafc !important; color: #334155 !important; }
+.th-date { background: #f1f5f9 !important; color: #475569 !important; }
+
+.mobile-visits { display: none; }
+
+@media (max-width: 900px) {
+  :root { --left-w: 0px; --drawer-w: 100%; }
+  .topbar { padding: 8px 12px 0; }
+  .left-nav { display: none; }
+  .shell { padding: 8px; padding-bottom: 88px; }
+  .right-rail { display: none; }
+  .main-card { border-radius: 12px; }
+  .mobile-visits {
+    display: flex; gap: 8px; overflow-x: auto; padding: 0 12px 8px;
+  }
+  .mobile-visits .chip {
+    flex-shrink: 0; border: 1px solid var(--qb-border); border-radius: 999px;
+    padding: 6px 12px; font-size: 12px; background: #fff; cursor: pointer; font: inherit;
+  }
+  .mobile-visits .chip.active {
+    background: var(--qb-green-soft); border-color: var(--qb-green);
+    color: var(--qb-green-dark); font-weight: 600;
+  }
+  .fab-dock {
+    display: flex; position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%);
+    z-index: 90; background: #fff; border: 1px solid var(--qb-border);
+    border-radius: 18px; padding: 8px 10px; gap: 6px;
+    box-shadow: 0 8px 28px rgba(0,0,0,.14); max-width: calc(100vw - 16px);
+    overflow-x: auto; align-items: flex-end;
+  }
+  .fab-dock .strip-btn { width: 46px; min-height: 46px; }
+  .fab-dock .strip-btn.tbl-btn { min-height: 50px; }
+  .fab-dock .strip-sep { align-self: center; width: 1px; height: 28px; margin: 0 2px; }
+  .fab-dock .strip-tip { display: none !important; }
+  .right-drawer {
+    position: fixed; left: 0; right: 0; bottom: 0; top: auto;
+    width: 100%; max-width: 100%; height: 92vh; max-height: 92vh;
+    border-radius: 18px 18px 0 0; border-left: none;
+    transform: translateY(105%); z-index: 100;
+    box-shadow: 0 -8px 40px rgba(0,0,0,.2);
+    transition: transform .22s ease, opacity .22s ease;
+  }
+  .right-drawer.open { transform: translateY(0); }
+  .right-drawer.dragging { transition: none; }
+  .drawer-handle-desk {
+    display: flex; align-items: center; justify-content: center;
+    width: 100%; height: 28px; margin: 0; padding: 0;
+    cursor: grab; touch-action: none; flex-shrink: 0;
+    background: transparent; border: none;
+  }
+  .drawer-handle-desk::after {
+    content: ''; display: block; width: 42px; height: 4px;
+    border-radius: 999px; background: #d1d5db;
+  }
+  .drawer-handle-desk:active { cursor: grabbing; }
+  .brand-sub { font-size: 18px; }
+  .brand-logo { font-size: 18px; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-logo">KAHIS</div>
+    <div class="brand-sub">Daily View</div>
+    <div class="brand-filter" style="position:relative">
+      <button class="filter-trigger has-mode" id="filterTrigger" type="button" data-mode-label="By Date">Filters <span class="chev">▾</span></button>
+      <div class="filter-pop" id="filterPop">
+        <div class="filter-section active-mode" id="secDate" data-mode="date">
+          <label>By Date</label>
+          <div class="hint">Default = วันนี้ · เปลี่ยนวันแล้วกด Search</div>
+          <div class="filter-row">
+            <select id="f-date-select" aria-label="เลือกวันที่"></select>
+            <button class="btn-cal" type="button" id="f-date-cal" title="เปิดปฏิทิน">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </button>
+            <input class="filter-hidden-date" type="date" id="f-date-picker" tabindex="-1" aria-hidden="true">
+            <button class="btn-search-sec" type="button" id="btnSearchDate">Search</button>
+          </div>
+        </div>
+        <div class="filter-section" id="secDvm" data-mode="dvm">
+          <label>By DVM</label>
+          <div class="hint">ดึง Exam Card ทั้งหมดของสัตวแพทย์ที่เลือก</div>
+          <div class="filter-row">
+            <select id="f-dvm" aria-label="เลือก DVM">
+              <option value="">เลือก DVM…</option>
+              <option>นิพนธ์ วงศ์ประเสริฐ</option>
+              <option>วิชัย ใจดี</option>
+              <option>ปนัดดา ศรีสุข</option>
+              <option>สมชาย พูนสุข</option>
+              <option>วราภรณ์ แสงทอง</option>
+              <option>กิตติพงศ์ อรุณ</option>
+              <option>อรทัย มณีรัตน์</option>
+              <option>ชาญชัย รุ่งเรือง</option>
+              <option>พิมพ์ใจ ศรีสุข</option>
+              <option>ธนพล แก้วมณี</option>
+              <option>นภัสสร ใจดี</option>
+            </select>
+            <button class="btn-search-sec" type="button" id="btnSearchDvm">Search</button>
+          </div>
+        </div>
+        <div class="filter-section" id="secDept" data-mode="dept">
+          <label>By Department</label>
+          <div class="hint">ดึง Exam Card ทั้งหมดของแผนกที่เลือก</div>
+          <div class="filter-row">
+            <select id="f-dept" aria-label="เลือกแผนก">
+              <option value="">เลือกแผนก…</option>
+              <option>คลินิกพิเศษ โรคหัวใจ (นอกเวลา)</option>
+              <option>อายุรกรรมทั่วไป (ในเวลา)</option>
+              <option>ภาพวินิจฉัย (นอกเวลา)</option>
+              <option>ศัลยกรรมทั่วไป (ในเวลา)</option>
+              <option>อายุรกรรมแมว (นอกเวลา)</option>
+              <option>ฉุกเฉินและวิกฤต (นอกเวลา)</option>
+              <option>ทันตกรรมสัตว์ (ในเวลา)</option>
+              <option>อายุรกรรมระบบประสาท (นอกเวลา)</option>
+              <option>ผิวหนังและภูมิแพ้ (ในเวลา)</option>
+              <option>จักษุสัตว์ (นอกเวลา)</option>
+              <option>อายุรกรรมไตและทางเดินปัสสาวะ (ในเวลา)</option>
+            </select>
+            <button class="btn-search-sec" type="button" id="btnSearchDept">Search</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="top-actions">
+    <button class="btn-logic" type="button" id="btnLogic">View Logic/Rule</button>
+  </div>
+</header>
+
+<div class="mobile-visits" id="mobileVisits"></div>
+
+<div class="shell">
+  <!-- Visit Tabs Panel -->
+  <nav class="left-nav" id="leftNav" aria-label="Visit Tabs Panel" title="Visit Tabs Panel"></nav>
+
+  <section class="main-card" id="workspace" aria-label="Main Workspace Card">
+    <div class="card-inner">
+      <!-- Exam Card Panel -->
+      <div class="card-main" aria-label="Exam Card Panel" title="Exam Card Panel">
+        <div class="main-toolbar">
+          <h1>Exam Card</h1>
+          <div class="main-toolbar-right">
+            <div class="main-meta" id="mainMeta">for 09 Jul 2026 · last update 10.57 by นิพนธ์ วงศ์ประเสริฐ</div>
+            <button class="btn-refresh" type="button" id="btnRefresh" title="Refresh">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="main-body" id="examBody"></div>
+      </div>
+
+      <!-- Module Drawer Panel (popup) -->
+      <aside class="right-drawer open" id="rightDrawer" aria-label="Module Drawer Panel" title="Module Drawer Panel">
+        <div class="drawer-handle-desk" id="drawerHandle" role="button" tabindex="0" aria-label="ลากลงเพื่อปิด Module Drawer" title="ลากลงเพื่อปิด"></div>
+        <div class="rp-head">
+          <h2><span class="dot" id="rpDot"></span><span id="rpTitle">Vital Sign &amp; PE</span></h2>
+          <div class="rp-sub" id="rpSub">Snapshots for this Exam Card</div>
+        </div>
+        <div class="rp-body" id="rpBody"></div>
+        <div class="rp-foot">
+          <div class="rp-status"><span id="rpStatus">★ Waiting for selection…</span><span>★</span></div>
+        </div>
+      </aside>
+
+      <!-- Module Icon Rail -->
+      <nav class="right-rail" id="iconStrip" aria-label="Module Icon Rail" title="Module Icon Rail">
+        <button class="strip-btn active" type="button" data-mod="vpe"><span class="lbl">VPE</span><span class="strip-tip">Vital Sign &amp; Physical Examination</span></button>
+        <button class="strip-btn" type="button" data-mod="tx"><span class="lbl">Tx</span><span class="strip-tip">Treatment (TX)</span></button>
+        <button class="strip-btn" type="button" data-mod="rx"><span class="lbl">Rx</span><span class="strip-tip">Prescription (RX)</span></button>
+        <button class="strip-btn" type="button" data-mod="lab"><span class="lbl">LAB</span><span class="strip-tip">Clinical Lab</span></button>
+        <button class="strip-btn" type="button" data-mod="path"><span class="lbl">Path</span><span class="strip-tip">Pathology Lab</span></button>
+        <button class="strip-btn" type="button" data-mod="assess"><span class="lbl">AS.</span><span class="lbl">PDT</span><span class="strip-tip">Assessment</span></button>
+        <div class="strip-sep"></div>
+        <button class="strip-btn tbl-btn" type="button" data-table="vpe"><span class="tl1">Table</span><span class="tl2">VPE</span></button>
+        <button class="strip-btn tbl-btn" type="button" data-table="order"><span class="tl1">Table</span><span class="tl2">Order</span></button>
+        <button class="strip-btn tbl-btn" type="button" data-table="assess"><span class="tl1">Table</span><span class="tl2">AS.</span></button>
+      </nav>
+    </div>
+  </section>
+</div>
+
+<div class="fab-dock" id="fabDock" aria-label="Module FAB Dock" title="Module FAB Dock">
+  <button class="strip-btn active" type="button" data-mod="vpe"><span class="lbl">VPE</span></button>
+  <button class="strip-btn" type="button" data-mod="tx"><span class="lbl">Tx</span></button>
+  <button class="strip-btn" type="button" data-mod="rx"><span class="lbl">Rx</span></button>
+  <button class="strip-btn" type="button" data-mod="lab"><span class="lbl">LAB</span></button>
+  <button class="strip-btn" type="button" data-mod="path"><span class="lbl">Path</span></button>
+  <button class="strip-btn" type="button" data-mod="assess"><span class="lbl">AS.</span><span class="lbl">PDT</span></button>
+  <div class="strip-sep"></div>
+  <button class="strip-btn tbl-btn" type="button" data-table="vpe"><span class="tl1">Table</span><span class="tl2">VPE</span></button>
+  <button class="strip-btn tbl-btn" type="button" data-table="order"><span class="tl1">Table</span><span class="tl2">Order</span></button>
+  <button class="strip-btn tbl-btn" type="button" data-table="assess"><span class="tl1">Table</span><span class="tl2">AS.</span></button>
+</div>
+
+<!-- Logic modal -->
+<div class="overlay" id="logicOverlay">
+  <div class="modal-box logic-box">
+    <div class="modal-head"><h3>Objective — Logic &amp; Rule</h3><button class="modal-x" type="button" data-close="logicOverlay">✕ ปิด</button></div>
+    <div class="modal-body">
+      <h4>Overview</h4>
+      <ul>
+        <li>Daily View อ่านสรุป visit ตาม Exam Card ID (read-only aggregation)</li>
+        <li>กลาง = Exam Card Panel · ขวา = Module Drawer ทับ (~36%) + Module Icon Rail</li>
+        <li>Mobile = Module FAB Dock → Module Drawer เป็น bottom sheet · ลาก handle ลงเพื่อยุบ</li>
+        <li>Table VPE / Order / AS. เปิด Data Table Modals</li>
+      </ul>
+      <h4>Filters — ค้นหาแยก 3 โหมด (ไม่รวมกัน)</h4>
+      <ul>
+        <li><b>By Date (default)</b> — เปิดหน้าแล้วโหลด Exam Card ของ <b>วันนี้</b> · เปลี่ยนวันจาก dropdown หรือปุ่มปฏิทิน แล้วกด Search ของส่วนนี้</li>
+        <li><b>By DVM</b> — เลือกสัตวแพทย์แล้วกด Search → ดึง Exam Card <b>ทั้งหมด</b> ของ DVM นั้น (ข้ามวัน)</li>
+        <li><b>By Department</b> — เลือกแผนกแล้วกด Search → ดึง Exam Card <b>ทั้งหมด</b> ของแผนกนั้น (ข้ามวัน)</li>
+        <li>แต่ละโหมดมีปุ่ม Search ของตัวเอง · กด Search ของโหมดใด = สลับไปใช้โหมดนั้นทันที (ไม่ใช่ AND จากทั้งสามช่อง)</li>
+        <li>ปุ่ม <b>Go Today</b> ใน Visit Tabs = กลับโหมด By Date เป็นวันนี้ แล้วโหลดใหม่</li>
+      </ul>
+      <h4>Visit Tabs / Exam Card</h4>
+      <ul>
+        <li>รายการซ้าย = ผลลัพธ์ของโหมดค้นหาล่าสุด</li>
+        <li>เลือก tab = แสดง Exam Card + module ที่เกี่ยวข้องของ visit นั้น</li>
+        <li>Mock: มีข้อมูลเต็มเฉพาะบาง visit · visit อื่นเป็น empty state</li>
+      </ul>
+      <h4>Module Drawer</h4>
+      <ul>
+        <li>ไอคอนสี = สลับ drawer (default เปิด VPE)</li>
+        <li>กดไอคอนเดิมซ้ำ = ปิด drawer · ไม่ dim พื้นหลัง</li>
+        <li>ตาราง Order ว่างใน mock นี้</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- VPE table modal -->
+<div class="overlay" id="vpeTableOverlay">
+  <div class="modal-box">
+    <div class="modal-head"><h3>ตารางข้อมูล Vital Sign &amp; PE — HN 69001234</h3><button class="modal-x" type="button" data-close="vpeTableOverlay">✕ ปิด</button></div>
+    <div class="modal-body">
+      <div class="data-table-wrap">
+        <table class="data-table" id="vpeTable">
+          <thead>
+            <tr>
+              <th class="th-date">Processed On</th>
+              <th class="th-vitals">Temp (°F)</th>
+              <th class="th-vitals">HR</th>
+              <th class="th-vitals">RR</th>
+              <th class="th-vitals">Weight</th>
+              <th class="th-vitals">CRT</th>
+              <th class="th-vitals">Hydration</th>
+              <th class="th-vitals">SpO2</th>
+              <th class="th-vitals">MM Color</th>
+              <th class="th-vitals">Heart Sound</th>
+              <th class="th-vitals">Mentation</th>
+              <th class="th-vitals">Pain</th>
+              <th class="th-meta">DVM</th>
+              <th class="th-meta">Department</th>
+            </tr>
+          </thead>
+          <tbody id="vpeTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Order table modal (empty) -->
+<div class="overlay" id="orderTableOverlay">
+  <div class="modal-box">
+    <div class="modal-head"><h3>ตารางข้อมูล Order (TX / RX / LAB / PATH) — HN 69001234</h3><button class="modal-x" type="button" data-close="orderTableOverlay">✕ ปิด</button></div>
+    <div class="modal-body">
+      <div class="empty-state">
+        <div class="icon">📋</div>
+        <p><b>ตาราง Order ว่าง</b></p>
+        <p>ยังไม่มีข้อมูล mock สำหรับตาราง Order ในรอบนี้ — โครงสร้าง modal พร้อมสำหรับเชื่อมข้อมูลภายหลัง</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Assessment table modal -->
+<div class="overlay" id="assessTableOverlay">
+  <div class="modal-box">
+    <div class="modal-head"><h3>ตารางข้อมูล Assessment — HN 69001234</h3><button class="modal-x" type="button" data-close="assessTableOverlay">✕ ปิด</button></div>
+    <div class="modal-body">
+      <div class="data-table-bar">
+        <input type="text" id="tbl-search" placeholder="ค้นหา: problem, confirmatory findings, dvm, department...">
+        <select id="tbl-cat"><option value="">Categories: ทั้งหมด</option><option>General</option><option>Gastrointestinal</option><option>Respiratory</option><option>Cardiovascular</option><option>Musculoskeletal</option><option>Dermatology</option><option>Neurology</option><option>Urogenital</option><option>Endocrine</option><option>Ophthalmology</option></select>
+        <select id="tbl-type"><option value="">Type: ทั้งหมด</option><option>Clinical Sign (Sign)</option><option>Working Diagnosis (Dx)</option><option>Differential Diagnosis (DDx)</option><option>Rule Out (R/O)</option></select>
+        <select id="tbl-status"><option value="">Status: ทั้งหมด</option><option>กำลังรักษา (Active)</option><option>รอผลการตรวจ (Pending)</option><option>หาย/สงบ (Resolved/Inactive)</option></select>
+        <button class="btn-search" type="button" id="assessSearch">ค้นหา</button>
+        <button class="btn-clear" type="button" id="assessClear">ล้างตัวกรอง</button>
+      </div>
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead><tr><th>#</th><th>Date/time</th><th>Problem/Diagnosis</th><th>การยืนยัน (Confirmatory Findings)</th><th>Categories</th><th>Type</th><th>Status</th><th>ลักษณะการดำเนิน</th><th>Prognosis</th><th>DVM</th><th>Department</th></tr></thead>
+          <tbody id="assessTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  /* Mock: demo "today" = 2026-07-09 (วันที่มีข้อมูลตัวอย่าง) — production ใช้วันที่จริง */
+  var DEMO_TODAY = '2026-07-09';
+  var allVisits = [
+    { id: '1', name: 'นิพนธ์ วงศ์ประเสริฐ', dept: 'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', dvm: 'นิพนธ์ วงศ์ประเสริฐ', date: '2026-07-09', hasData: true, lastUpdate: '10.57' },
+    { id: '2', name: 'นิพนธ์ วงศ์ประเสริฐ', dept: 'อายุรกรรมทั่วไป (ในเวลา)', dvm: 'นิพนธ์ วงศ์ประเสริฐ', date: '2026-07-09', hasData: false, lastUpdate: '—' },
+    { id: '3', name: 'วิชัย ใจดี', dept: 'ภาพวินิจฉัย (นอกเวลา)', dvm: 'วิชัย ใจดี', date: '2026-07-09', hasData: false, lastUpdate: '—' },
+    { id: '4', name: 'ปนัดดา ศรีสุข', dept: 'อายุรกรรมทั่วไป (ในเวลา)', dvm: 'ปนัดดา ศรีสุข', date: '2026-07-09', hasData: false, lastUpdate: '—' },
+    { id: '5', name: 'สมชาย พูนสุข', dept: 'ศัลยกรรมทั่วไป (ในเวลา)', dvm: 'สมชาย พูนสุข', date: '2026-07-09', hasData: false, lastUpdate: '—' },
+    { id: '6', name: 'วราภรณ์ แสงทอง', dept: 'อายุรกรรมแมว (นอกเวลา)', dvm: 'วราภรณ์ แสงทอง', date: '2026-07-09', hasData: false, lastUpdate: '—' },
+    { id: '7', name: 'กิตติพงศ์ อรุณ', dept: 'ฉุกเฉินและวิกฤต (นอกเวลา)', dvm: 'กิตติพงศ์ อรุณ', date: '2026-07-09', hasData: false, lastUpdate: '—' },
+    { id: '8', name: 'อรทัย มณีรัตน์', dept: 'ทันตกรรมสัตว์ (ในเวลา)', dvm: 'อรทัย มณีรัตน์', date: '2026-07-08', hasData: false, lastUpdate: '—' },
+    { id: '9', name: 'นิพนธ์ วงศ์ประเสริฐ', dept: 'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', dvm: 'นิพนธ์ วงศ์ประเสริฐ', date: '2026-07-08', hasData: false, lastUpdate: '—' },
+    { id: '10', name: 'ชาญชัย รุ่งเรือง', dept: 'อายุรกรรมระบบประสาท (นอกเวลา)', dvm: 'ชาญชัย รุ่งเรือง', date: '2026-07-07', hasData: false, lastUpdate: '—' },
+    { id: '11', name: 'นิพนธ์ วงศ์ประเสริฐ', dept: 'อายุรกรรมทั่วไป (ในเวลา)', dvm: 'นิพนธ์ วงศ์ประเสริฐ', date: '2026-07-07', hasData: false, lastUpdate: '—' },
+    { id: '12', name: 'พิมพ์ใจ ศรีสุข', dept: 'ผิวหนังและภูมิแพ้ (ในเวลา)', dvm: 'พิมพ์ใจ ศรีสุข', date: '2026-07-07', hasData: false, lastUpdate: '—' },
+    { id: '13', name: 'ธนพล แก้วมณี', dept: 'จักษุสัตว์ (นอกเวลา)', dvm: 'ธนพล แก้วมณี', date: '2026-02-02', hasData: false, lastUpdate: '—' },
+    { id: '14', name: 'นภัสสร ใจดี', dept: 'อายุรกรรมไตและทางเดินปัสสาวะ (ในเวลา)', dvm: 'นภัสสร ใจดี', date: '2026-02-02', hasData: false, lastUpdate: '—' },
+    { id: '15', name: 'วิชัย ใจดี', dept: 'ภาพวินิจฉัย (นอกเวลา)', dvm: 'วิชัย ใจดี', date: '2026-02-02', hasData: false, lastUpdate: '—' }
+  ];
+
+  var filterState = {
+    mode: 'date',       /* date | dvm | dept */
+    date: DEMO_TODAY,
+    dvm: '',
+    dept: ''
+  };
+  var visits = [];
+  var activeVisit = '1';
+  var activeMod = 'vpe';
+  var drawerOpen = true;
+
+  function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+  function formatDateLabel(iso) {
+    if (!iso) return '';
+    var p = iso.split('-');
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var m = parseInt(p[1], 10) - 1;
+    return pad2(parseInt(p[2], 10)) + ' ' + months[m] + ' ' + p[0];
+  }
+  function uniqueDates() {
+    var map = {};
+    allVisits.forEach(function (v) { map[v.date] = true; });
+    return Object.keys(map).sort().reverse();
+  }
+  function getFilteredVisits() {
+    if (filterState.mode === 'date') {
+      return allVisits.filter(function (v) { return v.date === filterState.date; });
+    }
+    if (filterState.mode === 'dvm') {
+      return allVisits.filter(function (v) { return v.dvm === filterState.dvm; });
+    }
+    if (filterState.mode === 'dept') {
+      return allVisits.filter(function (v) { return v.dept === filterState.dept; });
+    }
+    return allVisits.slice();
+  }
+  function modeLabel() {
+    if (filterState.mode === 'date') return 'By Date · ' + formatDateLabel(filterState.date);
+    if (filterState.mode === 'dvm') return 'By DVM';
+    if (filterState.mode === 'dept') return 'By Dept';
+    return '';
+  }
+  function syncFilterUI() {
+    document.querySelectorAll('.filter-section').forEach(function (sec) {
+      sec.classList.toggle('active-mode', sec.getAttribute('data-mode') === filterState.mode);
+    });
+    var trig = document.getElementById('filterTrigger');
+    trig.setAttribute('data-mode-label', modeLabel());
+    var sel = document.getElementById('f-date-select');
+    var picker = document.getElementById('f-date-picker');
+    if (sel && filterState.date) {
+      if (![].some.call(sel.options, function (o) { return o.value === filterState.date; })) {
+        var opt = document.createElement('option');
+        opt.value = filterState.date;
+        opt.textContent = formatDateLabel(filterState.date) + (filterState.date === DEMO_TODAY ? ' (Today)' : '');
+        sel.insertBefore(opt, sel.firstChild);
+      }
+      sel.value = filterState.date;
+    }
+    if (picker) picker.value = filterState.date || DEMO_TODAY;
+    if (document.getElementById('f-dvm') && filterState.dvm) document.getElementById('f-dvm').value = filterState.dvm;
+    if (document.getElementById('f-dept') && filterState.dept) document.getElementById('f-dept').value = filterState.dept;
+  }
+  function applyFilterResult() {
+    visits = getFilteredVisits();
+    if (!visits.length) {
+      activeVisit = '';
+    } else if (!visits.some(function (v) { return v.id === activeVisit; })) {
+      activeVisit = visits[0].id;
+    }
+    syncFilterUI();
+    renderLeft();
+    renderExam();
+    renderPanel();
+  }
+  function searchByDate() {
+    var sel = document.getElementById('f-date-select');
+    filterState.mode = 'date';
+    filterState.date = sel.value || DEMO_TODAY;
+    applyFilterResult();
+    document.getElementById('filterPop').classList.remove('show');
+  }
+  function searchByDvm() {
+    var val = document.getElementById('f-dvm').value;
+    if (!val) { alert('กรุณาเลือก DVM ก่อน Search'); return; }
+    filterState.mode = 'dvm';
+    filterState.dvm = val;
+    applyFilterResult();
+    document.getElementById('filterPop').classList.remove('show');
+  }
+  function searchByDept() {
+    var val = document.getElementById('f-dept').value;
+    if (!val) { alert('กรุณาเลือกแผนกก่อน Search'); return; }
+    filterState.mode = 'dept';
+    filterState.dept = val;
+    applyFilterResult();
+    document.getElementById('filterPop').classList.remove('show');
+  }
+  function goToday() {
+    filterState.mode = 'date';
+    filterState.date = DEMO_TODAY;
+    applyFilterResult();
+  }
+  function fillDateSelect() {
+    var sel = document.getElementById('f-date-select');
+    var dates = uniqueDates();
+    if (dates.indexOf(DEMO_TODAY) === -1) dates.unshift(DEMO_TODAY);
+    sel.innerHTML = dates.map(function (d) {
+      return '<option value="' + d + '"' + (d === filterState.date ? ' selected' : '') + '>' +
+        formatDateLabel(d) + (d === DEMO_TODAY ? ' (Today)' : '') + '</option>';
+    }).join('');
+  }
+
+  var modDots = {
+    vpe: 'linear-gradient(135deg, #a78bfa, #7c3aed)',
+    tx: 'linear-gradient(135deg, #60a5fa, #2563eb)',
+    rx: 'linear-gradient(135deg, #34d399, #059669)',
+    lab: 'linear-gradient(135deg, #fbbf24, #d97706)',
+    path: 'linear-gradient(135deg, #f472b6, #db2777)',
+    assess: 'linear-gradient(135deg, #fb923c, #ea580c)'
+  };
+
+  var examCardTab1 = [
+    { topic: '1. History Taking', lines: ['กลับบ้านไปไม่กิน(เอง) เจ้าของไม่ได้ป้อนอาหาร', 'ไม่มีอาเจียน', 'อาการดูไม่ดีขึ้น'] },
+    { topic: '2. History Medication and Food', lines: ['ป้อนrecovery in opd กินได้ดี'] },
+    { topic: '3. Note', lines: [
+      { sub: 'DX:' }, '-susp. BP', '-severe anemia (HCT 12.7% -> 9.5%)', '-severe leukocytosis (WBC 84.76 with band 2%)', '-hypoAlb', '-renal azotemia', '',
+      { sub: 'TX:' }, '-D2 Baytril 0.4 cc sc', '-fercobsang 0.4 cc sc', '-50% Glucose 3.5 cc slow iv', '',
+      { sub: 'RX:' }, '-vibravet - / 1พับ / bid', '-alb - / 1/2 / bid', '-ferric plus K - / 1 cc / bid', 'จะไปหยอด frontline เองที่บ้าน', '',
+      'Plan : นัดต่อเนื่องพรุ่งนี้ 25/7/69 (เช้า) เพื่อตรวจ cbc +/- blood trans + ฉีดยาต่อเนื่อง',
+      'ป้อนน้ำ อาหาร เพิ่ม',
+      '***เจ้าของมียากินและยาฉีดที่บ้านและมีเพื่อนเป็นสัตวแพทย์ วันนี้พาตัวถ่ายเลือดมา 2 ตัว ผลเลือดไม่ผ่าน เจ้าของอยากพามาอีกตัวนึงในวันพรุ่งนี้ เพื่อมาตรวจสุขภาพ +/- ถ่ายเลือด หากผลเลือดไม่ผ่าน สามารถฉีดยา ป้อนยาเองที่บ้านได้ค่ะ'
+    ]},
+    { topic: '4. Appearance', lines: ['depress', 'pale mm, CRT - sec', 'normal HS and LS', 'tick infestration ++'] },
+    { topic: '5. Hydration', lines: ['5-7% dehydration'] },
+    { topic: '6. Abdomen', lines: ['abd not pain'] }
+  ];
+
+  var vpeTab1 = [
+    { time: '18:30', fields: [['Temp','102.1 °F'],['HR','128 bpm'],['RR','28 rpm'],['CRT','< 2 sec (Normal)'],['MM Color','Pink (Normal)'],['Pain Score','2']] },
+    { time: '10:00', fields: [['Temp','101.8 °F'],['HR','110 bpm'],['Weight','12.4 kg'],['Hydration','Mild Dehydration (5–6%)'],['SpO2','97%']] },
+    { time: '8:45', fields: [['Temp','103.2 °F'],['HR','142 bpm'],['RR','36 rpm'],['Mentation','QAR'],['Heart Sound','Systolic Murmur']] }
+  ];
+
+  var txSelected = [
+    ['1. Prednisolone acetate injection (25 mg/ml) (Predni-Ject)', ['→ ยาฉีด (Injection)    | SC    | 0.4 CC','→ 20:30 (processed on)']],
+    ['2. 0.9% Sodium Chloride (NSS) 500 ml', ['→ สารน้ำ / IV Fluid    | IV drip    | 350 ml','→ 20:30 (processed on)']],
+    ['3. Enrofloxacin injection (25 mg/ml) (Baytril)', ['→ ยาฉีด (Injection)    | SC    | 0.5 CC','→ 20:30 (processed on)']],
+    ['4. Prednisolone acetate injection (25 mg/ml) (Predni-Ject)', ['→ ยาฉีด (Injection)    | SC    | 0.4 CC','→ 09:30 (processed on)']],
+    ['5. 0.9% Sodium Chloride (NSS) 500 ml', ['→ สารน้ำ / IV Fluid    | IV drip    | 350 ml','→ 09:30 (processed on)']],
+    ['6. Enrofloxacin injection (25 mg/ml) (Baytril)', ['→ ยาฉีด (Injection)    | SC    | 0.5 CC','→ 09:30 (processed on)']]
+  ];
+  var rxSelected = [
+    ['1. Doxycycline 100 mg (Siadocin 100 mg) 10 เม็ด', ['→ รับประทาน ครั้งละ 1/3 เม็ด วันละ 1 เวลา','→ หลังอาหารทันที เย็น','→ ป้อนน้ำตาม 3 ซีซี','→ ห้ามรับประทานพร้อมนมและตับ/ยาบำรุงเลือด/แคลเซียม','→ เก็บยาให้พ้นแสง']],
+    ['2. Hepo Liquid 100ml *keyจ่ายทีละ1ขวด***ห้ามแบ่งขาย* 100 ซีซี', ['→ รับประทาน ครั้งละ 1 ซีซี วันละ 2 เวลา','→ หลังอาหาร เช้า เย็น','→ เขย่าขวดก่อนป้อน']]
+  ];
+  var labSelected = [
+    ['1. CBC 1 ตัวอย่าง', ['→ Order Clinical Lab']],
+    ['2. Creatinine 1 ตัวอย่าง', ['→ Order Clinical Lab']],
+    ['3. ALT (SGPT) 1 ตัวอย่าง', ['→ Order Clinical Lab']],
+    ['4. ALK. Phos 1 ตัวอย่าง', ['→ Order Clinical Lab']]
+  ];
+  var pathSelected = [
+    ['1. Cytology 3 ตัวอย่าง', ['→ Order Pathology Lab']]
+  ];
+  var assessSelected = [
+    ['1. Acute Gastroenteritis', ['→ Problem    | Clinical Sign    | Active','→ 08:15 (processed on)']],
+    ['2. Dehydration (moderate)', ['→ Disorder   | Clinical Sign    | Resolved','→ 08:15 (processed on)']]
+  ];
+  var assessSummaryNote = ': สัตว์มีอาการอาเจียน ซึม ท้องเสีย 2 วัน ตรวจพบ dehydration ปานกลาง ปวดท้อง cranial abdomen ผล Vcheck cPL > 900 ng/ml ยืนยันการวินิจฉัย Pancreatitis เป็นสาเหตุหลัก พร้อม DDx ได้แก่ Acute Gastroenteritis และ Foreign Body Ingestion แนะนำให้น้ำเกลือแร่ ยาต้านอาเจียน งดอาหาร รอผล CBC/Chem และ ultrasound เพื่อประเมินความรุนแรงเพิ่มเติม';
+
+  var modMeta = {
+    vpe: { title: 'Vital Sign & PE', sub: 'Snapshots for this Exam Card' },
+    tx: { title: 'TX Selected', sub: 'Treatment orders for this Exam Card' },
+    rx: { title: 'RX Selected', sub: 'Home prescriptions / directions' },
+    lab: { title: 'Clinical Lab', sub: 'Lab orders for this Exam Card' },
+    path: { title: 'Pathology Lab', sub: 'Pathology orders for this Exam Card' },
+    assess: { title: 'Assessment', sub: 'Selected PDT & clinical summary' }
+  };
+
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function renderLeft() {
+    var nav = document.getElementById('leftNav');
+    var html = '<button class="nav-new" type="button" id="btnGoToday" title="Go to today"><span class="go-l1">Go</span><span class="go-l2">Today</span></button>';
+    if (!visits.length) {
+      html += '<div class="empty-state" style="min-height:120px;padding:16px 8px"><p style="font-size:12px">ไม่พบ Exam Card ตามเงื่อนไขค้นหา</p></div>';
+    } else {
+      visits.forEach(function (v) {
+        var sub = filterState.mode === 'date'
+          ? v.dept
+          : (formatDateLabel(v.date) + ' · ' + v.dept);
+        html += '<button class="visit-tab' + (v.id === activeVisit ? ' active' : '') + '" type="button" data-visit="' + v.id + '">' +
+          '<div class="vt-name">' + esc(v.name) + '</div>' +
+          '<div class="vt-dept">' + esc(sub) + '</div>' +
+          '<div class="vt-tip"><div class="tip-name">' + esc(v.name) + '</div><div class="tip-dept">' + esc(formatDateLabel(v.date) + ' · ' + v.dept) + '</div></div>' +
+          '</button>';
+      });
+    }
+    nav.innerHTML = html;
+
+    var goBtn = document.getElementById('btnGoToday');
+    if (goBtn) goBtn.addEventListener('click', goToday);
+
+    nav.querySelectorAll('.visit-tab').forEach(function (tab) {
+      var tip = tab.querySelector('.vt-tip');
+      tab.addEventListener('mouseenter', function () {
+        var r = tab.getBoundingClientRect();
+        tip.classList.add('show');
+        tip.style.left = (r.right + 10) + 'px';
+        tip.style.top = r.top + 'px';
+      });
+      tab.addEventListener('mouseleave', function () {
+        tip.classList.remove('show');
+      });
+    });
+
+    var mv = document.getElementById('mobileVisits');
+    if (!visits.length) {
+      mv.innerHTML = '<span class="chip" style="opacity:.7;cursor:default">ไม่มีผลลัพธ์</span>';
+    } else {
+      mv.innerHTML = visits.map(function (v) {
+        return '<button class="chip' + (v.id === activeVisit ? ' active' : '') + '" type="button" data-visit="' + v.id + '" title="' + esc(v.name) + ' — ' + esc(v.dept) + '">' +
+          esc(v.name) + '</button>';
+      }).join('');
+    }
+  }
+
+  function renderExam() {
+    var v = visits.find(function (x) { return x.id === activeVisit; });
+    var body = document.getElementById('examBody');
+    if (!v) {
+      document.getElementById('mainMeta').textContent = modeLabel() + ' · ไม่มี Exam Card';
+      body.innerHTML = '<div class="empty-state"><div class="icon">🔍</div><p><b>ไม่พบ Exam Card</b></p><p>ลองเปลี่ยนเงื่อนไข Filters แล้วกด Search อีกครั้ง</p></div>';
+      return;
+    }
+    document.getElementById('mainMeta').textContent = v.hasData
+      ? ('for ' + formatDateLabel(v.date) + ' · last update ' + v.lastUpdate + ' by ' + v.name)
+      : ('for ' + formatDateLabel(v.date) + ' · ' + v.name + ' · ไม่มีข้อมูล');
+    if (!v.hasData) {
+      body.innerHTML = '<div class="empty-state"><div class="icon">📄</div><p><b>Exam Card ว่าง</b></p><p>Visit นี้ยังไม่มีข้อมูลจำลอง — ดูตัวอย่างที่ visit ที่มีข้อมูล</p></div>';
+      return;
+    }
+    var html = '';
+    examCardTab1.forEach(function (block) {
+      html += '<div class="hist-block"><div class="hist-topic">' + esc(block.topic) + '</div><div class="hist-line"></div><div class="hist-body">';
+      block.lines.forEach(function (line) {
+        if (typeof line === 'object' && line.sub) html += '<div class="hist-sub">' + esc(line.sub) + '</div>';
+        else if (line === '') html += '<div>&nbsp;</div>';
+        else html += '<div>' + esc(line) + '</div>';
+      });
+      html += '</div></div>';
+    });
+    body.innerHTML = html;
+  }
+
+
+  function detailBlock(title, note, drugs) {
+    var html = '<div class="det-title">' + esc(title) + '</div><div class="det-line"></div>';
+    if (note) html += '<div class="det-note">' + esc(note) + '</div><div class="det-line"></div>';
+    drugs.forEach(function (d, idx) {
+      if (d.name) html += '<div class="det-drug">' + esc(d.name) + '</div>';
+      (d.fields || []).forEach(function (f) { html += '<div class="det-field"> ' + esc(f) + '</div>'; });
+      (d.bullets || []).forEach(function (b) { html += '<div class="det-bullet">' + esc(b) + '</div>'; });
+      if (d.name && idx < drugs.length - 1) html += '<div class="det-line"></div>';
+    });
+    return html;
+  }
+
+  function renderTxDetails() {
+    var html = '';
+    html += detailBlock(
+      'Tx Summary — บันทึกแล้ว 09/07/26 20:30',
+      ': สัตว์เลี้ยงเคยให้ยามาแล้ว ให้เปลี่ยนขาในการให้ยา ไม่ซ้ำกับคราวที่แล้ว และโกนขนบริเวณที่ฉีดยาด้วย',
+      [
+        {
+          name: 'Prednisolone acetate injection (25 mg/ml) (Predni-Ject) — บันทึกแล้ว 09/07/26 20:30',
+          fields: ['-Category: ยาฉีด (Injection)', '-Route: ฉีดเข้าใต้ผิวหนัง (SC)', '-Dose: 0.4 CC', '-Frequency/Rate: วันละ 1 ครั้ง (SID)', '-Note:'],
+          bullets: ['- เขย่าขวดก่อนฉีด เก็บในตู้เย็น 2-8°C ห้ามแช่แข็ง', '- ฉีดเข้าใต้ผิวหนังบริเวณสะบัก คลึงเบา ๆ หลังฉีด', '- ห้ามหยุดยาเอง ให้ค่อย ๆ ลดขนาดยา (tapering) ตามที่สัตวแพทย์สั่ง', '- สังเกตอาการกินน้ำ/ปัสสาวะมากผิดปกติ หากพบแจ้งสัตวแพทย์']
+        },
+        {
+          name: '0.9% Sodium Chloride (NSS) 500 ml — บันทึกแล้ว 09/07/26 08:20',
+          fields: ['-Category: สารน้ำ / IV Fluid', '-Route: ฉีดเข้าหลอดเลือดดำแบบหยด (IV drip)', '-Dose: 350 ml', '-Frequency/Rate: 60 ml/hr (minidrip)', '-Note:'],
+          bullets: ['- ให้ NSS จากขวด 500 ml เฉพาะปริมาณ 350 ml (ไม่ต้องให้หมดขวด) IV drip อัตรา 60 ml/hr', '- ใช้ชุดให้สารน้ำ minidrip (60 drops/ml) → ปรับหยด = 60 หยด/นาที (≈ 1 หยด/วินาที)', '- เฝ้าระวังอาการบวมน้ำ หายใจเร็ว/ลำบาก หรือบวมบริเวณที่แทงเข็ม', '- ตรวจตำแหน่งเข็มและปริมาณคงเหลือทุก 1 ชั่วโมง บันทึกลงใบ monitor', '- ระบุวันที่/เวลาเริ่มให้ และผู้ให้บนฉลากขวดทุกครั้ง']
+        },
+        {
+          name: 'Enrofloxacin injection (25 mg/ml) (Baytril) — บันทึกแล้ว 09/07/26 08:25',
+          fields: ['-Category: ยาฉีด (Injection)', '-Route: ฉีดเข้าใต้ผิวหนัง (SC)', '-Dose: 0.5 CC', '-Frequency/Rate: วันละ 1 ครั้ง (SID)', '-Note:'],
+          bullets: ['- ฉีดเข้าใต้ผิวหนัง อาจระคายเคืองเฉพาะที่ ให้คลึงเบา ๆ หลังฉีด', '- ห้ามใช้ในสัตว์อายุน้อยที่กำลังเจริญเติบโต (ผลต่อกระดูกอ่อน)', '- ให้ครบ course ตามที่สัตวแพทย์สั่ง ห้ามหยุดยาเอง', '- เก็บพ้นแสง อุณหภูมิห้อง']
+        }
+      ]
+    );
+    html += detailBlock(
+      'Tx Summary — บันทึกแล้ว 09/07/26 09:30',
+      ': สัตว์เลี้ยงเคยให้ยามาแล้ว ให้เปลี่ยนขาในการให้ยา ไม่ซ้ำกับคราวที่แล้ว และโกนขนบริเวณที่ฉีดยาด้วย',
+      [
+        {
+          name: 'Prednisolone acetate injection (25 mg/ml) (Predni-Ject) — บันทึกแล้ว 09/07/26 09:30',
+          fields: ['-Category: ยาฉีด (Injection)', '-Route: ฉีดเข้าใต้ผิวหนัง (SC)', '-Dose: 0.4 CC', '-Frequency/Rate: วันละ 1 ครั้ง (SID)', '-Note:'],
+          bullets: ['- เขย่าขวดก่อนฉีด เก็บในตู้เย็น 2-8°C ห้ามแช่แข็ง', '- ฉีดเข้าใต้ผิวหนังบริเวณสะบัก คลึงเบา ๆ หลังฉีด', '- ห้ามหยุดยาเอง ให้ค่อย ๆ ลดขนาดยา (tapering) ตามที่สัตวแพทย์สั่ง', '- สังเกตอาการกินน้ำ/ปัสสาวะมากผิดปกติ หากพบแจ้งสัตวแพทย์']
+        },
+        {
+          name: '0.9% Sodium Chloride (NSS) 500 ml — บันทึกแล้ว 09/07/26 09:30',
+          fields: ['-Category: สารน้ำ / IV Fluid', '-Route: ฉีดเข้าหลอดเลือดดำแบบหยด (IV drip)', '-Dose: 350 ml', '-Frequency/Rate: 60 ml/hr (minidrip)', '-Note:'],
+          bullets: ['- ให้ NSS จากขวด 500 ml เฉพาะปริมาณ 350 ml (ไม่ต้องให้หมดขวด) IV drip อัตรา 60 ml/hr', '- ใช้ชุดให้สารน้ำ minidrip (60 drops/ml) → ปรับหยด = 60 หยด/นาที (≈ 1 หยด/วินาที)', '- เฝ้าระวังอาการบวมน้ำ หายใจเร็ว/ลำบาก หรือบวมบริเวณที่แทงเข็ม', '- ตรวจตำแหน่งเข็มและปริมาณคงเหลือทุก 1 ชั่วโมง บันทึกลงใบ monitor', '- ระบุวันที่/เวลาเริ่มให้ และผู้ให้บนฉลากขวดทุกครั้ง']
+        },
+        {
+          name: 'Enrofloxacin injection (25 mg/ml) (Baytril) — บันทึกแล้ว 09/07/26 09:30',
+          fields: ['-Category: ยาฉีด (Injection)', '-Route: ฉีดเข้าใต้ผิวหนัง (SC)', '-Dose: 0.5 CC', '-Frequency/Rate: วันละ 1 ครั้ง (SID)', '-Note:'],
+          bullets: ['- ฉีดเข้าใต้ผิวหนัง อาจระคายเคืองเฉพาะที่ ให้คลึงเบา ๆ หลังฉีด', '- ห้ามใช้ในสัตว์อายุน้อยที่กำลังเจริญเติบโต (ผลต่อกระดูกอ่อน)', '- ให้ครบ course ตามที่สัตวแพทย์สั่ง ห้ามหยุดยาเอง', '- เก็บพ้นแสง อุณหภูมิห้อง']
+        }
+      ]
+    );
+    return html;
+  }
+
+  function renderAssessDetails() {
+    var html = '';
+    html += '<div class="det-title">Assessment Summary — บันทึกแล้ว 09/07/26 08:15</div><div class="det-line"></div>';
+    html += '<div class="det-note">' + esc(assessSummaryNote) + '</div><div class="det-line"></div>';
+    html += '<div class="det-drug">Acute Gastroenteritis — บันทึกแล้ว 09/07/26 08:15</div>';
+    html += '<div class="det-field"> -Problem Type: Clinical Sign</div>';
+    html += '<div class="det-field"> -Prognosis: ตอบสนองการรักษาดี (Good)</div>';
+    html += '<div class="det-field"> -Status: กำลังรักษา (Active)</div>';
+    html += '<div class="det-field"> -Severity: ปานกลาง (Moderate)</div>';
+    html += '<div class="det-field"> -Expected Duration: 3-5 วัน</div>';
+    html += '<div class="det-field"> -Confidence: มีหลักฐานสนับสนุนชัดเจน (High)</div>';
+    html += '<div class="det-field"> -Confirmatory Findings:</div>';
+    html += '<div class="det-bullet"> ประวัติอาเจียนและท้องเสียเฉียบพลัน 2 วัน, physical exam พบ increased bowel sounds, ไม่มี palpable mass หรือ foreign body</div>';
+    html += '<div class="det-field"> -Clinical Reasoning:</div>';
+    html += '<div class="det-bullet"> สัตว์มีประวัติอาเจียนและท้องเสียเฉียบพลัน 2 วัน ตรวจพบ dehydration ปานกลาง ไม่มีปวดท้องเรื้อรังหรือ palpable mass สอดคล้องกับ acute gastroenteritis จาก dietary indiscretion หรือ infection แยกจาก pancreatitis ซึ่งมี cPL สูงและปวดท้อง cranial abdomen ชัดเจน</div>';
+    html += '<div class="det-field"> -Problem Note:</div>';
+    html += '<div class="det-bullet"> ให้ supportive treatment ด้วย IV fluid, antiemetic, probiotic, งดอาหาร 12-24 ชม. แล้วค่อยๆ กลับมาให้อาหารง่ายย่อย, ติดตามอาการทุก 24 ชม.</div>';
+    html += '<div class="det-field"> -Relation Diagnosis:</div>';
+    html += '<div class="det-bullet"> อยู่ในแผนพัฒนาระยะท้าย (disabled)</div>';
+    html += '<div class="det-line"></div>';
+    html += '<div class="det-drug">Dehydration (moderate) — บันทึกแล้ว 09/07/26 08:15</div>';
+    html += '<div class="det-field"> -Problem Type: Clinical Sign</div>';
+    html += '<div class="det-field"> -Prognosis: -</div>';
+    html += '<div class="det-field"> -Status: กำลังรักษา (Active)</div>';
+    html += '<div class="det-field"> -Severity: -</div>';
+    html += '<div class="det-field"> -Expected Duration: -</div>';
+    html += '<div class="det-field"> -Confidence: -</div>';
+    html += '<div class="det-field"> -Confirmatory Findings:</div>';
+    html += '<div class="det-bullet">-</div>';
+    html += '<div class="det-field"> -Clinical Reasoning:</div>';
+    html += '<div class="det-bullet">-</div>';
+    html += '<div class="det-field"> -Problem Note:</div>';
+    html += '<div class="det-bullet">-</div>';
+    html += '<div class="det-field"> -Relation Diagnosis:</div>';
+    html += '<div class="det-bullet"> อยู่ในแผนพัฒนาระยะท้าย (disabled)</div>';
+    return html;
+  }
+
+  function selectedBlock(title, items) {
+    var html = '<div class="sel-block"><div class="sel-title">' + esc(title) + '</div><div class="sel-dline"></div>';
+    items.forEach(function (it) {
+      html += '<div class="sel-name">' + esc(it[0]) + '</div>';
+      it[1].forEach(function (m) { html += '<div class="sel-meta">' + esc(m) + '</div>'; });
+    });
+    html += '</div>';
+    return html;
+  }
+
+  function syncStripActive() {
+    document.querySelectorAll('#iconStrip [data-mod], #fabDock [data-mod]').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-mod') === activeMod && drawerOpen);
+    });
+  }
+
+  function openDrawer() {
+    drawerOpen = true;
+    var el = document.getElementById('rightDrawer');
+    el.style.transform = '';
+    el.classList.add('open');
+    el.classList.remove('dragging');
+    syncStripActive();
+  }
+  function closeDrawer() {
+    drawerOpen = false;
+    var el = document.getElementById('rightDrawer');
+    el.style.transform = '';
+    el.classList.remove('open');
+    el.classList.remove('dragging');
+    syncStripActive();
+  }
+
+  /* Mobile: pull-down handle to collapse Module Drawer Panel */
+  (function bindDrawerPullDown() {
+    var drawer = document.getElementById('rightDrawer');
+    var handle = document.getElementById('drawerHandle');
+    if (!drawer || !handle) return;
+    var startY = 0, currentY = 0, dragging = false;
+
+    function isMobileDrawer() {
+      return window.matchMedia('(max-width: 900px)').matches;
+    }
+    function onStart(clientY) {
+      if (!isMobileDrawer() || !drawerOpen) return;
+      dragging = true;
+      startY = clientY;
+      currentY = 0;
+      drawer.classList.add('dragging');
+    }
+    function onMove(clientY) {
+      if (!dragging) return;
+      currentY = Math.max(0, clientY - startY);
+      drawer.style.transform = 'translateY(' + currentY + 'px)';
+    }
+    function onEnd() {
+      if (!dragging) return;
+      dragging = false;
+      drawer.classList.remove('dragging');
+      var threshold = Math.min(140, drawer.offsetHeight * 0.18);
+      if (currentY > threshold) {
+        closeDrawer();
+      } else {
+        drawer.style.transform = '';
+        drawer.classList.add('open');
+      }
+      currentY = 0;
+    }
+
+    handle.addEventListener('touchstart', function (e) {
+      if (e.touches[0]) onStart(e.touches[0].clientY);
+    }, { passive: true });
+    handle.addEventListener('touchmove', function (e) {
+      if (!dragging || !e.touches[0]) return;
+      onMove(e.touches[0].clientY);
+      if (currentY > 8) e.preventDefault();
+    }, { passive: false });
+    handle.addEventListener('touchend', onEnd);
+    handle.addEventListener('touchcancel', onEnd);
+
+    handle.addEventListener('mousedown', function (e) {
+      if (!isMobileDrawer()) return;
+      e.preventDefault();
+      onStart(e.clientY);
+      function move(ev) { onMove(ev.clientY); }
+      function up() {
+        document.removeEventListener('mousemove', move);
+        document.removeEventListener('mouseup', up);
+        onEnd();
+      }
+      document.addEventListener('mousemove', move);
+      document.addEventListener('mouseup', up);
+    });
+
+    /* also allow drag from rp-head on mobile */
+    var head = drawer.querySelector('.rp-head');
+    if (head) {
+      head.addEventListener('touchstart', function (e) {
+        if (e.target.closest('button, a, input, select')) return;
+        if (e.touches[0]) onStart(e.touches[0].clientY);
+      }, { passive: true });
+      head.addEventListener('touchmove', function (e) {
+        if (!dragging || !e.touches[0]) return;
+        onMove(e.touches[0].clientY);
+        if (currentY > 8) e.preventDefault();
+      }, { passive: false });
+      head.addEventListener('touchend', onEnd);
+      head.addEventListener('touchcancel', onEnd);
+    }
+  })();
+
+  function renderPanel() {
+    var v = visits.find(function (x) { return x.id === activeVisit; });
+    var meta = modMeta[activeMod];
+    document.getElementById('rpTitle').textContent = meta.title;
+    document.getElementById('rpSub').textContent = meta.sub;
+    document.getElementById('rpDot').style.background = modDots[activeMod] || modDots.vpe;
+    syncStripActive();
+    var body = document.getElementById('rpBody');
+    if (!v) {
+      body.innerHTML = '<div class="empty-state"><div class="icon">◌</div><p>ไม่มี Exam Card จากเงื่อนไขค้นหา</p></div>';
+      document.getElementById('rpStatus').textContent = '★ No results';
+      return;
+    }
+    if (!v.hasData) {
+      body.innerHTML = '<div class="empty-state"><div class="icon">◌</div><p>ไม่มีข้อมูลสำหรับ visit นี้</p></div>';
+      document.getElementById('rpStatus').textContent = '★ Empty visit';
+      return;
+    }
+    var html = '';
+    if (activeMod === 'vpe') {
+      vpeTab1.forEach(function (s) {
+        html += '<div class="snap-card"><div class="snap-time">' + esc(s.time) + '</div><div class="snap-line"></div>';
+        s.fields.forEach(function (f) { html += '<div class="snap-field"><b>' + esc(f[0]) + '</b>' + esc(f[1]) + '</div>'; });
+        html += '</div>';
+      });
+    } else if (activeMod === 'tx') {
+      html += selectedBlock('TX Selected Items (6 บันทึกแล้ว)', txSelected);
+      html += renderTxDetails();
+    } else if (activeMod === 'rx') {
+      html += selectedBlock('RX Selected Items (2 บันทึกแล้ว)', rxSelected);
+    } else if (activeMod === 'lab') {
+      html += selectedBlock('LAB Selected Items (4 บันทึกแล้ว)', labSelected);
+    } else if (activeMod === 'path') {
+      html += selectedBlock('PATH Selected Items (1 บันทึกแล้ว)', pathSelected);
+    } else if (activeMod === 'assess') {
+      html += selectedBlock('Selected PDT (2 selected)', assessSelected);
+      html += renderAssessDetails();
+    }
+    body.innerHTML = html;
+    document.getElementById('rpStatus').textContent = '★ Showing ' + meta.title;
+  }
+
+  function setVisit(id) {
+    activeVisit = id;
+    renderLeft();
+    renderExam();
+    renderPanel();
+  }
+  function setMod(mod) {
+    if (drawerOpen && activeMod === mod) {
+      closeDrawer();
+      return;
+    }
+    activeMod = mod;
+    renderPanel();
+    openDrawer();
+  }
+  function openTable(t) {
+    if (t === 'vpe') document.getElementById('vpeTableOverlay').classList.add('show');
+    if (t === 'order') document.getElementById('orderTableOverlay').classList.add('show');
+    if (t === 'assess') document.getElementById('assessTableOverlay').classList.add('show');
+  }
+
+  document.getElementById('leftNav').addEventListener('click', function (e) {
+    var t = e.target.closest('[data-visit]');
+    if (t) setVisit(t.getAttribute('data-visit'));
+  });
+  document.getElementById('mobileVisits').addEventListener('click', function (e) {
+    var t = e.target.closest('[data-visit]');
+    if (t) setVisit(t.getAttribute('data-visit'));
+  });
+
+  function bindStrip(root) {
+    root.addEventListener('click', function (e) {
+      var modBtn = e.target.closest('[data-mod]');
+      if (modBtn) { setMod(modBtn.getAttribute('data-mod')); return; }
+      var tblBtn = e.target.closest('[data-table]');
+      if (tblBtn) openTable(tblBtn.getAttribute('data-table'));
+    });
+  }
+  bindStrip(document.getElementById('iconStrip'));
+  bindStrip(document.getElementById('fabDock'));
+
+
+  // Filters — ค้นหาแยก 3 โหมด
+  var filterTrigger = document.getElementById('filterTrigger');
+  var filterPop = document.getElementById('filterPop');
+  filterTrigger.addEventListener('click', function (e) {
+    e.stopPropagation();
+    filterPop.classList.toggle('show');
+  });
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('#filterPop') && !e.target.closest('#filterTrigger')) filterPop.classList.remove('show');
+  });
+  document.getElementById('btnSearchDate').addEventListener('click', searchByDate);
+  document.getElementById('btnSearchDvm').addEventListener('click', searchByDvm);
+  document.getElementById('btnSearchDept').addEventListener('click', searchByDept);
+
+  var datePicker = document.getElementById('f-date-picker');
+  var dateCalBtn = document.getElementById('f-date-cal');
+  dateCalBtn.addEventListener('click', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    datePicker.value = document.getElementById('f-date-select').value || DEMO_TODAY;
+    if (typeof datePicker.showPicker === 'function') {
+      try { datePicker.showPicker(); } catch (err) { datePicker.click(); }
+    } else {
+      datePicker.click();
+    }
+  });
+  datePicker.addEventListener('change', function () {
+    var iso = datePicker.value;
+    if (!iso) return;
+    filterState.date = iso;
+    var sel = document.getElementById('f-date-select');
+    if (![].some.call(sel.options, function (o) { return o.value === iso; })) {
+      var opt = document.createElement('option');
+      opt.value = iso;
+      opt.textContent = formatDateLabel(iso);
+      sel.insertBefore(opt, sel.firstChild);
+    }
+    sel.value = iso;
+  });
+
+  document.getElementById('btnLogic').addEventListener('click', function () {
+    document.getElementById('logicOverlay').classList.add('show');
+  });
+  document.getElementById('btnRefresh').addEventListener('click', function () {
+    renderExam(); renderPanel();
+    var b = document.getElementById('btnRefresh');
+    b.style.transform = 'rotate(360deg)';
+    b.style.transition = 'transform .4s';
+    setTimeout(function () { b.style.transform = ''; }, 400);
+  });
+
+  document.querySelectorAll('[data-close]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.getElementById(btn.getAttribute('data-close')).classList.remove('show');
+    });
+  });
+  document.querySelectorAll('.overlay').forEach(function (ov) {
+    ov.addEventListener('click', function (e) { if (e.target === ov) ov.classList.remove('show'); });
+  });
+
+  // VPE table rows (from tab1 snapshots + extras, style like original)
+  var vpeRows = [
+    { proc:'09 Jul 2026, 18:30', temp:'102.1', hr:'128', rr:'28', weight:'', crt:'< 2 sec (Normal)', hydration:'', spo2:'', mm:'Pink (Normal)', heart:'', ment:'', pain:'2', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)' },
+    { proc:'09 Jul 2026, 10:00', temp:'101.8', hr:'110', rr:'', weight:'12.4', crt:'', hydration:'Mild Dehydration (5–6%)', spo2:'97', mm:'', heart:'', ment:'', pain:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)' },
+    { proc:'09 Jul 2026, 08:45', temp:'103.2', hr:'142', rr:'36', weight:'', crt:'', hydration:'', spo2:'', mm:'', heart:'Systolic Murmur', ment:'QAR', pain:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)' },
+    { proc:'08 Jul 2026, 16:20', temp:'101.5', hr:'120', rr:'24', weight:'12.6', crt:'< 2 sec (Normal)', hydration:'Normal (<5%)', spo2:'98', mm:'Pink (Normal)', heart:'Normal (S1/S2 clear)', ment:'BAR', pain:'1', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)' },
+    { proc:'07 Jul 2026, 11:10', temp:'102.4', hr:'135', rr:'30', weight:'12.5', crt:'2–3 sec (Mildly Prolonged)', hydration:'Moderate Dehydration (7–9%)', spo2:'95', mm:'Pale / Porcelain White', heart:'Systolic Murmur', ment:'QAR', pain:'3', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)' },
+    { proc:'02 Feb 2026, 09:00', temp:'100.8', hr:'108', rr:'22', weight:'13.1', crt:'< 2 sec (Normal)', hydration:'Normal (<5%)', spo2:'99', mm:'Pink (Normal)', heart:'Normal (S1/S2 clear)', ment:'BAR', pain:'0', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)' }
+  ];
+  function renderVpeTable() {
+    var tb = document.getElementById('vpeTableBody');
+    tb.innerHTML = vpeRows.map(function (r) {
+      function c(v) { return v ? esc(v) : '<span style="color:#d1d5db">—</span>'; }
+      return '<tr><td>' + c(r.proc) + '</td><td>' + c(r.temp) + '</td><td>' + c(r.hr) + '</td><td>' + c(r.rr) + '</td><td>' + c(r.weight) + '</td><td>' + c(r.crt) + '</td><td>' + c(r.hydration) + '</td><td>' + c(r.spo2) + '</td><td>' + c(r.mm) + '</td><td>' + c(r.heart) + '</td><td>' + c(r.ment) + '</td><td>' + c(r.pain) + '</td><td>' + c(r.dvm) + '</td><td>' + c(r.dept) + '</td></tr>';
+    }).join('');
+  }
+
+  // Assessment table (from original tabProblems)
+  var tabProblems = [
+    {n:'Pancreatitis', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ต่อเนื่อง (Follow)'], p:'ต้องเฝ้าระวัง (Guarded)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'Vcheck cPL > 900 ng/ml', cat:'Gastrointestinal'},
+    {n:'Dehydration (moderate)', t:'Clinical Sign (Sign)', s:'หาย/สงบ (Resolved/Inactive)', c:[], p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'Skin tenting, PCV 55%', cat:'General'},
+    {n:'Acute Gastroenteritis', t:'Clinical Sign (Sign)', s:'กำลังรักษา (Active)', c:[], p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
+    {n:'Foreign Body Ingestion', t:'Differential Diagnosis (DDx)', s:'หาย/สงบ (Resolved/Inactive)', c:[], p:'ตอบสนองการรักษาดี (Good)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
+    {n:'Heart Murmur', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['เรื้อรัง (Chronic)'], p:'ต้องเฝ้าระวัง (Guarded)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Auscultation: grade 4/6 left apical systolic murmur', cat:'Cardiovascular'},
+    {n:'Arrhythmia', t:'Clinical Sign (Sign)', s:'กำลังรักษา (Active)', c:['ต่อเนื่อง (Follow)'], p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'ECG: irregular rhythm, VPCs', cat:'Cardiovascular'},
+    {n:'Congestive Heart Failure', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ต่อเนื่อง (Follow)','เรื้อรัง (Chronic)'], p:'ต้องเฝ้าระวัง (Guarded)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Echocardiogram: LA enlargement, decreased FS%', cat:'Cardiovascular'},
+    {n:'Pneumonia', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:[], p:'ต้องเฝ้าระวัง (Guarded)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'X-ray: alveolar pattern right cranial lobe', cat:'Respiratory'},
+    {n:'Bronchitis', t:'Clinical Sign (Sign)', s:'หาย/สงบ (Resolved/Inactive)', c:[], p:'', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'X-ray: bronchial pattern', cat:'Respiratory'},
+    {n:'Pulmonary Edema', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ต่อเนื่อง (Follow)'], p:'ต้องเฝ้าระวัง (Guarded)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'X-ray: diffuse alveolar pattern', cat:'Respiratory'},
+    {n:'Atopic Dermatitis', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ต่อเนื่อง (Follow)','เรื้อรัง (Chronic)'], p:'ต้องเฝ้าระวัง (Guarded)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Intradermal test: positive for dust mites, pollen', cat:'Dermatology'},
+    {n:'Flea Allergy Dermatitis', t:'Clinical Sign (Sign)', s:'หาย/สงบ (Resolved/Inactive)', c:[], p:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Flea comb: positive for fleas and flea dirt', cat:'Dermatology'},
+    {n:'Pyoderma', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ต่อเนื่อง (Follow)'], p:'ตอบสนองการรักษาดี (Good)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Skin scrape: negative for mites, bacterial culture positive', cat:'Dermatology'}
+  ];
+  var assessTableData = [];
+  for (var i = 0; i < tabProblems.length; i++) {
+    var hh = String(8 + (i % 10)).padStart(2,'0');
+    var mi = String((i * 13) % 60).padStart(2,'0');
+    assessTableData.push({
+      date: '09/07/26 ' + hh + ':' + mi,
+      name: tabProblems[i].n, cf: tabProblems[i].cf, cat: tabProblems[i].cat,
+      type: tabProblems[i].t, status: tabProblems[i].s, course: tabProblems[i].c || [],
+      prognosis: tabProblems[i].p, dvm: tabProblems[i].dvm, dept: tabProblems[i].dept
+    });
+  }
+  function badgeClass(category, shortVal) {
+    var map = {
+      type: { 'Sign': 'sign', 'Dx': 'dx', 'DDx': 'ddx', 'R/O': 'ro' },
+      status: { 'Active': 'status-active', 'Pending': 'status-pending', 'Resolved/Inactive': 'status-resolved' },
+      prog: { 'Good': 'prog-good', 'Guarded': 'prog-guarded', 'Poor': 'prog-poor', 'Grave': 'prog-grave' }
+    };
+    return map[category] && map[category][shortVal] ? map[category][shortVal] : '';
+  }
+  function renderAssessTable(data) {
+    var tbody = document.getElementById('assessTableBody');
+    var html = '';
+    for (var i = 0; i < data.length; i++) {
+      var shortType = (data[i].type.match(/\(([^)]+)\)/) || ['', data[i].type])[1];
+      var shortStatus = (data[i].status.match(/\(([^)]+)\)/) || ['', data[i].status])[1];
+      var shortProg = data[i].prognosis ? (data[i].prognosis.match(/\(([^)]+)\)/) || ['', data[i].prognosis])[1] : '';
+      var typeBadge = shortType ? '<span class="tbl-badge ptype ' + badgeClass('type', shortType) + '">' + shortType + '</span>' : '';
+      var statusBadge = shortStatus ? '<span class="tbl-badge ptype ' + badgeClass('status', shortStatus) + '">' + shortStatus + '</span>' : '';
+      var courseBadges = '';
+      if (data[i].course && data[i].course.length) {
+        for (var j = 0; j < data[i].course.length; j++) {
+          var sc = (data[i].course[j].match(/\(([^)]+)\)/) || ['', data[i].course[j]])[1];
+          courseBadges += '<span class="tbl-badge ptype">' + esc(sc) + '</span>';
+        }
+      } else courseBadges = '<span style="color:#d1d5db;">—</span>';
+      var progBadge = shortProg ? '<span class="tbl-badge ptype ' + badgeClass('prog', shortProg) + '">' + shortProg + '</span>' : '<span style="color:#d1d5db;">—</span>';
+      html += '<tr><td>' + (i+1) + '</td><td>' + esc(data[i].date) + '</td><td>' + esc(data[i].name) +
+        '</td><td>' + (data[i].cf ? esc(data[i].cf) : '<span style="color:#d1d5db;">—</span>') + '</td><td>' + esc(data[i].cat) +
+        '</td><td>' + typeBadge + '</td><td>' + statusBadge + '</td><td>' + courseBadges +
+        '</td><td>' + progBadge + '</td><td>' + esc(data[i].dvm) + '</td><td>' + esc(data[i].dept) + '</td></tr>';
+    }
+    tbody.innerHTML = html;
+  }
+  function filterAssessTable() {
+    var q = document.getElementById('tbl-search').value.toLowerCase().trim();
+    var catF = document.getElementById('tbl-cat').value;
+    var typeF = document.getElementById('tbl-type').value;
+    var statusF = document.getElementById('tbl-status').value;
+    var filtered = assessTableData.filter(function (r) {
+      var matchQ = !q || r.name.toLowerCase().indexOf(q) >= 0 || (r.cf && r.cf.toLowerCase().indexOf(q) >= 0) || r.dvm.toLowerCase().indexOf(q) >= 0 || r.dept.toLowerCase().indexOf(q) >= 0;
+      return matchQ && (!catF || r.cat === catF) && (!typeF || r.type === typeF) && (!statusF || r.status === statusF);
+    });
+    renderAssessTable(filtered);
+  }
+  document.getElementById('assessSearch').addEventListener('click', filterAssessTable);
+  document.getElementById('assessClear').addEventListener('click', function () {
+    document.getElementById('tbl-search').value = '';
+    document.getElementById('tbl-cat').value = '';
+    document.getElementById('tbl-type').value = '';
+    document.getElementById('tbl-status').value = '';
+    renderAssessTable(assessTableData);
+  });
+  document.getElementById('tbl-search').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') filterAssessTable();
+  });
+
+  fillDateSelect();
+  applyFilterResult();
+  renderVpeTable();
+  renderAssessTable(assessTableData);
+  if (window.matchMedia('(max-width: 900px)').matches) closeDrawer();
+  else openDrawer();
+})();
+</script>
+</body>
+</html>

@@ -89,6 +89,24 @@ const filesTree = [
             "type": "file",
             "path": "NP/objective/objective.html",
             "lastUpdate": "2026-07-24T15:40:00.000000"
+          },
+          {
+            "name": "objective_quillbotdesign.html",
+            "type": "file",
+            "path": "NP/objective/objective_quillbotdesign.html",
+            "lastUpdate": "2026-07-24T15:40:00.000000"
+          },
+          {
+            "name": "objective_manual.md",
+            "type": "file",
+            "path": "NP/objective/objective_manual.md",
+            "lastUpdate": "2026-08-04T07:35:00.000000"
+          },
+          {
+            "name": "for_dev_objective.md",
+            "type": "file",
+            "path": "NP/objective/for_dev_objective.md",
+            "lastUpdate": "2026-08-04T07:35:00.000000"
           }
         ]
       }

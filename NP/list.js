@@ -12,6 +12,9 @@ const assessmentFiles = [
   { title: "Subject Editor", file: "NP/subjective/subject.html", lastUpdate: "2026-07-19T09:30:00.000000" },
   { title: "Subjective Editor", file: "NP/subjective/subjective_editor.html", lastUpdate: "2026-07-19T09:30:00.000000" },
   { title: "Vital & PE Editor", file: "NP/vital_pe/vital_pe_editor.html", lastUpdate: "2026-07-20T16:32:00.000000" },
-  { title: "Objective Module", file: "NP/objective/objective.html", lastUpdate: "2026-07-24T15:40:00.000000" },
+  { title: "Objective Module (ต้นฉบับ)", file: "NP/objective/objective.html", lastUpdate: "2026-07-24T15:40:00.000000" },
+  { title: "Objective QuillBot Design", file: "NP/objective/objective_quillbotdesign.html", lastUpdate: "2026-08-04T09:55:00.000000" },
+  { title: "Objective Manual", file: "NP/objective/objective_manual.md", lastUpdate: "2026-08-04T07:35:00.000000" },
+  { title: "Objective For Dev", file: "NP/objective/for_dev_objective.md", lastUpdate: "2026-08-04T07:35:00.000000" },
   { title: "Module Map", file: "NP/subjective/module-map.md", lastUpdate: "2026-07-13T10:00:00.000000" },
 ];
