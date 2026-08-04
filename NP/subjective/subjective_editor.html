@@ -180,6 +180,45 @@
     .rx-badge:hover { background: #dcfce7; border-color: #4ade80; }
     .rx-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; }
 
+    .lab-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 16px; border: 1px solid #5eead4; border-radius: 999px;
+      font-size: 13px; background: #f0fdfa; color: #0f766e;
+      font-family: inherit; cursor: pointer; font-weight: 500;
+      transition: all .15s;
+    }
+    .lab-badge:hover { background: #ccfbf1; border-color: #2dd4bf; }
+    .lab-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #14b8a6; }
+
+    .path-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 16px; border: 1px solid #f9a8d4; border-radius: 999px;
+      font-size: 13px; background: #fdf2f8; color: #be185d;
+      font-family: inherit; cursor: pointer; font-weight: 500;
+      transition: all .15s;
+    }
+    .path-badge:hover { background: #fce7f3; border-color: #f472b6; }
+    .path-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #ec4899; }
+
+    .exam-entry-group {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+    .exam-entry-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.01em;
+    }
+    .exam-entry-btns {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
     .topics-content {
       flex: 1;
       overflow-y: auto;
@@ -487,19 +526,28 @@
         <div class="editor-col">
           <div class="editor-col-header">
             <span>Editor</span>
-            <div style="display:flex;gap:8px;">
-              <button class="assessment-badge" onclick="window.open('../assessment/assessment_editor.html', '_blank')">
-                <span class="dot"></span> Assessment
-              </button>
-              <button class="vpe-badge" onclick="window.open('../vital_pe/vital_pe_editor.html', '_blank')">
-                <span class="dot"></span> Vital & PE
-              </button>
-              <button class="tx-badge" onclick="window.open('../assessment/assessment_editor.html', '_blank')">
-                <span class="dot"></span> Tx
-              </button>
-              <button class="rx-badge" onclick="window.open('../assessment/assessment_editor.html', '_blank')">
-                <span class="dot"></span> Rx
-              </button>
+            <div class="exam-entry-group">
+              <span class="exam-entry-label">ลงข้อมูลจาก Exam Card นี้</span>
+              <div class="exam-entry-btns">
+                <button class="assessment-badge" type="button" onclick="window.open('../assessment/assessment_editor.html', '_blank')">
+                  <span class="dot"></span> Assessment
+                </button>
+                <button class="vpe-badge" type="button" onclick="window.open('../vital_pe/vital_pe_editor.html', '_blank')">
+                  <span class="dot"></span> Vital & PE
+                </button>
+                <button class="tx-badge" type="button" onclick="window.open('../assessment/assessment_editor.html', '_blank')">
+                  <span class="dot"></span> Tx
+                </button>
+                <button class="rx-badge" type="button" onclick="window.open('../assessment/assessment_editor.html', '_blank')">
+                  <span class="dot"></span> Rx
+                </button>
+                <button class="lab-badge" type="button" onclick="window.open('../assessment/assessment_editor.html', '_blank')">
+                  <span class="dot"></span> Lab
+                </button>
+                <button class="path-badge" type="button" onclick="window.open('../assessment/assessment_editor.html', '_blank')">
+                  <span class="dot"></span> Path
+                </button>
+              </div>
             </div>
           </div>
           <div class="topics-content" id="topicsContent"></div>
