@@ -452,6 +452,15 @@ body {
   .brand-sub { font-size: 18px; }
   .brand-logo { font-size: 18px; }
 }
+
+  #content-5 .data-table, #assessTableOverlay .data-table, #data-table { min-width: 2800px; }
+  .data-table tbody td.cell-opt,
+  .data-table tbody td.cell-clamp {
+    white-space: normal; vertical-align: top; line-height: 1.45; max-width: 240px;
+  }
+  .data-table tbody td.cell-clamp .clamp-inner {
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  }
 </style>
 </head>
 <body>
@@ -678,19 +687,43 @@ body {
     <div class="modal-head"><h3>ตารางข้อมูล Assessment — HN 69001234</h3><button class="modal-x" type="button" data-close="assessTableOverlay">✕ ปิด</button></div>
     <div class="modal-body">
       <div class="data-table-bar">
-        <input type="text" id="tbl-search" placeholder="ค้นหา: problem, confirmatory findings, dvm, department...">
-        <select id="tbl-cat"><option value="">Categories: ทั้งหมด</option><option>General</option><option>Gastrointestinal</option><option>Respiratory</option><option>Cardiovascular</option><option>Musculoskeletal</option><option>Dermatology</option><option>Neurology</option><option>Urogenital</option><option>Endocrine</option><option>Ophthalmology</option></select>
-        <select id="tbl-type"><option value="">Type: ทั้งหมด</option><option>Clinical Sign (Sign)</option><option>Working Diagnosis (Dx)</option><option>Differential Diagnosis (DDx)</option><option>Rule Out (R/O)</option></select>
-        <select id="tbl-status"><option value="">Status: ทั้งหมด</option><option>กำลังรักษา (Active)</option><option>รอผลการตรวจ (Pending)</option><option>หาย/สงบ (Resolved/Inactive)</option></select>
-        <button class="btn-search" type="button" id="assessSearch">ค้นหา</button>
-        <button class="btn-clear" type="button" id="assessClear">ล้างตัวกรอง</button>
-      </div>
-      <div class="data-table-wrap">
-        <table class="data-table">
-          <thead><tr><th>#</th><th>Date/time</th><th>Problem/Diagnosis</th><th>การยืนยัน (Confirmatory Findings)</th><th>Categories</th><th>Type</th><th>Status</th><th>ลักษณะการดำเนิน</th><th>Prognosis</th><th>DVM</th><th>Department</th></tr></thead>
-          <tbody id="assessTableBody"></tbody>
-        </table>
-      </div>
+            <input type="text" id="tbl-search" placeholder="ค้นหา: problem, note, findings, reasoning, dvm, department...">
+            <select id="tbl-cat"><option value="">Categories: ทั้งหมด</option><option>General</option><option>Gastrointestinal</option><option>Respiratory</option><option>Cardiovascular</option><option>Musculoskeletal</option><option>Dermatology</option><option>Neurology</option><option>Urogenital</option><option>Endocrine</option><option>Ophthalmology</option></select>
+            <select id="tbl-type"><option value="">Clinical Condition Category: ทั้งหมด</option><option>การวินิจฉัยเบื้องต้น (Working Diagnosis)</option><option>อาการและอาการแสดง (Clinical Sign)</option><option>การวินิจฉัยแยกโรค (Differential Diagnosis)</option><option>สงสัยเพื่อพิสูจน์ขจัด (Rule Out)</option></select>
+            <select id="tbl-status"><option value="">Clinical Status: ทั้งหมด</option><option>กำลังรักษา (Active)</option><option>อยู่ระหว่างการตรวจ (Pending)</option><option>หายแล้ว/สงบ (Resolved / Inactive)</option></select>
+            <select id="tbl-course"><option value="">Clinical Course: ทั้งหมด</option><option>เฉียบพลัน (Acute)</option><option>กลับเป็นซ้ำ (Recurrent)</option><option>ติดตามอาการ (Follow-up)</option><option>เรื้อรัง (Chronic)</option></select>
+            <select id="tbl-prog"><option value="">Prognosis: ทั้งหมด</option><option>พยากรณ์โรคดี (Good Prognosis)</option><option>ต้องเฝ้าระวัง (Guarded Prognosis)</option><option>พยากรณ์โรคไม่ดี (Poor Prognosis)</option><option>วิกฤต/ทรุดหนัก (Grave Prognosis)</option></select>
+            <select id="tbl-sev"><option value="">Severity: ทั้งหมด</option><option>เล็กน้อย (Mild)</option><option>ปานกลาง (Moderate)</option><option>รุนแรง (Severe)</option><option>วิกฤต/อันตรายถึงชีวิต (Life-threatening)</option></select>
+            <select id="tbl-rec"><option value="">Record status: ทั้งหมด</option><option>Confirmed</option><option>Disable</option></select>
+            <button class="btn-search" type="button" id="assessSearch">ค้นหา</button>
+            <button class="btn-clear" type="button" id="assessClear">ล้างตัวกรอง</button>
+          </div>
+          <div class="data-table-wrap">
+            <table class="data-table" id="assess-data-table">
+              <thead><tr>
+                <th>Process On</th>
+                <th>Problem/Diagnosis</th>
+                <th>หมายเหตุปัญหาทางกายภาพ (Problem Note)</th>
+                <th>ประเภทปัญหา / ข้อวินิจฉัย (Clinical Condition Category)</th>
+                <th>ลักษณะการดำเนินของโรค (Clinical Course)</th>
+                <th>สถานะของปัญหาทางคลินิก (Clinical Status)</th>
+                <th>ผลการตรวจยืนยันทางคลินิก (Confirmatory Finding / Evidence)</th>
+                <th>Categories</th>
+                <th>ระดับความรุนแรงของโรค (Severity)</th>
+                <th>การพยากรณ์โรค (Prognosis)</th>
+                <th>ระดับความมั่นใจการวินิจฉัย (Diagnostic Certainty)</th>
+                <th>ระยะเวลาที่คาดว่าจะป่วย/รักษา (Clinical Duration)</th>
+                <th>เหตุผลและความเห็นทางคลินิก (Clinical Reasoning)</th>
+                <th>สรุปการประเมิน (Assessment Summary)</th>
+                <th>DVM</th>
+                <th>Department</th>
+                <th>Record date time</th>
+                <th>Last update</th>
+                <th>Record status</th>
+              </tr></thead>
+              <tbody id="assessTableBody"></tbody>
+            </table>
+          </div>
     </div>
   </div>
 </div>
@@ -1345,87 +1378,365 @@ body {
     }).join('');
   }
 
-  // Assessment table (from original tabProblems)
-  var tabProblems = [
-    {n:'Pancreatitis', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ต่อเนื่อง (Follow)'], p:'ต้องเฝ้าระวัง (Guarded)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'Vcheck cPL > 900 ng/ml', cat:'Gastrointestinal'},
-    {n:'Dehydration (moderate)', t:'Clinical Sign (Sign)', s:'หาย/สงบ (Resolved/Inactive)', c:[], p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'Skin tenting, PCV 55%', cat:'General'},
-    {n:'Acute Gastroenteritis', t:'Clinical Sign (Sign)', s:'กำลังรักษา (Active)', c:[], p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
-    {n:'Foreign Body Ingestion', t:'Differential Diagnosis (DDx)', s:'หาย/สงบ (Resolved/Inactive)', c:[], p:'ตอบสนองการรักษาดี (Good)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
-    {n:'Heart Murmur', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['เรื้อรัง (Chronic)'], p:'ต้องเฝ้าระวัง (Guarded)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Auscultation: grade 4/6 left apical systolic murmur', cat:'Cardiovascular'},
-    {n:'Arrhythmia', t:'Clinical Sign (Sign)', s:'กำลังรักษา (Active)', c:['ต่อเนื่อง (Follow)'], p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'ECG: irregular rhythm, VPCs', cat:'Cardiovascular'},
-    {n:'Congestive Heart Failure', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ต่อเนื่อง (Follow)','เรื้อรัง (Chronic)'], p:'ต้องเฝ้าระวัง (Guarded)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Echocardiogram: LA enlargement, decreased FS%', cat:'Cardiovascular'},
-    {n:'Pneumonia', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:[], p:'ต้องเฝ้าระวัง (Guarded)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'X-ray: alveolar pattern right cranial lobe', cat:'Respiratory'},
-    {n:'Bronchitis', t:'Clinical Sign (Sign)', s:'หาย/สงบ (Resolved/Inactive)', c:[], p:'', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'X-ray: bronchial pattern', cat:'Respiratory'},
-    {n:'Pulmonary Edema', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ต่อเนื่อง (Follow)'], p:'ต้องเฝ้าระวัง (Guarded)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'X-ray: diffuse alveolar pattern', cat:'Respiratory'},
-    {n:'Atopic Dermatitis', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ต่อเนื่อง (Follow)','เรื้อรัง (Chronic)'], p:'ต้องเฝ้าระวัง (Guarded)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Intradermal test: positive for dust mites, pollen', cat:'Dermatology'},
-    {n:'Flea Allergy Dermatitis', t:'Clinical Sign (Sign)', s:'หาย/สงบ (Resolved/Inactive)', c:[], p:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Flea comb: positive for fleas and flea dirt', cat:'Dermatology'},
-    {n:'Pyoderma', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ต่อเนื่อง (Follow)'], p:'ตอบสนองการรักษาดี (Good)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Skin scrape: negative for mites, bacterial culture positive', cat:'Dermatology'}
-  ];
+  /* ===== Assessment table (from assessment_editor) ===== */
   var assessTableData = [];
-  for (var i = 0; i < tabProblems.length; i++) {
-    var hh = String(8 + (i % 10)).padStart(2,'0');
-    var mi = String((i * 13) % 60).padStart(2,'0');
-    assessTableData.push({
-      date: '09/07/26 ' + hh + ':' + mi,
-      name: tabProblems[i].n, cf: tabProblems[i].cf, cat: tabProblems[i].cat,
-      type: tabProblems[i].t, status: tabProblems[i].s, course: tabProblems[i].c || [],
-      prognosis: tabProblems[i].p, dvm: tabProblems[i].dvm, dept: tabProblems[i].dept
-    });
-  }
-  function badgeClass(category, shortVal) {
-    var map = {
-      type: { 'Sign': 'sign', 'Dx': 'dx', 'DDx': 'ddx', 'R/O': 'ro' },
-      status: { 'Active': 'status-active', 'Pending': 'status-pending', 'Resolved/Inactive': 'status-resolved' },
-      prog: { 'Good': 'prog-good', 'Guarded': 'prog-guarded', 'Poor': 'prog-poor', 'Grave': 'prog-grave' }
-    };
-    return map[category] && map[category][shortVal] ? map[category][shortVal] : '';
-  }
-  function renderAssessTable(data) {
-    var tbody = document.getElementById('assessTableBody');
-    var html = '';
-    for (var i = 0; i < data.length; i++) {
-      var shortType = (data[i].type.match(/\(([^)]+)\)/) || ['', data[i].type])[1];
-      var shortStatus = (data[i].status.match(/\(([^)]+)\)/) || ['', data[i].status])[1];
-      var shortProg = data[i].prognosis ? (data[i].prognosis.match(/\(([^)]+)\)/) || ['', data[i].prognosis])[1] : '';
-      var typeBadge = shortType ? '<span class="tbl-badge ptype ' + badgeClass('type', shortType) + '">' + shortType + '</span>' : '';
-      var statusBadge = shortStatus ? '<span class="tbl-badge ptype ' + badgeClass('status', shortStatus) + '">' + shortStatus + '</span>' : '';
-      var courseBadges = '';
-      if (data[i].course && data[i].course.length) {
-        for (var j = 0; j < data[i].course.length; j++) {
-          var sc = (data[i].course[j].match(/\(([^)]+)\)/) || ['', data[i].course[j]])[1];
-          courseBadges += '<span class="tbl-badge ptype">' + esc(sc) + '</span>';
-        }
-      } else courseBadges = '<span style="color:#d1d5db;">—</span>';
-      var progBadge = shortProg ? '<span class="tbl-badge ptype ' + badgeClass('prog', shortProg) + '">' + shortProg + '</span>' : '<span style="color:#d1d5db;">—</span>';
-      html += '<tr><td>' + (i+1) + '</td><td>' + esc(data[i].date) + '</td><td>' + esc(data[i].name) +
-        '</td><td>' + (data[i].cf ? esc(data[i].cf) : '<span style="color:#d1d5db;">—</span>') + '</td><td>' + esc(data[i].cat) +
-        '</td><td>' + typeBadge + '</td><td>' + statusBadge + '</td><td>' + courseBadges +
-        '</td><td>' + progBadge + '</td><td>' + esc(data[i].dvm) + '</td><td>' + esc(data[i].dept) + '</td></tr>';
+    var problems = [
+      {n:'Pancreatitis', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['เฉียบพลัน (Acute)','ติดตามอาการ (Follow-up)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'Vcheck cPL > 900 ng/ml', cat:'Gastrointestinal'},
+      {n:'Acute Gastroenteritis', t:'Clinical Sign (Sign)', s:'กำลังรักษา (Active)', c:[], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
+      {n:'Dehydration (moderate)', t:'Clinical Sign (Sign)', s:'หายแล้ว/สงบ (Resolved / Inactive)', c:[], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'Skin tenting, PCV 55%', cat:'General'},
+      {n:'Foreign Body Ingestion', t:'Differential Diagnosis (DDx)', s:'หายแล้ว/สงบ (Resolved / Inactive)', c:[], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
+      {n:'Congestive Heart Failure', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)','เรื้อรัง (Chronic)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Echocardiogram: LA enlargement, decreased FS%', cat:'Cardiovascular'},
+      {n:'Heart Murmur', t:'Clinical Sign (Sign)', s:'กำลังรักษา (Active)', c:['เรื้อรัง (Chronic)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'', cat:'Cardiovascular'},
+      {n:'Arrhythmia', t:'Clinical Sign (Sign)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'ECG: atrial fibrillation', cat:'Cardiovascular'},
+      {n:'Mitral Valve Disease', t:'Differential Diagnosis (DDx)', s:'กำลังรักษา (Active)', c:['เรื้อรัง (Chronic)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'', cat:'Cardiovascular'},
+      {n:'Pulmonary Edema', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'X-ray: diffuse alveolar pattern', cat:'Respiratory'},
+      {n:'Pneumonia', t:'Clinical Sign (Sign)', s:'กำลังรักษา (Active)', c:[], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Respiratory'},
+      {n:'Bronchitis', t:'Clinical Sign (Sign)', s:'หายแล้ว/สงบ (Resolved / Inactive)', c:[], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'X-ray: bronchial pattern', cat:'Respiratory'},
+      {n:'Pyoderma', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Skin scrape: negative for mites, bacterial culture positive', cat:'Dermatology'},
+      {n:'Atopic Dermatitis', t:'Clinical Sign (Sign)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)','เรื้อรัง (Chronic)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'', cat:'Dermatology'},
+      {n:'Flea Allergy Dermatitis', t:'Clinical Sign (Sign)', s:'หายแล้ว/สงบ (Resolved / Inactive)', c:['เฉียบพลัน (Acute)'], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Flea comb: positive for fleas and flea dirt', cat:'Dermatology'},
+      {n:'Otitis Externa', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'', cat:'Dermatology'},
+      {n:'Hypothyroidism', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['เรื้อรัง (Chronic)'], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'T4 0.8 μg/dL, TSH elevated', cat:'Endocrine'},
+      {n:'Diabetes Mellitus', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)','เรื้อรัง (Chronic)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'', cat:'Endocrine'},
+      {n:'Chronic Kidney Disease', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)','เรื้อรัง (Chronic)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'BUN 65, Creatinine 3.2, USG 1.012', cat:'Urogenital'},
+      {n:'Urinary Tract Infection', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Urogenital'},
+      {n:'Hepatic Lipidosis', t:'Differential Diagnosis (DDx)', s:'อยู่ระหว่างการตรวจ (Pending)', c:[], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'Ultrasound: hyperechoic liver, ALT 280', cat:'Gastrointestinal'},
+      {n:'Fracture (femur)', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'', cat:'Musculoskeletal'},
+      {n:'Osteoarthritis', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['เรื้อรัง (Chronic)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'X-ray: joint space narrowing, osteophytes', cat:'Musculoskeletal'},
+      {n:'Seizure Disorder', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)','เรื้อรัง (Chronic)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Neurology'},
+      {n:'Intervertebral Disc Disease', t:'Differential Diagnosis (DDx)', s:'อยู่ระหว่างการตรวจ (Pending)', c:['ติดตามอาการ (Follow-up)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'MRI: T12-T13 disc compression', cat:'Neurology'},
+      {n:'Conjunctivitis', t:'Working Diagnosis (Dx)', s:'หายแล้ว/สงบ (Resolved / Inactive)', c:[], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Ophthalmology'},
+      {n:'Glaucoma', t:'Rule Out (R/O)', s:'อยู่ระหว่างการตรวจ (Pending)', c:['ติดตามอาการ (Follow-up)'], p:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'IOP 28 mmHg OD, 14 mmHg OS', cat:'Ophthalmology'},
+      {n:'Anemia', t:'Clinical Sign (Sign)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'General'},
+      {n:'Leptospirosis', t:'Rule Out (R/O)', s:'อยู่ระหว่างการตรวจ (Pending)', c:[], p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'MAT titer 1:800 Leptospira canicola', cat:'General'},
+      {n:'Tick-borne Disease', t:'Differential Diagnosis (DDx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'General'},
+      {n:'Dental Disease', t:'Clinical Sign (Sign)', s:'กำลังรักษา (Active)', c:['เรื้อรัง (Chronic)'], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Oral exam: grade 3 periodontal disease', cat:'General'},
+      {n:'Obesity', t:'Clinical Sign (Sign)', s:'กำลังรักษา (Active)', c:['เรื้อรัง (Chronic)'], p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'General'},
+      {n:'Vomiting (chronic)', t:'Clinical Sign (Sign)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'CBC: eosinophilia, normal chem panel', cat:'Gastrointestinal'},
+      {n:'Diarrhea (acute)', t:'Clinical Sign (Sign)', s:'หายแล้ว/สงบ (Resolved / Inactive)', c:[], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
+      {n:'Weight Loss', t:'Clinical Sign (Sign)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Body condition score 3/9, muscle loss', cat:'General'},
+      {n:'Lethargy', t:'Clinical Sign (Sign)', s:'หายแล้ว/สงบ (Resolved / Inactive)', c:[], p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'General'},
+      {n:'Cushing Syndrome', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)','เรื้อรัง (Chronic)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'LDDST: cortisol 9.5 μg/dL post-dex', cat:'Endocrine'},
+      {n:'Addison Disease', t:'Differential Diagnosis (DDx)', s:'อยู่ระหว่างการตรวจ (Pending)', c:[], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Endocrine'},
+      {n:'Hyperthyroidism', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['เรื้อรัง (Chronic)'], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'T4 6.2 μg/dL, free T4 elevated', cat:'Endocrine'},
+      {n:'Mast Cell Tumor', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'พยากรณ์โรคไม่ดี (Poor Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Dermatology'},
+      {n:'Lymphoma', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)','เรื้อรัง (Chronic)'], p:'วิกฤต/ทรุดหนัก (Grave Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'LN aspirate: large lymphoid blasts, Ki67 high', cat:'General'},
+      {n:'Hemorrhagic Gastroenteritis', t:'Working Diagnosis (Dx)', s:'หายแล้ว/สงบ (Resolved / Inactive)', c:[], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
+      {n:'Portosystemic Shunt', t:'Rule Out (R/O)', s:'อยู่ระหว่างการตรวจ (Pending)', c:[], p:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Bile acids 120 μmol/L, ammonia elevated', cat:'Gastrointestinal'},
+      {n:'Gastric Dilatation-Volvulus', t:'Working Diagnosis (Dx)', s:'หายแล้ว/สงบ (Resolved / Inactive)', c:[], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
+      {n:'Esophagitis', t:'Differential Diagnosis (DDx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Endoscopy: esophageal erosion', cat:'Gastrointestinal'},
+      {n:'Colitis', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['เรื้อรัง (Chronic)'], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
+      {n:'Pancreatic Insufficiency', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['เรื้อรัง (Chronic)'], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'TLI 1.2 μg/L (low), B12 180 ng/L', cat:'Gastrointestinal'},
+      {n:'Rhinitis', t:'Clinical Sign (Sign)', s:'หายแล้ว/สงบ (Resolved / Inactive)', c:[], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Respiratory'},
+      {n:'Nasal Tumor', t:'Rule Out (R/O)', s:'อยู่ระหว่างการตรวจ (Pending)', c:['ติดตามอาการ (Follow-up)','เรื้อรัง (Chronic)'], p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'CT: nasal mass, biopsy pending', cat:'Respiratory'},
+      {n:'Corneal Ulcer', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Ophthalmology'},
+      {n:'Uveitis', t:'Differential Diagnosis (DDx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Slit lamp: flare and cells in anterior chamber', cat:'Ophthalmology'},
+      {n:'Hypoadrenocorticism', t:'Rule Out (R/O)', s:'อยู่ระหว่างการตรวจ (Pending)', c:[], p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Endocrine'},
+      {n:'Prostatitis', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Urinalysis: bacteria, WBC 50+/hpf', cat:'Urogenital'},
+      {n:'Pyometra', t:'Working Diagnosis (Dx)', s:'หายแล้ว/สงบ (Resolved / Inactive)', c:[], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Urogenital'}
+    ];
+
+    var tabProblems = [
+      {n:'Pancreatitis', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'Vcheck cPL > 900 ng/ml', cat:'Gastrointestinal'},
+      {n:'Dehydration (moderate)', t:'Clinical Sign (Sign)', s:'หายแล้ว/สงบ (Resolved / Inactive)', c:[], p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'Skin tenting, PCV 55%', cat:'General'},
+      {n:'Acute Gastroenteritis', t:'Clinical Sign (Sign)', s:'กำลังรักษา (Active)', c:[], p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
+      {n:'Foreign Body Ingestion', t:'Differential Diagnosis (DDx)', s:'หายแล้ว/สงบ (Resolved / Inactive)', c:[], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
+      {n:'Heart Murmur', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['เรื้อรัง (Chronic)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Auscultation: grade 4/6 left apical systolic murmur', cat:'Cardiovascular'},
+      {n:'Arrhythmia', t:'Clinical Sign (Sign)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'ECG: irregular rhythm, VPCs', cat:'Cardiovascular'},
+      {n:'Congestive Heart Failure', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)','เรื้อรัง (Chronic)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Echocardiogram: LA enlargement, decreased FS%', cat:'Cardiovascular'},
+      {n:'Pneumonia', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:[], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'X-ray: alveolar pattern right cranial lobe', cat:'Respiratory'},
+      {n:'Bronchitis', t:'Clinical Sign (Sign)', s:'หายแล้ว/สงบ (Resolved / Inactive)', c:[], p:'', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'X-ray: bronchial pattern', cat:'Respiratory'},
+      {n:'Pulmonary Edema', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'X-ray: diffuse alveolar pattern', cat:'Respiratory'},
+      {n:'Atopic Dermatitis', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['กลับเป็นซ้ำ (Recurrent)','เรื้อรัง (Chronic)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Intradermal test: positive for dust mites, pollen', cat:'Dermatology'},
+      {n:'Flea Allergy Dermatitis', t:'Clinical Sign (Sign)', s:'หายแล้ว/สงบ (Resolved / Inactive)', c:[], p:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Flea comb: positive for fleas and flea dirt', cat:'Dermatology'},
+      {n:'Pyoderma', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Skin scrape: negative for mites, bacterial culture positive', cat:'Dermatology'}
+    ];
+
+    var dvmPool = [
+      'นิพนธ์ วงศ์ประเสริฐ', 'วิชัย ใจดี', 'ปนัดดา ศรีสุข', 'สมชาย พูนสุข',
+      'วราภรณ์ แสงทอง', 'กิตติพงศ์ อรุณ', 'อรทัย มณีรัตน์', 'ชาญชัย รุ่งเรือง',
+      'พิมพ์ใจ ศรีสุข', 'ธนพล แก้วมณี', 'นภัสสร ใจดี', 'สุภาพร มีสุข'
+    ];
+    var deptPool = [
+      'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', 'อายุรกรรมทั่วไป (ในเวลา)', 'ภาพวินิจฉัย (นอกเวลา)',
+      'ศัลยกรรมทั่วไป (ในเวลา)', 'อายุรกรรมแมว (นอกเวลา)', 'ฉุกเฉินและวิกฤต (นอกเวลา)',
+      'ทันตกรรมสัตว์ (ในเวลา)', 'อายุรกรรมระบบประสาท (นอกเวลา)', 'ผิวหนังและภูมิแพ้ (ในเวลา)',
+      'จักษุสัตว์ (นอกเวลา)', 'อายุรกรรมไตและทางเดินปัสสาวะ (ในเวลา)', 'อายุรกรรมทางเดินอาหาร (นอกเวลา)'
+    ];
+
+    /* extra special-case rows mixed into samples */
+    var specialProblems = [
+      /* Problem/Diagnosis และ Problem Note เป็นข้อความเดียวกัน */
+      { n: 'Canine Parvovirus', noteSame: true, t: 'Working Diagnosis (Dx)', s: 'กำลังรักษา (Active)', c: ['เฉียบพลัน (Acute)'], p: 'ต้องเฝ้าระวัง (Guarded Prognosis)', cf: 'SNAP Parvo positive, leukopenia', cat: 'Gastrointestinal', sev: 'รุนแรง (Severe)', conf: 'ยืนยันชัดเจน (Confirmed / High Certainty)', dur: '5-10 วัน',
+        reasoning: 'ลูกสุนัขอาเจียน ท้องเสียมีมูกเลือด ผล SNAP Parvo เป็นบวก สอดคล้องกับ canine parvovirus',
+        summary: 'เคส Parvo ในลูกสุนัขอายุ 3 เดือน — กักแยก ให้ IV fluid และ supportive care ติดตาม CBC ทุกวัน' },
+      { n: 'Keratoconjunctivitis Sicca', noteSame: true, t: 'Working Diagnosis (Dx)', s: 'กำลังรักษา (Active)', c: ['เรื้อรัง (Chronic)', 'ติดตามอาการ (Follow-up)'], p: 'พยากรณ์โรคดี (Good Prognosis)', cf: 'STT OD 8 mm/min, OS 10 mm/min', cat: 'Ophthalmology', sev: 'ปานกลาง (Moderate)', conf: 'น่าจะใช่/มีหลักฐานบางส่วน (Probable / Medium)', dur: 'ระยะยาว (ตลอดชีวิต)',
+        reasoning: 'พบขี้ตาเหนียว กระจกตาด้าน ผล STT ต่ำกว่าเกณฑ์ สอดคล้องกับ KCS',
+        summary: 'วินิจฉัย KCS เริ่ม cyclosporine ophthalmic และน้ำตาเทียม นัด recheck STT ใน 2 สัปดาห์' },
+      { n: 'Feline Lower Urinary Tract Disease', noteSame: true, t: 'Clinical Sign (Sign)', s: 'กำลังรักษา (Active)', c: ['กลับเป็นซ้ำ (Recurrent)'], p: 'พยากรณ์โรคดี (Good Prognosis)', cf: 'UA: struvite crystals, US: mild bladder wall thickening', cat: 'Urogenital', sev: 'ปานกลาง (Moderate)', conf: 'น่าจะใช่/มีหลักฐานบางส่วน (Probable / Medium)', dur: '3-7 วัน',
+        reasoning: 'แมวถ่ายปัสสาวะบ่อย ปวดเวลาขับถ่าย พบผลึกใน UA ไม่พบ urethral obstruction',
+        summary: 'FLUTD แบบไม่ตัน — ปรับอาหาร urinary และลดความเครียด สังเกตการขับถ่ายที่บ้าน' },
+
+      /* Problem/Diagnosis ว่าง — Problem Note เป็นชื่อคำวินิจฉัย (ไม่ใช่ข้อความบรรยาย) */
+      { n: '', note: 'Suspected Feline Infectious Peritonitis', noteIsDx: true, t: 'Rule Out (R/O)', s: 'อยู่ระหว่างการตรวจ (Pending)', c: ['เฉียบพลัน (Acute)'], p: 'พยากรณ์โรคไม่ดี (Poor Prognosis)', cf: 'Exudative pleural effusion, A:G ratio 0.4', cat: 'General', sev: 'วิกฤต/อันตรายถึงชีวิต (Life-threatening)', conf: 'สงสัย/ยังไม่ยืนยัน (Possible / Low)', dur: 'รอผล PCR',
+        reasoning: 'แมวซึม หายใจลำบาก มีน้ำในช่องอก อัตราส่วน A:G ต่ำ อยู่ระหว่างรอ Real-time PCR',
+        summary: 'สงสัย FIP ระหว่างรอผลยืนยัน — ให้ supportive care และแจ้งพยากรณ์โรคกับเจ้าของแล้ว' },
+      { n: '', note: 'Immune-mediated Hemolytic Anemia', noteIsDx: true, t: 'Working Diagnosis (Dx)', s: 'กำลังรักษา (Active)', c: ['เฉียบพลัน (Acute)', 'ติดตามอาการ (Follow-up)'], p: 'ต้องเฝ้าระวัง (Guarded Prognosis)', cf: 'PCV 18%, spherocytes, saline agglutination positive', cat: 'General', sev: 'รุนแรง (Severe)', conf: 'น่าจะใช่/มีหลักฐานบางส่วน (Probable / Medium)', dur: '2-4 สัปดาห์',
+        reasoning: 'สุนัขซีด อ่อนแรง พบ spherocytes และการเกาะกลุ่มของเม็ดเลือด สอดคล้องกับ IMHA',
+        summary: 'เริ่ม immunosuppressive protocol และเฝ้าระวังภาวะแทรกซ้อนจากการให้เลือด' },
+      { n: '', note: 'Cholangiohepatitis', noteIsDx: true, t: 'Differential Diagnosis (DDx)', s: 'อยู่ระหว่างการตรวจ (Pending)', c: ['เรื้อรัง (Chronic)'], p: 'ต้องเฝ้าระวัง (Guarded Prognosis)', cf: 'ALT 320, ALP 280, US: thickened bile duct wall', cat: 'Gastrointestinal', sev: 'ปานกลาง (Moderate)', conf: 'สงสัย/ยังไม่ยืนยัน (Possible / Low)', dur: 'รอผล cytology',
+        reasoning: 'แมวอาเจียนเป็นพักๆ ค่าตับสูง Ultrasound พบท่อน้ำดีหนา วางแผน FNA/cytology',
+        summary: 'DDx cholangiohepatitis — รอผลเนื้อเยื่อก่อนกำหนดยาปฏิชีวนะ/immunosuppressive' },
+      { n: '', note: 'Intervertebral Disc Disease (T12-T13)', noteIsDx: true, t: 'Working Diagnosis (Dx)', s: 'กำลังรักษา (Active)', c: ['เฉียบพลัน (Acute)'], p: 'ต้องเฝ้าระวัง (Guarded Prognosis)', cf: 'MRI: T12-T13 disc compression, grade III paraparesis', cat: 'Neurology', sev: 'รุนแรง (Severe)', conf: 'ยืนยันชัดเจน (Confirmed / High Certainty)', dur: '1-2 สัปดาห์หลังผ่าตัด',
+        reasoning: 'สุนัขขาหลังอ่อนแรงเฉียบพลัน MRI ยืนยันการกดทับไขสันหลังระดับ T12-T13',
+        summary: 'วางแผน decompression surgery และฟื้นฟูการเคลื่อนไหวหลังผ่าตัด' }
+    ];
+
+    var severities = ['เล็กน้อย (Mild)', 'ปานกลาง (Moderate)', 'รุนแรง (Severe)', 'วิกฤต/อันตรายถึงชีวิต (Life-threatening)'];
+    var confidences = ['ยืนยันชัดเจน (Confirmed / High Certainty)', 'น่าจะใช่/มีหลักฐานบางส่วน (Probable / Medium)', 'สงสัย/ยังไม่ยืนยัน (Possible / Low)'];
+    var durations = ['1-3 วัน', '3-7 วัน', '2-4 สัปดาห์', '1-2 สัปดาห์', 'ระยะยาว (ตลอดชีวิต)', '5-10 วัน', 'รอผลตรวจเพิ่มเติม'];
+
+    function pickStaff(idx) {
+      return {
+        dvm: dvmPool[idx % dvmPool.length],
+        dept: deptPool[(idx * 3 + 1) % deptPool.length]
+      };
     }
-    tbody.innerHTML = html;
-  }
-  function filterAssessTable() {
-    var q = document.getElementById('tbl-search').value.toLowerCase().trim();
-    var catF = document.getElementById('tbl-cat').value;
-    var typeF = document.getElementById('tbl-type').value;
-    var statusF = document.getElementById('tbl-status').value;
-    var filtered = assessTableData.filter(function (r) {
-      var matchQ = !q || r.name.toLowerCase().indexOf(q) >= 0 || (r.cf && r.cf.toLowerCase().indexOf(q) >= 0) || r.dvm.toLowerCase().indexOf(q) >= 0 || r.dept.toLowerCase().indexOf(q) >= 0;
-      return matchQ && (!catF || r.cat === catF) && (!typeF || r.type === typeF) && (!statusF || r.status === statusF);
+    function uniqueNote(name, idx) {
+      var templates = [
+        'เริ่มแผนรักษาเฉพาะสำหรับ ' + name + ' — ประเมินซ้ำในรอบถัดไปและปรับยาตามการตอบสนอง',
+        'บันทึกการติดตาม ' + name + ': สังเกตอาการที่บ้าน หากแย่ลงให้นำมาฉุกเฉิน',
+        'ให้การรักษาประคับประคองควบคู่การสืบค้นเพิ่มของ ' + name + ' ตามลำดับความเร่งด่วน',
+        'อธิบายพยากรณ์โรคและทางเลือกการรักษาของ ' + name + ' แก่เจ้าของแล้ว รอการตัดสินใจเรื่องค่าใช้จ่าย',
+        'ประสานแผนกที่เกี่ยวข้องเพื่อตรวจต่อเนื่องของ ' + name + ' และนัด follow-up ตามแผน'
+      ];
+      return templates[idx % templates.length];
+    }
+    function uniqueReasoning(name, idx) {
+      var templates = [
+        'ประเมินจากประวัติ ตรวจร่างกาย และผลแล็บของเคสนี้ สอดคล้องกับ ' + name + ' มากกว่าสาเหตุอื่นในช่วงเวลานี้',
+        'ข้อมูล clin path และ imaging ชี้ไปทาง ' + name + ' แต่ยังต้องแยกโรคใกล้เคียงออกตามแผนสืบค้น',
+        'อาการนำและ progress ของผู้ป่วยเข้าได้กับ ' + name + ' โดยมีหลักฐานสนับสนุนจากการตรวจครั้งนี้',
+        'พิจารณา ' + name + ' เป็นสมมติฐานหลักหลังตัดสาเหตุฉุกเฉินที่อันตรายกว่าออกแล้ว',
+        'ความรุนแรงและ timeline ของอาการเข้ากับ ' + name + ' และตอบสนองเบื้องต้นต่อการรักษาเป็นไปตามคาด'
+      ];
+      return templates[idx % templates.length];
+    }
+    function uniqueSummary(name, dvm, dept, idx) {
+      var label = name || 'ปัญหาที่ระบุใน Problem Note';
+      var templates = [
+        'สรุป visit นี้โดย ' + dvm + ' (' + dept + '): เน้นจัดการ ' + label + ' เป็นปัญหาหลัก พร้อมแผนติดตามชัดเจน',
+        'Assessment ของ ' + dvm + ' — ' + label + ' ถูกจัดลำดับความสำคัญสูงสุดในแผนก ' + dept,
+        'บันทึกสรุป: ผู้ป่วยมี ' + label + ' ได้รับการประเมินโดย ' + dvm + ' และประสานงานภายใน ' + dept,
+        'ภาพรวมทางคลินิกวันนี้: ' + label + ' เป็นจุดโฟกัสหลัก การสื่อสารกับเจ้าของครบถ้วนโดย ' + dvm,
+        'สรุปการประเมิน #' + (idx + 1) + ': ' + label + ' ที่ ' + dept + ' — ติดตามผลและปรับแผนโดย ' + dvm
+      ];
+      return templates[idx % templates.length];
+    }
+
+    function toFullDateTime(shortDt) {
+      /* 09/07/26 08:15 → 09/07/2026 08:15 */
+      var m = String(shortDt || '').match(/^(\d{2})\/(\d{2})\/(\d{2})\s+(\d{2}:\d{2})$/);
+      if (!m) return shortDt || '—';
+      return m[1] + '/' + m[2] + '/20' + m[3] + ' ' + m[4];
+    }
+    function addMinutes(fullDt, mins) {
+      var m = String(fullDt || '').match(/^(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2})$/);
+      if (!m) return fullDt;
+      var d = new Date(parseInt(m[3], 10), parseInt(m[2], 10) - 1, parseInt(m[1], 10), parseInt(m[4], 10), parseInt(m[5], 10) + mins);
+      function p(n) { return n < 10 ? '0' + n : '' + n; }
+      return p(d.getDate()) + '/' + p(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+    }
+    function buildAssessRow(src, processOnShort, idx) {
+      var processOn = toFullDateTime(processOnShort);
+      var recordDt = addMinutes(processOn.replace(/\d{2}:\d{2}$/, '07:45'), (idx % 5) * 7);
+      var lastUpdate = addMinutes(processOn, 8 + (idx % 55));
+      var staff = pickStaff(idx);
+      var dvm = staff.dvm;
+      var dept = staff.dept;
+      var isResolved = (src.s || '').indexOf('Resolved') >= 0;
+      var isPending = (src.s || '').indexOf('Pending') >= 0;
+      var sev = src.sev || severities[idx % severities.length];
+      if (isPending && !src.sev) sev = 'ปานกลาง (Moderate)';
+      var conf = src.conf || confidences[idx % confidences.length];
+      if ((src.t || '').indexOf('R/O') >= 0 || (src.t || '').indexOf('Rule Out') >= 0) {
+        conf = 'สงสัย/ยังไม่ยืนยัน (Possible / Low)';
+      }
+
+      var name = src.n || '';
+      var note = '';
+      if (src.noteIsDx) {
+        name = '';
+        note = src.note || '';
+      } else if (src.noteSame) {
+        name = src.n || '';
+        note = src.n || '';
+      } else if (src.note) {
+        note = src.note;
+      } else {
+        note = uniqueNote(src.n || 'ปัญหาที่ยังไม่ตั้งชื่อ', idx);
+      }
+
+      var reasoning = src.reasoning || uniqueReasoning(name || note || 'ปัญหาทางคลินิก', idx);
+      var summary = src.summary || uniqueSummary(name || note, dvm, dept, idx);
+      var recStatus = src.rec || ((isResolved && idx % 4 === 0) ? 'Disable' : 'Confirmed');
+      var courseList = (src.c || []).map(courseFullLabel).filter(Boolean);
+      return {
+        processOn: processOn,
+        name: name,
+        note: note,
+        type: typeFullLabel(src.t),
+        course: courseList,
+        courseText: courseList.join(', '),
+        status: src.s || '',
+        cf: src.cf || '',
+        cat: src.cat || '',
+        severity: sev,
+        prognosis: src.p || '',
+        confidence: conf,
+        duration: src.dur || durations[idx % durations.length],
+        reasoning: reasoning,
+        summary: summary,
+        dvm: dvm,
+        dept: dept,
+        recordDateTime: recordDt,
+        lastUpdate: lastUpdate,
+        recordStatus: recStatus
+      };
+    }
+
+    var allProblemSources = specialProblems.concat(tabProblems).concat(problems);
+    var baseDate = new Date(2026, 6, 10);
+    for (var i = 0; i < allProblemSources.length; i++) {
+      var d = new Date(baseDate);
+      d.setDate(d.getDate() - Math.floor(i * 1.7));
+      var dd = String(d.getDate()).padStart(2, '0');
+      var mm = String(d.getMonth() + 1).padStart(2, '0');
+      var yy = String(d.getFullYear()).slice(2);
+      var hh = String(7 + (i % 11)).padStart(2, '0');
+      var mi = String((i * 11) % 60).padStart(2, '0');
+      assessTableData.push(buildAssessRow(allProblemSources[i], dd + '/' + mm + '/' + yy + ' ' + hh + ':' + mi, i));
+    }
+
+    function typeFullLabel(t) {
+      var map = {
+        'Working Diagnosis (Dx)': 'การวินิจฉัยเบื้องต้น (Working Diagnosis)',
+        'Clinical Sign (Sign)': 'อาการและอาการแสดง (Clinical Sign)',
+        'Differential Diagnosis (DDx)': 'การวินิจฉัยแยกโรค (Differential Diagnosis)',
+        'Rule Out (R/O)': 'สงสัยเพื่อพิสูจน์ขจัด (Rule Out)',
+        'การวินิจฉัยเบื้องต้น (Working Diagnosis)': 'การวินิจฉัยเบื้องต้น (Working Diagnosis)',
+        'อาการและอาการแสดง (Clinical Sign)': 'อาการและอาการแสดง (Clinical Sign)',
+        'อาการแสดง (Clinical Sign)': 'อาการและอาการแสดง (Clinical Sign)',
+        'การวินิจฉัยแยกโรค (Differential Diagnosis)': 'การวินิจฉัยแยกโรค (Differential Diagnosis)',
+        'สงสัยเพื่อพิสูจน์ขจัด (Rule Out)': 'สงสัยเพื่อพิสูจน์ขจัด (Rule Out)',
+        'โรคที่ต้องแยกออก (Rule Out)': 'สงสัยเพื่อพิสูจน์ขจัด (Rule Out)'
+      };
+      return map[t] || t || '';
+    }
+    function courseFullLabel(c) {
+      var map = {
+        'ต่อเนื่อง (Follow)': 'ติดตามอาการ (Follow-up)',
+        'ติดตามอาการ (Follow)': 'ติดตามอาการ (Follow-up)',
+        'ติดตามอาการ (Follow-up)': 'ติดตามอาการ (Follow-up)',
+        'กลับมาเป็นซ้ำ (Recurrent)': 'กลับเป็นซ้ำ (Recurrent)',
+        'กลับเป็นซ้ำ (Recurrent)': 'กลับเป็นซ้ำ (Recurrent)',
+        'เฉียบพลัน (Acute)': 'เฉียบพลัน (Acute)',
+        'เรื้อรัง (Chronic)': 'เรื้อรัง (Chronic)'
+      };
+      return map[c] || c || '';
+    }
+    function joinCourse(list) {
+      if (!list || !list.length) return '';
+      return list.map(courseFullLabel).filter(Boolean).join(', ');
+    }
+    function escCell(v) {
+      return String(v == null ? '' : v)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+    function cellText(v) {
+      if (v == null || v === '') return '<span style="color:#d1d5db;">—</span>';
+      return escCell(v);
+    }
+    function clampCell(v) {
+      if (v == null || v === '') return '<span style="color:#d1d5db;">—</span>';
+      return '<div class="clamp-inner">' + escCell(v) + '</div>';
+    }
+
+    function renderAssessTable(data) {
+      var tbody = document.getElementById('assessTableBody');
+      var html = '';
+      for (var i = 0; i < data.length; i++) {
+        var r = data[i];
+        html += '<tr>' +
+          '<td>' + cellText(r.processOn) + '</td>' +
+          '<td>' + (r.name ? '<b>' + escCell(r.name) + '</b>' : cellText('')) + '</td>' +
+          '<td class="cell-clamp" title="' + escCell(r.note) + '">' + clampCell(r.note) + '</td>' +
+          '<td class="cell-opt">' + cellText(r.type) + '</td>' +
+          '<td class="cell-opt">' + cellText(r.courseText) + '</td>' +
+          '<td class="cell-opt">' + cellText(r.status) + '</td>' +
+          '<td class="cell-clamp" title="' + escCell(r.cf) + '">' + clampCell(r.cf) + '</td>' +
+          '<td class="cell-opt">' + cellText(r.cat) + '</td>' +
+          '<td class="cell-opt">' + cellText(r.severity) + '</td>' +
+          '<td class="cell-opt">' + cellText(r.prognosis) + '</td>' +
+          '<td class="cell-opt">' + cellText(r.confidence) + '</td>' +
+          '<td class="cell-opt">' + cellText(r.duration) + '</td>' +
+          '<td class="cell-clamp" title="' + escCell(r.reasoning) + '">' + clampCell(r.reasoning) + '</td>' +
+          '<td class="cell-clamp" title="' + escCell(r.summary) + '">' + clampCell(r.summary) + '</td>' +
+          '<td>' + cellText(r.dvm) + '</td>' +
+          '<td class="cell-opt">' + cellText(r.dept) + '</td>' +
+          '<td>' + cellText(r.recordDateTime) + '</td>' +
+          '<td>' + cellText(r.lastUpdate) + '</td>' +
+          '<td class="cell-opt">' + cellText(r.recordStatus) + '</td>' +
+          '</tr>';
+      }
+      tbody.innerHTML = html;
+    }
+
+    function clearAssessFilter() {
+      document.getElementById('tbl-search').value = '';
+      document.getElementById('tbl-cat').value = '';
+      document.getElementById('tbl-type').value = '';
+      document.getElementById('tbl-status').value = '';
+      document.getElementById('tbl-course').value = '';
+      document.getElementById('tbl-prog').value = '';
+      document.getElementById('tbl-sev').value = '';
+      document.getElementById('tbl-rec').value = '';
+      renderAssessTable(assessTableData);
+    }
+
+    document.getElementById('tbl-search').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') filterAssessTable();
     });
-    renderAssessTable(filtered);
-  }
-  document.getElementById('assessSearch').addEventListener('click', filterAssessTable);
-  document.getElementById('assessClear').addEventListener('click', function () {
-    document.getElementById('tbl-search').value = '';
-    document.getElementById('tbl-cat').value = '';
-    document.getElementById('tbl-type').value = '';
-    document.getElementById('tbl-status').value = '';
+
+    function filterAssessTable() {
+      var q = document.getElementById('tbl-search').value.toLowerCase().trim();
+      var catF = document.getElementById('tbl-cat').value;
+      var typeF = document.getElementById('tbl-type').value;
+      var statusF = document.getElementById('tbl-status').value;
+      var courseF = document.getElementById('tbl-course').value;
+      var progF = document.getElementById('tbl-prog').value;
+      var sevF = document.getElementById('tbl-sev').value;
+      var recF = document.getElementById('tbl-rec').value;
+      var filtered = assessTableData.filter(function (r) {
+        var blob = [r.name, r.note, r.cf, r.reasoning, r.summary, r.dvm, r.dept, r.cat].join(' ').toLowerCase();
+        var matchQ = !q || blob.indexOf(q) >= 0;
+        var matchC = !catF || r.cat === catF;
+        var matchT = !typeF || r.type === typeF;
+        var matchS = !statusF || r.status === statusF;
+        var matchCourse = !courseF || (r.course && r.course.indexOf(courseF) >= 0) || (r.courseText && r.courseText.indexOf(courseF) >= 0);
+        var matchP = !progF || r.prognosis === progF;
+        var matchSev = !sevF || r.severity === sevF;
+        var matchRec = !recF || r.recordStatus === recF;
+        return matchQ && matchC && matchT && matchS && matchCourse && matchP && matchSev && matchRec;
+      });
+      renderAssessTable(filtered);
+    }
+
     renderAssessTable(assessTableData);
-  });
-  document.getElementById('tbl-search').addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') filterAssessTable();
-  });
+
+
+  document.getElementById('assessSearch').addEventListener('click', filterAssessTable);
+  document.getElementById('assessClear').addEventListener('click', clearAssessFilter);
 
   fillDateSelect();
   applyFilterResult();
