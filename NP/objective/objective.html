@@ -63,28 +63,76 @@
   }
   .confirm-close:hover { background: #fee2e2; border-color: #f87171; }
 
-  .examcard-bar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .examcard-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; position: relative; }
   .examcard-btn-out {
     display: inline-flex; align-items: center; gap: 5px;
-    padding: 8px 16px; border: 1px solid #86efac; border-radius: 8px;
+    padding: 8px 14px; border: 1px solid #86efac; border-radius: 8px;
     font-size: 13px; background: #fff; color: #16a34a; font-family: inherit; cursor: pointer; font-weight: 500;
   }
   .examcard-btn-out:hover { background: #f0fdf4; border-color: #4ade80; }
-  .examcard-btn-out .arrow { font-size: 10px; color: #4ade80; }
-  .examcard-pick {
-    padding: 8px 12px; border: 1px solid #93c5fd; border-radius: 8px;
-    font-size: 13px; background: #fff; font-family: inherit; cursor: pointer; color: #2563eb;
-  }
-  .examcard-pick:hover { background: #eff6ff; }
-  .examcard-select {
-    padding: 7px 10px; border: 1px solid #d1d5db; border-radius: 4px;
-    font-size: 12px; background: #fff; font-family: inherit; cursor: pointer; color: #4b5563;
-  }
   .examcard-go {
     padding: 6px; border: none; background: transparent; color: #9ca3af;
     font-family: inherit; cursor: pointer; display: inline-flex; align-items: center;
   }
   .examcard-go:hover { color: #6b7280; }
+
+  /* Filters — 3 โหมดแยก (เหมือน QuillBot Daily View) */
+  .obj-filter-wrap { position: relative; }
+  .obj-filter-trigger {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #22c55e; color: #fff; border: none; border-radius: 999px;
+    padding: 8px 16px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap;
+  }
+  .obj-filter-trigger:hover { background: #16a34a; }
+  .obj-filter-trigger .chev { font-size: 10px; opacity: .9; }
+  .obj-filter-trigger.has-mode::after {
+    content: attr(data-mode-label);
+    display: inline-block; margin-left: 4px; font-size: 11px; font-weight: 600;
+    background: rgba(255,255,255,.22); padding: 2px 8px; border-radius: 999px; max-width: 160px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .obj-filter-pop {
+    display: none; position: absolute; top: calc(100% + 8px); right: 0;
+    width: 360px; background: #fff; border: 1px solid #e5e7eb;
+    border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,.14); padding: 14px; z-index: 80;
+    text-align: left;
+  }
+  .obj-filter-pop.show { display: block; }
+  .obj-filter-section {
+    padding: 10px 0; border-bottom: 1px solid #f0f2f4;
+  }
+  .obj-filter-section:first-child { padding-top: 2px; }
+  .obj-filter-section:last-child { border-bottom: none; padding-bottom: 2px; }
+  .obj-filter-section > label {
+    display: block; font-size: 12px; font-weight: 700; color: #374151; margin: 0 0 8px;
+  }
+  .obj-filter-section .hint {
+    font-size: 11px; font-weight: 500; color: #6b7280; margin: -4px 0 8px;
+  }
+  .obj-filter-section.active-mode {
+    background: #f0fdf4; margin: 0 -10px; padding-left: 10px; padding-right: 10px;
+    border-radius: 10px; border-bottom-color: transparent;
+  }
+  .obj-filter-row { display: flex; align-items: stretch; gap: 6px; }
+  .obj-filter-row select {
+    flex: 1; min-width: 0; padding: 8px 10px; border: 1px solid #d1d5db;
+    border-radius: 8px; font: inherit; font-size: 13px; background: #fff; color: #374151;
+  }
+  .obj-btn-cal {
+    flex-shrink: 0; width: 38px; border: 1px solid #d1d5db; border-radius: 8px;
+    background: #fff; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+    color: #6b7280; padding: 0;
+  }
+  .obj-btn-cal:hover { background: #f3f4f6; color: #374151; }
+  .obj-btn-search-sec {
+    flex-shrink: 0; background: #22c55e; color: #fff; border: none; border-radius: 8px;
+    padding: 8px 12px; font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap;
+  }
+  .obj-btn-search-sec:hover { background: #16a34a; }
+  .obj-filter-hidden-date {
+    position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0; border: 0;
+  }
+  .vtab.filter-hidden { display: none !important; }
 
   .logic-badge {
     display: inline-flex; align-items: center; gap: 6px;
@@ -103,6 +151,15 @@
     font-size: 16px; font-weight: 600; color: #444; margin-bottom: 0;
     display: flex; align-items: center; gap: 8px; white-space: nowrap;
   }
+  .obj-brand {
+    display: flex; align-items: center; gap: 12px; min-width: 0; flex-shrink: 0;
+  }
+  .obj-brand-logo,
+  .obj-brand-sub {
+    font-weight: 700; font-size: 22px; letter-spacing: -0.02em; line-height: 1.1;
+  }
+  .obj-brand-logo { color: #22c55e; }
+  .obj-brand-sub { color: #1f2937; }
 
   .visit-tabs {
     display: flex; gap: 2px; padding: 0; background: #f0f2f5;
@@ -601,20 +658,64 @@
   <div class="modal-overlay" id="objective-modal">
     <div class="modal-box">
       <div class="assess-editor-header">
-        <div class="section-title">Objective Module</div>
+        <div class="obj-brand">
+          <div class="obj-brand-logo">KAHIS</div>
+          <div class="obj-brand-sub">Daily View</div>
+        </div>
         <div class="examcard-bar">
+          <div class="obj-filter-wrap">
+            <button class="obj-filter-trigger has-mode" id="objFilterTrigger" type="button" data-mode-label="By Date">Filters <span class="chev">▾</span></button>
+            <div class="obj-filter-pop" id="objFilterPop">
+              <div class="obj-filter-section active-mode" data-mode="date">
+                <label>By Date</label>
+                <div class="hint">Default = วันนี้ · เปลี่ยนวันแล้วกด Search</div>
+                <div class="obj-filter-row">
+                  <select id="obj-f-date-select" aria-label="เลือกวันที่">
+                    <option value="2026-07-09" selected>09 Jul 2026 (Today)</option>
+                    <option value="2026-07-07">07 Jul 2026</option>
+                    <option value="2026-02-02">02 Feb 2026</option>
+                    <option value="2026-01-01">01 Jan 2026</option>
+                  </select>
+                  <button class="obj-btn-cal" type="button" id="obj-f-date-cal" title="เปิดปฏิทิน">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  </button>
+                  <input class="obj-filter-hidden-date" type="date" id="obj-f-date-picker" value="2026-07-09" tabindex="-1" aria-hidden="true">
+                  <button class="obj-btn-search-sec" type="button" id="objBtnSearchDate">Search</button>
+                </div>
+              </div>
+              <div class="obj-filter-section" data-mode="dvm">
+                <label>By DVM</label>
+                <div class="hint">ดึง Exam Card ทั้งหมดของสัตวแพทย์ที่เลือก</div>
+                <div class="obj-filter-row">
+                  <select id="obj-f-dvm" aria-label="เลือก DVM">
+                    <option value="">เลือก DVM…</option>
+                    <option>นิพนธ์ วงศ์ประเสริฐ</option>
+                    <option>วิชัย ใจดี</option>
+                    <option>ปนัดดา ศรีสุข</option>
+                  </select>
+                  <button class="obj-btn-search-sec" type="button" id="objBtnSearchDvm">Search</button>
+                </div>
+              </div>
+              <div class="obj-filter-section" data-mode="dept">
+                <label>By Department</label>
+                <div class="hint">ดึง Exam Card ทั้งหมดของแผนกที่เลือก</div>
+                <div class="obj-filter-row">
+                  <select id="obj-f-dept" aria-label="เลือกแผนก">
+                    <option value="">เลือกแผนก…</option>
+                    <option value="คลินิกพิเศษ โรคหัวใจ (นอกเวลา)">คลินิกพิเศษ โรคหัวใจ (นอกเวลา)</option>
+                    <option value="อายุรกรรมทั่วไป (ในเวลา)">อายุรกรรมทั่วไป (ในเวลา)</option>
+                    <option value="ภาพวินิจฉัย (นอกเวลา)">ภาพวินิจฉัย (นอกเวลา)</option>
+                  </select>
+                  <button class="obj-btn-search-sec" type="button" id="objBtnSearchDept">Search</button>
+                </div>
+              </div>
+            </div>
+          </div>
           <button class="logic-badge" type="button" onclick="document.getElementById('manual-modal').classList.add('show')">
             <span class="dot"></span> View Logic/Rule
           </button>
-          <button class="examcard-btn-out" type="button">Go to today <span class="arrow">&#9662;</span></button>
-          <input type="date" class="examcard-pick" value="2026-07-09">
-          <select class="examcard-select">
-            <option selected>9 กรกฏาคม 2569 HN 69001234 ดุ๊กดิ๊ก</option>
-            <option>7 กรกฏาคม 2569 HN 69001234 ดุ๊กดิ๊ก</option>
-            <option>2 กุมภาพันธ์ 2569 HN 69001234 ดุ๊กดิ๊ก</option>
-            <option>1 มกราคม 2569 HN 69001234 ดุ๊กดิ๊ก</option>
-          </select>
-          <button class="examcard-go" type="button">
+          <button class="examcard-btn-out" type="button" id="objGoToday">Go Today</button>
+          <button class="examcard-go" type="button" id="objRefresh" title="Refresh">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
           </button>
           <button class="modal-close" type="button" onclick="document.getElementById('objective-confirm').classList.add('show')">&#10005;</button>
@@ -622,27 +723,27 @@
       </div>
 
       <div class="visit-tabs">
-        <div class="vtab active" data-tab="1">
+        <div class="vtab active" data-tab="1" data-date="2026-07-09" data-dvm="นิพนธ์ วงศ์ประเสริฐ" data-dept="คลินิกพิเศษ โรคหัวใจ (นอกเวลา)">
           <div class="line1">นิพนธ์ วงศ์ประเสริฐ</div>
           <div class="line2">CA คลินิกพิเศษ โรคหัวใจ (นอกเวลา)</div>
         </div>
-        <div class="vtab" data-tab="2">
+        <div class="vtab" data-tab="2" data-date="2026-07-09" data-dvm="นิพนธ์ วงศ์ประเสริฐ" data-dept="อายุรกรรมทั่วไป (ในเวลา)">
           <div class="line1">นิพนธ์ วงศ์ประเสริฐ</div>
           <div class="line2">อายุรกรรมทั่วไป (ในเวลา)</div>
         </div>
-        <div class="vtab" data-tab="3">
+        <div class="vtab" data-tab="3" data-date="2026-07-09" data-dvm="วิชัย ใจดี" data-dept="ภาพวินิจฉัย (นอกเวลา)">
           <div class="line1">วิชัย ใจดี</div>
           <div class="line2">ภาพวินิจฉัย (นอกเวลา)</div>
         </div>
-        <div class="vtab" data-tab="4">
+        <div class="vtab" data-tab="4" data-date="2026-07-09" data-dvm="ปนัดดา ศรีสุข" data-dept="อายุรกรรมทั่วไป (ในเวลา)">
           <div class="line1">ปนัดดา ศรีสุข</div>
           <div class="line2">อายุรกรรมทั่วไป (ในเวลา)</div>
         </div>
-        <div class="vtab vpe-table-tab" data-tab="6">
+        <div class="vtab vpe-table-tab" data-tab="6" data-hn-tab="1">
           <div class="line1">HN 69001234</div>
           <div class="line2">ตารางข้อมูล Vital Sign &amp; PE</div>
         </div>
-        <div class="vtab assess-table-tab" data-tab="5">
+        <div class="vtab assess-table-tab" data-tab="5" data-hn-tab="1">
           <div class="line1">HN 69001234</div>
           <div class="line2">ตารางข้อมูล Assessment</div>
         </div>
@@ -2271,18 +2372,21 @@
           <li>Objective เป็นหน้าอ่านสรุปของ visit ตาม <b>Exam Card ID</b> — รวม Exam Card, Vital Sign &amp; PE, TX/LAB/RX, Assessment ในแถวเดียว</li>
           <li>เปิดจากปุ่ม <b>Objective</b> → modal ขนาดคงที่ 1400px × 95vh</li>
           <li>ข้อมูลทุกบล็อกดึงเฉพาะรายการที่ผูก Exam Card / visit ที่เลือก</li>
+          <li>ค้นหา Exam Card ผ่าน <b>Filters</b> แยก 3 โหมด (ไม่ใช่ AND รวมสามช่อง)</li>
           <li>ปุ่ม <b>i</b> ท้ายหัวข้อแต่ละบล็อกอธิบาย pattern ของบล็อกนั้น</li>
         </ul>
       </div>
 
       <div class="manual-section">
-        <div class="manual-section-title">2. Header / Dropdown / Tabs</div>
+        <div class="manual-section-title">2. Filters / Header / Tabs</div>
         <ul class="manual-list">
-          <li>Dropdown วันที่: แสดง <b>วัน เดือน ปี + HN + ชื่อสัตว์</b> (เช่น 9 กรกฏาคม 2569 HN 69001234 ดุ๊กดิ๊ก)</li>
-          <li><b>Tab 1–4</b>: visit ของสัตวแพทย์/แผนก — แสดง grid 4 บล็อก</li>
-          <li><b>Tab Vital Sign &amp; PE (ตาราง)</b>: สีม่วง — ตารางข้อมูล VPE ทั้ง HN</li>
-          <li><b>Tab Assessment (ตาราง)</b>: สีส้ม — ตารางข้อมูล Assessment ทั้ง HN</li>
-          <li>เส้นใต้ visit-tabs เปลี่ยนสีตาม tab ที่ active</li>
+          <li><b>Filters</b> มีปุ่ม Search แยกในแต่ละส่วน — กด Search ของโหมดใด = สลับไปใช้โหมดนั้นทันที</li>
+          <li><b>By Date (default)</b> — เปิดหน้าแล้วโหลด Exam Card ของ <b>วันนี้</b> · เปลี่ยนวันจาก dropdown หรือปุ่มปฏิทิน แล้วกด Search</li>
+          <li><b>By DVM</b> — เลือกสัตวแพทย์แล้วกด Search → ดึง Exam Card <b>ทั้งหมด</b> ของ DVM นั้น (ข้ามวัน)</li>
+          <li><b>By Department</b> — เลือกแผนกแล้วกด Search → ดึง Exam Card <b>ทั้งหมด</b> ของแผนกนั้น (ข้ามวัน)</li>
+          <li><b>Go Today</b> — กลับโหมด By Date เป็นวันนี้ แล้วโหลดใหม่</li>
+          <li><b>Refresh</b> — โหลดซ้ำตามโหมดค้นหาปัจจุบัน</li>
+          <li>Visit tabs = ผลลัพธ์ของโหมดค้นหาล่าสุด · Tab ตาราง VPE / Assessment (ระดับ HN) คงแสดงเสมอ</li>
           <li>ปุ่ม <b>✕</b> → confirm ก่อนปิด modal</li>
         </ul>
       </div>
@@ -2400,6 +2504,150 @@
     document.getElementById('objective-confirm').classList.remove('show');
     document.getElementById('objective-modal').classList.remove('show');
   }
+
+  var OBJ_DEMO_TODAY = '2026-07-09';
+  var objFilterState = { mode: 'date', date: OBJ_DEMO_TODAY, dvm: '', dept: '' };
+
+  function objPad2(n) { return n < 10 ? '0' + n : '' + n; }
+  function objFormatDateLabel(iso) {
+    if (!iso) return '';
+    var p = iso.split('-');
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return objPad2(parseInt(p[2], 10)) + ' ' + months[parseInt(p[1], 10) - 1] + ' ' + p[0];
+  }
+  function objModeLabel() {
+    if (objFilterState.mode === 'date') return 'By Date · ' + objFormatDateLabel(objFilterState.date);
+    if (objFilterState.mode === 'dvm') return 'By DVM';
+    if (objFilterState.mode === 'dept') return 'By Dept';
+    return '';
+  }
+  function objSyncFilterUI() {
+    document.querySelectorAll('#objFilterPop .obj-filter-section').forEach(function (sec) {
+      sec.classList.toggle('active-mode', sec.getAttribute('data-mode') === objFilterState.mode);
+    });
+    var trig = document.getElementById('objFilterTrigger');
+    if (trig) trig.setAttribute('data-mode-label', objModeLabel());
+    var sel = document.getElementById('obj-f-date-select');
+    var picker = document.getElementById('obj-f-date-picker');
+    if (sel && objFilterState.date) {
+      if (![].some.call(sel.options, function (o) { return o.value === objFilterState.date; })) {
+        var opt = document.createElement('option');
+        opt.value = objFilterState.date;
+        opt.textContent = objFormatDateLabel(objFilterState.date);
+        sel.insertBefore(opt, sel.firstChild);
+      }
+      sel.value = objFilterState.date;
+    }
+    if (picker) picker.value = objFilterState.date || OBJ_DEMO_TODAY;
+    var forDate = document.querySelector('#objective-modal .for-date');
+    if (forDate) {
+      if (objFilterState.mode === 'date') forDate.textContent = 'for ' + objFormatDateLabel(objFilterState.date);
+      else if (objFilterState.mode === 'dvm') forDate.textContent = 'by DVM · ' + objFilterState.dvm;
+      else if (objFilterState.mode === 'dept') forDate.textContent = 'by Dept · ' + objFilterState.dept;
+    }
+  }
+  function objApplyVisitFilter() {
+    var tabs = document.querySelectorAll('#objective-modal .vtab');
+    var firstVisible = null;
+    tabs.forEach(function (tab) {
+      if (tab.getAttribute('data-hn-tab') === '1') {
+        tab.classList.remove('filter-hidden');
+        return;
+      }
+      var show = true;
+      if (objFilterState.mode === 'date') {
+        show = tab.getAttribute('data-date') === objFilterState.date;
+      } else if (objFilterState.mode === 'dvm') {
+        show = tab.getAttribute('data-dvm') === objFilterState.dvm;
+      } else if (objFilterState.mode === 'dept') {
+        show = tab.getAttribute('data-dept') === objFilterState.dept;
+      }
+      tab.classList.toggle('filter-hidden', !show);
+      if (show && !firstVisible) firstVisible = tab;
+    });
+    objSyncFilterUI();
+    var active = document.querySelector('#objective-modal .vtab.active');
+    if (!active || active.classList.contains('filter-hidden')) {
+      if (firstVisible) firstVisible.click();
+    }
+  }
+  function objSearchByDate() {
+    var sel = document.getElementById('obj-f-date-select');
+    objFilterState.mode = 'date';
+    objFilterState.date = (sel && sel.value) || OBJ_DEMO_TODAY;
+    objApplyVisitFilter();
+    document.getElementById('objFilterPop').classList.remove('show');
+  }
+  function objSearchByDvm() {
+    var val = document.getElementById('obj-f-dvm').value;
+    if (!val) { alert('กรุณาเลือก DVM ก่อน Search'); return; }
+    objFilterState.mode = 'dvm';
+    objFilterState.dvm = val;
+    objApplyVisitFilter();
+    document.getElementById('objFilterPop').classList.remove('show');
+  }
+  function objSearchByDept() {
+    var val = document.getElementById('obj-f-dept').value;
+    if (!val) { alert('กรุณาเลือกแผนกก่อน Search'); return; }
+    objFilterState.mode = 'dept';
+    objFilterState.dept = val;
+    objApplyVisitFilter();
+    document.getElementById('objFilterPop').classList.remove('show');
+  }
+  function objGoToday() {
+    objFilterState.mode = 'date';
+    objFilterState.date = OBJ_DEMO_TODAY;
+    objApplyVisitFilter();
+  }
+
+  (function bindObjFilters() {
+    var trigger = document.getElementById('objFilterTrigger');
+    var pop = document.getElementById('objFilterPop');
+    if (!trigger || !pop) return;
+    trigger.addEventListener('click', function (e) {
+      e.stopPropagation();
+      pop.classList.toggle('show');
+    });
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('#objFilterPop') && !e.target.closest('#objFilterTrigger')) pop.classList.remove('show');
+    });
+    document.getElementById('objBtnSearchDate').addEventListener('click', objSearchByDate);
+    document.getElementById('objBtnSearchDvm').addEventListener('click', objSearchByDvm);
+    document.getElementById('objBtnSearchDept').addEventListener('click', objSearchByDept);
+    document.getElementById('objGoToday').addEventListener('click', objGoToday);
+    document.getElementById('objRefresh').addEventListener('click', function () {
+      objApplyVisitFilter();
+      var b = this;
+      b.style.transform = 'rotate(360deg)';
+      b.style.transition = 'transform .4s';
+      setTimeout(function () { b.style.transform = ''; }, 400);
+    });
+    var picker = document.getElementById('obj-f-date-picker');
+    var calBtn = document.getElementById('obj-f-date-cal');
+    calBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      picker.value = document.getElementById('obj-f-date-select').value || OBJ_DEMO_TODAY;
+      if (typeof picker.showPicker === 'function') {
+        try { picker.showPicker(); } catch (err) { picker.click(); }
+      } else {
+        picker.click();
+      }
+    });
+    picker.addEventListener('change', function () {
+      var iso = picker.value;
+      if (!iso) return;
+      var sel = document.getElementById('obj-f-date-select');
+      if (![].some.call(sel.options, function (o) { return o.value === iso; })) {
+        var opt = document.createElement('option');
+        opt.value = iso;
+        opt.textContent = objFormatDateLabel(iso);
+        sel.insertBefore(opt, sel.firstChild);
+      }
+      sel.value = iso;
+    });
+    objApplyVisitFilter();
+  })();
 
   var tabDvmMap = {
     '1': 'นิพนธ์ วงศ์ประเสริฐ',

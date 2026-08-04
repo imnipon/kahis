@@ -62,10 +62,10 @@ Layout 4 คอลัมน์:
 ```text
 ObjectiveModule
 ├── ObjectiveHeader
+│   ├── FiltersPopover          // By Date / By DVM / By Department — Search แยกโหมด
 │   ├── LogicRuleButton
 │   ├── GoToTodayButton
-│   ├── DatePicker
-│   ├── VisitSelect
+│   ├── RefreshButton
 │   └── CloseButton
 ├── VisitTabs
 │   ├── VisitTab          // data-tab 1–4 (DVM + Department)
@@ -116,11 +116,10 @@ ObjectiveModule
 | **B1a** | Title | `.section-title` | `Objective Module` |
 | **B1b** | Exam Card Bar | `.examcard-bar` | Logic / date / select / close |
 | **B1b-1** | View Logic/Rule | `.logic-badge` | เปิด `#manual-modal` |
-| **B1b-2** | Go to today | `.examcard-btn-out` | กลับวันปัจจุบัน |
-| **B1b-3** | Date picker | `.examcard-pick` | เลือกวันที่ |
-| **B1b-4** | Visit select | `.examcard-select` | เลือกวัน+HN+ชื่อสัตว์ |
-| **B1b-5** | Refresh / Go | `.examcard-go` | โหลดตาม selection |
-| **B1b-6** | Close | `.modal-close` | เปิด confirm |
+| **B1b-2** | Filters | `.obj-filter-trigger` / `#objFilterPop` | ค้นหาแยก 3 โหมด: By Date / By DVM / By Department |
+| **B1b-3** | Go Today | `#objGoToday` | กลับโหมด By Date = วันนี้ |
+| **B1b-4** | Refresh | `#objRefresh` | โหลดซ้ำตามโหมดปัจจุบัน |
+| **B1b-5** | Close | `.modal-close` | เปิด confirm |
 | **C** | Visit Tabs | `.visit-tabs` | tab เยี่ยม + ตาราง HN |
 | **C1–C4** | Visit tab | `.vtab[data-tab=1..4]` | DVM + Department |
 | **C5** | Assessment table tab | `.vtab.assess-table-tab` | ตาราง Assessment |

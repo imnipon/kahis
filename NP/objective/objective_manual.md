@@ -32,17 +32,20 @@ Filters ค้นหา **แยก 3 โหมด** (แต่ละโหม�
 
 ---
 
-## 2. Header / Dropdown / Tabs
+## 2. Header / Filters / Tabs
 
 | องค์ประกอบ | พฤติกรรม |
 | :--- | :--- |
-| Dropdown วันที่ | แสดง **วัน เดือน ปี + HN + ชื่อสัตว์** (เช่น `9 กรกฏาคม 2569 HN 69001234 ดุ๊กดิ๊ก`) |
-| Date picker | เลือกวันที่ visit |
-| Go to today | กลับไปวันปัจจุบัน |
-| Tab 1–4 | visit ของสัตวแพทย์/แผนก — แสดง grid 4 บล็อก |
-| Tab Vital Sign & PE (ตาราง) | สีม่วง — ตารางข้อมูล VPE ทั้ง HN |
-| Tab Assessment (ตาราง) | สีส้ม — ตารางข้อมูล Assessment ทั้ง HN |
-| Visit topbar | `for {date}` + `last update` ตาม DVM ของ tab ที่เลือก |
+| **Filters** | ปุ่มเปิด popover — ค้นหาแยก 3 โหมด (By Date / By DVM / By Department) แต่ละโหมดมีปุ่ม Search ของตัวเอง |
+| **By Date** (default) | โหลด Exam Card ของวันนี้ · เปลี่ยนวันจาก dropdown หรือปุ่มปฏิทิน แล้วกด Search |
+| **By DVM** | ดึง Exam Card ทั้งหมดของสัตวแพทย์ที่เลือก (ข้ามวัน) |
+| **By Department** | ดึง Exam Card ทั้งหมดของแผนกที่เลือก (ข้ามวัน) |
+| Go Today | กลับโหมด By Date เป็นวันนี้ แล้วโหลดใหม่ |
+| Refresh | โหลดซ้ำตามโหมดค้นหาปัจจุบัน |
+| Tab visit | ผลลัพธ์ของโหมดค้นหาล่าสุด — แสดง grid 4 บล็อก |
+| Tab Vital Sign & PE (ตาราง) | สีม่วง — ตารางข้อมูล VPE ทั้ง HN (แสดงเสมอ) |
+| Tab Assessment (ตาราง) | สีส้ม — ตารางข้อมูล Assessment ทั้ง HN (แสดงเสมอ) |
+| Visit topbar | `for {date}` หรือสรุปโหมดค้นหา + `last update` ตาม DVM ของ tab ที่เลือก |
 | ปุ่ม ✕ | confirm ก่อนปิด modal |
 
 เส้นใต้ `visit-tabs` เปลี่ยนสีตาม tab ที่ active (น้ำเงิน / ม่วง / ส้ม)
