@@ -1,0 +1,2742 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KAHIS - Plan Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --qb-green: #499557;
+    --qb-green-dark: #1B5E20;
+    --qb-green-soft: #E8F5E9;
+    --qb-bg: #F0F2F5;
+    --qb-surface: #FFFFFF;
+    --qb-text: #252525;
+    --qb-muted: #676D75;
+    --qb-border: #E5E7EB;
+    --qb-shadow: 0 4px 24px rgba(0,0,0,.08);
+    --font: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --accent-common: #2563eb;
+    --accent-lab: #b45309;
+    --accent-form-a: #7c3aed;
+    --accent-form-b: #0f766e;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: var(--font);
+    background: var(--qb-bg); color: var(--qb-text);
+    min-height: 100%; display: flex; align-items: center; justify-content: center;
+  }
+
+  .plan-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 18px; border: 1px solid #93c5fd; border-radius: 999px;
+    font-size: 14px; background: #eff6ff; color: #1d4ed8;
+    font-family: inherit; cursor: pointer; font-weight: 500;
+  }
+  .plan-badge:hover { background: #dbeafe; }
+  .plan-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #3b82f6; }
+
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,.4); z-index: 1000;
+    align-items: center; justify-content: center; padding: 16px;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal-box {
+    background: var(--qb-bg); border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,.28);
+    width: min(1400px, 100%); height: min(95vh, 920px);
+    overflow: hidden; padding: 14px 16px 16px;
+    display: flex; flex-direction: column; min-height: 0;
+  }
+  .modal-close {
+    background: #fff; border: 1px solid #fca5a5; border-radius: 8px;
+    padding: 6px 12px; font-size: 13px; cursor: pointer; color: #dc2626;
+    font-family: inherit; font-weight: 500;
+  }
+  .modal-close:hover { background: #fef2f2; }
+
+  .confirm-overlay, .logic-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,.4); z-index: 3000;
+    align-items: center; justify-content: center; padding: 16px;
+  }
+  .confirm-overlay.show, .logic-overlay.show { display: flex; }
+  .confirm-box {
+    background: #fff; border-radius: 12px; box-shadow: var(--qb-shadow);
+    padding: 24px 28px; max-width: 420px; width: 100%; text-align: center;
+  }
+  .confirm-icon { font-size: 28px; margin-bottom: 12px; }
+  .confirm-title { font-size: 16px; font-weight: 600; color: #374151; margin-bottom: 8px; }
+  .confirm-msg { font-size: 13px; color: #6b7280; line-height: 1.6; margin-bottom: 20px; }
+  .confirm-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .confirm-back {
+    padding: 8px 18px; border: 1px solid #d1d5db; border-radius: 8px;
+    font-size: 13px; background: #fff; color: #374151; font-family: inherit; cursor: pointer; font-weight: 500;
+  }
+  .confirm-back:hover { background: #f9fafb; }
+  .confirm-delete {
+    padding: 8px 18px; border: 1px solid #fca5a5; border-radius: 8px;
+    font-size: 13px; background: #fef2f2; color: #dc2626; font-family: inherit; cursor: pointer; font-weight: 500;
+  }
+  .confirm-delete:hover { background: #fee2e2; }
+  .confirm-close-danger {
+    padding: 8px 18px; border: 1px solid #fca5a5; border-radius: 8px;
+    font-size: 13px; background: #fef2f2; color: #dc2626; font-family: inherit; cursor: pointer; font-weight: 500;
+  }
+
+  /* Header */
+  .assess-editor-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10px; flex-shrink: 0; gap: 12px;
+  }
+  .obj-brand { display: flex; align-items: center; gap: 12px; }
+  .obj-brand-logo, .obj-brand-sub {
+    font-weight: 700; font-size: 22px; letter-spacing: -0.02em; line-height: 1.1;
+  }
+  .obj-brand-logo { color: #22c55e; }
+  .obj-brand-sub { color: #1f2937; }
+  .examcard-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; position: relative; }
+  .examcard-btn-out {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 8px 14px; border: 1px solid #86efac; border-radius: 8px;
+    font-size: 13px; background: #fff; color: #16a34a; font-family: inherit; cursor: pointer; font-weight: 500;
+  }
+  .examcard-go { padding: 6px; border: none; background: transparent; color: #9ca3af; cursor: pointer; display: inline-flex; }
+  .examcard-go:hover { color: #6b7280; }
+
+  .obj-filter-wrap { position: relative; }
+  .obj-filter-trigger {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #22c55e; color: #fff; border: none; border-radius: 999px;
+    padding: 8px 16px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  .obj-filter-trigger.has-mode::after {
+    content: attr(data-mode-label);
+    margin-left: 4px; font-size: 11px; font-weight: 600;
+    background: rgba(255,255,255,.22); padding: 2px 8px; border-radius: 999px;
+  }
+  .obj-filter-pop {
+    display: none; position: absolute; top: calc(100% + 8px); right: 0;
+    width: 360px; background: #fff; border: 1px solid #e5e7eb;
+    border-radius: 12px; box-shadow: var(--qb-shadow); padding: 14px; z-index: 80;
+  }
+  .obj-filter-pop.show { display: block; }
+  .obj-filter-section { padding: 10px 0; border-bottom: 1px solid #f0f2f4; }
+  .obj-filter-section:last-child { border-bottom: none; }
+  .obj-filter-section > label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 8px; }
+  .obj-filter-section .hint { font-size: 11px; color: #6b7280; margin: -4px 0 8px; }
+  .obj-filter-section.active-mode {
+    background: #f0fdf4; margin: 0 -10px; padding-left: 10px; padding-right: 10px; border-radius: 10px;
+  }
+  .obj-filter-row { display: flex; gap: 6px; }
+  .obj-filter-row select {
+    flex: 1; padding: 8px 10px; border: 1px solid #d1d5db; border-radius: 8px; font: inherit; font-size: 13px;
+  }
+  .obj-btn-cal {
+    width: 38px; border: 1px solid #d1d5db; border-radius: 8px; background: #fff; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; color: #6b7280;
+  }
+  .obj-btn-search-sec {
+    background: #22c55e; color: #fff; border: none; border-radius: 8px;
+    padding: 8px 12px; font: inherit; font-size: 12px; font-weight: 600; cursor: pointer;
+  }
+  .obj-filter-hidden-date { position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0; }
+
+  .logic-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border: 1px solid #a0b070; border-radius: 999px;
+    font-size: 13px; background: #f5f7f0; color: #556b2f; font-family: inherit; cursor: pointer; font-weight: 500;
+  }
+  .doc-badge-group {
+    display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  }
+  .doc-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 7px 12px; border: 1px solid #cbd5e1; border-radius: 999px;
+    font-size: 12px; background: #fff; color: #475569; font-family: inherit; cursor: pointer; font-weight: 500;
+    white-space: nowrap;
+  }
+  .doc-badge:hover { border-color: #a0b070; background: #f5f7f0; color: #3d4e1a; }
+  .doc-badge .md-tag {
+    font-size: 9px; font-weight: 700; letter-spacing: .02em;
+    padding: 1px 5px; border-radius: 4px; background: #e2e8f0; color: #64748b;
+  }
+  .md-overlay {
+    display: none; position: fixed; inset: 0; z-index: 12000;
+    background: rgba(15, 23, 42, .45); align-items: center; justify-content: center; padding: 24px;
+  }
+  .md-overlay.show { display: flex; }
+  .md-box {
+    width: min(920px, 100%); max-height: min(86vh, 900px);
+    background: #fff; border-radius: 14px; box-shadow: 0 20px 50px rgba(0,0,0,.2);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .md-box-head {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+    padding: 16px 18px 12px; border-bottom: 1px solid #eef2f4; flex-shrink: 0;
+  }
+  .md-box-title { font-size: 16px; font-weight: 700; color: #3d4e1a; }
+  .md-box-sub { font-size: 11px; color: #94a3b8; margin-top: 2px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .md-box-body {
+    flex: 1; min-height: 0; overflow: auto; padding: 18px 22px 28px;
+    font-size: 13.5px; line-height: 1.65; color: #334155;
+  }
+  .md-box-body h1 { font-size: 1.45rem; color: #1e293b; margin: 0 0 12px; }
+  .md-box-body h2 { font-size: 1.15rem; color: #3d4e1a; margin: 22px 0 10px; padding-bottom: 4px; border-bottom: 1px solid #e8ecd8; }
+  .md-box-body h3 { font-size: 1rem; color: #556b2f; margin: 16px 0 8px; }
+  .md-box-body p { margin: 0 0 10px; }
+  .md-box-body ul, .md-box-body ol { margin: 0 0 12px; padding-left: 1.35em; }
+  .md-box-body li { margin: 3px 0; }
+  .md-box-body code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px; background: #f1f5f9; padding: 1px 5px; border-radius: 4px;
+  }
+  .md-box-body pre {
+    background: #0f172a; color: #e2e8f0; padding: 12px 14px; border-radius: 8px;
+    overflow-x: auto; font-size: 12px; line-height: 1.5; margin: 0 0 12px;
+  }
+  .md-box-body pre code { background: none; color: inherit; padding: 0; }
+  .md-box-body blockquote {
+    margin: 0 0 12px; padding: 8px 12px; border-left: 3px solid #a0b070;
+    background: #f5f7f0; color: #475569; border-radius: 0 8px 8px 0;
+  }
+  .md-box-body table {
+    width: 100%; border-collapse: collapse; margin: 0 0 14px; font-size: 12.5px;
+  }
+  .md-box-body th, .md-box-body td {
+    border: 1px solid #e2e8f0; padding: 6px 10px; text-align: left; vertical-align: top;
+  }
+  .md-box-body th { background: #f8fafc; color: #334155; font-weight: 600; }
+  .md-box-body hr { border: none; border-top: 1px solid #e2e8f0; margin: 18px 0; }
+  .md-box-body a { color: #2563eb; }
+  .md-box-body .md-err { color: #b91c1c; background: #fef2f2; padding: 12px; border-radius: 8px; }
+
+  /* Visit tabs */
+  .visit-tabs {
+    display: flex; gap: 2px; background: transparent;
+    border-bottom: 2px solid #2563eb; flex-shrink: 0;
+  }
+  .vtab {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 6px 14px; border-radius: 8px 8px 0 0; cursor: pointer;
+    font-size: 11px; color: #6b7280; background: #f9fafb;
+    border: 1px solid #e5e7eb; border-bottom: none; border-top: 3px solid transparent;
+    min-width: 130px; line-height: 1.3;
+  }
+  .vtab.active { background: #fff; color: #2563eb; border-bottom: 2px solid #fff; border-top-color: #2563eb; }
+  .vtab.active .line1 { font-weight: 700; }
+  .vtab.active .line1::before { content: '●'; margin-right: 4px; }
+  .vtab.active .line2 { color: #60a5fa; }
+  .vtab .new-badge { background: #dc2626; color: #fff; font-size: 9px; font-weight: 600; padding: 1px 5px; border-radius: 3px; }
+  .vtab.add-visit { background: #f0fdf4; color: #16a34a; border-color: #86efac; }
+  .vtab.add-visit .line2 { color: #16a34a; }
+  .vtab.disabled { cursor: default; opacity: .72; pointer-events: none; }
+
+  .visit-topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 16px; background: #fff;
+    border-left: 1px solid #e5e7eb; border-right: 1px solid #e5e7eb;
+    font-size: 11px; color: #9ca3af; flex-shrink: 0;
+  }
+  .visit-topbar b { color: #374151; }
+  .visit-topbar .for-date { color: #1d4ed8; font-weight: 600; }
+
+  /* Shell: plans rail + main card (QuillBot-inspired) */
+  .tab-content {
+    flex: 1; min-height: 0; overflow: hidden;
+    display: flex; gap: 0; padding: 10px 0 0; align-items: stretch;
+  }
+  .plans-rail {
+    width: 168px; flex-shrink: 0; display: flex; flex-direction: column;
+    min-height: 0; gap: 8px; position: relative; z-index: 5;
+    padding-right: 0;
+  }
+  .plans-rail-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 4px 10px 4px 2px; flex-shrink: 0;
+  }
+  .plans-rail-head .title { font-size: 12px; font-weight: 700; color: var(--qb-muted); text-transform: uppercase; letter-spacing: .04em; }
+  .btn-add-plan {
+    width: 28px; height: 28px; border: none; border-radius: 8px;
+    background: var(--qb-green-soft); color: var(--qb-green-dark);
+    font-size: 18px; font-weight: 700; cursor: pointer; font-family: inherit; line-height: 1;
+  }
+  .btn-add-plan:hover { background: #d4edda; }
+  .add-plan-wrap { position: relative; }
+  .add-plan-pop {
+    display: none; position: absolute; top: calc(100% + 6px); left: 0;
+    min-width: 190px; background: #fff; border: 1px solid var(--qb-border);
+    border-radius: 12px; box-shadow: var(--qb-shadow); padding: 6px; z-index: 90;
+  }
+  .add-plan-pop.show { display: block; }
+  .add-plan-opt {
+    display: block; width: 100%; text-align: left; border: none; background: transparent;
+    padding: 9px 12px; border-radius: 8px; font-size: 12px; font-weight: 600;
+    color: #374151; font-family: inherit; cursor: pointer;
+  }
+  .add-plan-opt:hover { background: var(--qb-green-soft); color: var(--qb-green-dark); }
+
+  .plans-list {
+    flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;
+    padding: 2px 14px 12px 2px; overscroll-behavior: contain;
+  }
+  .plans-list-item {
+    width: 100%; border: 1.5px solid transparent; background: #e5e7eb;
+    cursor: pointer; padding: 10px 12px; border-radius: 12px; text-align: left;
+    font-family: inherit; display: flex; flex-direction: column; gap: 4px;
+    transition: background .15s, border-color .15s, box-shadow .15s, border-radius .15s;
+    position: relative; z-index: 1;
+  }
+  .plans-list-item:hover { background: #d1d5db; border-color: #c4c9d1; }
+  /* highlight + bridge connector to main card — active = white */
+  .plans-list-item.active {
+    background: #fff;
+    border-color: #8a9a5a;
+    border-right-color: transparent;
+    border-radius: 12px 0 0 12px;
+    box-shadow: 0 0 0 3px rgba(138,154,90,.22);
+    z-index: 4;
+    margin-right: 0;
+  }
+  .plans-list-item.active::after {
+    content: '';
+    position: absolute;
+    top: -1.5px; bottom: -1.5px; right: -14px;
+    width: 14px;
+    background: #fff;
+    border-top: 1.5px solid #8a9a5a;
+    border-bottom: 1.5px solid #8a9a5a;
+    pointer-events: none;
+  }
+  .plans-list-item .fname { font-size: 12px; font-weight: 700; color: #1f2937; line-height: 1.3; }
+  .plans-list-item .fmeta { font-size: 10px; color: var(--qb-muted); display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+  .pill {
+    display: inline-flex; align-items: center; padding: 1px 6px; border-radius: 999px;
+    font-size: 9px; font-weight: 700; letter-spacing: .02em;
+  }
+  .pill.saved { background: #e0e7ff; color: #3730a3; }
+  .pill.draft { background: #fef3c7; color: #92400e; }
+
+  /* Main record card — Detail + Meta as one continuous unit */
+  .main-card {
+    flex: 1; min-width: 0; min-height: 0; background: #fff;
+    border-radius: 0 16px 16px 0; border: 1.5px solid #8a9a5a;
+    border-left: 1.5px solid #8a9a5a;
+    box-shadow: 0 4px 24px rgba(0,0,0,.06);
+    display: flex; flex-direction: column; overflow: hidden;
+    position: relative; z-index: 3;
+  }
+  .record-band {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 8px 16px; border-bottom: 1px solid var(--qb-border); flex-shrink: 0;
+    background: #fff;
+  }
+  .record-band .band-left { display: flex; align-items: baseline; gap: 8px; min-width: 0; flex-wrap: wrap; }
+  .record-band .band-title { font-size: 15px; font-weight: 700; color: #1f2937; white-space: nowrap; }
+  .record-band .band-sub {
+    font-size: 11px; color: var(--qb-muted); margin-top: 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
+  }
+  .record-band .band-right {
+    display: flex; flex-direction: row; align-items: center; justify-content: flex-end;
+    gap: 8px; flex-shrink: 0; max-width: 55%;
+  }
+  .btn-delete-plan, .btn-disable-plan {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 6px 12px; border-radius: 8px;
+    font-size: 12px; font-weight: 600; font-family: inherit; cursor: pointer;
+    flex-shrink: 0;
+  }
+  .btn-delete-plan {
+    border: 1px solid #fca5a5; background: #fff; color: #dc2626;
+  }
+  .btn-delete-plan:hover { background: #fef2f2; }
+  .btn-disable-plan {
+    border: 1px solid #d1d5db; background: #f3f4f6; color: #6b7280;
+  }
+  .btn-disable-plan:hover { background: #e5e7eb; color: #374151; }
+  .btn-disable-plan.is-enable {
+    border-color: #86efac; background: #f0fdf4; color: #15803d;
+  }
+  .btn-disable-plan.is-enable:hover { background: #dcfce7; }
+  .btn-delete-plan.hidden, .btn-disable-plan.hidden { display: none; }
+  .action-link-hint {
+    font-size: 10px; font-weight: 500; color: #94a3b8; text-align: right; line-height: 1.3;
+    max-width: 220px;
+  }
+  #plan-note.ctrl, #view-note.ctrl {
+    min-height: 48px; height: auto; overflow: hidden; resize: none;
+    padding: 10px 12px; box-sizing: border-box;
+  }
+
+  .future-note {
+    margin: 0 0 14px; padding: 8px 12px; border-left: 3px solid #8a9a5a;
+    background: #f5f7f0; border-radius: 0 8px 8px 0;
+    font-size: 11px; color: #556b2f; line-height: 1.5;
+  }
+  .future-note b { color: #3d4e1a; }
+
+  .record-body {
+    flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 300px;
+  }
+  .detail-pane, .meta-pane {
+    display: flex; flex-direction: column; min-height: 0; min-width: 0;
+  }
+  .detail-pane { border-right: 1px dashed #e5e7eb; }
+  .pane-head {
+    padding: 8px 14px; font-size: 11px; font-weight: 700; color: var(--qb-muted);
+    text-transform: uppercase; letter-spacing: .04em;
+    border-bottom: 1px solid #f0f2f4; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+  .pane-head .link-hint {
+    font-size: 10px; font-weight: 500; text-transform: none; letter-spacing: 0; color: #94a3b8;
+  }
+  .pane-body { flex: 1; min-height: 0; overflow-y: auto; padding: 14px 16px; overscroll-behavior: contain; background: #fff; }
+
+  .detail-pane, .meta-pane { background: #fff; }
+
+  .form-row {
+    display: grid; grid-template-columns: 110px 1fr; gap: 12px;
+    align-items: start; margin-bottom: 16px;
+  }
+  .form-row > label { font-size: 13px; font-weight: 600; color: #444; padding-top: 10px; }
+  .form-row.align-top > label { padding-top: 4px; }
+  .ctrl {
+    width: 100%; height: 40px; border: 1px solid #d9dee7; border-radius: 8px;
+    background: #fff; padding: 0 12px; font-size: 13px; font-family: inherit; color: #1f2937;
+  }
+  input[type="datetime-local"].ctrl { font-weight: 500; color: #374151; }
+  .ctrl:focus, .msg-editor:focus {
+    outline: none; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,.12);
+  }
+
+  .level-tags { display: flex; gap: 8px; flex-wrap: wrap; padding-top: 4px; }
+  .level-tag {
+    width: 40px; height: 40px; border-radius: 8px; border: 1.5px solid;
+    background: #fff; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+    padding: 0;
+  }
+  .level-tag svg { width: 18px; height: 18px; }
+  .level-tag.green { border-color: #86efac; color: #16a34a; }
+  .level-tag.yellow { border-color: #fde68a; color: #ca8a04; }
+  .level-tag.red { border-color: #fca5a5; color: #dc2626; }
+  .level-tag.green.active { background: #22c55e; border-color: #16a34a; color: #fff; }
+  .level-tag.yellow.active { background: #eab308; border-color: #ca8a04; color: #fff; }
+  .level-tag.red.active { background: #ef4444; border-color: #dc2626; color: #fff; }
+
+  .msg-block { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .msg-toolbar-top { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+  .tpl-label { font-size: 12px; font-weight: 600; color: #6b7280; }
+  .tpl-select {
+    min-width: 140px; height: 34px; border: 1px solid #d9dee7; border-radius: 8px;
+    padding: 0 28px 0 10px; font-size: 12px; font-family: inherit; background: #fff; appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat; background-position: right 8px center;
+  }
+  .tpl-add {
+    width: 34px; height: 34px; border: none; border-radius: 8px;
+    background: #22c55e; color: #fff; font-size: 18px; font-weight: 700; cursor: pointer; font-family: inherit;
+  }
+  .msg-format-bar {
+    display: flex; gap: 4px; padding: 6px 8px; border: 1px solid #e5e7eb;
+    border-bottom: none; border-radius: 8px 8px 0 0; background: #f9fafb;
+  }
+  .fmt-btn {
+    width: 32px; height: 28px; border: 1px solid transparent; border-radius: 6px;
+    background: transparent; color: #374151; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit;
+  }
+  .msg-editor {
+    border: 1px solid #d9dee7; border-radius: 0 0 8px 8px;
+    background: #fff; padding: 12px; font-size: 13px; font-family: inherit;
+    color: #1f2937; outline: none; min-height: 140px; overflow-y: auto;
+  }
+  .msg-editor:empty:before { content: attr(data-placeholder); color: #9ca3af; pointer-events: none; }
+
+  .lab-quote {
+    margin: 0 0 14px; padding: 10px 14px; border-left: 3px solid #f59e0b;
+    background: #fffbeb; border-radius: 0 8px 8px 0;
+    font-size: 12px; color: #92400e; line-height: 1.55; font-style: italic;
+  }
+  .lab-quote .quote-mark { font-style: normal; font-weight: 700; color: #b45309; margin-right: 4px; }
+
+  .check-catalog { display: flex; flex-direction: column; gap: 14px; max-width: 560px; }
+  .check-group {
+    border: 1px solid #e5e7eb; border-radius: 10px; background: #fff; overflow: hidden;
+  }
+  .check-group-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    padding: 8px 12px; background: #f9fafb; border-bottom: 1px solid #eef0f4;
+    font-size: 12px; font-weight: 700; color: #374151;
+  }
+  .check-group-head .head-left {
+    display: flex; align-items: center; gap: 8px; min-width: 0; cursor: pointer;
+  }
+  .check-group-head .head-left input { width: 15px; height: 15px; flex-shrink: 0; accent-color: #556b2f; }
+  .check-group-head .hint { font-size: 10px; font-weight: 500; color: #9ca3af; flex-shrink: 0; }
+  .check-group-body {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 4px; padding: 8px;
+  }
+  .field-check {
+    display: flex; align-items: flex-start; gap: 7px; padding: 6px 8px;
+    border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 500; color: #374151;
+    line-height: 1.35;
+  }
+  .field-check:hover { background: #f3f4f6; }
+  .field-check input { width: 14px; height: 14px; margin-top: 1px; flex-shrink: 0; }
+  .field-check.vpe input { accent-color: #556b2f; }
+  .field-check.lab input { accent-color: #b45309; }
+  .check-group.lab .check-group-head { background: #fffbeb; }
+  .check-group.vpe .check-group-head { background: #f5f7f0; }
+
+  .form-empty {
+    min-height: 120px; display: flex; align-items: center; justify-content: center;
+    color: #9ca3af; font-size: 13px; text-align: center; padding: 32px;
+  }
+  .detail-view.hidden { display: none; }
+  .shared-fields { margin-bottom: 4px; }
+
+  .form-group { margin-bottom: 12px; }
+  .form-group > label, .schedule-on-label span {
+    display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #444;
+  }
+  .schedule-on-label { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+  .schedule-on-label span { margin-bottom: 0; }
+  .schedule-hint { font-size: 11px; color: #9ca3af; margin-top: 4px; line-height: 1.4; }
+  .meta-readonly {
+    padding: 9px 10px; border: 1px solid #e5e7eb; border-radius: 8px;
+    font-size: 13px; background: #f3f4f6; color: #6b7280;
+  }
+  .meta-divider { border: none; border-top: 1px solid #eee; margin: 12px 0; }
+  .meta-section-label {
+    font-size: 12px; font-weight: 700; color: #6b7280;
+    text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px;
+  }
+  .req-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; align-items: center; }
+  .tag { font-size: 11px; padding: 3px 8px; border-radius: 6px; }
+  .tag.ok { background: #e6f7ee; color: #16a34a; }
+  .tag.visit { background: #f3e8ff; color: #7c3aed; }
+  .btn-confirm {
+    background: #22c55e; color: #fff; border: none; padding: 7px 14px;
+    border-radius: 8px; font-size: 13px; cursor: pointer; font-family: inherit; font-weight: 600;
+  }
+  .btn-confirm:hover { background: #16a34a; }
+  .btn-confirm.is-apply { background: #2563eb; }
+  .btn-confirm.is-apply:hover { background: #1d4ed8; }
+  .schedule-row { display: flex; gap: 8px; align-items: stretch; }
+  .schedule-row .ctrl { flex: 1; min-width: 0; }
+  .btn-schedule-today {
+    flex-shrink: 0; display: inline-flex; align-items: center; gap: 5px;
+    padding: 0 12px; border: 1px solid #a0b070; border-radius: 8px;
+    font-size: 12px; background: #f5f7f0; color: #556b2f;
+    font-family: inherit; cursor: pointer; font-weight: 500;
+  }
+  .plan-toast {
+    position: fixed; top: 20px; right: 20px; z-index: 4000;
+    background: #f0fdf4; border: 1px solid #86efac; border-radius: 10px;
+    padding: 14px 20px; box-shadow: var(--qb-shadow);
+    display: none; min-width: 260px;
+  }
+  .plan-toast.show { display: block; }
+  .plan-toast .toast-title { font-size: 14px; font-weight: 700; color: #16a34a; }
+
+  .logic-box {
+    background: #fff; border-radius: 12px; box-shadow: var(--qb-shadow);
+    width: 95%; max-width: 720px; max-height: 80vh; overflow-y: auto; padding: 28px 32px;
+  }
+  .logic-title { font-size: 18px; font-weight: 700; color: #3d4e1a; margin-bottom: 4px; }
+  .logic-subtitle { font-size: 12px; color: #9ca3af; margin-bottom: 16px; }
+  .logic-section { margin-bottom: 18px; }
+  .logic-section-title {
+    font-size: 14px; font-weight: 600; color: #556b2f; padding-bottom: 6px;
+    border-bottom: 2px solid #e8ecd8; margin-bottom: 10px;
+  }
+  .logic-list { list-style: none; }
+  .logic-list li {
+    font-size: 13px; color: #374151; line-height: 1.7; padding: 3px 0 3px 18px; position: relative;
+  }
+  .logic-list li::before {
+    content: ''; position: absolute; left: 4px; top: 11px;
+    width: 6px; height: 6px; border-radius: 50%; background: #a0b070;
+  }
+  .logic-list li b { color: #3d4e1a; }
+
+  /* Table tab */
+  .tab-content.is-table {
+    flex-direction: column; padding: 0; gap: 0;
+    background: #fff; border: 1px solid #e5e7eb; border-radius: 0 0 12px 12px;
+  }
+  .table-panel {
+    flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden;
+  }
+  .table-panel .panel-title {
+    padding: 10px 14px; font-size: 13px; font-weight: 700; color: #374151;
+    border-bottom: 1px solid #eee; flex-shrink: 0;
+  }
+  .data-table-bar {
+    display: flex; gap: 8px; align-items: center; padding: 10px 14px;
+    border-bottom: 1px solid #eee; flex-wrap: wrap; flex-shrink: 0; background: #fafafa;
+  }
+  .data-table-bar input, .data-table-bar select {
+    padding: 7px 10px; border: 1px solid #d0d5dd; border-radius: 8px;
+    font-size: 12px; background: #fff; font-family: inherit;
+  }
+  .data-table-bar input { flex: 1; min-width: 180px; }
+  .data-table-bar .btn-search {
+    padding: 7px 14px; border: 1px solid #a0b070; border-radius: 8px;
+    font-size: 12px; background: #f5f7f0; color: #556b2f; cursor: pointer;
+    font-family: inherit; font-weight: 600;
+  }
+  .data-table-bar .btn-clear {
+    padding: 7px 14px; border: 1px solid #e5e7eb; border-radius: 8px;
+    font-size: 12px; background: #fff; color: #6b7280; cursor: pointer;
+    font-family: inherit; font-weight: 500;
+  }
+  .data-table-wrap { overflow: auto; flex: 1; min-height: 0; }
+  .data-table {
+    width: 100%; min-width: 1680px; border-collapse: collapse; font-size: 12px;
+  }
+  .data-table thead th {
+    position: sticky; top: 0; z-index: 1; background: #f9fafb; text-align: left;
+    padding: 10px 12px; color: #6b7280; font-weight: 600; border-bottom: 1px solid #e5e7eb;
+    font-size: 11px; white-space: nowrap;
+  }
+  .data-table tbody td {
+    padding: 9px 12px; border-bottom: 1px solid #f0f0f0; white-space: nowrap; vertical-align: middle;
+  }
+  .data-table tbody tr:hover { background: #f9fafb; }
+  .data-table tbody tr.row-inactive {
+    background: #f3f4f6; color: #9ca3af;
+  }
+  .data-table tbody tr.row-inactive:hover { background: #eceff2; }
+  .data-table tbody tr.row-disabled {
+    background: #f3f4f6; color: #9ca3af;
+  }
+  .data-table tbody tr.row-disabled td { color: #9ca3af; }
+  .data-table tbody tr.row-disabled:hover { background: #eceff2; }
+  .data-table tbody tr.row-disabled .tbl-badge.st-disable {
+    background: #e5e7eb; color: #6b7280;
+  }
+  .data-table td.cell-clamp {
+    white-space: normal; max-width: 200px; line-height: 1.4;
+  }
+  .data-table td.cell-clamp .clamp-inner {
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .tbl-badge {
+    font-size: 11px; padding: 2px 8px; border-radius: 999px; font-weight: 600;
+    white-space: nowrap; display: inline-block;
+  }
+  .st-plan { background: #dbeafe; color: #1e40af; }
+  .st-done { background: #d1fae5; color: #065f46; }
+  .st-disable { background: #f3f4f6; color: #6b7280; }
+  .st-inactive { background: #e5e7eb; color: #6b7280; margin-left: 4px; }
+  .tbl-level {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 7px; border: 1.5px solid; padding: 0;
+    vertical-align: middle;
+  }
+  .tbl-level svg { width: 14px; height: 14px; }
+  .tbl-level.green { background: #22c55e; border-color: #16a34a; color: #fff; }
+  .tbl-level.yellow { background: #eab308; border-color: #ca8a04; color: #fff; }
+  .tbl-level.red { background: #ef4444; border-color: #dc2626; color: #fff; }
+  .row-actions { display: inline-flex; gap: 4px; align-items: center; position: relative; }
+  .btn-row {
+    padding: 4px 9px; border-radius: 6px; font-size: 11px; font-weight: 600;
+    font-family: inherit; cursor: pointer; border: 1px solid #d1d5db; background: #fff; color: #374151;
+  }
+  .btn-row:hover:not(:disabled) { background: #f3f4f6; }
+  .btn-row:disabled {
+    opacity: .45; cursor: not-allowed; background: #f3f4f6; color: #9ca3af; border-color: #e5e7eb;
+  }
+  .btn-row.view { border-color: #93c5fd; color: #1d4ed8; background: #eff6ff; }
+  .btn-row.change { border-color: #fdba74; color: #c2410c; background: #fff7ed; }
+  .btn-row.go { border-color: #86efac; color: #15803d; background: #f0fdf4; }
+  .change-pop {
+    display: none; position: absolute; top: calc(100% + 4px); right: 0; z-index: 20;
+    background: #fff; border: 1px solid #e5e7eb; border-radius: 8px;
+    box-shadow: var(--qb-shadow); padding: 4px; min-width: 110px;
+  }
+  .change-pop.show { display: block; }
+  .change-pop button {
+    display: block; width: 100%; text-align: left; border: none; background: transparent;
+    padding: 7px 10px; border-radius: 6px; font-size: 12px; font-weight: 600;
+    font-family: inherit; cursor: pointer; color: #374151;
+  }
+  .change-pop button:hover { background: #f3f4f6; }
+
+  .view-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 3500;
+    align-items: center; justify-content: center; padding: 16px;
+  }
+  .view-overlay.show { display: flex; }
+  .view-box {
+    background: #fff; border-radius: 12px; box-shadow: var(--qb-shadow);
+    width: min(1100px, 100%); max-height: 90vh; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .view-box-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 14px 18px; border-bottom: 1px solid #e5e7eb; background: #fafafa;
+  }
+  .view-box-head-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .view-owner-banner {
+    margin: 0 0 12px; padding: 8px 12px; border-radius: 8px; font-size: 12px; line-height: 1.45;
+  }
+  .view-owner-banner.can-edit {
+    background: #f0fdf4; border: 1px solid #86efac; color: #166534;
+  }
+  .view-owner-banner.readonly {
+    background: #fef3c7; border: 1px solid #fde68a; color: #92400e;
+  }
+  .view-detail-form.is-readonly .ctrl,
+  .view-detail-form.is-readonly input,
+  .view-detail-form.is-readonly textarea,
+  .view-detail-form.is-readonly select,
+  .view-detail-form.is-readonly .msg-editor {
+    pointer-events: none; background: #f9fafb;
+  }
+  .view-detail-form.is-readonly .level-tag,
+  .view-detail-form.is-readonly .field-check,
+  .view-detail-form.is-readonly .head-left {
+    pointer-events: none; cursor: default;
+  }
+  .view-detail-form.is-readonly .msg-toolbar-top,
+  .view-detail-form.is-readonly .msg-format-bar { opacity: .55; }
+  .view-box-head h3 { font-size: 15px; font-weight: 700; color: #1f2937; }
+  .view-box-head .sub { font-size: 11px; color: #6b7280; margin-top: 2px; }
+  .view-box-body {
+    display: grid; grid-template-columns: 1.45fr 0.85fr; gap: 0; overflow: hidden; flex: 1; min-height: 0;
+  }
+  .view-pane { padding: 16px 18px; overflow-y: auto; min-height: 0; }
+  .view-pane + .view-pane { border-left: 1px dashed #e5e7eb; background: #fafbfc; }
+  .view-pane h4 {
+    font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase;
+    letter-spacing: .04em; margin-bottom: 12px;
+  }
+  .view-kv { display: grid; grid-template-columns: 110px 1fr; gap: 6px 10px; font-size: 12px; margin-bottom: 8px; }
+  .view-kv .k { color: #6b7280; font-weight: 600; }
+  .view-kv .v { color: #1f2937; word-break: break-word; white-space: pre-wrap; }
+  .view-detail-form .ctrl[readonly], .view-detail-form .ctrl:disabled {
+    background: #f9fafb; color: #374151; cursor: default;
+  }
+  .view-detail-form .level-tag { pointer-events: none; cursor: default; }
+  .view-detail-form .msg-editor {
+    min-height: 100px; background: #f9fafb; white-space: pre-wrap;
+  }
+  .view-detail-form .field-check { cursor: default; }
+  .view-detail-form .field-check input { pointer-events: none; }
+  .view-detail-form .check-group-head .head-left { cursor: default; }
+  .view-detail-form .check-group-head input { pointer-events: none; }
+  .view-detail-form .msg-toolbar-top, .view-detail-form .msg-format-bar { opacity: .55; pointer-events: none; }
+  .data-table td.cell-note {
+    white-space: normal; max-width: 240px; line-height: 1.4; vertical-align: top;
+  }
+  .data-table td.cell-note .clamp-inner {
+    display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
+  }
+</style>
+</head>
+<body>
+
+<button class="plan-badge" type="button" onclick="openPlanEditor()">
+  <span class="dot"></span> Plan Editor
+</button>
+
+<div class="modal-overlay show" id="plan-modal">
+  <div class="modal-box">
+
+    <div class="assess-editor-header">
+      <div class="obj-brand">
+        <div class="obj-brand-logo">KAHIS</div>
+        <div class="obj-brand-sub">Plan Editor</div>
+      </div>
+      <div class="examcard-bar">
+        <div class="obj-filter-wrap">
+          <button class="obj-filter-trigger has-mode" id="planFilterTrigger" type="button" data-mode-label="By Date">Filters <span class="chev">▾</span></button>
+          <div class="obj-filter-pop" id="planFilterPop">
+            <div class="obj-filter-section active-mode" data-mode="date">
+              <label>By Date</label>
+              <div class="hint">Default = วันนี้ · เปลี่ยนวันแล้วกด Search</div>
+              <div class="obj-filter-row">
+                <select id="plan-f-date-select">
+                  <option value="2026-08-05" selected>05 Aug 2026 (Today)</option>
+                  <option value="2026-08-04">04 Aug 2026</option>
+                  <option value="2026-07-09">09 Jul 2026</option>
+                </select>
+                <button class="obj-btn-cal" type="button" id="plan-f-date-cal" title="เปิดปฏิทิน">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                </button>
+                <input class="obj-filter-hidden-date" type="date" id="plan-f-date-picker" value="2026-08-05">
+                <button class="obj-btn-search-sec" type="button" id="planBtnSearchDate">Search</button>
+              </div>
+            </div>
+            <div class="obj-filter-section" data-mode="dvm">
+              <label>By DVM</label>
+              <div class="hint">ดึง Plan ของสัตวแพทย์ที่เลือก</div>
+              <div class="obj-filter-row">
+                <select><option value="">เลือก DVM…</option><option>นิพนธ์ วงศ์ประเสริฐ</option></select>
+                <button class="obj-btn-search-sec" type="button">Search</button>
+              </div>
+            </div>
+            <div class="obj-filter-section" data-mode="dept">
+              <label>By Department</label>
+              <div class="hint">ดึง Plan ของแผนกที่เลือก</div>
+              <div class="obj-filter-row">
+                <select><option value="">เลือกแผนก…</option><option>คลินิกพิเศษ โรคหัวใจ (นอกเวลา)</option></select>
+                <button class="obj-btn-search-sec" type="button">Search</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="doc-badge-group">
+          <button class="logic-badge" type="button" onclick="document.getElementById('logic-modal').classList.add('show')">
+            <span class="dot" style="width:8px;height:8px;border-radius:50%;background:#556b2f;display:inline-block;"></span> View Logic/Rule
+          </button>
+          <button class="doc-badge" type="button" onclick="openPlanMd('plan_user_manual_th.md', 'คู่มือผู้ใช้ Plan (ไทย)')" title="plan_user_manual_th.md">
+            <span class="md-tag">.md</span> คู่มือผู้ใช้
+          </button>
+          <button class="doc-badge" type="button" onclick="openPlanMd('plan_manual.md', 'Plan Manual / Spec')" title="plan_manual.md">
+            <span class="md-tag">.md</span> Manual
+          </button>
+          <button class="doc-badge" type="button" onclick="openPlanMd('for_dev_plan.md', 'For Dev — Plan')" title="for_dev_plan.md">
+            <span class="md-tag">.md</span> For Dev
+          </button>
+        </div>
+        <button class="examcard-btn-out" type="button" id="planGoToday">Go Today</button>
+        <button class="examcard-go" type="button" title="Refresh" onclick="showToast('Refreshed')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        </button>
+        <button class="modal-close" type="button" onclick="document.getElementById('close-confirm').classList.add('show')">&#10005;</button>
+      </div>
+    </div>
+
+    <div class="visit-tabs">
+      <div class="vtab active" data-tab="1">
+        <div class="line1">นิพนธ์ วงศ์ประเสริฐ <span class="new-badge">NEW</span></div>
+        <div class="line2">CA คลินิกพิเศษ โรคหัวใจ (นอกเวลา)</div>
+      </div>
+      <div class="vtab disabled" data-tab="2" title="ยังไม่เปิดใช้">
+        <div class="line1">นิพนธ์ วงศ์ประเสริฐ</div>
+        <div class="line2">อายุรกรรมทั่วไป (ในเวลา)</div>
+      </div>
+      <div class="vtab disabled" data-tab="3" title="ยังไม่เปิดใช้">
+        <div class="line1">วิชัย ใจดี</div>
+        <div class="line2">ภาพวินิจฉัย (นอกเวลา)</div>
+      </div>
+      <div class="vtab disabled" data-tab="4" title="ยังไม่เปิดใช้">
+        <div class="line1">ปนัดดา ศรีสุข</div>
+        <div class="line2">อายุรกรรมทั่วไป (ในเวลา)</div>
+      </div>
+      <div class="vtab add-visit" data-tab="5">
+        <div class="line1">HN 69001234</div>
+        <div class="line2">ตารางรวม plans</div>
+      </div>
+    </div>
+    <div class="visit-topbar">
+      <div class="for-date" id="plan-for-date">for 05 Aug 2026</div>
+      <div>last update: <b>08.12</b> by <b>นิพนธ์ วงศ์ประเสริฐ</b></div>
+    </div>
+
+    <div class="tab-content" id="content-1">
+      <!-- Left: Plans rail -->
+      <aside class="plans-rail">
+        <div class="plans-rail-head">
+          <span class="title">Plans</span>
+          <div class="add-plan-wrap">
+            <button class="btn-add-plan" type="button" id="btnAddPlan" title="เพิ่ม Plan">+</button>
+            <div class="add-plan-pop" id="addPlanPop">
+              <button class="add-plan-opt" type="button" data-type="common">Common Plan</button>
+              <button class="add-plan-opt" type="button" data-type="vpe">VPE Plan</button>
+              <button class="add-plan-opt" type="button" data-type="lab">Lab Plan</button>
+              <button class="add-plan-opt" type="button" data-type="form-a">Form A Plan</button>
+              <button class="add-plan-opt" type="button" data-type="form-b">Form B Plan</button>
+            </div>
+          </div>
+        </div>
+        <div class="plans-list" id="plans-list"></div>
+      </aside>
+
+      <!-- Right: continuous Detail + Meta card -->
+      <section class="main-card" id="main-card" data-type="common">
+        <div class="record-band">
+          <div class="band-left">
+            <div class="band-title" id="band-title">Common Plan</div>
+            <div class="band-sub" id="band-sub">Saved · PLAN-69001234-001 · Detail + Meta เป็นชุดเดียวกัน</div>
+          </div>
+          <div class="band-right">
+            <div class="action-link-hint" id="action-link-hint">ลบได้เฉพาะ draft ที่ยังไม่มี id →</div>
+            <button class="btn-delete-plan" type="button" id="btnDeletePlan">Delete</button>
+            <button class="btn-disable-plan hidden" type="button" id="btnDisablePlan">Disable</button>
+          </div>
+        </div>
+
+        <div class="record-body">
+          <div class="detail-pane">
+            <div class="pane-head">
+              <span>Detail</span>
+              <span class="link-hint" id="detail-link-hint">ชุดข้อมูลเดียวกับ Record Meta →</span>
+            </div>
+            <div class="pane-body">
+              <div class="future-note">
+                <b>อนาคต:</b> Plans บางชนิดอาจย้ายไปเป็นส่วนของ VPE จริงได้ เมื่อเลือก form ที่ตรงกับโมดูล Vital &amp; PE
+              </div>
+
+              <!-- Shared: Title + Level Symbol (ทุก form) -->
+              <div class="shared-fields" id="shared-fields">
+                <div class="form-row">
+                  <label for="plan-title">Title</label>
+                  <input class="ctrl" id="plan-title" type="text" placeholder="หัวข้อแผน">
+                </div>
+                <div class="form-row align-top">
+                  <label>Level Symbol</label>
+                  <div class="level-tags" id="level-tags">
+                    <button type="button" class="level-tag green" data-level="green" onclick="selectLevel(this)">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                    </button>
+                    <button type="button" class="level-tag yellow" data-level="yellow" onclick="selectLevel(this)">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                    </button>
+                    <button type="button" class="level-tag red" data-level="red" onclick="selectLevel(this)">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Common extras -->
+              <div class="detail-view" id="view-common">
+                <div class="form-row align-top">
+                  <label>Message</label>
+                  <div class="msg-block">
+                    <div class="msg-toolbar-top">
+                      <span class="tpl-label">My Templates</span>
+                      <select class="tpl-select" id="plan-template">
+                        <option value="">Template</option>
+                        <option value="fu-cbc">Follow-up CBC + transfusion</option>
+                        <option value="recheck">Recheck visit (1 week)</option>
+                        <option value="monitor">Monitor clinical signs</option>
+                      </select>
+                      <button class="tpl-add" type="button" onclick="showToast('Add template (mock)')">+</button>
+                    </div>
+                    <div class="msg-format-bar">
+                      <button class="fmt-btn" type="button" onclick="fmtCmd('bold')"><b>B</b></button>
+                      <button class="fmt-btn" type="button" onclick="fmtCmd('italic')"><i>I</i></button>
+                      <button class="fmt-btn" type="button" onclick="fmtCmd('justifyLeft')">☰</button>
+                    </div>
+                    <div class="msg-editor" id="plan-message" contenteditable="true" data-placeholder="รายละเอียดแผน…"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- VPE extras -->
+              <div class="detail-view hidden" id="view-vpe">
+                <div style="font-size:13px;font-weight:600;color:#444;margin-bottom:10px;">รายการตรวจ</div>
+                <div class="check-catalog" id="vpe-checks"></div>
+              </div>
+
+              <!-- Lab extras -->
+              <div class="detail-view hidden" id="view-lab">
+                <blockquote class="lab-quote">
+                  <span class="quote-mark">“</span>ไม่มีการเชื่อมต่อกับรายการ items จนกว่าจะสร้างระบบ order ในอนาคต รวมถึงแนวโน้มของรูปแบบการเปลี่ยนแปลงของ items ที่ชัดเจน<span class="quote-mark">”</span>
+                </blockquote>
+                <div style="font-size:13px;font-weight:600;color:#444;margin-bottom:10px;">รายการส่งตรวจตัวอย่างทางห้องปฏิบัติการ</div>
+                <div class="check-catalog" id="lab-checks"></div>
+              </div>
+
+              <!-- Form A / B extras -->
+              <div class="detail-view hidden" id="view-empty">
+                <div class="form-empty">ว่าง — รอออกแบบฟอร์มเฉพาะ (นอกเหนือ Title / Level Symbol)</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="meta-pane">
+            <div class="pane-head">
+              <span>Record Meta</span>
+              <button class="btn-confirm" type="button" id="btnConfirm" onclick="confirmOrApply()">&#10003; Apply</button>
+            </div>
+            <div class="pane-body">
+              <div class="req-tags">
+                <span style="font-size:11px;color:#6b7280;">Required</span>
+                <span class="tag ok">✓ Plan</span>
+                <span class="tag ok">✓ DVM/User</span>
+                <span class="tag ok">✓ Dept</span>
+                <span class="tag visit" id="meta-exam-card">exam-card-69001234</span>
+              </div>
+
+              <div class="form-group">
+                <div class="schedule-on-label"><span>Schedule on</span></div>
+                <div class="schedule-row">
+                  <input class="ctrl" id="schedule-on-input" type="datetime-local">
+                  <button class="btn-schedule-today" type="button" onclick="setScheduleToday()">Today</button>
+                </div>
+                <div class="schedule-hint">วันและเวลาเป้าหมายของแผน · ถ้าวันที่ Schedule on เก่ากว่าวันนี้ (ไม่นับเวลา) แถวในตารางจะถูกจัดเป็น Inactive ด้านล่าง — แก้วันที่เป็นวันนี้หรืออนาคตเพื่อกลับมา Active</div>
+              </div>
+
+              <div class="form-group">
+                <label>DVM / User</label>
+                <div class="meta-readonly" id="meta-dvm">นิพนธ์ วงศ์ประเสริฐ</div>
+              </div>
+              <div class="form-group">
+                <label>Department</label>
+                <div class="meta-readonly" id="meta-dept">คลินิกพิเศษ โรคหัวใจ (นอกเวลา)</div>
+              </div>
+
+              <hr class="meta-divider">
+              <div class="meta-section-label">Plan Note</div>
+              <div class="form-group">
+                <textarea class="ctrl" id="plan-note" rows="2" placeholder="บันทึกเพิ่มเติมของแผน…"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="tab-content is-table" id="content-5" style="display:none;">
+      <div class="table-panel">
+        <div class="panel-title">ตารางรวม plans</div>
+        <div class="data-table-bar">
+          <input type="text" id="tbl-search" placeholder="ค้นหา Title / Note / DVM / id…">
+          <select id="tbl-status">
+            <option value="">Status ทั้งหมด</option>
+            <option value="plan">Plan</option>
+            <option value="done">Done</option>
+            <option value="disable">Disable</option>
+          </select>
+          <select id="tbl-type">
+            <option value="">Plans ทั้งหมด</option>
+            <option value="common">Common Plan</option>
+            <option value="vpe">VPE Plan</option>
+            <option value="lab">Lab Plan</option>
+            <option value="form-a">Form A Plan</option>
+            <option value="form-b">Form B Plan</option>
+          </select>
+          <select id="tbl-active">
+            <option value="">Active + Inactive</option>
+            <option value="active">Active (Schedule ≥ for date)</option>
+            <option value="inactive">Inactive (Schedule &lt; for date)</option>
+          </select>
+          <button class="btn-search" type="button" onclick="filterPlansTable()">ค้นหา</button>
+          <button class="btn-clear" type="button" onclick="clearPlansTableFilter()">ล้างตัวกรอง</button>
+        </div>
+        <div class="data-table-wrap">
+          <table class="data-table" id="plans-table">
+            <thead>
+              <tr>
+                <th>Schedule On</th>
+                <th>Plans</th>
+                <th>Title</th>
+                <th>Level</th>
+                <th>Plan Note</th>
+                <th>Status</th>
+                <th>DVM</th>
+                <th>Department</th>
+                <th>Action</th>
+                <th>Record Time</th>
+                <th>Record User</th>
+                <th>Update Time</th>
+                <th>Update User</th>
+              </tr>
+            </thead>
+            <tbody id="plans-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="view-overlay" id="view-plan-modal">
+  <div class="view-box">
+    <div class="view-box-head">
+      <div>
+        <h3 id="view-plan-title">Plan</h3>
+        <div class="sub" id="view-plan-sub"></div>
+      </div>
+      <div class="view-box-head-actions">
+        <button class="btn-disable-plan" type="button" id="view-plan-disable" style="display:none;" onclick="toggleViewDisable()">Disable</button>
+        <button class="btn-confirm is-apply" type="button" id="view-plan-apply" style="display:none;" onclick="saveViewPlan()">✓ Apply</button>
+        <button class="modal-close" type="button" onclick="closeViewPlan()">&#10005;</button>
+      </div>
+    </div>
+    <div class="view-box-body">
+      <div class="view-pane">
+        <h4>Detail</h4>
+        <div id="view-owner-banner"></div>
+        <div id="view-plan-detail"></div>
+      </div>
+      <div class="view-pane">
+        <h4>Record Meta</h4>
+        <div id="view-plan-meta"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Close confirm -->
+<div class="confirm-overlay" id="close-confirm">
+  <div class="confirm-box">
+    <div class="confirm-icon">⚠️</div>
+    <div class="confirm-title">ปิด Plan Editor?</div>
+    <div class="confirm-msg">การเปลี่ยนแปลงที่ยังไม่ได้บันทึกอาจหายไป</div>
+    <div class="confirm-actions">
+      <button class="confirm-back" type="button" onclick="document.getElementById('close-confirm').classList.remove('show')">กลับไปแก้ไข</button>
+      <button class="confirm-close-danger" type="button" onclick="closePlanEditor()">ปิดเลย</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete confirm -->
+<div class="confirm-overlay" id="delete-confirm">
+  <div class="confirm-box">
+    <div class="confirm-icon">🗑️</div>
+    <div class="confirm-title">ลบ Plan นี้?</div>
+    <div class="confirm-msg" id="delete-confirm-msg">รายการ draft จะถูกลบ และไม่สามารถกู้คืนได้</div>
+    <div class="confirm-actions">
+      <button class="confirm-back" type="button" onclick="document.getElementById('delete-confirm').classList.remove('show')">ปิด (ไม่ลบ)</button>
+      <button class="confirm-delete" type="button" onclick="doDeletePlan()">ลบ</button>
+    </div>
+  </div>
+</div>
+
+<div class="logic-overlay" id="logic-modal">
+  <div class="logic-box">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+      <div>
+        <div class="logic-title">Plan Editor — Logic / Rule</div>
+        <div class="logic-subtitle">สรุปสั้น · เอกสารเต็มใช้ปุ่ม .md ข้าง View Logic</div>
+      </div>
+      <button class="modal-close" type="button" onclick="document.getElementById('logic-modal').classList.remove('show')">&#10005;</button>
+    </div>
+    <div class="logic-section">
+      <div class="logic-section-title">1. Plans &amp; Meta</div>
+      <ul class="logic-list">
+        <li>แต่ละรายการใน Plans มี <b>Detail + Record Meta เป็นชุดเดียวกัน</b> (สลับรายการ = สลับทั้งชุด · มีตัวเชื่อม highlight กับบล็อกขวา)</li>
+        <li>ทุก form เริ่มด้วย <b>Title</b> และ <b>Level Symbol</b></li>
+        <li><b>Schedule on</b> เก็บทั้งวันและเวลา</li>
+        <li>เพิ่มซ้ำได้ด้วยปุ่ม <b>+</b></li>
+        <li>Draft (ยังไม่มี id) → ปุ่ม <b>Delete</b> · ลบได้หลังยืนยัน · Confirm เพื่อบันทึก</li>
+        <li>Saved (มี id) → สลับ <b>Disable ↔ Enable (Plan)</b> ที่ editor / View ของเจ้าของ · อัปเดต Update Time · แก้เนื้อหาด้วย <b>Apply</b></li>
+        <li>ตารางรวม: Action <b>View</b> · <b>Change</b> เป็น Done/Plan เท่านั้น (ห้าม Disable จากตาราง — กันกดผิดจากภาพรวม) · Inactive (Schedule) ห้าม Change</li>
+        <li>แถว status <b>Disable</b> แสดงตัวอักษรแบบ Inactive ทั้งแถว</li>
+        <li>ไม่ใช้ Go เข้า tab editor ตาม filter date — ตารางรวมข้ามวัน/ข้าม tab</li>
+        <li>เรียงเก่า→ใหม่ · ถ้า <b>Schedule on</b> (วันที่) &lt; for-date → Inactive ท้ายตาราง · กลับ Active โดยแก้ Schedule on ≥ for-date</li>
+        <li>แสดงวันที่เป็น <b>dd/mm/yyyy HH:mm</b></li>
+      </ul>
+    </div>
+    <div class="logic-section">
+      <div class="logic-section-title">2. VPE Plan</div>
+      <ul class="logic-list">
+        <li>เช็คว่าให้ตรวจ <b>ฟิลด์ใด</b> ของ Vital &amp; PE (ครบ 47 ฟิลด์) — มี checkbox <b>ระดับหัวข้อ section</b> ด้วย</li>
+        <li>จัดกลุ่มตาม section เดียวกับโมดูล Vital &amp; PE · ไม่กรอกค่าจริงใน Plan</li>
+      </ul>
+    </div>
+    <div class="logic-section">
+      <div class="logic-section-title">3. Lab Plan (mock)</div>
+      <ul class="logic-list">
+        <li>หัวข้อ <b>รายการส่งตรวจตัวอย่างทางห้องปฏิบัติการ</b></li>
+        <li>กลุ่ม: <b>Hematology</b> (CBC, PLT…), <b>Blood Chemistry</b> (BUN, ALT…), <b>UA</b>, <b>Path Lab</b> (cytology, biopsy)</li>
+        <li>ยังไม่เชื่อมกับรายการ items จนกว่าจะมีระบบ order</li>
+        <li>รูปแบบ items มีแนวโน้มเปลี่ยนชัดเจนเมื่อเชื่อม order ในอนาคต</li>
+      </ul>
+    </div>
+    <div class="logic-section">
+      <div class="logic-section-title">4. อนาคต — VPE จริง</div>
+      <ul class="logic-list">
+        <li>Plans บางชนิดอาจย้ายไปเป็นส่วนของ <b>VPE จริง</b> ได้ เมื่อเลือก form ที่ตรงกับโมดูล Vital &amp; PE (แสดงใน Detail ของทุก plan)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="md-overlay" id="md-modal" onclick="if(event.target===this)closePlanMd()">
+  <div class="md-box" onclick="event.stopPropagation()">
+    <div class="md-box-head">
+      <div>
+        <div class="md-box-title" id="md-modal-title">Document</div>
+        <div class="md-box-sub" id="md-modal-file">—</div>
+      </div>
+      <button class="modal-close" type="button" onclick="closePlanMd()">&#10005;</button>
+    </div>
+    <div class="md-box-body" id="md-modal-body">กำลังโหลด…</div>
+  </div>
+</div>
+
+<div class="plan-toast" id="plan-toast"><div class="toast-title" id="plan-toast-title">Saved</div></div>
+
+<script>
+var TYPE_NAMES = {
+  common: 'Common Plan',
+  vpe: 'VPE Plan',
+  lab: 'Lab Plan',
+  'form-a': 'Form A Plan',
+  'form-b': 'Form B Plan'
+};
+
+/* Form Editor fields จาก Vital & PE (47 ฟิลด์ — ไม่รวม Record Meta) */
+var VPE_CATALOG = [
+  {
+    id: 'core-vital',
+    title: '1. Core Vital Signs',
+    hint: '9 fields',
+    fields: [
+      { id: 'temp', label: 'Temp (°F)' },
+      { id: 'hr', label: 'HR (bpm)' },
+      { id: 'rr', label: 'RR (rpm)' },
+      { id: 'pulse', label: 'Pulse (bpm)' },
+      { id: 'weight', label: 'Weight (kg)' },
+      { id: 'crt', label: 'CRT (sec)' },
+      { id: 'fbs', label: 'FBS (mg/dL)' },
+      { id: 'hydration', label: 'Hydration Status' },
+      { id: 'est-dehydration', label: 'Est. Dehydration (%)' }
+    ]
+  },
+  {
+    id: 'monitoring',
+    title: '2. Blood Pressure & Advanced Monitoring',
+    hint: '8 fields',
+    fields: [
+      { id: 'nibp-sys', label: 'NIBP SYS (mmHg)' },
+      { id: 'nibp-dia', label: 'NIBP DIA (mmHg)' },
+      { id: 'nibp-map', label: 'NIBP MAP (mmHg)' },
+      { id: 'bp-method', label: 'BP Method' },
+      { id: 'cuff-site', label: 'Cuff Site' },
+      { id: 'spo2', label: 'SpO2 (%)' },
+      { id: 'etco2', label: 'EtCO2 (mmHg)' },
+      { id: 'oxygen-support', label: 'Oxygen Support' }
+    ]
+  },
+  {
+    id: 'perfusion',
+    title: '3. Perfusion, Mucosa & Bleeding',
+    hint: '5 fields',
+    fields: [
+      { id: 'mm-site', label: 'Mucous Membrane Site' },
+      { id: 'mm-color', label: 'Mucous Membrane Color' },
+      { id: 'bleeding-status', label: 'Bleeding Status' },
+      { id: 'bleeding-severity', label: 'Bleeding Severity' },
+      { id: 'bleeding-site', label: 'Bleeding Site' }
+    ]
+  },
+  {
+    id: 'critical',
+    title: '4. Cardiac & Critical Events',
+    hint: '4 fields',
+    fields: [
+      { id: 'heart-sound', label: 'Heart Sound' },
+      { id: 'critical-event-time', label: 'Critical Event Time' },
+      { id: 'critical-events', label: 'Critical Events' },
+      { id: 'critical-events-note', label: 'Critical Events Note' }
+    ]
+  },
+  {
+    id: 'respiratory',
+    title: '5. Respiratory Assessment',
+    hint: '6 fields',
+    fields: [
+      { id: 'lung-sounds', label: 'Lung / Airway Sounds' },
+      { id: 'lung-side', label: 'Lung Sound Side' },
+      { id: 'lung-region', label: 'Lung Region' },
+      { id: 'resp-effort', label: 'Respiratory Effort' },
+      { id: 'resp-depth', label: 'Respiratory Depth' },
+      { id: 'affected-phase', label: 'Affected Phase' }
+    ]
+  },
+  {
+    id: 'neuro',
+    title: '6. Neurologic & Mentation',
+    hint: '10 fields',
+    fields: [
+      { id: 'loc', label: 'Level of Consciousness / Mentation' },
+      { id: 'reaction', label: 'Reaction to Stimuli & Surroundings' },
+      { id: 'palpebral-l', label: 'Palpebral Reflex — Left' },
+      { id: 'palpebral-r', label: 'Palpebral Reflex — Right' },
+      { id: 'menace-l', label: 'Menace Response — Left' },
+      { id: 'menace-r', label: 'Menace Response — Right' },
+      { id: 'plr-l', label: 'PLR — Left' },
+      { id: 'plr-r', label: 'PLR — Right' },
+      { id: 'pedal-l', label: 'Pedal Withdrawal — Left' },
+      { id: 'pedal-r', label: 'Pedal Withdrawal — Right' }
+    ]
+  },
+  {
+    id: 'mobility',
+    title: '7. Mobility & Posture',
+    hint: '3 fields',
+    fields: [
+      { id: 'gait', label: 'Gait' },
+      { id: 'posture', label: 'Posture' },
+      { id: 'mobility-note', label: 'Mobility Note' }
+    ]
+  },
+  {
+    id: 'pain',
+    title: '8. Pain Assessment',
+    hint: '2 fields',
+    fields: [
+      { id: 'pain-score', label: 'Pain Score' },
+      { id: 'pain-indicators', label: 'Observed Pain Indicators' }
+    ]
+  }
+];
+
+/* Lab mock — common vet panels (Cornell / Merck / IDEXX-style) */
+var LAB_CATALOG = [
+  {
+    id: 'hematology',
+    title: 'Hematology',
+    hint: 'CBC / blood count',
+    fields: [
+      { id: 'cbc', label: 'CBC (Complete Blood Count)' },
+      { id: 'wbc', label: 'WBC' },
+      { id: 'rbc', label: 'RBC' },
+      { id: 'hb', label: 'Hemoglobin (Hb)' },
+      { id: 'hct', label: 'Hematocrit / PCV' },
+      { id: 'plt', label: 'Platelet (PLT)' },
+      { id: 'diff', label: 'WBC Differential' },
+      { id: 'smear', label: 'Blood Smear Eval' },
+      { id: 'retic', label: 'Reticulocyte Count' }
+    ]
+  },
+  {
+    id: 'chemistry',
+    title: 'Blood Chemistry',
+    hint: 'Small animal chem panel',
+    fields: [
+      { id: 'chem-panel', label: 'Small Animal Chem Panel' },
+      { id: 'bun', label: 'BUN (Urea Nitrogen)' },
+      { id: 'creatinine', label: 'Creatinine' },
+      { id: 'alt', label: 'ALT' },
+      { id: 'alp', label: 'ALP (ALK PHOS)' },
+      { id: 'ast', label: 'AST' },
+      { id: 'ggt', label: 'GGT' },
+      { id: 'tbil', label: 'Total Bilirubin' },
+      { id: 'tp', label: 'Total Protein' },
+      { id: 'alb', label: 'Albumin' },
+      { id: 'glob', label: 'Globulin' },
+      { id: 'glucose', label: 'Glucose' },
+      { id: 'na', label: 'Sodium (Na)' },
+      { id: 'k', label: 'Potassium (K)' },
+      { id: 'cl', label: 'Chloride (Cl)' },
+      { id: 'ca', label: 'Calcium' },
+      { id: 'phos', label: 'Phosphate' },
+      { id: 'chol', label: 'Cholesterol' },
+      { id: 'amylase', label: 'Amylase' },
+      { id: 'lipase', label: 'Lipase' }
+    ]
+  },
+  {
+    id: 'ua',
+    title: 'UA (Urinalysis)',
+    hint: 'urine analysis',
+    fields: [
+      { id: 'ua-complete', label: 'Complete Urinalysis' },
+      { id: 'ua-usg', label: 'Urine Specific Gravity (USG)' },
+      { id: 'ua-dipstick', label: 'Dipstick (pH, Prot, Glu, Blood…)' },
+      { id: 'ua-sediment', label: 'Sediment Microscopy' },
+      { id: 'ua-upc', label: 'Urine Protein:Creatinine (UPC)' }
+    ]
+  },
+  {
+    id: 'path',
+    title: 'Path Lab',
+    hint: 'cytology / biopsy',
+    fields: [
+      { id: 'cytology', label: 'Cytology (FNA / smear)' },
+      { id: 'fluid-cyto', label: 'Fluid Cytology' },
+      { id: 'biopsy', label: 'Biopsy / Histopathology' },
+      { id: 'impression', label: 'Impression Smear' }
+    ]
+  }
+];
+
+function catalogKeys(catalog) {
+  var keys = [];
+  catalog.forEach(function (g) {
+    g.fields.forEach(function (f) { keys.push(f.id); });
+  });
+  return keys;
+}
+
+function emptyMap(keys) {
+  var o = {};
+  keys.forEach(function (k) { o[k] = false; });
+  return o;
+}
+
+function emptyVpe() {
+  var o = emptyMap(catalogKeys(VPE_CATALOG));
+  VPE_CATALOG.forEach(function (g) { o['sec-' + g.id] = false; });
+  return o;
+}
+function emptyLab() { return emptyMap(catalogKeys(LAB_CATALOG)); }
+
+function renderCheckCatalog(containerId, catalog, kind, attr, opts) {
+  opts = opts || {};
+  var root = document.getElementById(containerId);
+  root.innerHTML = '';
+  catalog.forEach(function (g) {
+    var group = document.createElement('div');
+    group.className = 'check-group ' + kind;
+    group.setAttribute('data-group', g.id);
+
+    var head = document.createElement('div');
+    head.className = 'check-group-head';
+    if (opts.sectionCheck) {
+      head.innerHTML =
+        '<label class="head-left">' +
+          '<input type="checkbox" data-vpe-sec="' + g.id + '">' +
+          '<span>' + g.title + '</span>' +
+        '</label>' +
+        '<span class="hint">' + (g.hint || '') + '</span>';
+    } else {
+      head.innerHTML =
+        '<span>' + g.title + '</span>' +
+        '<span class="hint">' + (g.hint || '') + '</span>';
+    }
+    group.appendChild(head);
+
+    var body = document.createElement('div');
+    body.className = 'check-group-body';
+    g.fields.forEach(function (f) {
+      var lab = document.createElement('label');
+      lab.className = 'field-check ' + kind;
+      lab.innerHTML = '<input type="checkbox" data-' + attr + '="' + f.id + '"><span>' + f.label + '</span>';
+      body.appendChild(lab);
+    });
+    group.appendChild(body);
+    root.appendChild(group);
+  });
+
+  if (opts.sectionCheck) {
+    root.querySelectorAll('input[data-vpe-sec]').forEach(function (sec) {
+      sec.addEventListener('change', function () {
+        var gid = sec.getAttribute('data-vpe-sec');
+        var group = root.querySelector('.check-group[data-group="' + gid + '"]');
+        group.querySelectorAll('input[data-vpe]').forEach(function (el) {
+          el.checked = sec.checked;
+        });
+        sec.indeterminate = false;
+      });
+    });
+    root.querySelectorAll('input[data-vpe]').forEach(function (el) {
+      el.addEventListener('change', function () {
+        syncVpeSectionHead(el.closest('.check-group'));
+      });
+    });
+  }
+}
+
+function syncVpeSectionHead(groupEl) {
+  if (!groupEl) return;
+  var sec = groupEl.querySelector('input[data-vpe-sec]');
+  var fields = groupEl.querySelectorAll('input[data-vpe]');
+  if (!sec || !fields.length) return;
+  var n = 0;
+  fields.forEach(function (f) { if (f.checked) n += 1; });
+  sec.checked = n === fields.length;
+  sec.indeterminate = n > 0 && n < fields.length;
+}
+
+function syncAllVpeSectionHeads() {
+  document.querySelectorAll('#vpe-checks .check-group').forEach(syncVpeSectionHead);
+}
+
+function readChecks(selector) {
+  var o = {};
+  document.querySelectorAll(selector).forEach(function (el) {
+    var key = el.getAttribute('data-vpe') || el.getAttribute('data-lab');
+    o[key] = el.checked;
+  });
+  return o;
+}
+
+function readVpeChecks() {
+  var o = readChecks('#vpe-checks input[data-vpe]');
+  document.querySelectorAll('#vpe-checks input[data-vpe-sec]').forEach(function (el) {
+    o['sec-' + el.getAttribute('data-vpe-sec')] = el.checked && !el.indeterminate;
+  });
+  return o;
+}
+
+function applyChecks(selector, attr, map) {
+  map = map || {};
+  document.querySelectorAll(selector).forEach(function (el) {
+    el.checked = !!map[el.getAttribute(attr)];
+  });
+}
+
+function applyVpeChecks(map) {
+  applyChecks('#vpe-checks input[data-vpe]', 'data-vpe', map);
+  syncAllVpeSectionHeads();
+}
+
+var FOR_DATE = '2026-08-05'; /* visit for-date — Record อยู่วันนี้ · Update ≥ วันนี้ · Active/Inactive */
+var TODAY = FOR_DATE;
+/* DVM ของ tab ที่เปิดอยู่ (tab 1) — ใช้เทียบสิทธิ์แก้ไขใน View */
+var CURRENT_USER_DVM = 'นิพนธ์ วงศ์ประเสริฐ';
+var CURRENT_EXAM_CARD = 'exam-card-69001234';
+
+var LEVEL_ICON_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>';
+var NOTE_LONG_COMMON =
+  '1) นัดต่อเนื่องพรุ่งนี้เช้า เพื่อตรวจ CBC ± blood transfusion\n' +
+  '2) แจ้งเจ้าของเตรียมสัตว์มาอดอาหารอย่างน้อย 8 ชม.\n' +
+  '3) ตรวจซ้ำ hydration และ CRT ก่อนให้เลือด\n' +
+  '4) เตรียม packed RBC ตาม blood type / crossmatch\n' +
+  '5) Monitor HR / RR / Temp ระหว่าง transfusion\n' +
+  '6) ถ้ามีปฏิกิริยา ให้หยุดทันทีและแจ้ง DVM\n' +
+  '7) บันทึก volume ที่ให้และ clinical response\n' +
+  '8) ส่ง CBC ซ้ำหลัง transfusion 4–6 ชม.\n' +
+  '9) นัด follow-up ใน 24–48 ชม. ตามอาการ\n' +
+  '10) อธิบาย owner เรื่องอาการที่ต้องกลับมาฉุกเฉิน';
+var NOTE_LONG_LAB =
+  '1) สั่ง CBC + PLT ก่อนนัดผ่าตัดเล็ก\n' +
+  '2) เพิ่ม Small Animal Chem Panel (BUN, ALT เป็นต้น)\n' +
+  '3) เจาะเลือดเช้า อดอาหาร 8–12 ชม.\n' +
+  '4) ส่ง lab ภายใน 30 นาทีหลังเจาะ\n' +
+  '5) ถ้า PLT < 100k แจ้ง DVM ทันที\n' +
+  '6) เทียบผลกับ baseline ครั้งก่อน (ถ้ามี)\n' +
+  '7) แนบ clinical note เรื่อง pale MM / lethargy\n' +
+  '8) รอผลก่อน confirm วันนัด\n' +
+  '9) อัปเดต owner เมื่อผลออก\n' +
+  '10) ปิดสถานะ Done เมื่อ review ผลแล้ว';
+var NOTE_LONG_PAST =
+  '1) นัด recheck เดิมที่เลยวัน Schedule แล้ว\n' +
+  '2) แถวนี้ถูกจัดเป็น Inactive อัตโนมัติ\n' +
+  '3) ต้องการกลับ Active ต้องแก้ Schedule on ≥ for date\n' +
+  '4) ตรวจอาการซึม / ไม่กินอาหารตามที่แจ้ง\n' +
+  '5) ทบทวนยาที่บ้านและ compliance\n' +
+  '6) วัดน้ำหนักเทียบครั้งก่อน\n' +
+  '7) ประเมิน hydration และ CRT\n' +
+  '8) พิจารณา lab ซ้ำถ้ายังซีด\n' +
+  '9) อัปเดต owner เรื่องแผนใหม่\n' +
+  '10) Apply หลังแก้ Schedule on แล้ว';
+
+/* visitTab: อ้าง tab ใน editor (1–4) — tab อื่นไม่เปิด UI แต่จำลองลงตารางรวม
+ * Schedule mock:
+ *  - วันเดียว (06/08/2026): สั่งตรวจเลือด โดย DVM A + B (เวลาเดียวกัน + ต่างเวลา)
+ *  - วันเดียว (07/08/2026): VPE โดย A สามช่วง · B สองช่วง
+ */
+var DVM_A = 'นิพนธ์ วงศ์ประเสริฐ';
+var DVM_B = 'วิชัย ใจดี';
+var uidSeq = 20;
+function sampleVpe(keys) {
+  var m = emptyVpe();
+  (keys || []).forEach(function (k) { m[k] = true; });
+  return m;
+}
+function sampleLab(keys) {
+  var m = emptyLab();
+  (keys || []).forEach(function (k) { m[k] = true; });
+  return m;
+}
+var plans = [
+  /* —— Tab 1 rail drafts —— */
+  {
+    uid: 'p3', type: 'lab', id: null, visitTab: 1,
+    title: '', level: 'yellow', status: 'plan',
+    lab: sampleLab(['cbc', 'plt', 'bun', 'alt']),
+    meta: {
+      scheduleOn: '2026-08-06T08:00', dvm: DVM_A, dept: 'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)',
+      note: '', examCard: 'exam-card-69001234',
+      recordTime: '', recordUser: '', updateTime: '', updateUser: ''
+    }
+  },
+  {
+    uid: 'p4', type: 'form-a', id: null, visitTab: 1,
+    title: '', level: 'green', status: 'plan',
+    meta: {
+      scheduleOn: '2026-08-06T08:00', dvm: DVM_A, dept: 'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)',
+      note: '', examCard: 'exam-card-69001234',
+      recordTime: '', recordUser: '', updateTime: '', updateUser: ''
+    }
+  },
+  /* —— Common (วันอื่น / past) —— */
+  {
+    uid: 'p1', type: 'common', id: 'PLAN-69001234-001', visitTab: 1,
+    title: '[CA หัวใจนอกเวลา] นัดต่อเนื่อง CBC ± blood transfusion',
+    level: 'green', status: 'plan',
+    message: 'นัดต่อเนื่องพรุ่งนี้ (เช้า) เพื่อตรวจ CBC ± blood transfusion และฉีดยาต่อเนื่อง\nแจ้งเจ้าของเตรียมสัตว์มาอดอาหาร 8 ชม.',
+    meta: {
+      scheduleOn: '2026-08-08T09:00', dvm: DVM_A, dept: 'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)',
+      note: NOTE_LONG_COMMON, examCard: 'exam-card-69001234',
+      recordTime: '2026-08-05 08:12', recordUser: DVM_A,
+      updateTime: '', updateUser: ''
+    }
+  },
+  {
+    uid: 'p7', type: 'common', id: 'PLAN-69001234-005', visitTab: 1,
+    title: '[CA หัวใจนอกเวลา] นัด recheck เก่า (past)',
+    level: 'green', status: 'plan',
+    message: 'นัดเก่าที่เลยวัน Schedule แล้ว — แสดง Inactive ท้ายตาราง',
+    meta: {
+      scheduleOn: '2026-08-01T09:00', dvm: DVM_A, dept: 'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)',
+      note: NOTE_LONG_PAST, examCard: 'exam-card-69001234',
+      recordTime: '2026-08-05 09:40', recordUser: DVM_A,
+      updateTime: '', updateUser: ''
+    }
+  },
+
+  /* —— 06/08/2026 วันเดียวกัน: สั่งตรวจเลือด DVM A + B —— */
+  {
+    uid: 'p5', type: 'lab', id: 'PLAN-69001234-003', visitTab: 1,
+    title: '[DVM A] สั่งตรวจเลือด CBC + Chem · 08:00',
+    level: 'green', status: 'plan',
+    lab: sampleLab(['cbc', 'plt', 'chem-panel', 'bun', 'alt']),
+    meta: {
+      scheduleOn: '2026-08-06T08:00', dvm: DVM_A, dept: 'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)',
+      note: NOTE_LONG_LAB, examCard: 'exam-card-69001234',
+      recordTime: '2026-08-05 11:00', recordUser: DVM_A,
+      updateTime: '2026-08-05 16:40', updateUser: DVM_A
+    }
+  },
+  {
+    uid: 'p13', type: 'lab', id: 'PLAN-69001234-011', visitTab: 3,
+    title: '[DVM B] สั่งตรวจเลือด CBC + PLT · 08:00 (เวลาเดียวกับ A)',
+    level: 'yellow', status: 'plan',
+    lab: sampleLab(['cbc', 'plt']),
+    meta: {
+      scheduleOn: '2026-08-06T08:00', dvm: DVM_B, dept: 'ภาพวินิจฉัย (นอกเวลา)',
+      note: 'วันเดียวกับ DVM A · เวลาเดียวกัน 08:00 — คนละคำสั่ง', examCard: 'exam-card-69001234',
+      recordTime: '2026-08-05 11:05', recordUser: DVM_B,
+      updateTime: '', updateUser: ''
+    }
+  },
+  {
+    uid: 'p10', type: 'lab', id: 'PLAN-69001234-008', visitTab: 2,
+    title: '[DVM A] สั่งตรวจเลือด UA + Chem renal · 14:00',
+    level: 'green', status: 'plan',
+    lab: sampleLab(['ua-complete', 'bun', 'creatinine']),
+    meta: {
+      scheduleOn: '2026-08-06T14:00', dvm: DVM_A, dept: 'อายุรกรรมทั่วไป (ในเวลา)',
+      note: 'วันเดียวกับคำสั่งเลือดเช้า · คนละช่วงเวลา 14:00', examCard: 'exam-card-69001234',
+      recordTime: '2026-08-05 12:00', recordUser: DVM_A,
+      updateTime: '', updateUser: ''
+    }
+  },
+  {
+    uid: 'p14', type: 'lab', id: 'PLAN-69001234-012', visitTab: 3,
+    title: '[DVM B] สั่งตรวจเลือด Path cytology · 16:30',
+    level: 'green', status: 'plan',
+    lab: sampleLab(['cytology', 'smear']),
+    meta: {
+      scheduleOn: '2026-08-06T16:30', dvm: DVM_B, dept: 'ภาพวินิจฉัย (นอกเวลา)',
+      note: 'วันเดียว · ต่างเวลาจาก A', examCard: 'exam-card-69001234',
+      recordTime: '2026-08-05 12:30', recordUser: DVM_B,
+      updateTime: '2026-08-05 13:00', updateUser: DVM_B
+    }
+  },
+
+  /* —— 07/08/2026 วันเดียวกัน: VPE DVM A × 3 ช่วง · DVM B × 2 ช่วง —— */
+  {
+    uid: 'p2', type: 'vpe', id: 'PLAN-69001234-002', visitTab: 1,
+    title: '[DVM A] VPE รอบเช้า · 08:00',
+    level: 'yellow', status: 'plan',
+    vpe: sampleVpe(['temp', 'hr', 'rr', 'pulse', 'weight', 'crt', 'spo2', 'mm-color', 'pain-score']),
+    meta: {
+      scheduleOn: '2026-08-07T08:00', dvm: DVM_A, dept: 'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)',
+      note: 'VPE ช่วงที่ 1/3 ของ DVM A', examCard: 'exam-card-69001234',
+      recordTime: '2026-08-05 09:00', recordUser: DVM_A,
+      updateTime: '2026-08-05 09:20', updateUser: DVM_A
+    }
+  },
+  {
+    uid: 'p15', type: 'vpe', id: 'PLAN-69001234-013', visitTab: 1,
+    title: '[DVM A] VPE รอบกลางวัน · 12:00',
+    level: 'yellow', status: 'plan',
+    vpe: sampleVpe(['temp', 'hr', 'rr', 'nibp-sys', 'spo2', 'resp-effort']),
+    meta: {
+      scheduleOn: '2026-08-07T12:00', dvm: DVM_A, dept: 'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)',
+      note: 'VPE ช่วงที่ 2/3 ของ DVM A', examCard: 'exam-card-69001234',
+      recordTime: '2026-08-05 09:10', recordUser: DVM_A,
+      updateTime: '', updateUser: ''
+    }
+  },
+  {
+    uid: 'p16', type: 'vpe', id: 'PLAN-69001234-014', visitTab: 2,
+    title: '[DVM A] VPE รอบเย็น · 18:00',
+    level: 'green', status: 'plan',
+    vpe: sampleVpe(['temp', 'hr', 'rr', 'pulse', 'pain-score', 'pain-indicators']),
+    meta: {
+      scheduleOn: '2026-08-07T18:00', dvm: DVM_A, dept: 'อายุรกรรมทั่วไป (ในเวลา)',
+      note: 'VPE ช่วงที่ 3/3 ของ DVM A', examCard: 'exam-card-69001234',
+      recordTime: '2026-08-05 09:15', recordUser: DVM_A,
+      updateTime: '', updateUser: ''
+    }
+  },
+  {
+    uid: 'p8', type: 'vpe', id: 'PLAN-69001234-006', visitTab: 3,
+    title: '[DVM B] VPE ช่วงสาย · 10:00',
+    level: 'red', status: 'plan',
+    vpe: sampleVpe(['temp', 'hr', 'rr', 'loc', 'gait']),
+    meta: {
+      scheduleOn: '2026-08-07T10:00', dvm: DVM_B, dept: 'ภาพวินิจฉัย (นอกเวลา)',
+      note: 'VPE ช่วงที่ 1/2 ของ DVM B · วันเดียวกับ A', examCard: 'exam-card-69001234',
+      recordTime: '2026-08-05 10:00', recordUser: DVM_B,
+      updateTime: '', updateUser: ''
+    }
+  },
+  {
+    uid: 'p17', type: 'vpe', id: 'PLAN-69001234-015', visitTab: 3,
+    title: '[DVM B] VPE ช่วงบ่าย · 16:00',
+    level: 'yellow', status: 'plan',
+    vpe: sampleVpe(['temp', 'hr', 'rr', 'spo2', 'heart-sound', 'pain-score']),
+    meta: {
+      scheduleOn: '2026-08-07T16:00', dvm: DVM_B, dept: 'ภาพวินิจฉัย (นอกเวลา)',
+      note: 'VPE ช่วงที่ 2/2 ของ DVM B', examCard: 'exam-card-69001234',
+      recordTime: '2026-08-05 10:20', recordUser: DVM_B,
+      updateTime: '2026-08-05 10:45', updateUser: DVM_B
+    }
+  },
+
+  /* —— อื่นๆ (สิทธิ์ / disable / done) —— */
+  {
+    uid: 'p9', type: 'common', id: 'PLAN-69001234-007', visitTab: 2,
+    title: '[อายุรกรรมทั่วไป ในเวลา] Follow-up น้ำหนัก + hydration',
+    level: 'yellow', status: 'plan',
+    message: 'นัดชั่งน้ำหนักและประเมิน hydration หลัง fluid therapy',
+    meta: {
+      scheduleOn: '2026-08-08T09:00', dvm: DVM_A, dept: 'อายุรกรรมทั่วไป (ในเวลา)',
+      note: 'เวลาเดียวกับ common transfusion (09:00) · คนละแผนก', examCard: 'exam-card-69001234',
+      recordTime: '2026-08-05 10:05', recordUser: DVM_A,
+      updateTime: '2026-08-05 10:20', updateUser: DVM_A
+    }
+  },
+  {
+    uid: 'p6', type: 'common', id: 'PLAN-69001234-004', visitTab: 3,
+    title: '[ภาพวินิจฉัย นอกเวลา] เตรียมถ่าย X-ray ทรวงอก',
+    level: 'yellow', status: 'disable',
+    message: 'ยกเลิกแผนเดิม — เปลี่ยนเป็น lab แทน',
+    meta: {
+      scheduleOn: '2026-08-08T09:00', dvm: DVM_B, dept: 'ภาพวินิจฉัย (นอกเวลา)',
+      note: 'ตัวอย่าง Disable · DVM B · แถวตัวอักษรแบบ Inactive', examCard: 'exam-card-69001234',
+      recordTime: '2026-08-05 10:15', recordUser: DVM_B,
+      updateTime: '2026-08-05 13:00', updateUser: DVM_A
+    }
+  },
+  {
+    uid: 'p18', type: 'lab', id: 'PLAN-69001234-016', visitTab: 1,
+    title: '[DVM A] สั่งตรวจเลือด Chem ซ้ำ — Disable',
+    level: 'green', status: 'disable',
+    lab: sampleLab(['chem-panel', 'alt', 'alp']),
+    meta: {
+      scheduleOn: '2026-08-06T11:00', dvm: DVM_A, dept: 'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)',
+      note: 'ตัวอย่าง Disable ของเจ้าของ (DVM A) — เปิด View แล้ว Enable (Plan) ได้ · ตาราง Change → Plan ได้ แต่ Disable จากตารางไม่ได้',
+      examCard: 'exam-card-69001234',
+      recordTime: '2026-08-05 11:30', recordUser: DVM_A,
+      updateTime: '2026-08-05 17:00', updateUser: DVM_A
+    }
+  },
+  {
+    uid: 'p19', type: 'vpe', id: 'PLAN-69001234-017', visitTab: 1,
+    title: '[DVM A] VPE รอบดึก — Disable',
+    level: 'red', status: 'disable',
+    vpe: sampleVpe(['temp', 'hr', 'rr', 'spo2', 'pain-score']),
+    meta: {
+      scheduleOn: '2026-08-07T22:00', dvm: DVM_A, dept: 'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)',
+      note: 'ตัวอย่าง Disable · VPE ของ DVM A · สไตล์แถวเหมือน Inactive',
+      examCard: 'exam-card-69001234',
+      recordTime: '2026-08-05 12:00', recordUser: DVM_A,
+      updateTime: '2026-08-05 18:20', updateUser: DVM_A
+    }
+  },
+  {
+    uid: 'p20', type: 'common', id: 'PLAN-69001234-018', visitTab: 4,
+    title: '[ปนัดดา] นัดติดตามยา — Disable',
+    level: 'yellow', status: 'disable',
+    message: 'ยกเลิกการโทรติดตาม — owner มาเองแล้ว',
+    meta: {
+      scheduleOn: '2026-08-09T10:00', dvm: 'ปนัดดา ศรีสุข', dept: 'อายุรกรรมทั่วไป (ในเวลา)',
+      note: 'ตัวอย่าง Disable · คนละ DVM → View อ่านอย่างเดียว (ไม่มีปุ่ม Disable/Enable)',
+      examCard: 'exam-card-69001234',
+      recordTime: '2026-08-05 15:00', recordUser: 'ปนัดดา ศรีสุข',
+      updateTime: '2026-08-05 15:40', updateUser: 'ปนัดดา ศรีสุข'
+    }
+  },
+  {
+    uid: 'p11', type: 'form-b', id: 'PLAN-69001234-009', visitTab: 3,
+    title: '[ภาพวินิจฉัย นอกเวลา] Ultrasound abdomen follow-up',
+    level: 'green', status: 'plan',
+    meta: {
+      scheduleOn: '2026-08-09T15:00', dvm: DVM_B, dept: 'ภาพวินิจฉัย (นอกเวลา)',
+      note: 'นัด US ช่องท้อง — View อ่านอย่างเดียว', examCard: 'exam-card-69001234',
+      recordTime: '2026-08-05 14:00', recordUser: DVM_B,
+      updateTime: '', updateUser: ''
+    }
+  },
+  {
+    uid: 'p12', type: 'common', id: 'PLAN-69001234-010', visitTab: 4,
+    title: '[อายุรกรรมทั่วไป ในเวลา] สื่อสาร owner เรื่องยาบ้าน',
+    level: 'green', status: 'done',
+    message: 'อธิบายวิธีให้ยาและอาการที่ต้องกลับมา',
+    meta: {
+      scheduleOn: '2026-08-09T15:00', dvm: 'ปนัดดา ศรีสุข', dept: 'อายุรกรรมทั่วไป (ในเวลา)',
+      note: 'เวลาเดียวกับ US (15:00) · คนละ DVM', examCard: 'exam-card-69001234',
+      recordTime: '2026-08-05 15:30', recordUser: 'ปนัดดา ศรีสุข',
+      updateTime: '2026-08-05 16:00', updateUser: 'ปนัดดา ศรีสุข'
+    }
+  }
+];
+var activeUid = 'p1';
+var viewEditUid = null;
+
+function isSaved(p) { return !!(p && p.id); }
+
+function openPlanEditor() {
+  document.getElementById('plan-modal').classList.add('show');
+}
+function closePlanEditor() {
+  document.getElementById('close-confirm').classList.remove('show');
+  document.getElementById('plan-modal').classList.remove('show');
+}
+
+function getActive() {
+  return plans.find(function (p) { return p.uid === activeUid; });
+}
+
+function editorRailPlans() {
+  return plans.filter(function (p) { return !p.visitTab || p.visitTab === 1; });
+}
+
+function persistActiveFromUI() {
+  var p = getActive();
+  if (!p) return;
+  p.meta.scheduleOn = document.getElementById('schedule-on-input').value;
+  p.meta.note = document.getElementById('plan-note').value;
+  p.title = document.getElementById('plan-title').value;
+  var lv = document.querySelector('.level-tag.active');
+  p.level = lv ? lv.getAttribute('data-level') : 'green';
+  if (p.type === 'common') {
+    p.message = document.getElementById('plan-message').innerText;
+  } else if (p.type === 'vpe') {
+    p.vpe = readVpeChecks();
+  } else if (p.type === 'lab') {
+    p.lab = readChecks('#lab-checks input[data-lab]');
+  }
+}
+
+function renderPlansList() {
+  var list = document.getElementById('plans-list');
+  list.innerHTML = '';
+  editorRailPlans().forEach(function (p) {
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'plans-list-item' + (p.uid === activeUid ? ' active' : '');
+    btn.setAttribute('data-type', p.type);
+    btn.setAttribute('data-uid', p.uid);
+    var status = isSaved(p)
+      ? '<span class="pill saved">Saved</span><span>' + p.id + '</span>'
+      : '<span class="pill draft">Draft</span><span>ยังไม่มี id</span>';
+    btn.innerHTML = '<div class="fname">' + TYPE_NAMES[p.type] + '</div><div class="fmeta">' + status + '</div>';
+    btn.addEventListener('click', function () { selectPlan(p.uid); });
+    list.appendChild(btn);
+  });
+}
+
+function showDetailView(type) {
+  document.getElementById('view-common').classList.toggle('hidden', type !== 'common');
+  document.getElementById('view-vpe').classList.toggle('hidden', type !== 'vpe');
+  document.getElementById('view-lab').classList.toggle('hidden', type !== 'lab');
+  document.getElementById('view-empty').classList.toggle('hidden',
+    type === 'common' || type === 'vpe' || type === 'lab');
+}
+
+function loadPlanToUI(p) {
+  document.getElementById('main-card').setAttribute('data-type', p.type);
+  document.getElementById('band-title').textContent = TYPE_NAMES[p.type];
+
+  var del = document.getElementById('btnDeletePlan');
+  var dis = document.getElementById('btnDisablePlan');
+  var hint = document.getElementById('action-link-hint');
+  var confirmBtn = document.getElementById('btnConfirm');
+
+  if (isSaved(p)) {
+    document.getElementById('band-sub').textContent = 'Saved · ' + p.id + ' · Detail + Meta เป็นชุดเดียวกัน';
+    del.classList.add('hidden');
+    dis.classList.remove('hidden');
+    syncDisableToggleButton(dis, p);
+    hint.textContent = 'บันทึกแล้วมี id — ใช้ Disable / Enable (Plan) แทนการลบ →';
+    confirmBtn.textContent = '✓ Apply';
+    confirmBtn.classList.add('is-apply');
+  } else {
+    document.getElementById('band-sub').textContent = 'Draft · ยังไม่มี id · Detail + Meta เป็นชุดเดียวกัน';
+    del.classList.remove('hidden');
+    dis.classList.add('hidden');
+    dis.textContent = 'Disable';
+    dis.classList.remove('is-enable');
+    hint.textContent = 'ลบได้เฉพาะ draft ที่ยังไม่มี id →';
+    confirmBtn.textContent = '✓ Confirm';
+    confirmBtn.classList.remove('is-apply');
+  }
+
+  document.getElementById('schedule-on-input').value = p.meta.scheduleOn || '';
+  document.getElementById('plan-note').value = p.meta.note || '';
+  autoSizeTextarea(document.getElementById('plan-note'));
+  document.getElementById('meta-dvm').textContent = p.meta.dvm || '';
+  document.getElementById('meta-dept').textContent = p.meta.dept || '';
+  document.getElementById('meta-exam-card').textContent = p.meta.examCard || 'exam-card-69001234';
+
+  document.getElementById('plan-title').value = p.title || '';
+  document.querySelectorAll('.level-tag').forEach(function (t) {
+    t.classList.toggle('active', t.getAttribute('data-level') === (p.level || 'green'));
+  });
+
+  showDetailView(p.type);
+
+  if (p.type === 'common') {
+    document.getElementById('plan-message').innerText = p.message || '';
+  } else if (p.type === 'vpe') {
+    applyVpeChecks(p.vpe);
+  } else if (p.type === 'lab') {
+    applyChecks('#lab-checks input[data-lab]', 'data-lab', p.lab);
+  }
+}
+
+function selectPlan(uid) {
+  if (uid === activeUid) return;
+  persistActiveFromUI();
+  activeUid = uid;
+  renderPlansList();
+  loadPlanToUI(getActive());
+}
+
+function addPlanType(type) {
+  uidSeq += 1;
+  var p = {
+    uid: 'p' + uidSeq,
+    type: type,
+    id: null,
+    title: '',
+    level: 'green',
+    visitTab: 1,
+    meta: {
+      scheduleOn: TODAY + 'T08:00',
+      dvm: CURRENT_USER_DVM,
+      dept: 'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)',
+      note: '',
+      examCard: CURRENT_EXAM_CARD
+    }
+  };
+  if (type === 'common') p.message = '';
+  if (type === 'vpe') p.vpe = emptyVpe();
+  if (type === 'lab') p.lab = emptyLab();
+  p.status = 'plan';
+  p.meta.recordTime = '';
+  p.meta.recordUser = '';
+  p.meta.updateTime = '';
+  p.meta.updateUser = '';
+  persistActiveFromUI();
+  plans.push(p);
+  activeUid = p.uid;
+  document.getElementById('addPlanPop').classList.remove('show');
+  renderPlansList();
+  loadPlanToUI(p);
+  renderPlansTable();
+  showToast('เพิ่ม ' + TYPE_NAMES[type] + ' (draft)');
+}
+
+function requestDeletePlan() {
+  var p = getActive();
+  if (!p) return;
+  if (isSaved(p)) {
+    showToast('บันทึกแล้ว — ใช้ Disable แทน');
+    return;
+  }
+  document.getElementById('delete-confirm-msg').textContent =
+    'ลบ “' + TYPE_NAMES[p.type] + '” (draft) และ meta ของชุดนี้? กู้คืนไม่ได้';
+  document.getElementById('delete-confirm').classList.add('show');
+}
+
+function doDeletePlan() {
+  var p = getActive();
+  document.getElementById('delete-confirm').classList.remove('show');
+  if (!p || isSaved(p)) return;
+  var idx = plans.findIndex(function (x) { return x.uid === p.uid; });
+  if (idx < 0) return;
+  plans.splice(idx, 1);
+  if (!plans.length) {
+    addPlanType('common');
+    return;
+  }
+  activeUid = plans[Math.max(0, idx - 1)].uid;
+  renderPlansList();
+  loadPlanToUI(getActive());
+  renderPlansTable();
+  showToast('ลบ draft แล้ว');
+}
+
+function syncDisableToggleButton(btn, p) {
+  if (!btn) return;
+  if ((p.status || 'plan') === 'disable') {
+    btn.textContent = 'Enable (Plan)';
+    btn.classList.add('is-enable');
+  } else {
+    btn.textContent = 'Disable';
+    btn.classList.remove('is-enable');
+  }
+}
+
+function toggleDisablePlan() {
+  var p = getActive();
+  if (!p || !isSaved(p)) return;
+  if ((p.status || 'plan') === 'disable') {
+    p.status = 'plan';
+    stampUpdate(p);
+    syncDisableToggleButton(document.getElementById('btnDisablePlan'), p);
+    renderPlansTable();
+    showToast('Enable → Plan · ' + p.id);
+  } else {
+    p.status = 'disable';
+    stampUpdate(p);
+    syncDisableToggleButton(document.getElementById('btnDisablePlan'), p);
+    renderPlansTable();
+    showToast('Disable · ' + p.id);
+  }
+}
+
+function stampUpdate(p) {
+  var now = new Date();
+  var ymd =
+    now.getFullYear() + '-' +
+    ('0' + (now.getMonth() + 1)).slice(-2) + '-' +
+    ('0' + now.getDate()).slice(-2);
+  if (ymd < FOR_DATE) ymd = FOR_DATE; /* Update ≥ for date */
+  var hm =
+    ('0' + now.getHours()).slice(-2) + ':' +
+    ('0' + now.getMinutes()).slice(-2);
+  p.meta.updateTime = ymd + ' ' + hm;
+  p.meta.updateUser = 'นิพนธ์ วงศ์ประเสริฐ';
+  if (!p.meta.recordTime) {
+    p.meta.recordTime = FOR_DATE + ' ' + hm; /* Record = for date */
+    p.meta.recordUser = p.meta.updateUser;
+  }
+}
+
+function confirmOrApply() {
+  persistActiveFromUI();
+  var p = getActive();
+  if (!p) return;
+  stampUpdate(p);
+  if (isSaved(p)) {
+    if (p.status === 'disable') { /* keep */ }
+    else if (!p.status) p.status = 'plan';
+    renderPlansTable();
+    showToast('Applied · ' + p.id);
+  } else {
+    p.id = 'PLAN-69001234-' + String(100 + plans.filter(function (x) { return x.id; }).length + 1).slice(-3);
+    p.status = 'plan';
+    renderPlansList();
+    loadPlanToUI(p);
+    renderPlansTable();
+    showToast('Confirmed · ได้ id ' + p.id + ' — สถานะ Plan');
+  }
+}
+
+function selectLevel(btn) {
+  document.querySelectorAll('.level-tag').forEach(function (t) { t.classList.remove('active'); });
+  btn.classList.add('active');
+}
+function fmtCmd(cmd) {
+  document.execCommand(cmd, false, null);
+  document.getElementById('plan-message').focus();
+}
+function setScheduleToday() {
+  var d = new Date();
+  document.getElementById('schedule-on-input').value =
+    d.getFullYear() + '-' +
+    ('0' + (d.getMonth() + 1)).slice(-2) + '-' +
+    ('0' + d.getDate()).slice(-2) + 'T' +
+    ('0' + d.getHours()).slice(-2) + ':' +
+    ('0' + d.getMinutes()).slice(-2);
+}
+function showToast(msg) {
+  var el = document.getElementById('plan-toast');
+  document.getElementById('plan-toast-title').textContent = msg;
+  el.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(function () { el.classList.remove('show'); }, 2200);
+}
+
+function autoSizeTextarea(el) {
+  if (!el) return;
+  el.style.height = 'auto';
+  el.style.height = Math.max(48, el.scrollHeight) + 'px';
+}
+
+function closePlanMd() {
+  document.getElementById('md-modal').classList.remove('show');
+}
+
+function openPlanMd(file, title) {
+  var modal = document.getElementById('md-modal');
+  document.getElementById('md-modal-title').textContent = title || file;
+  document.getElementById('md-modal-file').textContent = file;
+  document.getElementById('md-modal-body').innerHTML = '<p>กำลังโหลด…</p>';
+  modal.classList.add('show');
+  fetch(file, { cache: 'no-store' })
+    .then(function (res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.text();
+    })
+    .then(function (text) {
+      document.getElementById('md-modal-body').innerHTML = renderSimpleMarkdown(text);
+    })
+    .catch(function (err) {
+      document.getElementById('md-modal-body').innerHTML =
+        '<div class="md-err">โหลดไฟล์ไม่สำเร็จ: <code>' + escapeHtml(file) + '</code><br>' +
+        escapeHtml(String(err && err.message ? err.message : err)) +
+        '<br><br>เปิดผ่าน HTTP server ในโฟลเดอร์ <code>NP/plan/</code> (ไม่ใช่ file://) เพื่อให้ fetch .md ได้</div>';
+    });
+}
+
+function renderSimpleMarkdown(src) {
+  var lines = String(src || '').replace(/\r\n/g, '\n').split('\n');
+  var html = [];
+  var i = 0;
+  var inCode = false;
+  var codeBuf = [];
+  var inList = false;
+  var listTag = 'ul';
+
+  function closeList() {
+    if (inList) { html.push('</' + listTag + '>'); inList = false; }
+  }
+
+  function inlineFmt(s) {
+    s = escapeHtml(s);
+    s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+    s = s.replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
+    s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+    return s;
+  }
+
+  function isTableSep(line) {
+    return /^\s*\|?[\s:-]+\|[\s|:-]*$/.test(line);
+  }
+
+  while (i < lines.length) {
+    var line = lines[i];
+
+    if (inCode) {
+      if (/^```/.test(line)) {
+        html.push('<pre><code>' + escapeHtml(codeBuf.join('\n')) + '</code></pre>');
+        codeBuf = [];
+        inCode = false;
+      } else {
+        codeBuf.push(line);
+      }
+      i++;
+      continue;
+    }
+
+    if (/^```/.test(line)) {
+      closeList();
+      inCode = true;
+      codeBuf = [];
+      i++;
+      continue;
+    }
+
+    if (/^\s*\|/.test(line) && i + 1 < lines.length && isTableSep(lines[i + 1])) {
+      closeList();
+      var rows = [];
+      while (i < lines.length && /^\s*\|/.test(lines[i])) {
+        if (isTableSep(lines[i])) { i++; continue; }
+        rows.push(lines[i].replace(/^\s*\|/, '').replace(/\|\s*$/, '').split('|').map(function (c) {
+          return c.trim();
+        }));
+        i++;
+      }
+      if (rows.length) {
+        html.push('<table><thead><tr>' + rows[0].map(function (c) {
+          return '<th>' + inlineFmt(c) + '</th>';
+        }).join('') + '</tr></thead><tbody>');
+        for (var r = 1; r < rows.length; r++) {
+          html.push('<tr>' + rows[r].map(function (c) {
+            return '<td>' + inlineFmt(c) + '</td>';
+          }).join('') + '</tr>');
+        }
+        html.push('</tbody></table>');
+      }
+      continue;
+    }
+
+    if (/^---+\s*$/.test(line) || /^\*\*\*+\s*$/.test(line)) {
+      closeList();
+      html.push('<hr>');
+      i++;
+      continue;
+    }
+
+    var hm = /^(#{1,3})\s+(.+)$/.exec(line);
+    if (hm) {
+      closeList();
+      var level = hm[1].length;
+      html.push('<h' + level + '>' + inlineFmt(hm[2]) + '</h' + level + '>');
+      i++;
+      continue;
+    }
+
+    if (/^>\s?/.test(line)) {
+      closeList();
+      html.push('<blockquote>' + inlineFmt(line.replace(/^>\s?/, '')) + '</blockquote>');
+      i++;
+      continue;
+    }
+
+    var ul = /^\s*[-*]\s+(.+)$/.exec(line);
+    var ol = /^\s*\d+\.\s+(.+)$/.exec(line);
+    if (ul || ol) {
+      var tag = ul ? 'ul' : 'ol';
+      var item = ul ? ul[1] : ol[1];
+      if (!inList || listTag !== tag) {
+        closeList();
+        listTag = tag;
+        html.push('<' + tag + '>');
+        inList = true;
+      }
+      html.push('<li>' + inlineFmt(item) + '</li>');
+      i++;
+      continue;
+    }
+
+    if (/^\s*$/.test(line)) {
+      closeList();
+      i++;
+      continue;
+    }
+
+    closeList();
+    html.push('<p>' + inlineFmt(line) + '</p>');
+    i++;
+  }
+  closeList();
+  if (inCode) html.push('<pre><code>' + escapeHtml(codeBuf.join('\n')) + '</code></pre>');
+  return html.join('\n');
+}
+
+/* Add menu — allow duplicates */
+(function () {
+  var addBtn = document.getElementById('btnAddPlan');
+  var addPop = document.getElementById('addPlanPop');
+  addBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    addPop.classList.toggle('show');
+  });
+  document.addEventListener('click', function (e) {
+    if (!addPop.contains(e.target) && e.target !== addBtn) addPop.classList.remove('show');
+  });
+  addPop.querySelectorAll('.add-plan-opt').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      addPlanType(btn.getAttribute('data-type'));
+    });
+  });
+  document.getElementById('btnDeletePlan').addEventListener('click', requestDeletePlan);
+  document.getElementById('btnDisablePlan').addEventListener('click', toggleDisablePlan);
+  var planNote = document.getElementById('plan-note');
+  planNote.addEventListener('input', function () { autoSizeTextarea(planNote); });
+})();
+
+/* Filters */
+(function () {
+  var trigger = document.getElementById('planFilterTrigger');
+  var pop = document.getElementById('planFilterPop');
+  trigger.addEventListener('click', function (e) {
+    e.stopPropagation();
+    pop.classList.toggle('show');
+  });
+  document.addEventListener('click', function (e) {
+    if (!pop.contains(e.target) && e.target !== trigger) pop.classList.remove('show');
+  });
+  document.querySelectorAll('#planFilterPop .obj-filter-section').forEach(function (sec) {
+    sec.addEventListener('click', function () {
+      document.querySelectorAll('#planFilterPop .obj-filter-section').forEach(function (s) {
+        s.classList.remove('active-mode');
+      });
+      sec.classList.add('active-mode');
+      var labels = { date: 'By Date', dvm: 'By DVM', dept: 'By Department' };
+      trigger.setAttribute('data-mode-label', labels[sec.getAttribute('data-mode')] || 'By Date');
+    });
+  });
+  var calBtn = document.getElementById('plan-f-date-cal');
+  var picker = document.getElementById('plan-f-date-picker');
+  var dateSelect = document.getElementById('plan-f-date-select');
+  calBtn.addEventListener('click', function () {
+    if (picker.showPicker) picker.showPicker(); else picker.click();
+  });
+  document.getElementById('planBtnSearchDate').addEventListener('click', function () {
+    var v = dateSelect.value;
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var parts = v.split('-');
+    document.getElementById('plan-for-date').textContent =
+      'for ' + parts[2] + ' ' + months[parseInt(parts[1], 10) - 1] + ' ' + parts[0];
+    pop.classList.remove('show');
+  });
+  document.getElementById('planGoToday').addEventListener('click', function () {
+    dateSelect.value = '2026-08-05';
+    document.getElementById('plan-for-date').textContent = 'for 05 Aug 2026';
+  });
+})();
+
+document.getElementById('plan-template').addEventListener('change', function () {
+  var map = {
+    'fu-cbc': 'นัดต่อเนื่องเพื่อตรวจ CBC ± blood transfusion และฉีดยาต่อเนื่อง',
+    'recheck': 'นัด recheck ใน 1 สัปดาห์ ประเมินอาการและผลแล็บ',
+    'monitor': 'ติดตามอาการทางคลินิก — แจ้งเจ้าของหากซึม / ไม่กินอาหาร'
+  };
+  if (map[this.value]) document.getElementById('plan-message').innerText = map[this.value];
+});
+
+/* —— Table: ตารางรวม plans —— */
+function scheduleDateOnly(p) {
+  return (p.meta && p.meta.scheduleOn ? p.meta.scheduleOn : '').slice(0, 10);
+}
+function isScheduleInactive(p) {
+  var d = scheduleDateOnly(p);
+  return !!(d && d < TODAY);
+}
+/** แสดง dd/mm/yyyy HH:mm จาก ISO หรือ 'YYYY-MM-DD HH:mm' */
+function toDisplayDateTime(raw) {
+  if (!raw) return '—';
+  var s = String(raw).trim().replace('T', ' ');
+  var m = s.match(/^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}):(\d{2}))?/);
+  if (!m) return s;
+  var out = m[3] + '/' + m[2] + '/' + m[1];
+  if (m[4]) out += ' ' + m[4] + ':' + m[5];
+  return out;
+}
+function fmtSchedule(p) {
+  return toDisplayDateTime(p.meta.scheduleOn || '');
+}
+function canEditPlan(p) {
+  if (!p || !p.meta) return false;
+  var sameExam = !p.meta.examCard || p.meta.examCard === CURRENT_EXAM_CARD;
+  var owner = p.meta.dvm === CURRENT_USER_DVM;
+  return sameExam && owner;
+}
+function statusBadgeHtml(p) {
+  var st = p.status || 'plan';
+  var label = st === 'done' ? 'Done' : st === 'disable' ? 'Disable' : 'Plan';
+  var cls = st === 'done' ? 'st-done' : st === 'disable' ? 'st-disable' : 'st-plan';
+  var html = '<span class="tbl-badge ' + cls + '">' + label + '</span>';
+  if (isScheduleInactive(p)) {
+    html += '<span class="tbl-badge st-inactive">Inactive</span>';
+  }
+  return html;
+}
+function levelHtml(lv) {
+  lv = lv || 'green';
+  return '<span class="tbl-level ' + lv + '" title="Level ' + lv + '">' + LEVEL_ICON_SVG + '</span>';
+}
+
+function levelTagsReadonlyHtml(activeLv) {
+  activeLv = activeLv || 'green';
+  return ['green', 'yellow', 'red'].map(function (lv) {
+    return '<button type="button" class="level-tag ' + lv + (lv === activeLv ? ' active' : '') +
+      '" data-level="' + lv + '" onclick="viewSelectLevel(this)">' + LEVEL_ICON_SVG + '</button>';
+  }).join('');
+}
+
+function catalogEditableHtml(catalog, kind, map, withSection, editable) {
+  map = map || {};
+  var dis = editable ? '' : ' disabled';
+  return '<div class="check-catalog" id="view-' + kind + '-checks">' + catalog.map(function (g) {
+    var fields = g.fields;
+    var n = 0;
+    fields.forEach(function (f) { if (map[f.id]) n += 1; });
+    var all = n === fields.length && fields.length > 0;
+    var some = n > 0 && n < fields.length;
+    var head = withSection
+      ? '<div class="check-group-head"><label class="head-left">' +
+          '<input type="checkbox" data-vpe-sec="' + g.id + '"' + (all ? ' checked' : '') +
+          (some ? ' data-indeterminate="1"' : '') + dis + '>' +
+          '<span>' + escapeHtml(g.title) + '</span></label>' +
+          '<span class="hint">' + escapeHtml(g.hint || '') + '</span></div>'
+      : '<div class="check-group-head"><span>' + escapeHtml(g.title) + '</span>' +
+          '<span class="hint">' + escapeHtml(g.hint || '') + '</span></div>';
+    var body = '<div class="check-group-body">' + fields.map(function (f) {
+      var attr = kind === 'vpe' ? 'data-vpe' : 'data-lab';
+      return '<label class="field-check ' + kind + '">' +
+        '<input type="checkbox" ' + attr + '="' + f.id + '"' + (map[f.id] ? ' checked' : '') + dis + '>' +
+        '<span>' + escapeHtml(f.label) + '</span></label>';
+    }).join('') + '</div>';
+    return '<div class="check-group ' + kind + '" data-group="' + g.id + '">' + head + body + '</div>';
+  }).join('') + '</div>';
+}
+
+function viewSelectLevel(btn) {
+  if (!canEditPlan(plans.find(function (x) { return x.uid === viewEditUid; }))) return;
+  btn.parentElement.querySelectorAll('.level-tag').forEach(function (t) { t.classList.remove('active'); });
+  btn.classList.add('active');
+}
+
+function wireViewVpeSections() {
+  var root = document.getElementById('view-vpe-checks');
+  if (!root) return;
+  root.querySelectorAll('input[data-vpe-sec]').forEach(function (sec) {
+    sec.addEventListener('change', function () {
+      var group = root.querySelector('.check-group[data-group="' + sec.getAttribute('data-vpe-sec') + '"]');
+      group.querySelectorAll('input[data-vpe]').forEach(function (el) { el.checked = sec.checked; });
+      sec.indeterminate = false;
+    });
+  });
+  root.querySelectorAll('input[data-vpe]').forEach(function (el) {
+    el.addEventListener('change', function () {
+      syncVpeSectionHead(el.closest('.check-group'));
+    });
+  });
+}
+
+function getTablePlans() {
+  return plans.filter(function (p) { return isSaved(p); });
+}
+
+function sortTablePlans(rows) {
+  var active = [];
+  var inactive = [];
+  rows.forEach(function (p) {
+    if (isScheduleInactive(p)) inactive.push(p);
+    else active.push(p);
+  });
+  function byScheduleAsc(a, b) {
+    var da = scheduleDateOnly(a) + (a.meta.scheduleOn || '');
+    var db = scheduleDateOnly(b) + (b.meta.scheduleOn || '');
+    if (da < db) return -1;
+    if (da > db) return 1;
+    return (a.id || '').localeCompare(b.id || '');
+  }
+  active.sort(byScheduleAsc);
+  inactive.sort(byScheduleAsc);
+  return active.concat(inactive);
+}
+
+function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function renderPlansTable(list) {
+  var rows = sortTablePlans(list || getTablePlans());
+  var tbody = document.getElementById('plans-table-body');
+  if (!tbody) return;
+  tbody.innerHTML = rows.map(function (p) {
+    var inactive = isScheduleInactive(p);
+    var disabled = (p.status || 'plan') === 'disable';
+    var rowClass = [];
+    if (inactive) rowClass.push('row-inactive');
+    if (disabled) rowClass.push('row-disabled');
+    var changeBtn = inactive
+      ? '<button type="button" class="btn-row change" disabled title="Inactive (Schedule) — เปลี่ยน status ไม่ได้">Change</button>'
+      : '<button type="button" class="btn-row change" data-act="change" data-uid="' + p.uid + '">Change</button>' +
+        '<div class="change-pop" id="change-pop-' + p.uid + '">' +
+          '<button type="button" data-set-status="plan" data-uid="' + p.uid + '">Plan</button>' +
+          '<button type="button" data-set-status="done" data-uid="' + p.uid + '">Done</button>' +
+        '</div>';
+    return '<tr class="' + rowClass.join(' ') + '" data-uid="' + p.uid + '">' +
+      '<td>' + escapeHtml(fmtSchedule(p)) + '</td>' +
+      '<td>' + escapeHtml(TYPE_NAMES[p.type] || p.type) + '</td>' +
+      '<td class="cell-clamp"><div class="clamp-inner">' + escapeHtml(p.title || '—') + '</div></td>' +
+      '<td>' + levelHtml(p.level) + '</td>' +
+      '<td class="cell-note"><div class="clamp-inner">' + escapeHtml(p.meta.note || '—') + '</div></td>' +
+      '<td>' + statusBadgeHtml(p) + '</td>' +
+      '<td>' + escapeHtml(p.meta.dvm || '—') + '</td>' +
+      '<td class="cell-clamp"><div class="clamp-inner">' + escapeHtml(p.meta.dept || '—') + '</div></td>' +
+      '<td><div class="row-actions">' +
+        '<button type="button" class="btn-row view" data-act="view" data-uid="' + p.uid + '">View</button>' +
+        changeBtn +
+      '</div></td>' +
+      '<td>' + escapeHtml(toDisplayDateTime(p.meta.recordTime)) + '</td>' +
+      '<td>' + escapeHtml(p.meta.recordUser || '—') + '</td>' +
+      '<td>' + escapeHtml(toDisplayDateTime(p.meta.updateTime)) + '</td>' +
+      '<td>' + escapeHtml(p.meta.updateUser || '—') + '</td>' +
+    '</tr>';
+  }).join('');
+}
+
+function filterPlansTable() {
+  var q = (document.getElementById('tbl-search').value || '').toLowerCase().trim();
+  var st = document.getElementById('tbl-status').value;
+  var ty = document.getElementById('tbl-type').value;
+  var act = document.getElementById('tbl-active').value;
+  var rows = getTablePlans().filter(function (p) {
+    if (st && (p.status || 'plan') !== st) return false;
+    if (ty && p.type !== ty) return false;
+    if (act === 'active' && isScheduleInactive(p)) return false;
+    if (act === 'inactive' && !isScheduleInactive(p)) return false;
+    if (!q) return true;
+    var blob = [
+      p.id, p.title, p.meta.note, p.meta.dvm, p.meta.dept,
+      TYPE_NAMES[p.type], p.status
+    ].join(' ').toLowerCase();
+    return blob.indexOf(q) >= 0;
+  });
+  renderPlansTable(rows);
+}
+
+function clearPlansTableFilter() {
+  document.getElementById('tbl-search').value = '';
+  document.getElementById('tbl-status').value = '';
+  document.getElementById('tbl-type').value = '';
+  document.getElementById('tbl-active').value = '';
+  renderPlansTable();
+}
+
+function changePlanStatus(uid, status) {
+  var p = plans.find(function (x) { return x.uid === uid; });
+  if (!p || !isSaved(p)) return;
+  if (status === 'disable') {
+    showToast('ตารางไม่อนุญาต Disable — ใช้ Editor / View ของเจ้าของ');
+    return;
+  }
+  if (isScheduleInactive(p)) {
+    showToast('Inactive (Schedule) — เปลี่ยน status ไม่ได้ · แก้ Schedule on ก่อน');
+    return;
+  }
+  p.status = status;
+  stampUpdate(p);
+  document.querySelectorAll('.change-pop.show').forEach(function (el) { el.classList.remove('show'); });
+  filterPlansTable();
+  if (p.uid === activeUid) loadPlanToUI(p);
+  showToast('Status → ' + (status === 'done' ? 'Done' : 'Plan') + ' · ' + p.id);
+}
+
+function openViewPlan(uid) {
+  var p = plans.find(function (x) { return x.uid === uid; });
+  if (!p) return;
+  viewEditUid = uid;
+  var editable = canEditPlan(p);
+  var stLabel = (p.status === 'done' ? 'Done' : p.status === 'disable' ? 'Disable' : 'Plan');
+  document.getElementById('view-plan-title').textContent = TYPE_NAMES[p.type] + (p.title ? ' — ' + p.title : '');
+  document.getElementById('view-plan-sub').textContent =
+    (p.id || 'Draft') + ' · ' + stLabel +
+    (isScheduleInactive(p) ? ' · Inactive' : '') +
+    ' · Tab ' + (p.visitTab || '?');
+
+  var banner = document.getElementById('view-owner-banner');
+  var applyBtn = document.getElementById('view-plan-apply');
+  var disBtn = document.getElementById('view-plan-disable');
+  if (editable) {
+    banner.className = 'view-owner-banner can-edit';
+    banner.textContent = 'คุณเป็น DVM เจ้าของรายการนี้ (ตรงกับ exam card) — แก้ไข Detail + Meta ได้ · สลับ Disable / Enable (Plan) ได้';
+    applyBtn.style.display = '';
+    disBtn.style.display = '';
+    syncDisableToggleButton(disBtn, p);
+  } else {
+    banner.className = 'view-owner-banner readonly';
+    banner.textContent = 'ดูอย่างเดียว — DVM เจ้าของคือ “' + (p.meta.dvm || '—') +
+      '” (user ปัจจุบัน: ' + CURRENT_USER_DVM + ') ตามสิทธิ์ exam card';
+    applyBtn.style.display = 'none';
+    disBtn.style.display = 'none';
+  }
+
+  var ro = editable ? '' : ' readonly';
+  var disAttr = editable ? '' : ' disabled';
+  var formCls = 'view-detail-form' + (editable ? '' : ' is-readonly');
+  var detail = '<div class="' + formCls + '">';
+  detail += '<div class="form-row"><label>Title</label>' +
+    '<input class="ctrl" id="view-title" type="text"' + ro + ' value="' + escapeHtml(p.title || '') + '"></div>';
+  detail += '<div class="form-row align-top"><label>Level Symbol</label>' +
+    '<div class="level-tags" id="view-level-tags">' + levelTagsReadonlyHtml(p.level) + '</div></div>';
+
+  if (p.type === 'common') {
+    detail += '<div class="form-row align-top"><label>Message</label><div class="msg-block">' +
+      '<div class="msg-toolbar-top"><span class="tpl-label">My Templates</span>' +
+      '<select class="tpl-select"' + disAttr + '><option>Template</option></select>' +
+      '<button class="tpl-add" type="button"' + disAttr + '>+</button></div>' +
+      '<div class="msg-format-bar"><button class="fmt-btn" type="button"' + disAttr + '><b>B</b></button>' +
+      '<button class="fmt-btn" type="button"' + disAttr + '><i>I</i></button>' +
+      '<button class="fmt-btn" type="button"' + disAttr + '>☰</button></div>' +
+      '<div class="msg-editor" id="view-message" contenteditable="' + (editable ? 'true' : 'false') + '">' +
+      escapeHtml(p.message || '') + '</div></div></div>';
+  } else if (p.type === 'vpe') {
+    detail += '<div style="font-size:13px;font-weight:600;color:#444;margin:4px 0 10px;">รายการตรวจ</div>';
+    detail += catalogEditableHtml(VPE_CATALOG, 'vpe', p.vpe || {}, true, editable);
+  } else if (p.type === 'lab') {
+    detail += '<blockquote class="lab-quote"><span class="quote-mark">“</span>' +
+      'ไม่มีการเชื่อมต่อกับรายการ items จนกว่าจะสร้างระบบ order ในอนาคต รวมถึงแนวโน้มของรูปแบบการเปลี่ยนแปลงของ items ที่ชัดเจน' +
+      '<span class="quote-mark">”</span></blockquote>';
+    detail += '<div style="font-size:13px;font-weight:600;color:#444;margin:4px 0 10px;">รายการส่งตรวจตัวอย่างทางห้องปฏิบัติการ</div>';
+    detail += catalogEditableHtml(LAB_CATALOG, 'lab', p.lab || {}, false, editable);
+  } else {
+    detail += '<div class="form-empty">ว่าง — รอออกแบบฟอร์มเฉพาะ (นอกเหนือ Title / Level Symbol)</div>';
+  }
+  detail += '</div>';
+  document.getElementById('view-plan-detail').innerHTML = detail;
+  document.querySelectorAll('#view-plan-detail input[data-indeterminate="1"]').forEach(function (el) {
+    el.indeterminate = true;
+  });
+  if (editable && p.type === 'vpe') wireViewVpeSections();
+
+  var meta = '';
+  meta += '<div class="form-group"><div class="schedule-on-label"><span>Schedule on</span></div>';
+  meta += '<input class="ctrl" id="view-schedule" type="datetime-local"' + disAttr +
+    ' value="' + escapeHtml((p.meta.scheduleOn || '').slice(0, 16)) + '">';
+  meta += '<div class="schedule-hint">แสดงในตารางเป็น ' + toDisplayDateTime(p.meta.scheduleOn) +
+    ' · Inactive ถ้าวันที่ &lt; for-date</div></div>';
+  meta += '<div class="view-kv"><div class="k">DVM</div><div class="v">' + escapeHtml(p.meta.dvm || '—') + '</div></div>';
+  meta += '<div class="view-kv"><div class="k">Department</div><div class="v">' + escapeHtml(p.meta.dept || '—') + '</div></div>';
+  meta += '<div class="form-group"><label>Plan Note</label>' +
+    '<textarea class="ctrl" id="view-note" rows="2"' +
+    disAttr + '>' + escapeHtml(p.meta.note || '') + '</textarea></div>';
+  meta += '<div class="view-kv"><div class="k">Record</div><div class="v">' +
+    escapeHtml(toDisplayDateTime(p.meta.recordTime) + (p.meta.recordUser ? ' · ' + p.meta.recordUser : '')) + '</div></div>';
+  meta += '<div class="view-kv"><div class="k">Update</div><div class="v">' +
+    (p.meta.updateTime
+      ? escapeHtml(toDisplayDateTime(p.meta.updateTime) + (p.meta.updateUser ? ' · ' + p.meta.updateUser : ''))
+      : '—') + '</div></div>';
+  meta += '<div class="view-kv"><div class="k">Exam card</div><div class="v">' + escapeHtml(p.meta.examCard || '—') + '</div></div>';
+  if (isScheduleInactive(p)) {
+    meta += '<div class="view-kv"><div class="k">Schedule</div><div class="v"><span class="tbl-badge st-inactive">Inactive</span></div></div>';
+  }
+  document.getElementById('view-plan-meta').innerHTML = meta;
+  var viewNote = document.getElementById('view-note');
+  if (viewNote) {
+    autoSizeTextarea(viewNote);
+    viewNote.addEventListener('input', function () { autoSizeTextarea(viewNote); });
+  }
+  document.getElementById('view-plan-modal').classList.add('show');
+}
+
+function saveViewPlan() {
+  var p = plans.find(function (x) { return x.uid === viewEditUid; });
+  if (!p || !canEditPlan(p)) {
+    showToast('ไม่มีสิทธิ์แก้ไข');
+    return;
+  }
+  p.title = document.getElementById('view-title').value;
+  var lv = document.querySelector('#view-level-tags .level-tag.active');
+  p.level = lv ? lv.getAttribute('data-level') : p.level;
+  p.meta.scheduleOn = document.getElementById('view-schedule').value;
+  p.meta.note = document.getElementById('view-note').value;
+  if (p.type === 'common') {
+    var msg = document.getElementById('view-message');
+    p.message = msg ? msg.innerText : p.message;
+  } else if (p.type === 'vpe') {
+    var vpe = {};
+    document.querySelectorAll('#view-vpe-checks input[data-vpe]').forEach(function (el) {
+      vpe[el.getAttribute('data-vpe')] = el.checked;
+    });
+    document.querySelectorAll('#view-vpe-checks input[data-vpe-sec]').forEach(function (el) {
+      vpe['sec-' + el.getAttribute('data-vpe-sec')] = el.checked && !el.indeterminate;
+    });
+    p.vpe = vpe;
+  } else if (p.type === 'lab') {
+    var lab = {};
+    document.querySelectorAll('#view-lab-checks input[data-lab]').forEach(function (el) {
+      lab[el.getAttribute('data-lab')] = el.checked;
+    });
+    p.lab = lab;
+  }
+  stampUpdate(p);
+  if (p.uid === activeUid) loadPlanToUI(p);
+  renderPlansList();
+  filterPlansTable();
+  closeViewPlan();
+  showToast('Applied · ' + (p.id || 'draft'));
+}
+
+function toggleViewDisable() {
+  var p = plans.find(function (x) { return x.uid === viewEditUid; });
+  if (!p || !canEditPlan(p) || !isSaved(p)) {
+    showToast('ไม่มีสิทธิ์ Disable / Enable');
+    return;
+  }
+  if ((p.status || 'plan') === 'disable') {
+    p.status = 'plan';
+    stampUpdate(p);
+    showToast('Enable → Plan · ' + p.id);
+  } else {
+    p.status = 'disable';
+    stampUpdate(p);
+    showToast('Disable · ' + p.id);
+  }
+  syncDisableToggleButton(document.getElementById('view-plan-disable'), p);
+  document.getElementById('view-plan-sub').textContent =
+    (p.id || 'Draft') + ' · ' +
+    (p.status === 'done' ? 'Done' : p.status === 'disable' ? 'Disable' : 'Plan') +
+    (isScheduleInactive(p) ? ' · Inactive' : '') +
+    ' · Tab ' + (p.visitTab || '?');
+  if (p.uid === activeUid) loadPlanToUI(p);
+  filterPlansTable();
+}
+
+function closeViewPlan() {
+  document.getElementById('view-plan-modal').classList.remove('show');
+  viewEditUid = null;
+}
+
+function switchPlanTab(idx) {
+  document.querySelectorAll('#plan-modal .vtab').forEach(function (t) {
+    t.classList.toggle('active', t.getAttribute('data-tab') === String(idx));
+  });
+  document.querySelectorAll('#plan-modal .tab-content').forEach(function (c) {
+    c.style.display = 'none';
+  });
+  var target = document.getElementById('content-' + idx);
+  if (target) {
+    target.style.display = (idx === '5' || idx === 5) ? 'flex' : 'flex';
+  }
+  var tabs = document.querySelector('#plan-modal .visit-tabs');
+  if (tabs) {
+    tabs.style.borderBottomColor = (String(idx) === '5') ? '#16a34a' : '#2563eb';
+  }
+  if (String(idx) === '5') {
+    persistActiveFromUI();
+    filterPlansTable();
+  }
+}
+
+document.getElementById('plans-table-body').addEventListener('click', function (e) {
+  var btn = e.target.closest('button');
+  if (!btn) return;
+  var uid = btn.getAttribute('data-uid');
+  if (btn.getAttribute('data-act') === 'view') {
+    openViewPlan(uid);
+    return;
+  }
+  if (btn.getAttribute('data-act') === 'change') {
+    document.querySelectorAll('.change-pop.show').forEach(function (el) { el.classList.remove('show'); });
+    var pop = document.getElementById('change-pop-' + uid);
+    if (pop) pop.classList.toggle('show');
+    return;
+  }
+  if (btn.getAttribute('data-set-status')) {
+    changePlanStatus(uid, btn.getAttribute('data-set-status'));
+  }
+});
+
+document.addEventListener('click', function (e) {
+  if (!e.target.closest('.row-actions')) {
+    document.querySelectorAll('.change-pop.show').forEach(function (el) { el.classList.remove('show'); });
+  }
+});
+
+document.querySelectorAll('#plan-modal .vtab').forEach(function (tab) {
+  tab.addEventListener('click', function () {
+    if (tab.classList.contains('disabled')) return;
+    switchPlanTab(tab.getAttribute('data-tab'));
+  });
+});
+
+document.getElementById('view-plan-modal').addEventListener('click', function (e) {
+  if (e.target === this) closeViewPlan();
+});
+
+/* boot */
+renderCheckCatalog('vpe-checks', VPE_CATALOG, 'vpe', 'vpe', { sectionCheck: true });
+renderCheckCatalog('lab-checks', LAB_CATALOG, 'lab', 'lab');
+renderPlansList();
+loadPlanToUI(getActive());
+renderPlansTable();
+</script>
+</body>
+</html>

@@ -115,6 +115,43 @@ const filesTree = [
             "lastUpdate": "2026-08-04T07:35:00.000000"
           }
         ]
+      },
+      {
+        "name": "plan",
+        "type": "folder",
+        "path": "NP/plan",
+        "children": [
+          {
+            "name": "plan_editor.html",
+            "type": "file",
+            "path": "NP/plan/plan_editor.html",
+            "lastUpdate": "2026-08-06T08:12:00.000000"
+          },
+          {
+            "name": "plan_view.html",
+            "type": "file",
+            "path": "NP/plan/plan_view.html",
+            "lastUpdate": "2026-08-06T08:12:00.000000"
+          },
+          {
+            "name": "plan_manual.md",
+            "type": "file",
+            "path": "NP/plan/plan_manual.md",
+            "lastUpdate": "2026-08-06T08:12:00.000000"
+          },
+          {
+            "name": "for_dev_plan.md",
+            "type": "file",
+            "path": "NP/plan/for_dev_plan.md",
+            "lastUpdate": "2026-08-06T08:12:00.000000"
+          },
+          {
+            "name": "plan_user_manual_th.md",
+            "type": "file",
+            "path": "NP/plan/plan_user_manual_th.md",
+            "lastUpdate": "2026-08-06T10:40:00.000000"
+          }
+        ]
       }
     ]
   }
