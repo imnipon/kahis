@@ -5,69 +5,8 @@ const filesTree = [
     "path": "NP",
     "children": [
       {
-        "name": "exam_card_logic_flowchart.md",
-        "type": "file",
-        "path": "NP/exam_card_logic_flowchart.md",
-        "lastUpdate": "2026-08-06T22:16:00.000000"
-      },
-      {
-        "name": "editor_ui_shell_map.md",
-        "type": "file",
-        "path": "NP/editor_ui_shell_map.md",
-        "lastUpdate": "2026-08-08T18:20:00.000000"
-      },
-      {
-        "name": "assessment",
-        "type": "folder",
-        "path": "NP/assessment",
-        "children": [
-          {
-            "name": "assessment_editor.html",
-            "type": "file",
-            "path": "NP/assessment/assessment_editor.html",
-            "lastUpdate": "2026-08-08T18:41:00.000000"
-          },
-          {
-            "name": "assessment_manual.md",
-            "type": "file",
-            "path": "NP/assessment/assessment_manual.md",
-            "lastUpdate": "2026-08-08T18:20:00.000000"
-          },
-          {
-            "name": "ref_assessment.md",
-            "type": "file",
-            "path": "NP/assessment/ref_assessment.md",
-            "lastUpdate": "2026-08-08T18:20:00.000000"
-          }
-        ]
-      },
-      {
-        "name": "vital_pe",
-        "type": "folder",
-        "path": "NP/vital_pe",
-        "children": [
-          {
-            "name": "vital_pe_editor.html",
-            "type": "file",
-            "path": "NP/vital_pe/vital_pe_editor.html",
-            "lastUpdate": "2026-08-08T18:20:00.000000"
-          },
-          {
-            "name": "vital_pe_manual.md",
-            "type": "file",
-            "path": "NP/vital_pe/vital_pe_manual.md",
-            "lastUpdate": "2026-07-20T20:18:00.000000"
-          },
-          {
-            "name": "ref_pe.md",
-            "type": "file",
-            "path": "NP/vital_pe/ref_pe.md",
-            "lastUpdate": "2026-07-20T20:18:00.000000"
-          }
-        ]
-      },
-      {
         "name": "subjective",
+        "label": "Subjective",
         "type": "folder",
         "path": "NP/subjective",
         "children": [
@@ -92,7 +31,34 @@ const filesTree = [
         ]
       },
       {
+        "name": "vital_pe",
+        "label": "Vital Sign & PE",
+        "type": "folder",
+        "path": "NP/vital_pe",
+        "children": [
+          {
+            "name": "vital_pe_editor.html",
+            "type": "file",
+            "path": "NP/vital_pe/vital_pe_editor.html",
+            "lastUpdate": "2026-08-08T18:20:00.000000"
+          },
+          {
+            "name": "vital_pe_manual.md",
+            "type": "file",
+            "path": "NP/vital_pe/vital_pe_manual.md",
+            "lastUpdate": "2026-07-20T20:18:00.000000"
+          },
+          {
+            "name": "ref_pe.md",
+            "type": "file",
+            "path": "NP/vital_pe/ref_pe.md",
+            "lastUpdate": "2026-07-20T20:18:00.000000"
+          }
+        ]
+      },
+      {
         "name": "objective",
+        "label": "Objective",
         "type": "folder",
         "path": "NP/objective",
         "children": [
@@ -123,7 +89,34 @@ const filesTree = [
         ]
       },
       {
+        "name": "assessment",
+        "label": "Assessment",
+        "type": "folder",
+        "path": "NP/assessment",
+        "children": [
+          {
+            "name": "assessment_editor.html",
+            "type": "file",
+            "path": "NP/assessment/assessment_editor.html",
+            "lastUpdate": "2026-08-08T18:41:00.000000"
+          },
+          {
+            "name": "assessment_manual.md",
+            "type": "file",
+            "path": "NP/assessment/assessment_manual.md",
+            "lastUpdate": "2026-08-08T18:20:00.000000"
+          },
+          {
+            "name": "ref_assessment.md",
+            "type": "file",
+            "path": "NP/assessment/ref_assessment.md",
+            "lastUpdate": "2026-08-08T18:20:00.000000"
+          }
+        ]
+      },
+      {
         "name": "plan",
+        "label": "Plan",
         "type": "folder",
         "path": "NP/plan",
         "children": [
@@ -158,6 +151,18 @@ const filesTree = [
             "lastUpdate": "2026-08-06T10:40:00.000000"
           }
         ]
+      },
+      {
+        "name": "exam_card_logic_flowchart.md",
+        "type": "file",
+        "path": "NP/exam_card_logic_flowchart.md",
+        "lastUpdate": "2026-08-06T22:16:00.000000"
+      },
+      {
+        "name": "editor_ui_shell_map.md",
+        "type": "file",
+        "path": "NP/editor_ui_shell_map.md",
+        "lastUpdate": "2026-08-08T18:20:00.000000"
       }
     ]
   }

@@ -569,12 +569,12 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-  <script src="NP/list.js"></script>
-  <script src="NP/files.js"></script>
+  <script src="NP/list.js?v=20260808-1900"></script>
+  <script src="NP/files.js?v=20260808-1900"></script>
   <script>
     const CORRECT_PIN = '53027918';
     const STORAGE_KEY = 'kahis_notes';
-    const DOWNLOADABLE_FOLDERS = new Set(['assessment', 'vital_pe', 'subjective', 'objective']);
+    const DOWNLOADABLE_FOLDERS = new Set(['subjective', 'vital_pe', 'objective', 'assessment', 'plan']);
 
     const noteInput = document.getElementById('noteInput');
     const saveBtn = document.getElementById('saveBtn');
@@ -686,27 +686,39 @@
         alert('ไม่พบไฟล์ในโฟลเดอร์นี้');
         return;
       }
+      const zipName = folderNode.name || 'folder';
       const prev = button.textContent;
       button.disabled = true;
       button.textContent = '...';
       try {
         const zip = new JSZip();
-        const folder = zip.folder(folderNode.name) || zip;
+        const folder = zip.folder(zipName) || zip;
+        const failed = [];
         await Promise.all(files.map(async (fileNode) => {
-          const res = await fetch(fileNode.path);
-          if (!res.ok) throw new Error('โหลดไม่ได้: ' + fileNode.path);
-          const buf = await res.arrayBuffer();
-          folder.file(fileNode.name, buf);
+          try {
+            const res = await fetch(fileNode.path);
+            if (!res.ok) throw new Error(String(res.status));
+            const buf = await res.arrayBuffer();
+            folder.file(fileNode.name, buf);
+          } catch (e) {
+            failed.push(fileNode.path);
+          }
         }));
+        if (failed.length === files.length) {
+          throw new Error('โหลดไฟล์ไม่สำเร็จทั้งหมด (ลองเปิดผ่าน Live Server แทน file://)');
+        }
         const blob = await zip.generateAsync({ type: 'blob' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = folderNode.name + '.zip';
+        a.download = zipName + '.zip';
         document.body.appendChild(a);
         a.click();
         a.remove();
         URL.revokeObjectURL(url);
+        if (failed.length) {
+          alert('ดาวน์โหลดได้บางส่วน · ไฟล์ที่พลาด ' + failed.length + ' รายการ');
+        }
       } catch (err) {
         alert('Download ไม่สำเร็จ: ' + (err && err.message ? err.message : err));
       } finally {
@@ -721,13 +733,17 @@
       btn.type = 'button';
       btn.className = 'folder-download';
       btn.textContent = 'zip';
-      btn.title = 'Download ' + folderNode.name + '.zip';
+      btn.title = 'Download ' + (folderNode.label || folderNode.name) + '.zip';
       btn.addEventListener('click', e => {
         e.preventDefault();
         e.stopPropagation();
         downloadFolderZip(folderNode, btn);
       });
       nameEl.appendChild(btn);
+    }
+
+    function folderDisplayName(node) {
+      return node.label || node.name;
     }
 
     function renderExplorer(tree, container) {
@@ -745,7 +761,7 @@
           const icon = document.createElement('span');
           icon.className = 'folder-icon';
           const text = document.createElement('span');
-          text.textContent = node.name;
+          text.textContent = folderDisplayName(node);
           name.appendChild(icon);
           name.appendChild(text);
           appendFolderDownload(name, node);
@@ -772,7 +788,7 @@
           const icon = document.createElement('span');
           icon.className = 'folder-icon';
           const text = document.createElement('span');
-          text.textContent = node.name;
+          text.textContent = folderDisplayName(node);
           name.appendChild(icon);
           name.appendChild(text);
           appendFolderDownload(name, node);
