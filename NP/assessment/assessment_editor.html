@@ -431,7 +431,7 @@
                 </div>
                 <div class="detail-grid">
                   <div class="field">
-                    <label>ประเภทปัญหา/วินิจฉัย (Clinical Condition Category) *</label>
+                    <label>ประเภทปัญหา/ข้อวินิจฉัย (Clinical Condition Category) *</label>
                     <select class="ctrl">
                       <option>การวินิจฉัยเบื้องต้น (Working Diagnosis, DX)</option>
                       <option>อาการและอาการแสดง (Clinical Sign)</option>
@@ -449,7 +449,7 @@
                     </select>
                   </div>
                   <div class="field-course">
-                    <label>ลักษณะการดำเนินโรคของทางคลินิก (Clinical Course)</label>
+                    <label>ลักษณะการดำเนินของโรค (Clinical Course)</label>
                     <label class="course-check"><input type="checkbox"> เฉียบพลัน (Acute)</label>
                     <label class="course-check"><input type="checkbox"> กลับมาเป็นซ้ำ (Recurrent)</label>
                     <label class="course-check"><input type="checkbox"> ติดตามอาการ (Follow)</label>
@@ -473,11 +473,11 @@
                     </select>
                   </div>
                   <div class="field">
-                    <label>ระยะเวลาที่ปรากฏอาการ (Clinical Duration)</label>
+                    <label>ระยะเวลาที่พบความผิดปกติ (Clinical Duration)</label>
                     <input class="ctrl" type="text" placeholder="เช่น 1–2 สัปดาห์">
                   </div>
                   <div class="field">
-                    <label>ระดับความแม่นยำในการวินิจฉัย (Diagnostic Certainty)</label>
+                    <label>ระดับความมั่นใจในข้อวินิจฉัย (Diagnostic Certainty)</label>
                     <select class="ctrl">
                       <option selected>มีหลักฐานสนับสนุนชัดเจน (High)</option>
                       <option>มีหลักฐานบางส่วน (Medium)</option>
@@ -485,15 +485,15 @@
                     </select>
                   </div>
                   <div class="field full">
-                    <label>ผลทางห้องปฏิบัติการทางคลินิก (Confirmatory Finding / Evidence)</label>
+                    <label>ผลการตรวจเสริมทางเทคนิค (Confirmatory Finding / Evidence)</label>
                     <textarea class="ctrl" rows="3">Ultrasound: hyperechoic foci in gallbladder lumen · consistent with cholelithiasis</textarea>
                   </div>
                   <div class="field full">
-                    <label>ผลการวิเคราะห์ในทางคลินิก (Clinical Reasoning)</label>
+                    <label>เหตุผลและความเห็นทางคลินิก (Clinical Reasoning)</label>
                     <textarea class="ctrl" rows="3">สัตว์มีประวัติอาเจียนเป็นพักๆ กินลด · ผลอัลตราซาวด์พบนิ่วในถุงน้ำดี สอดคล้องกับ Gallstones · ตัด pancreatitis ออกบางส่วนจาก cPL ในเกณฑ์</textarea>
                   </div>
                   <div class="field full">
-                    <label>หมายเหตุเฉพาะตัว (Problem Note)</label>
+                    <label>หมายเหตุรายการ (Problem Note)</label>
                     <textarea class="ctrl" rows="2">นัด follow-up 2 สัปดาห์ · พิจารณา surgical consult หากมีอาการอุดตันซ้ำ</textarea>
                   </div>
                 </div>
@@ -512,7 +512,7 @@
             <div class="form-group"><label>Department</label><div class="meta-readonly">คลินิกพิเศษ โรคหัวใจ (นอกเวลา)</div></div>
             <hr class="meta-divider">
             <div class="meta-section-label">Assessment Note</div>
-            <div class="form-group"><label>สรุปการประเมิน (Assessment Summary)</label><textarea class="assess-summary" rows="10">สรุปภาพรวมทางคลินิก (Assessment Summary)
+            <div class="form-group"><label>สรุปผลการประเมิน (Assessment Summary)</label><textarea class="assess-summary" rows="10">สรุปภาพรวมทางคลินิก (Assessment Summary)
 สัตว์มาด้วยอาการอาเจียนเป็นพักๆ กินลดลง 2 สัปดาห์
 ตรวจร่างกายพบท้องตึงเล็กน้อย อุณหภูมิปกติ
 ผลอัลตราซาวด์พบ hyperechoic foci ในถุงน้ำดี สอดคล้องกับนิ่ว (Gallstones)
@@ -562,7 +562,7 @@
                 </div>
                 <div class="detail-grid">
                   <div class="field">
-                    <label>ประเภทปัญหา/วินิจฉัย (Clinical Condition Category) *</label>
+                    <label>ประเภทปัญหา/ข้อวินิจฉัย (Clinical Condition Category) *</label>
                     <select class="ctrl">
                       <option selected>การวินิจฉัยเบื้องต้น (Working Diagnosis, DX)</option>
                       <option>อาการและอาการแสดง (Clinical Sign)</option>
@@ -580,7 +580,7 @@
                     </select>
                   </div>
                   <div class="field-course">
-                    <label>ลักษณะการดำเนินโรคของทางคลินิก (Clinical Course)</label>
+                    <label>ลักษณะการดำเนินของโรค (Clinical Course)</label>
                     <label class="course-check"><input type="checkbox"> เฉียบพลัน (Acute)</label>
                     <label class="course-check"><input type="checkbox"> กลับมาเป็นซ้ำ (Recurrent)</label>
                     <label class="course-check"><input type="checkbox" checked> ติดตามอาการ (Follow)</label>
@@ -604,11 +604,11 @@
                     </select>
                   </div>
                   <div class="field">
-                    <label>ระยะเวลาที่ปรากฏอาการ (Clinical Duration)</label>
+                    <label>ระยะเวลาที่พบความผิดปกติ (Clinical Duration)</label>
                     <input class="ctrl" type="text" value="เรื้อรังหลายเดือน">
                   </div>
                   <div class="field">
-                    <label>ระดับความแม่นยำในการวินิจฉัย (Diagnostic Certainty)</label>
+                    <label>ระดับความมั่นใจในข้อวินิจฉัย (Diagnostic Certainty)</label>
                     <select class="ctrl">
                       <option selected>มีหลักฐานสนับสนุนชัดเจน (High)</option>
                       <option>มีหลักฐานบางส่วน (Medium)</option>
@@ -616,15 +616,15 @@
                     </select>
                   </div>
                   <div class="field full">
-                    <label>ผลทางห้องปฏิบัติการทางคลินิก (Confirmatory Finding / Evidence)</label>
+                    <label>ผลการตรวจเสริมทางเทคนิค (Confirmatory Finding / Evidence)</label>
                     <textarea class="ctrl" rows="3">Echocardiogram: LA enlargement, decreased FS% · consistent with Congestive Heart Failure</textarea>
                   </div>
                   <div class="field full">
-                    <label>ผลการวิเคราะห์ในทางคลินิก (Clinical Reasoning)</label>
+                    <label>เหตุผลและความเห็นทางคลินิก (Clinical Reasoning)</label>
                     <textarea class="ctrl" rows="3">สัตว์มีอาการไอเรื้อรัง หอบเหนื่อย · พบ murmur และหลักฐานจาก echo สอดคล้องกับ CHF · เฝ้าระวัง pulmonary edema</textarea>
                   </div>
                   <div class="field full">
-                    <label>หมายเหตุเฉพาะตัว (Problem Note)</label>
+                    <label>หมายเหตุรายการ (Problem Note)</label>
                     <textarea class="ctrl" rows="2">ปรับยาหัวใจตาม protocol · นัดติดตาม 1–2 สัปดาห์</textarea>
                   </div>
                 </div>
@@ -643,7 +643,7 @@
             <div class="form-group"><label>Department</label><div class="meta-readonly">อายุรกรรมทั่วไป (ในเวลา)</div></div>
             <hr class="meta-divider">
             <div class="meta-section-label">Assessment Note</div>
-            <div class="form-group"><label>สรุปการประเมิน (Assessment Summary)</label><textarea class="assess-summary" rows="10">สรุปภาพรวมทางคลินิก (Assessment Summary)
+            <div class="form-group"><label>สรุปผลการประเมิน (Assessment Summary)</label><textarea class="assess-summary" rows="10">สรุปภาพรวมทางคลินิก (Assessment Summary)
 สัตว์มีอาการไอเรื้อรัง หอบเหนื่อย โดยเฉพาะตอนกลางคืนและหลังออกกำลังกาย
 ตรวจร่างกายพบหัวใจเต้นเร็ว มี murmur ชัดเจน · เยื่อเมือกซีดเล็กน้อย
 ผล Echocardiogram: LA enlargement, decreased FS% สอดคล้องกับ Congestive Heart Failure
@@ -684,7 +684,7 @@ Clinical Course: Chronic + Follow-up
             <div class="form-group"><label>Department</label><div class="meta-readonly">ภาพวินิจฉัย (นอกเวลา)</div></div>
             <hr class="meta-divider">
             <div class="meta-section-label">Assessment Note</div>
-            <div class="form-group"><label>สรุปการประเมิน (Assessment Summary)</label><div class="meta-readonly full">Pulmonary Edema — อ่านอย่างเดียว</div></div>
+            <div class="form-group"><label>สรุปผลการประเมิน (Assessment Summary)</label><div class="meta-readonly full">Pulmonary Edema — อ่านอย่างเดียว</div></div>
           </div>
         </div>
       </div>
@@ -716,7 +716,7 @@ Clinical Course: Chronic + Follow-up
             <div class="form-group"><label>Department</label><div class="meta-readonly">อายุรกรรมทั่วไป (ในเวลา)</div></div>
             <hr class="meta-divider">
             <div class="meta-section-label">Assessment Note</div>
-            <div class="form-group"><label>สรุปการประเมิน (Assessment Summary)</label><div class="meta-readonly full">Pyoderma — อ่านอย่างเดียว</div></div>
+            <div class="form-group"><label>สรุปผลการประเมิน (Assessment Summary)</label><div class="meta-readonly full">Pyoderma — อ่านอย่างเดียว</div></div>
           </div>
         </div>
       </div>
@@ -729,10 +729,10 @@ Clinical Course: Chronic + Follow-up
           <div class="data-table-bar">
             <input type="text" id="tbl-search" placeholder="ค้นหา: problem, note, findings, reasoning, dvm, department...">
             <select id="tbl-cat"><option value="">Categories: ทั้งหมด</option><option>General</option><option>Gastrointestinal</option><option>Respiratory</option><option>Cardiovascular</option><option>Musculoskeletal</option><option>Dermatology</option><option>Neurology</option><option>Urogenital</option><option>Endocrine</option><option>Ophthalmology</option></select>
-            <select id="tbl-type"><option value="">Clinical Condition Category: ทั้งหมด</option><option>การวินิจฉัยเบื้องต้น (Working Diagnosis)</option><option>อาการและอาการแสดง (Clinical Sign)</option><option>การวินิจฉัยแยกโรค (Differential Diagnosis)</option><option>สงสัยเพื่อพิสูจน์ขจัด (Rule Out)</option></select>
-            <select id="tbl-status"><option value="">Clinical Status: ทั้งหมด</option><option>กำลังรักษา (Active)</option><option>อยู่ระหว่างการส่งตรวจ (Pending)</option><option>หายแล้ว/สงบ (Resolved / Inactive)</option></select>
-            <select id="tbl-course"><option value="">Clinical Course: ทั้งหมด</option><option>เฉียบพลัน (Acute)</option><option>กลับเป็นซ้ำ (Recurrent)</option><option>ติดตามอาการ (Follow-up)</option><option>เรื้อรัง (Chronic)</option></select>
-            <select id="tbl-prog"><option value="">Prognosis: ทั้งหมด</option><option>พยากรณ์โรคดี (Good Prognosis)</option><option>ต้องเฝ้าระวัง (Guarded Prognosis)</option><option>พยากรณ์โรคไม่ดี (Poor Prognosis)</option><option>วิกฤต/ทรุดหนัก (Grave Prognosis)</option></select>
+            <select id="tbl-type"><option value="">Clinical Condition Category: ทั้งหมด</option><option>การวินิจฉัยเบื้องต้น (Working Diagnosis, DX)</option><option>อาการและอาการแสดง (Clinical Sign)</option><option>การวินิจฉัยแยกโรค (Differential Diagnosis)</option><option>สงสัยเพื่อพิสูจน์ขจัด (Rule Out)</option></select>
+            <select id="tbl-status"><option value="">Clinical Status: ทั้งหมด</option><option>กำลังรักษา (Active)</option><option>อยู่ระหว่างการส่งตรวจ (Pending)</option><option>หายหรือสงบ (Resolved/Inactive)</option></select>
+            <select id="tbl-course"><option value="">Clinical Course: ทั้งหมด</option><option>เฉียบพลัน (Acute)</option><option>กลับมาเป็นซ้ำ (Recurrent)</option><option>ติดตามอาการ (Follow)</option><option>เรื้อรัง (Chronic)</option></select>
+            <select id="tbl-prog"><option value="">Prognosis: ทั้งหมด</option><option>ตอบสนองต่อการรักษาดี (Good)</option><option>ต้องเฝ้าระวัง (Guarded)</option><option>พยากรณ์โรคไม่ดี (Poor)</option><option>วิกฤต/ทรุดหนัก (Grave)</option></select>
             <select id="tbl-sev"><option value="">Severity: ทั้งหมด</option><option>เล็กน้อย (Mild)</option><option>ปานกลาง (Moderate)</option><option>รุนแรง (Severe)</option><option>วิกฤต/อันตรายถึงชีวิต (Life-threatening)</option></select>
             <select id="tbl-rec"><option value="">Record status: ทั้งหมด</option><option>Confirmed</option><option>Disable</option></select>
             <button class="btn-search" type="button" onclick="filterTable()">ค้นหา</button>
@@ -741,20 +741,20 @@ Clinical Course: Chronic + Follow-up
           <div class="data-table-wrap">
             <table class="data-table" id="data-table">
               <thead><tr>
-                <th>Process On</th>
-                <th>Problem/Diagnosis</th>
-                <th>หมายเหตุปัญหาทางกายภาพ (Problem Note)</th>
-                <th>ประเภทปัญหา / ข้อวินิจฉัย (Clinical Condition Category)</th>
+                <th>Exam Card Date</th>
+                <th>Problem / Diagnosis Terms (PDT)</th>
+                <th>หมายเหตุรายการ (Problem Note)</th>
+                <th>ประเภทปัญหา/ข้อวินิจฉัย (Clinical Condition Category)</th>
                 <th>ลักษณะการดำเนินของโรค (Clinical Course)</th>
                 <th>สถานะของปัญหาทางคลินิก (Clinical Status)</th>
-                <th>ผลการตรวจยืนยันทางคลินิก (Confirmatory Finding / Evidence)</th>
+                <th>ผลการตรวจเสริมทางเทคนิค (Confirmatory Finding / Evidence)</th>
                 <th>Categories</th>
                 <th>ระดับความรุนแรงของโรค (Severity)</th>
                 <th>การพยากรณ์โรค (Prognosis)</th>
-                <th>ระดับความมั่นใจการวินิจฉัย (Diagnostic Certainty)</th>
-                <th>ระยะเวลาที่คาดว่าจะป่วย/รักษา (Clinical Duration)</th>
+                <th>ระดับความมั่นใจในข้อวินิจฉัย (Diagnostic Certainty)</th>
+                <th>ระยะเวลาที่พบความผิดปกติ (Clinical Duration)</th>
                 <th>เหตุผลและความเห็นทางคลินิก (Clinical Reasoning)</th>
-                <th>สรุปการประเมิน (Assessment Summary)</th>
+                <th>สรุปผลการประเมิน (Assessment Summary)</th>
                 <th>DVM</th>
                 <th>Department</th>
                 <th>Record date time</th>
@@ -797,11 +797,11 @@ Clinical Course: Chronic + Follow-up
           <li>กด <b>Save/Apply</b> → บันทึก/เพิ่มเข้า Selected PDT ของ visit tab ปัจจุบัน</li>
           <li><b>Clinical Condition Category</b> — Sign / Dx / DDx / R/O</li>
           <li><b>Prognosis</b> — ไม่บังคับ · ปิดใช้เมื่อเลือก Rule Out (R/O)</li>
-          <li><b>Clinical Course</b> — checkbox: Acute · Recurrent · Follow-up · Chronic (เลือกได้หลายข้อ)</li>
+          <li><b>Clinical Course</b> — checkbox: Acute · Recurrent · Follow · Chronic (เลือกได้หลายข้อ)</li>
           <li><b>Clinical Status / Severity / Duration / Diagnostic Certainty</b> + Findings / Reasoning / Problem Note</li>
-          <li><b>ระดับความมั่นใจ (Confidence)</b> — ไม่บังคับ: มีหลักฐานสนับสนุนชัดเจน (High), มีหลักฐานบางส่วน (Medium), เป็นไปได้แต่ยังไม่ยืนยัน (Low)</li>
-          <li><b>การยืนยัน (Confirmatory Findings)</b> — full width, ไม่บังคับ: textarea</li>
-          <li><b>เหตุผลทางคลินิก (Clinical Reasoning)</b> — full width, ไม่บังคับ: textarea</li>
+          <li><b>ระดับความมั่นใจในข้อวินิจฉัย (Diagnostic Certainty)</b> — ไม่บังคับ: มีหลักฐานสนับสนุนชัดเจน (High), มีหลักฐานบางส่วน (Medium), เป็นไปได้แต่ยังไม่ยืนยัน (Low)</li>
+          <li><b>ผลการตรวจเสริมทางเทคนิค (Confirmatory Finding / Evidence)</b> — full width, ไม่บังคับ: textarea</li>
+          <li><b>เหตุผลและความเห็นทางคลินิก (Clinical Reasoning)</b> — full width, ไม่บังคับ: textarea</li>
           <li><b>หมายเหตุรายการ (Problem Note)</b> — full width, ไม่บังคับ: textarea</li>
           <li><b>ความสัมพันธ์ของการวินิจฉัย (Relation Diagnosis)</b> — full width, disabled ทุก tab</li>
         </ul>
@@ -1217,7 +1217,7 @@ Clinical Course: Chronic + Follow-up
       ];
 
       var severities = ['เล็กน้อย (Mild)', 'ปานกลาง (Moderate)', 'รุนแรง (Severe)', 'วิกฤต/อันตรายถึงชีวิต (Life-threatening)'];
-      var confidences = ['ยืนยันชัดเจน (Confirmed / High Certainty)', 'น่าจะใช่/มีหลักฐานบางส่วน (Probable / Medium)', 'สงสัย/ยังไม่ยืนยัน (Possible / Low)'];
+      var confidences = ['มีหลักฐานสนับสนุนชัดเจน (High)', 'มีหลักฐานบางส่วน (Medium)', 'เป็นไปได้แต่ยังไม่ยืนยัน (Low)'];
       var durations = ['1-3 วัน', '3-7 วัน', '2-4 สัปดาห์', '1-2 สัปดาห์', 'ระยะยาว (ตลอดชีวิต)', '5-10 วัน', 'รอผลตรวจเพิ่มเติม'];
 
       function pickStaff(idx) {
@@ -1282,9 +1282,9 @@ Clinical Course: Chronic + Follow-up
         var isPending = (src.s || '').indexOf('Pending') >= 0;
         var sev = src.sev || severities[idx % severities.length];
         if (isPending && !src.sev) sev = 'ปานกลาง (Moderate)';
-        var conf = src.conf || confidences[idx % confidences.length];
+        var conf = confidenceFullLabel(src.conf || confidences[idx % confidences.length]);
         if ((src.t || '').indexOf('R/O') >= 0 || (src.t || '').indexOf('Rule Out') >= 0) {
-          conf = 'สงสัย/ยังไม่ยืนยัน (Possible / Low)';
+          conf = 'เป็นไปได้แต่ยังไม่ยืนยัน (Low)';
         }
 
         var name = src.n || '';
@@ -1307,16 +1307,17 @@ Clinical Course: Chronic + Follow-up
         var courseList = (src.c || []).map(courseFullLabel).filter(Boolean);
         return {
           processOn: processOn,
+          examCardDate: processOn,
           name: name,
           note: note,
           type: typeFullLabel(src.t),
           course: courseList,
           courseText: courseList.join(', '),
-          status: src.s || '',
+          status: statusFullLabel(src.s),
           cf: src.cf || '',
           cat: src.cat || '',
           severity: sev,
-          prognosis: src.p || '',
+          prognosis: prognosisFullLabel(src.p),
           confidence: conf,
           duration: src.dur || durations[idx % durations.length],
           reasoning: reasoning,
@@ -1344,11 +1345,12 @@ Clinical Course: Chronic + Follow-up
 
       function typeFullLabel(t) {
         var map = {
-          'Working Diagnosis (Dx)': 'การวินิจฉัยเบื้องต้น (Working Diagnosis)',
+          'Working Diagnosis (Dx)': 'การวินิจฉัยเบื้องต้น (Working Diagnosis, DX)',
           'Clinical Sign (Sign)': 'อาการและอาการแสดง (Clinical Sign)',
           'Differential Diagnosis (DDx)': 'การวินิจฉัยแยกโรค (Differential Diagnosis)',
           'Rule Out (R/O)': 'สงสัยเพื่อพิสูจน์ขจัด (Rule Out)',
-          'การวินิจฉัยเบื้องต้น (Working Diagnosis)': 'การวินิจฉัยเบื้องต้น (Working Diagnosis)',
+          'การวินิจฉัยเบื้องต้น (Working Diagnosis)': 'การวินิจฉัยเบื้องต้น (Working Diagnosis, DX)',
+          'การวินิจฉัยเบื้องต้น (Working Diagnosis, DX)': 'การวินิจฉัยเบื้องต้น (Working Diagnosis, DX)',
           'อาการและอาการแสดง (Clinical Sign)': 'อาการและอาการแสดง (Clinical Sign)',
           'อาการแสดง (Clinical Sign)': 'อาการและอาการแสดง (Clinical Sign)',
           'การวินิจฉัยแยกโรค (Differential Diagnosis)': 'การวินิจฉัยแยกโรค (Differential Diagnosis)',
@@ -1359,13 +1361,50 @@ Clinical Course: Chronic + Follow-up
       }
       function courseFullLabel(c) {
         var map = {
-          'ต่อเนื่อง (Follow)': 'ติดตามอาการ (Follow-up)',
-          'ติดตามอาการ (Follow)': 'ติดตามอาการ (Follow-up)',
-          'ติดตามอาการ (Follow-up)': 'ติดตามอาการ (Follow-up)',
-          'กลับมาเป็นซ้ำ (Recurrent)': 'กลับเป็นซ้ำ (Recurrent)',
-          'กลับเป็นซ้ำ (Recurrent)': 'กลับเป็นซ้ำ (Recurrent)',
+          'ต่อเนื่อง (Follow)': 'ติดตามอาการ (Follow)',
+          'ติดตามอาการ (Follow)': 'ติดตามอาการ (Follow)',
+          'ติดตามอาการ (Follow-up)': 'ติดตามอาการ (Follow)',
+          'กลับมาเป็นซ้ำ (Recurrent)': 'กลับมาเป็นซ้ำ (Recurrent)',
+          'กลับเป็นซ้ำ (Recurrent)': 'กลับมาเป็นซ้ำ (Recurrent)',
           'เฉียบพลัน (Acute)': 'เฉียบพลัน (Acute)',
           'เรื้อรัง (Chronic)': 'เรื้อรัง (Chronic)'
+        };
+        return map[c] || c || '';
+      }
+      function statusFullLabel(s) {
+        var map = {
+          'กำลังรักษา (Active)': 'กำลังรักษา (Active)',
+          'อยู่ระหว่างการส่งตรวจ (Pending)': 'อยู่ระหว่างการส่งตรวจ (Pending)',
+          'อยู่ระหว่างการตรวจ (Pending)': 'อยู่ระหว่างการส่งตรวจ (Pending)',
+          'หายหรือสงบ (Resolved/Inactive)': 'หายหรือสงบ (Resolved/Inactive)',
+          'หายแล้ว/สงบ (Resolved / Inactive)': 'หายหรือสงบ (Resolved/Inactive)',
+          'หายแล้ว/สงบ (Resolved/Inactive)': 'หายหรือสงบ (Resolved/Inactive)'
+        };
+        return map[s] || s || '';
+      }
+      function prognosisFullLabel(p) {
+        if (!p) return '';
+        var map = {
+          'ตอบสนองต่อการรักษาดี (Good)': 'ตอบสนองต่อการรักษาดี (Good)',
+          'พยากรณ์โรคดี (Good Prognosis)': 'ตอบสนองต่อการรักษาดี (Good)',
+          'พยากรณ์โรคดี (Good)': 'ตอบสนองต่อการรักษาดี (Good)',
+          'ต้องเฝ้าระวัง (Guarded)': 'ต้องเฝ้าระวัง (Guarded)',
+          'ต้องเฝ้าระวัง (Guarded Prognosis)': 'ต้องเฝ้าระวัง (Guarded)',
+          'พยากรณ์โรคไม่ดี (Poor)': 'พยากรณ์โรคไม่ดี (Poor)',
+          'พยากรณ์โรคไม่ดี (Poor Prognosis)': 'พยากรณ์โรคไม่ดี (Poor)',
+          'วิกฤต/ทรุดหนัก (Grave)': 'วิกฤต/ทรุดหนัก (Grave)',
+          'วิกฤต/ทรุดหนัก (Grave Prognosis)': 'วิกฤต/ทรุดหนัก (Grave)'
+        };
+        return map[p] || p;
+      }
+      function confidenceFullLabel(c) {
+        var map = {
+          'มีหลักฐานสนับสนุนชัดเจน (High)': 'มีหลักฐานสนับสนุนชัดเจน (High)',
+          'ยืนยันชัดเจน (Confirmed / High Certainty)': 'มีหลักฐานสนับสนุนชัดเจน (High)',
+          'มีหลักฐานบางส่วน (Medium)': 'มีหลักฐานบางส่วน (Medium)',
+          'น่าจะใช่/มีหลักฐานบางส่วน (Probable / Medium)': 'มีหลักฐานบางส่วน (Medium)',
+          'เป็นไปได้แต่ยังไม่ยืนยัน (Low)': 'เป็นไปได้แต่ยังไม่ยืนยัน (Low)',
+          'สงสัย/ยังไม่ยืนยัน (Possible / Low)': 'เป็นไปได้แต่ยังไม่ยืนยัน (Low)'
         };
         return map[c] || c || '';
       }
@@ -1392,7 +1431,7 @@ Clinical Course: Chronic + Follow-up
         for (var i = 0; i < data.length; i++) {
           var r = data[i];
           html += '<tr>' +
-            '<td>' + cellText(r.processOn) + '</td>' +
+            '<td>' + cellText(r.examCardDate || r.processOn) + '</td>' +
             '<td>' + (r.name ? '<b>' + escCell(r.name) + '</b>' : cellText('')) + '</td>' +
             '<td class="cell-clamp" title="' + escCell(r.note) + '">' + clampCell(r.note) + '</td>' +
             '<td class="cell-opt">' + cellText(r.type) + '</td>' +
