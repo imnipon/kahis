@@ -8,7 +8,9 @@
 | Title เดิม | Title ใหม่ |
 | :--------- | :--------- |
 | Selected Problems/Diagnosis | Selected Problem / Diagnosis Terms (PDT) |
-| New Assessment Problem | Add New PDT Concept |
+| New Assessment Problem | Add New/Edit PDT Concept |
+| Select Assessment Concept | Select PDT Concept |
+| + Append Problem | Save/Apply |
 
 ---
 
@@ -60,7 +62,7 @@
 | ตัวเลือกเดิม    | ตัวเลือกแนะนำ (SNOMED CT / FHIR)    | SNOMED CT Concept ID |
 | :-------------- | :---------------------------------- | :------------------- |
 | **กำลังรักษา**  | กำลังรักษา (*Active*)               | `55561003`           |
-| **รอผลการตรวจ** | อยู่ระหว่างการตรวจ (*Pending*)      | `7087005`            |
+| **รอผลการตรวจ** | อยู่ระหว่างการส่งตรวจ (*Pending*)    | `7087005`            |
 | **หายหรือสงบ**  | หายแล้ว/สงบ (*Resolved / Inactive*) | `410513005`          |
 
 ### 3.3 ฟิลด์: ความรุนแรง (Severity)

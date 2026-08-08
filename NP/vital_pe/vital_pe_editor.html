@@ -47,9 +47,10 @@
     }
     .modal-overlay.show { display: flex; }
     .modal-box {
-      background: #f0f2f5; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,.3);
-      width: 95%; max-width: 1400px; max-height: 95vh; overflow: hidden;
-      padding: 16px; position: relative; display: flex; flex-direction: column;
+      background: #f0f2f5; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,.28);
+      width: min(1400px, 100%); height: min(95vh, 920px); max-width: 100%; max-height: 95vh;
+      overflow: hidden; padding: 14px 16px 16px; position: relative;
+      display: flex; flex-direction: column; min-height: 0;
     }
     .modal-close {
       background: #fff; border: 1px solid #fca5a5; border-radius: 8px;
@@ -92,7 +93,7 @@
     .assess-toast .toast-row { font-size: 12px; color: #374151; line-height: 1.5; }
     .assess-toast .toast-row b { font-weight: 600; }
     @keyframes toastSlide { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-    .examcard-bar { display: flex; align-items: center; gap: 6px; }
+    .examcard-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; position: relative; }
     .examcard-btn-blue {
       display: inline-flex; align-items: center; gap: 5px;
       padding: 8px 16px; border: 1px solid #fca5a5; border-radius: 8px;
@@ -102,7 +103,7 @@
     .examcard-btn-blue .arrow { font-size: 10px; color: #f87171; }
     .examcard-btn-out {
       display: inline-flex; align-items: center; gap: 5px;
-      padding: 8px 16px; border: 1px solid #86efac; border-radius: 8px;
+      padding: 8px 14px; border: 1px solid #86efac; border-radius: 8px;
       font-size: 13px; background: #fff; color: #16a34a; font-family: inherit; cursor: pointer; font-weight: 500;
     }
     .examcard-btn-out:hover { background: #f0fdf4; border-color: #4ade80; }
@@ -113,15 +114,26 @@
     }
     .examcard-pick:hover { background: #eff6ff; }
     .examcard-select {
-      padding: 7px 10px; border: 1px solid #d1d5db; border-radius: 4px;
+      padding: 7px 10px; border: 1px solid #d1d5db; border-radius: 8px;
       font-size: 12px; background: #fff; font-family: inherit; cursor: pointer; color: #4b5563;
+      max-width: 280px;
     }
     .examcard-go {
       padding: 6px; border: none; background: transparent; color: #9ca3af; font-family: inherit; cursor: pointer;
       display: inline-flex; align-items: center;
     }
     .examcard-go:hover { color: #6b7280; }
-    .assess-editor-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; flex-shrink: 0; }
+    .assess-editor-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 10px; flex-shrink: 0; gap: 12px;
+    }
+    .obj-brand { display: flex; align-items: center; gap: 12px; min-width: 0; flex-shrink: 0; }
+    .obj-brand-logo, .obj-brand-sub {
+      font-weight: 700; font-size: 22px; letter-spacing: -0.02em; line-height: 1.1;
+    }
+    .obj-brand-logo { color: #22c55e; }
+    .obj-brand-sub { color: #1f2937; }
+    .section-title { font-size: 16px; font-weight: 600; color: #444; margin-bottom: 0; display: flex; align-items: center; gap: 8px; }
     .visit-tabs {
       display: flex; gap: 2px; padding: 0; background: #f0f2f5; border-bottom: 2px solid #2563eb; flex-shrink: 0;
     }
@@ -152,7 +164,6 @@
     }
     .visit-topbar b { color: #374151; font-weight: 600; }
     .visit-topbar .for-date { color: #1d4ed8; font-weight: 600; }
-    .section-title { font-size: 16px; font-weight: 600; color: #444; margin-bottom: 0; display: flex; align-items: center; gap: 8px; }
     .grid { display: grid; grid-template-columns: 1fr 3.2fr 1.1fr; grid-template-rows: 1fr; gap: 16px; height: 100%; }
     .editor-panel {
       background: #fff; border: 1px solid #e5e7eb; border-radius: 10px;
@@ -527,7 +538,10 @@
   <div class="modal-overlay" id="assess-modal">
     <div class="modal-box">
       <div class="assess-editor-header">
-        <div class="section-title">Vital & PE Editor <span>&#8635;</span></div>
+        <div class="obj-brand">
+          <div class="obj-brand-logo">KAHIS</div>
+          <div class="obj-brand-sub">Vital &amp; PE Editor</div>
+        </div>
         <div class="examcard-bar">
           <button class="examcard-btn-blue" style="display:none;">Add Exam Card <span class="arrow">&#9662;</span></button>
           <button class="logic-badge" onclick="document.getElementById('logic-modal').classList.add('show')"><span class="dot"></span> View Logic/Rule</button>

@@ -11,6 +11,12 @@ const filesTree = [
         "lastUpdate": "2026-08-06T22:16:00.000000"
       },
       {
+        "name": "editor_ui_shell_map.md",
+        "type": "file",
+        "path": "NP/editor_ui_shell_map.md",
+        "lastUpdate": "2026-08-08T18:20:00.000000"
+      },
+      {
         "name": "assessment",
         "type": "folder",
         "path": "NP/assessment",
@@ -19,19 +25,19 @@ const filesTree = [
             "name": "assessment_editor.html",
             "type": "file",
             "path": "NP/assessment/assessment_editor.html",
-            "lastUpdate": "2026-07-24T13:45:00.000000"
+            "lastUpdate": "2026-08-08T18:20:00.000000"
           },
           {
             "name": "assessment_manual.md",
             "type": "file",
             "path": "NP/assessment/assessment_manual.md",
-            "lastUpdate": "2026-08-03T11:11:00.000000"
+            "lastUpdate": "2026-08-08T18:20:00.000000"
           },
           {
             "name": "ref_assessment.md",
             "type": "file",
             "path": "NP/assessment/ref_assessment.md",
-            "lastUpdate": "2026-08-03T10:47:00.000000"
+            "lastUpdate": "2026-08-08T18:20:00.000000"
           }
         ]
       },
@@ -44,7 +50,7 @@ const filesTree = [
             "name": "vital_pe_editor.html",
             "type": "file",
             "path": "NP/vital_pe/vital_pe_editor.html",
-            "lastUpdate": "2026-07-24T13:40:00.000000"
+            "lastUpdate": "2026-08-08T18:20:00.000000"
           },
           {
             "name": "vital_pe_manual.md",
@@ -94,13 +100,13 @@ const filesTree = [
             "name": "objective.html",
             "type": "file",
             "path": "NP/objective/objective.html",
-            "lastUpdate": "2026-07-24T15:40:00.000000"
+            "lastUpdate": "2026-08-08T18:20:00.000000"
           },
           {
             "name": "objective_quillbotdesign.html",
             "type": "file",
             "path": "NP/objective/objective_quillbotdesign.html",
-            "lastUpdate": "2026-07-24T15:40:00.000000"
+            "lastUpdate": "2026-08-08T18:20:00.000000"
           },
           {
             "name": "objective_manual.md",

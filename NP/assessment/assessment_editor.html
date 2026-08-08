@@ -12,7 +12,7 @@
   .assessment-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #f97316; }
   .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.4); z-index: 1000; align-items: center; justify-content: center; }
   .modal-overlay.show { display: flex; }
-  .modal-box { background: #f0f2f5; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,.3); width: 1400px; max-width: 95%; height: 95vh; max-height: 95vh; overflow: hidden; padding: 16px; position: relative; display: flex; flex-direction: column; }
+  .modal-box { background: #f0f2f5; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,.28); width: min(1400px, 100%); height: min(95vh, 920px); max-width: 100%; max-height: 95vh; overflow: hidden; padding: 14px 16px 16px; position: relative; display: flex; flex-direction: column; min-height: 0; }
   .modal-close { background: #fff; border: 1px solid #fca5a5; border-radius: 8px; padding: 6px 12px; font-size: 13px; cursor: pointer; color: #dc2626; font-family: inherit; font-weight: 500; display: inline-flex; align-items: center; gap: 4px; }
   .modal-close:hover { background: #fef2f2; border-color: #f87171; }
   .confirm-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.4); z-index: 2000; align-items: center; justify-content: center; }
@@ -32,19 +32,24 @@
   .assess-toast .toast-row { font-size: 12px; color: #374151; line-height: 1.5; }
   .assess-toast .toast-row b { font-weight: 600; }
   @keyframes toastSlide { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-  .examcard-bar { display: flex; align-items: center; gap: 6px; }
+  .examcard-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; position: relative; }
   .examcard-btn-blue { display: inline-flex; align-items: center; gap: 5px; padding: 8px 16px; border: 1px solid #fca5a5; border-radius: 8px; font-size: 13px; background: #fff; color: #dc2626; font-family: inherit; cursor: pointer; font-weight: 500; }
   .examcard-btn-blue:hover { background: #fef2f2; border-color: #f87171; }
   .examcard-btn-blue .arrow { font-size: 10px; color: #f87171; }
-  .examcard-btn-out { display: inline-flex; align-items: center; gap: 5px; padding: 8px 16px; border: 1px solid #86efac; border-radius: 8px; font-size: 13px; background: #fff; color: #16a34a; font-family: inherit; cursor: pointer; font-weight: 500; }
+  .examcard-btn-out { display: inline-flex; align-items: center; gap: 5px; padding: 8px 14px; border: 1px solid #86efac; border-radius: 8px; font-size: 13px; background: #fff; color: #16a34a; font-family: inherit; cursor: pointer; font-weight: 500; }
   .examcard-btn-out:hover { background: #f0fdf4; border-color: #4ade80; }
   .examcard-btn-out .arrow { font-size: 10px; color: #4ade80; }
   .examcard-pick { padding: 8px 12px; border: 1px solid #93c5fd; border-radius: 8px; font-size: 13px; background: #fff; font-family: inherit; cursor: pointer; color: #2563eb; }
   .examcard-pick:hover { background: #eff6ff; }
-  .examcard-select { padding: 7px 10px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 12px; background: #fff; font-family: inherit; cursor: pointer; color: #4b5563; }
+  .examcard-select { padding: 7px 10px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 12px; background: #fff; font-family: inherit; cursor: pointer; color: #4b5563; max-width: 280px; }
   .examcard-go { padding: 6px; border: none; background: transparent; color: #9ca3af; font-family: inherit; cursor: pointer; display: inline-flex; align-items: center; }
   .examcard-go:hover { color: #6b7280; }
-  .assess-editor-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; flex-shrink: 0; }
+  .assess-editor-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; flex-shrink: 0; gap: 12px; }
+  .obj-brand { display: flex; align-items: center; gap: 12px; min-width: 0; flex-shrink: 0; }
+  .obj-brand-logo, .obj-brand-sub { font-weight: 700; font-size: 22px; letter-spacing: -0.02em; line-height: 1.1; }
+  .obj-brand-logo { color: #22c55e; }
+  .obj-brand-sub { color: #1f2937; }
+  .section-title { font-size: 16px; font-weight: 600; color: #444; margin-bottom: 0; display: flex; align-items: center; gap: 8px; }
   .visit-tabs { display: flex; gap: 2px; padding: 0; background: #f0f2f5; border-bottom: 2px solid #2563eb; flex-shrink: 0; }
   .vtab { display: flex; flex-direction: column; justify-content: center; padding: 6px 14px; border-radius: 8px 8px 0 0; cursor: pointer; font-size: 11px; color: #6b7280; background: #f9fafb; border: 1px solid #e5e7eb; border-bottom: none; border-top: 3px solid transparent; box-sizing: border-box; min-width: 130px; line-height: 1.3; }
   .vtab.active .line1 { font-weight: 700; }
@@ -61,7 +66,7 @@
   .visit-topbar b { color: #374151; font-weight: 600; }
   .visit-topbar .for-date { color: #1d4ed8; font-weight: 600; }
   .section-title { font-size: 16px; font-weight: 600; color: #444; margin-bottom: 0; display: flex; align-items: center; gap: 8px; }
-  .grid { display: grid; grid-template-columns: 1fr 1.4fr 1.8fr 1.1fr; grid-template-rows: 1fr; gap: 0; height: 100%; }
+  .grid { display: grid; grid-template-columns: minmax(0, 1fr) 320px; grid-template-rows: 1fr; gap: 0; height: 100%; }
   .editor-panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; display: flex; flex-direction: column; height: 100%; min-height: 400px; overflow: hidden; }
   .tab-content { flex: 1; overflow: hidden; display: flex; flex-direction: column; background: #fff; border-left: 1px solid #e5e7eb; border-right: 1px solid #e5e7eb; border-bottom: 1px solid #e5e7eb; box-sizing: border-box; border-radius: 0 0 12px 12px; }
   .tab-content .grid { gap: 0; }
@@ -202,6 +207,154 @@
   .data-table tbody td.cell-clamp {
     white-space: normal; vertical-align: top; line-height: 1.45; max-width: 240px;
   }
+
+  .pdt-main-col {
+    display: flex; flex-direction: column; min-height: 0; overflow: hidden;
+  }
+  .pdt-selected-block {
+    flex: 0 0 auto; max-height: 38%; min-height: 120px;
+    display: flex; flex-direction: column; border-bottom: 1px solid #e5e7eb;
+  }
+  .pdt-selected-block .editor-panel-body { overflow-y: auto; }
+  .pdt-add-block {
+    flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden; background: #fff;
+  }
+  .pdt-add-head {
+    padding: 10px 14px; border-bottom: 1px solid #eee; font-weight: 600; font-size: 13px;
+    background: #f5f3ff; color: #5b21b6; flex-shrink: 0;
+  }
+  .pdt-add-head.is-edit { background: #ecfdf5; color: #047857; }
+  .form-group textarea.assess-summary {
+    min-height: 48px; resize: none; overflow: hidden; field-sizing: content;
+    line-height: 1.55; white-space: pre-wrap;
+  }
+  .pdt-add-body { flex: 1; min-height: 0; overflow-y: auto; padding: 12px 14px 16px; }
+  .pdt-concept-trigger-row {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+  }
+  .pdt-concept-slot {
+    flex: 1; min-height: 42px; border: 1px solid #ddd6fe; border-radius: 10px;
+    background: #faf5ff; padding: 6px 10px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .pdt-concept-slot .placeholder { font-size: 13px; color: #a78bfa; }
+  .pdt-concept-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #7c3aed; color: #fff; border-radius: 999px;
+    padding: 4px 10px 4px 12px; font-size: 12px; font-weight: 600;
+  }
+  .pdt-concept-pill .pill-x {
+    border: none; background: rgba(255,255,255,.2); color: #fff; width: 18px; height: 18px;
+    border-radius: 50%; cursor: pointer; line-height: 1; font-size: 12px; padding: 0;
+  }
+  .btn-pick-concept {
+    display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;
+    background: #2563eb; color: #fff; border: none; border-radius: 8px;
+    padding: 9px 14px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
+  }
+  .btn-pick-concept:hover { background: #1d4ed8; }
+  .pdt-req-row {
+    display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 12px;
+    font-size: 11px; color: #6b7280;
+  }
+  .pdt-req-row .tag.ok { background: #e6f7ee; color: #16a34a; }
+  .pdt-add-actions { display: flex; justify-content: flex-end; margin-top: 12px; }
+  .btn-append-pdt {
+    background: #22c55e; color: #fff; border: none; padding: 9px 16px; border-radius: 8px;
+    font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
+  }
+  .btn-append-pdt:hover { background: #16a34a; }
+  .field-course { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 4px 0 8px; }
+
+  /* Select PDT Concept modal — 3 columns */
+  .pdt-concept-overlay {
+    display: none; position: fixed; inset: 0; z-index: 2500;
+    background: rgba(15, 23, 42, .45); align-items: center; justify-content: center; padding: 20px;
+  }
+  .pdt-concept-overlay.show { display: flex; }
+  .pdt-concept-box {
+    width: min(1180px, 100%); height: min(88vh, 860px);
+    background: #fff; border-radius: 14px; box-shadow: 0 20px 50px rgba(0,0,0,.22);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .pdt-concept-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 12px 16px; border-bottom: 1px solid #eef2f4; flex-shrink: 0;
+  }
+  .pdt-concept-title { font-size: 16px; font-weight: 700; color: #1f2937; }
+  .pdt-concept-head-actions { display: flex; align-items: center; gap: 8px; }
+  .pdt-fs-btn {
+    border: 1px solid #e5e7eb; background: #fff; border-radius: 8px; padding: 6px 10px;
+    color: #6b7280; cursor: pointer; font-size: 12px; font-family: inherit;
+  }
+  .pdt-concept-body {
+    flex: 1; min-height: 0; display: grid;
+    grid-template-columns: 220px minmax(0, 1.1fr) minmax(0, 1.2fr); overflow: hidden;
+  }
+  .sac-options {
+    border-right: 1px solid #e5e7eb; background: #fafbfc; overflow-y: auto; padding: 12px;
+  }
+  .sac-options h4 { font-size: 13px; margin: 0 0 4px; color: #111827; }
+  .sac-options .sub { font-size: 11px; color: #6b7280; margin-bottom: 10px; }
+  .sac-check {
+    display: flex; align-items: center; gap: 8px; padding: 6px 4px;
+    font-size: 13px; color: #374151; cursor: default;
+  }
+  .sac-check input { width: 15px; height: 15px; accent-color: #2563eb; }
+  .sac-results {
+    border-right: 1px solid #e5e7eb; display: flex; flex-direction: column; min-height: 0;
+  }
+  .sac-search-wrap { padding: 12px; border-bottom: 1px solid #eef2f4; flex-shrink: 0; }
+  .sac-search-wrap input {
+    width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px;
+    font-size: 13px; font-family: inherit;
+  }
+  .sac-match { padding: 8px 12px; font-size: 12px; color: #6b7280; border-bottom: 1px solid #f3f4f6; }
+  .sac-list { flex: 1; overflow-y: auto; }
+  .sac-item {
+    padding: 10px 12px; border-bottom: 1px solid #f3f4f6; cursor: default;
+  }
+  .sac-item.active { background: #eff6ff; }
+  .sac-item .t { font-size: 14px; font-weight: 600; color: #1e293b; }
+  .sac-item .s { font-size: 11px; color: #64748b; margin-top: 2px; line-height: 1.4; }
+  .sac-pager {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 8px; border-top: 1px solid #eef2f4; font-size: 12px; color: #6b7280; flex-shrink: 0;
+  }
+  .sac-pager button {
+    border: 1px solid #e5e7eb; background: #fff; border-radius: 6px; padding: 4px 10px;
+    font-size: 12px; cursor: default; font-family: inherit; color: #9ca3af;
+  }
+  .sac-detail { display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+  .sac-detail-banner {
+    background: #1e3a8a; color: #fff; padding: 14px 16px; flex-shrink: 0;
+  }
+  .sac-detail-banner-top { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+  .sac-detail-banner h3 { margin: 0; font-size: 20px; font-weight: 700; }
+  .sac-detail-banner .sub { font-size: 12px; opacity: .9; margin-top: 4px; }
+  .sac-detail-banner .meta { font-size: 11px; opacity: .85; margin-top: 6px; }
+  .sac-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+  .sac-badges span {
+    font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+    background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.25);
+  }
+  .btn-select-this {
+    background: #22c55e; color: #fff; border: none; border-radius: 8px;
+    padding: 8px 12px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit;
+    white-space: nowrap;
+  }
+  .btn-select-this:hover { background: #16a34a; }
+  .sac-detail-body { flex: 1; overflow-y: auto; padding: 14px 16px; background: #f8fafc; }
+  .sac-card {
+    background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px;
+  }
+  .sac-card h5 { margin: 0 0 8px; font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: .04em; }
+  .sac-card ul { margin: 0; padding-left: 18px; font-size: 13px; color: #334155; line-height: 1.7; }
+  .sac-cat-row { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: #334155; }
+  .sac-cat-row .ok { color: #16a34a; font-weight: 700; }
+  .sac-cat-row .star { color: #eab308; }
+
+  .field-course { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; padding: 4px 0 8px; }
+
   .data-table tbody td.cell-clamp .clamp-inner {
     display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
   }
@@ -209,14 +362,17 @@
 </head>
 <body>
 
-  <button class="assessment-badge" onclick="document.getElementById('assess-modal').classList.add('show')">
+  <button class="assessment-badge" onclick="document.getElementById('assess-modal').classList.add('show'); setTimeout(initAssessSummaryAutosize, 50)">
     <span class="dot"></span> Assessment
   </button>
 
   <div class="modal-overlay" id="assess-modal">
     <div class="modal-box">
       <div class="assess-editor-header">
-        <div class="section-title">Assessment Editor <span>&#8635;</span></div>
+        <div class="obj-brand">
+          <div class="obj-brand-logo">KAHIS</div>
+          <div class="obj-brand-sub">Assessment Editor</div>
+        </div>
         <div class="examcard-bar">
           <button class="examcard-btn-blue" style="display:none;">Add Exam Card <span class="arrow">&#9662;</span></button>
           <button class="logic-badge" onclick="document.getElementById('logic-modal').classList.add('show')"><span class="dot"></span> View Logic/Rule</button>
@@ -242,291 +398,325 @@
       <!-- TAB 1 -->
       <div class="tab-content" id="content-1">
       <div class="grid">
-        <div class="editor-panel">
-          <div class="editor-panel-head">Categories</div>
-          <div class="editor-panel-body">
-            <div class="cat"><div class="name">General</div><div class="count">3 items</div></div>
-            <div class="cat active"><div class="name">Gastrointestinal</div><div class="count">12 items</div></div>
-            <div class="cat"><div class="name">Respiratory</div><div class="count">8 items</div></div>
-            <div class="cat"><div class="name">Cardiovascular</div><div class="count">6 items</div></div>
-            <div class="cat"><div class="name">Musculoskeletal</div><div class="count">5 items</div></div>
-            <div class="cat"><div class="name">Dermatology</div><div class="count">9 items</div></div>
-            <div class="cat"><div class="name">Neurology</div><div class="count">4 items</div></div>
-            <div class="cat"><div class="name">Urogenital</div><div class="count">7 items</div></div>
-            <div class="cat"><div class="name">Endocrine</div><div class="count">3 items</div></div>
-            <div class="cat"><div class="name">Ophthalmology</div><div class="count">2 items</div></div>
-          </div>
-        </div>
-        <div class="editor-panel">
-          <div class="editor-panel-head"><span>Problem/Diagnosis List</span></div>
-          <div class="editor-panel-body">
-            <input class="search" type="text" placeholder="🔍 Search problem / diagnosis...">
-            <div class="item"><div class="t">Acute Gastroenteritis</div><div class="s">SNOMED: 77400004</div><div class="s">Finding</div></div>
-            <div class="item"><div class="t">Chronic Gastroenteritis</div><div class="s">SNOMED: 23592003</div><div class="s">Finding</div></div>
-            <div class="item"><div class="t">Dehydration (moderate)</div><div class="s">SNOMED: 34025006</div><div class="s">Disorder</div></div>
-            <div class="item active"><div class="t">Pancreatitis</div><div class="s">SNOMED: 75694006</div><div class="s">Disorder</div></div>
-            <div class="item"><div class="t">Foreign Body Ingestion</div><div class="s">SNOMED: 28254003</div><div class="s">Disorder</div></div>
-            <div class="item"><div class="t">Intestinal Parasites</div><div class="s">SNOMED: 86569001</div><div class="s">Disorder</div></div>
-            <div class="item"><div class="t">Food Allergy / Intolerance</div><div class="s">SNOMED: 417435006</div><div class="s">Disorder</div></div>
-            <div class="item"><div class="t">Inflammatory Bowel Disease</div><div class="s">SNOMED: 74964007</div><div class="s">Disorder</div></div>
-          </div>
-        </div>
-        <div class="editor-panel">
-          <div class="editor-panel-head"><span>Selected Problems/Diagnosis</span><span><span class="badge">📋 2 selected</span></span></div>
-          <div class="editor-panel-body">
-            <div class="sel-list">
-              <div class="sel-row">
-                <div class="sel-row-top"><div class="num">1</div><div class="pname">Acute Gastroenteritis</div><button class="ic">✎</button><button class="x">✕</button></div>
-                <div class="sel-row-badges"><span class="ptype finding">Finding</span><span class="ptype sign">Sign</span><span class="ptype status-active">Active</span><span class="last-update">09/07/26 08:00</span></div>
+        <div class="editor-panel pdt-main-col">
+          <div class="pdt-selected-block">
+            <div class="editor-panel-head">
+              <span>Selected Problem / Diagnosis Terms (PDT) <span class="badge">📋 1 selected</span></span>
+            </div>
+            <div class="editor-panel-body">
+              <div class="sel-list" id="sel-list-1">
+              <div class="sel-row active" data-pdt-name="Gallstones" data-pdt-cat="dx" data-pdt-status="resolved" data-pdt-course="chronic">
+                <div class="sel-row-top"><div class="num">1</div><div class="pname">Gallstones</div><button class="ic" type="button" onclick="editSelectedPdt(this)" title="Edit">✎</button><button class="x" type="button">✕</button></div>
+                <div class="sel-row-badges"><span class="ptype disorder">Disorder</span><span class="ptype dx">Dx</span><span class="ptype status-resolved">Resolved</span><span class="last-update">28/07/24 10:12</span></div>
               </div>
-              <div class="sel-row">
-                <div class="sel-row-top"><div class="num">2</div><div class="pname">Dehydration (moderate)</div><button class="ic">✎</button><button class="x">✕</button></div>
-                <div class="sel-row-badges"><span class="ptype disorder">Disorder</span><span class="ptype sign">Sign</span><span class="ptype status-resolved">Resolved/Inactive</span><span class="last-update">09/07/26 08:13</span></div>
               </div>
             </div>
-            <div class="detail-banner"><div class="detail-banner-top"><div><div class="lbl">ยังไม่บันทึก</div><div class="name">Pancreatitis</div><span class="tag" style="background:#f3f4f6;color:#9ca3af;">- ยังไม่บันทึก</span></div><button class="btn-new-record">+ New Record</button></div></div>
-            <div class="detail-grid">
-              <div class="field"><label>ประเภทปัญหา (Problem Type)</label><select class="ctrl" id="tab1-problem-type" onchange="togglePrognosis()"><option value="" disabled selected>— เลือก —</option><option>Clinical Sign (Sign)</option><option>Working Diagnosis (Dx)</option><option>Differential Diagnosis (DDx)</option><option>Rule Out (R/O)</option></select></div>
-              <div class="field"><label>พยากรณ์โรค (Prognosis)</label><select class="ctrl" id="tab1-prognosis" disabled style="background:#f9fafb;color:#9ca3af;"><option value="" disabled selected>— เลือก —</option><option>ตอบสนองการรักษาดี (Good)</option><option>ต้องเฝ้าระวัง (Guarded)</option><option>ความคืบหน้าไม่แน่นอน (Poor)</option><option>อาการรุนแรงมาก (Grave)</option></select></div>
-              <div class="field-course"><label>ลักษณะการดำเนิน (Course)</label><label class="course-check"><input type="checkbox"> ต่อเนื่อง (Follow)</label><label class="course-check"><input type="checkbox"> เรื้อรัง (Chronic)</label></div>
-              <div class="field"><label>สถานะ (Status)</label><select class="ctrl"><option value="" disabled selected>— เลือก —</option><option>กำลังรักษา (Active)</option><option>รอผลการตรวจ (Pending)</option><option>หาย/สงบ (Resolved/Inactive)</option></select></div>
-              <div class="field"><label>ความรุนแรง (Severity)</label><select class="ctrl"><option value="" disabled selected>— เลือก —</option><option>อาการเล็กน้อย (Mild)</option><option>ปานกลาง (Moderate)</option><option>รุนแรง (Severe)</option><option>เสี่ยงอันตรายถึงชีวิต (Life-threatening)</option></select></div>
-              <div class="field"><label>ประเมินเวลา (Expected Duration)</label><input class="ctrl" type="text" value="1-3 วัน"></div>
-              <div class="field"><label>ระดับความมั่นใจ (Confidence)</label><select class="ctrl"><option value="" disabled selected>— เลือก —</option><option>มีหลักฐานสนับสนุนชัดเจน (High)</option><option>มีหลักฐานบางส่วน (Medium)</option><option>เป็นไปได้แต่ยังไม่ยืนยัน (Low)</option></select></div>
-              <div class="field full"><label>การยืนยัน (Confirmatory Findings)</label><textarea class="ctrl">Vcheck cPL > 900 ng/ml</textarea></div>
-              <div class="field full"><label>เหตุผลทางคลินิก (Clinical Reasoning)</label><textarea class="ctrl">สัตว์มีประวัติอาเจียนซ้ำๆ ซึม ท้องเสีย 2 วัน ตรวจพบ dehydration ปานกลาง ปวดท้องบริเวณ cranial abdomen ผล Vcheck cPL > 900 ng/ml สูงผิดปกติ สอดคล้องกับ pancreatitis แม้จะต้องตัด foreign body และ gastroenteritis ออก แต่ cPL ที่สูงมากชี้นำไปที่ pancreatic inflammation เป็นสาเหตุหลัก</textarea></div>
-              <div class="field full"><label>หมายเหตุรายการ (Problem Note)</label><textarea class="ctrl">เริ่มให้ IV fluid และ antiemetic งดอาหารปานกลาง รอผล CBC/Chem และ ultrasound abdomen เพื่อประเมินความรุนแรงของ pancreatic inflammation และตัดสินใจเรื่อง pain management เพิ่มเติม</textarea></div>
-              <div class="field full"><label>ความสัมพันธ์ของการวินิจฉัย (Relation Diagnosis)</label><select class="ctrl" disabled style="background:#f9fafb;color:#9ca3af;"><option>อยู่ในแผนพัฒนาระยะท้าย</option></select></div>
-            </div>
           </div>
+
+            <div class="pdt-add-block">
+              <div class="pdt-add-head">Add New/Edit PDT Concept</div>
+              <div class="pdt-add-body">
+                <div class="pdt-concept-trigger-row">
+                  <div class="pdt-concept-slot">
+                    <span class="pdt-concept-pill">Gallstones <button class="pill-x" type="button" title="clear" onclick="clearSelectedConcept(event)">×</button></span>
+                  </div>
+                  <button class="btn-pick-concept" type="button" onclick="openPdtConceptModal()">🔍 เลือก Concept</button>
+                </div>
+                <div class="pdt-req-row">
+                  <span>Required:</span>
+                  <span class="tag ok">✓ Clinical Condition Category</span>
+                  <span class="tag ok">✓ Clinical Status</span>
+                  <span class="tag ok">✓ DVM</span>
+                  <span class="tag ok">✓ Dept</span>
+                </div>
+                <div class="detail-grid">
+                  <div class="field">
+                    <label>ประเภทปัญหา/วินิจฉัย (Clinical Condition Category) *</label>
+                    <select class="ctrl">
+                      <option>การวินิจฉัยเบื้องต้น (Working Diagnosis, DX)</option>
+                      <option>อาการและอาการแสดง (Clinical Sign)</option>
+                      <option>การวินิจฉัยแยกโรค (Differential Diagnosis)</option>
+                      <option>สงสัยเพื่อพิสูจน์ขจัด (Rule Out)</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label>การพยากรณ์โรค (Prognosis)</label>
+                    <select class="ctrl">
+                      <option selected>ตอบสนองต่อการรักษาดี (Good)</option>
+                      <option>ต้องเฝ้าระวัง (Guarded)</option>
+                      <option>พยากรณ์โรคไม่ดี (Poor)</option>
+                      <option>วิกฤต/ทรุดหนัก (Grave)</option>
+                    </select>
+                  </div>
+                  <div class="field-course">
+                    <label>ลักษณะการดำเนินโรคของทางคลินิก (Clinical Course)</label>
+                    <label class="course-check"><input type="checkbox"> เฉียบพลัน (Acute)</label>
+                    <label class="course-check"><input type="checkbox"> กลับมาเป็นซ้ำ (Recurrent)</label>
+                    <label class="course-check"><input type="checkbox"> ติดตามอาการ (Follow)</label>
+                    <label class="course-check"><input type="checkbox" checked> เรื้อรัง (Chronic)</label>
+                  </div>
+                  <div class="field">
+                    <label>สถานะของปัญหาทางคลินิก (Clinical Status) *</label>
+                    <select class="ctrl">
+                      <option>กำลังรักษา (Active)</option>
+                      <option>อยู่ระหว่างการส่งตรวจ (Pending)</option>
+                      <option selected>หายหรือสงบ (Resolved/Inactive)</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label>ระดับความรุนแรงของโรค (Severity)</label>
+                    <select class="ctrl">
+                      <option>เล็กน้อย (Mild)</option>
+                      <option selected>ปานกลาง (Moderate)</option>
+                      <option>รุนแรง (Severe)</option>
+                      <option>วิกฤต/อันตรายถึงชีวิต (Life-threatening)</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label>ระยะเวลาที่ปรากฏอาการ (Clinical Duration)</label>
+                    <input class="ctrl" type="text" placeholder="เช่น 1–2 สัปดาห์">
+                  </div>
+                  <div class="field">
+                    <label>ระดับความแม่นยำในการวินิจฉัย (Diagnostic Certainty)</label>
+                    <select class="ctrl">
+                      <option selected>มีหลักฐานสนับสนุนชัดเจน (High)</option>
+                      <option>มีหลักฐานบางส่วน (Medium)</option>
+                      <option>เป็นไปได้แต่ยังไม่ยืนยัน (Low)</option>
+                    </select>
+                  </div>
+                  <div class="field full">
+                    <label>ผลทางห้องปฏิบัติการทางคลินิก (Confirmatory Finding / Evidence)</label>
+                    <textarea class="ctrl" rows="3">Ultrasound: hyperechoic foci in gallbladder lumen · consistent with cholelithiasis</textarea>
+                  </div>
+                  <div class="field full">
+                    <label>ผลการวิเคราะห์ในทางคลินิก (Clinical Reasoning)</label>
+                    <textarea class="ctrl" rows="3">สัตว์มีประวัติอาเจียนเป็นพักๆ กินลด · ผลอัลตราซาวด์พบนิ่วในถุงน้ำดี สอดคล้องกับ Gallstones · ตัด pancreatitis ออกบางส่วนจาก cPL ในเกณฑ์</textarea>
+                  </div>
+                  <div class="field full">
+                    <label>หมายเหตุเฉพาะตัว (Problem Note)</label>
+                    <textarea class="ctrl" rows="2">นัด follow-up 2 สัปดาห์ · พิจารณา surgical consult หากมีอาการอุดตันซ้ำ</textarea>
+                  </div>
+                </div>
+                <div class="pdt-add-actions">
+                  <button class="btn-append-pdt" type="button" onclick="appendPdtConcept()">Save/Apply</button>
+                </div>
+              </div>
+            </div>
+
         </div>
         <div class="editor-panel">
           <div class="editor-panel-head"><span>Record Meta</span><button class="btn-confirm" onclick="assessConfirm(1)">&#10003; Confirm</button></div>
           <div class="editor-panel-body">
-            <div class="req-tags"><span style="font-size:11px;color:#6b7280;">Required</span><span class="tag ok">✓ Problem</span><span class="tag ok">✓ DVM</span><span class="tag ok">✓ Dept</span><span class="tag visit" style="font-weight:500;">exam-card-69001234</span></div>
+            <div class="req-tags"><span class="tag visit" style="font-weight:500;">exam-card-233</span></div>
             <div class="form-group"><label>DVM</label><div class="meta-readonly">นิพนธ์ วงศ์ประเสริฐ</div></div>
             <div class="form-group"><label>Department</label><div class="meta-readonly">คลินิกพิเศษ โรคหัวใจ (นอกเวลา)</div></div>
             <hr class="meta-divider">
             <div class="meta-section-label">Assessment Note</div>
-            <div class="form-group"><label>สรุปการประเมิน (Assessment Summary)</label><textarea>สัตว์มีอาการอาเจียน ซึม ท้องเสีย 2 วัน ตรวจพบ dehydration ปานกลาง ปวดท้อง cranial abdomen ผล Vcheck cPL > 900 ng/ml ยืนยันการวินิจฉัย Pancreatitis เป็นสาเหตุหลัก พร้อม DDx ได้แก่ Acute Gastroenteritis และ Foreign Body Ingestion แนะนำให้น้ำเกลือแร่ ยาต้านอาเจียน งดอาหาร รอผล CBC/Chem และ ultrasound เพื่อประเมินความรุนแรงเพิ่มเติม</textarea></div>
+            <div class="form-group"><label>สรุปการประเมิน (Assessment Summary)</label><textarea class="assess-summary" rows="10">สรุปภาพรวมทางคลินิก (Assessment Summary)
+สัตว์มาด้วยอาการอาเจียนเป็นพักๆ กินลดลง 2 สัปดาห์
+ตรวจร่างกายพบท้องตึงเล็กน้อย อุณหภูมิปกติ
+ผลอัลตราซาวด์พบ hyperechoic foci ในถุงน้ำดี สอดคล้องกับนิ่ว (Gallstones)
+ผลเลือดคัดกรอง cPL อยู่ในเกณฑ์ที่ยอมรับได้ ลดความน่าจะเป็นของ pancreatitis เฉียบพลัน
+สถานะปัจจุบัน: Resolved/Inactive · Severity: Moderate · Certainty: High
+แผนติดตาม: นัด follow-up 2 สัปดาห์ ประเมินอาการอุดตันซ้ำ
+พิจารณา surgical consult หากมีอาการอาเจียนรุนแรงหรือปวดท้องเฉียบพลัน
+เจ้าของเข้าใจแผนการรักษาและยินยอมติดตามอาการ
+บันทึกเพิ่มเติม: ไม่มีภาวะฉุกเฉิน ณ เวลานี้ · แนะนำอาหารไขมันต่ำชั่วคราว</textarea></div>
           </div>
         </div>
       </div>
       </div>
-
       <!-- TAB 2 -->
       <div class="tab-content" id="content-2" style="display:none;">
       <div class="grid">
-        <div class="editor-panel">
-          <div class="editor-panel-head">Categories</div>
-          <div class="editor-panel-body">
-            <div class="cat"><div class="name">General</div><div class="count">3 items</div></div>
-            <div class="cat"><div class="name">Gastrointestinal</div><div class="count">12 items</div></div>
-            <div class="cat"><div class="name">Respiratory</div><div class="count">8 items</div></div>
-            <div class="cat active"><div class="name">Cardiovascular</div><div class="count">6 items</div></div>
-            <div class="cat"><div class="name">Musculoskeletal</div><div class="count">5 items</div></div>
-            <div class="cat"><div class="name">Dermatology</div><div class="count">9 items</div></div>
-            <div class="cat"><div class="name">Neurology</div><div class="count">4 items</div></div>
-            <div class="cat"><div class="name">Urogenital</div><div class="count">7 items</div></div>
-            <div class="cat"><div class="name">Endocrine</div><div class="count">3 items</div></div>
-            <div class="cat"><div class="name">Ophthalmology</div><div class="count">2 items</div></div>
-          </div>
-        </div>
-        <div class="editor-panel">
-          <div class="editor-panel-head"><span>Problem/Diagnosis List</span></div>
-          <div class="editor-panel-body">
-            <input class="search" type="text" placeholder="🔍 Search problem / diagnosis...">
-            <div class="item"><div class="t">Heart Murmur</div><div class="s">SNOMED: 79604008</div><div class="s">Finding</div></div>
-            <div class="item"><div class="t">Arrhythmia</div><div class="s">SNOMED: 69896004</div><div class="s">Finding</div></div>
-            <div class="item active"><div class="t">Congestive Heart Failure</div><div class="s">SNOMED: 42343007</div><div class="s">Disorder</div></div>
-            <div class="item"><div class="t">Mitral Valve Disease</div><div class="s">SNOMED: 79619009</div><div class="s">Disorder</div></div>
-            <div class="item"><div class="t">Dilated Cardiomyopathy</div><div class="s">SNOMED: 73456007</div><div class="s">Disorder</div></div>
-            <div class="item"><div class="t">Pericardial Effusion</div><div class="s">SNOMED: 76873001</div><div class="s">Disorder</div></div>
-            <div class="item"><div class="t">Endocarditis</div><div class="s">SNOMED: 75498008</div><div class="s">Disorder</div></div>
-          </div>
-        </div>
-        <div class="editor-panel">
-          <div class="editor-panel-head"><span>Selected Problems/Diagnosis</span><span><span class="badge">📋 2 selected</span></span></div>
-          <div class="editor-panel-body">
-            <div class="sel-list">
-              <div class="sel-row">
-                <div class="sel-row-top"><div class="num">1</div><div class="pname">Heart Murmur</div><button class="ic">✎</button><button class="x">✕</button></div>
-                <div class="sel-row-badges"><span class="ptype finding">Finding</span><span class="ptype dx">Dx</span><span class="ptype status-active">Active</span><span class="ptype course-chronic">Chronic</span><span class="last-update">09/07/26 08:26</span></div>
+        <div class="editor-panel pdt-main-col">
+          <div class="pdt-selected-block">
+            <div class="editor-panel-head">
+              <span>Selected Problem / Diagnosis Terms (PDT) <span class="badge" id="sel-badge-2">📋 1 selected</span></span>
+            </div>
+            <div class="editor-panel-body">
+              <div class="sel-list" id="sel-list-2">
+              <div class="sel-row active" data-pdt-name="Congestive Heart Failure" data-pdt-cat="dx" data-pdt-status="active" data-pdt-course="chronic,follow">
+                <div class="sel-row-top"><div class="num">1</div><div class="pname">Congestive Heart Failure</div><button class="ic" type="button" onclick="editSelectedPdt(this)" title="Edit">✎</button><button class="x" type="button">✕</button></div>
+                <div class="sel-row-badges"><span class="ptype dx">Dx</span><span class="ptype status-active">Active</span><span class="last-update">09/07/26 08:00</span></div>
               </div>
-              <div class="sel-row">
-                <div class="sel-row-top"><div class="num">2</div><div class="pname">Arrhythmia</div><button class="ic">✎</button><button class="x">✕</button></div>
-                <div class="sel-row-badges"><span class="ptype finding">Finding</span><span class="ptype sign">Sign</span><span class="ptype status-active">Active</span><span class="last-update">09/07/26 08:39</span></div>
               </div>
             </div>
-            <div class="detail-banner"><div class="detail-banner-top"><div><div class="lbl">ยังไม่บันทึก</div><div class="name">Congestive Heart Failure</div><span class="tag" style="background:#f3f4f6;color:#9ca3af;">- ยังไม่บันทึก</span></div><button class="btn-update">Update</button></div></div>
-            <div class="detail-grid">
-              <div class="field"><label>ประเภทปัญหา (Problem Type)</label><select class="ctrl"><option value="" disabled>— เลือก —</option><option>Clinical Sign (Sign)</option><option selected>Working Diagnosis (Dx)</option><option>Differential Diagnosis (DDx)</option><option>Rule Out (R/O)</option></select></div>
-              <div class="field"><label>พยากรณ์โรค (Prognosis)</label><select class="ctrl"><option value="" disabled>— เลือก —</option><option>ตอบสนองการรักษาดี (Good)</option><option selected>ต้องเฝ้าระวัง (Guarded)</option><option>ความคืบหน้าไม่แน่นอน (Poor)</option><option>อาการรุนแรงมาก (Grave)</option></select></div>
-              <div class="field-course"><label>ลักษณะการดำเนิน (Course)</label><label class="course-check"><input type="checkbox"> ต่อเนื่อง (Follow)</label><label class="course-check"><input type="checkbox" checked> เรื้อรัง (Chronic)</label></div>
-              <div class="field"><label>สถานะ (Status)</label><select class="ctrl"><option value="" disabled>— เลือก —</option><option selected>กำลังรักษา (Active)</option><option>รอผลการตรวจ (Pending)</option><option>หาย/สงบ (Resolved/Inactive)</option></select></div>
-              <div class="field"><label>ความรุนแรง (Severity)</label><select class="ctrl"><option value="" disabled>— เลือก —</option><option>อาการเล็กน้อย (Mild)</option><option selected>ปานกลาง (Moderate)</option><option>รุนแรง (Severe)</option><option>เสี่ยงอันตรายถึงชีวิต (Life-threatening)</option></select></div>
-              <div class="field"><label>ประเมินเวลา (Expected Duration)</label><input class="ctrl" type="text" value="ระยะยาว (ตลอดชีวิต)"></div>
-              <div class="field"><label>ระดับความมั่นใจ (Confidence)</label><select class="ctrl"><option value="" disabled>— เลือก —</option><option>มีหลักฐานสนับสนุนชัดเจน (High)</option><option selected>มีหลักฐานบางส่วน (Medium)</option><option>เป็นไปได้แต่ยังไม่ยืนยัน (Low)</option></select></div>
-              <div class="field full"><label>การยืนยัน (Confirmatory Findings)</label><textarea class="ctrl">Echocardiogram: LA enlargement, decreased FS%</textarea></div>
-              <div class="field full"><label>เหตุผลทางคลินิก (Clinical Reasoning)</label><textarea class="ctrl">สัตว์มีประวัติไอเรื้อรัง หอบเหนื่อย ตรวจพบ heart murmur grade 4/6 ผล echo พบ LA enlargement และ decreased FS% สอดคล้องกับ CHF จาก mitral valve disease</textarea></div>
-              <div class="field full"><label>หมายเหตุรายการ (Problem Note)</label><textarea class="ctrl">เริ่มให้ furosemide และ pimobendan จำกัดการออกกำลัง ติดตาม echo ทุก 3 เดือน</textarea></div>
-              <div class="field full"><label>ความสัมพันธ์ของการวินิจฉัย (Relation Diagnosis)</label><select class="ctrl" disabled style="background:#f9fafb;color:#9ca3af;"><option>อยู่ในแผนพัฒนาระยะท้าย</option></select></div>
-            </div>
           </div>
+
+            <div class="pdt-add-block">
+              <div class="pdt-add-head">Add New/Edit PDT Concept</div>
+              <div class="pdt-add-body">
+                <div class="pdt-concept-trigger-row">
+                  <div class="pdt-concept-slot">
+                    <span class="pdt-concept-pill">Congestive Heart Failure <button class="pill-x" type="button" title="clear" onclick="clearSelectedConcept(event)">×</button></span>
+                  </div>
+                  <button class="btn-pick-concept" type="button" onclick="openPdtConceptModal()">🔍 เลือก Concept</button>
+                </div>
+                <div class="pdt-req-row">
+                  <span>Required:</span>
+                  <span class="tag ok">✓ Clinical Condition Category</span>
+                  <span class="tag ok">✓ Clinical Status</span>
+                  <span class="tag ok">✓ DVM</span>
+                  <span class="tag ok">✓ Dept</span>
+                </div>
+                <div class="detail-grid">
+                  <div class="field">
+                    <label>ประเภทปัญหา/วินิจฉัย (Clinical Condition Category) *</label>
+                    <select class="ctrl">
+                      <option selected>การวินิจฉัยเบื้องต้น (Working Diagnosis, DX)</option>
+                      <option>อาการและอาการแสดง (Clinical Sign)</option>
+                      <option>การวินิจฉัยแยกโรค (Differential Diagnosis)</option>
+                      <option>สงสัยเพื่อพิสูจน์ขจัด (Rule Out)</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label>การพยากรณ์โรค (Prognosis)</label>
+                    <select class="ctrl">
+                      <option>ตอบสนองต่อการรักษาดี (Good)</option>
+                      <option selected>ต้องเฝ้าระวัง (Guarded)</option>
+                      <option>พยากรณ์โรคไม่ดี (Poor)</option>
+                      <option>วิกฤต/ทรุดหนัก (Grave)</option>
+                    </select>
+                  </div>
+                  <div class="field-course">
+                    <label>ลักษณะการดำเนินโรคของทางคลินิก (Clinical Course)</label>
+                    <label class="course-check"><input type="checkbox"> เฉียบพลัน (Acute)</label>
+                    <label class="course-check"><input type="checkbox"> กลับมาเป็นซ้ำ (Recurrent)</label>
+                    <label class="course-check"><input type="checkbox" checked> ติดตามอาการ (Follow)</label>
+                    <label class="course-check"><input type="checkbox" checked> เรื้อรัง (Chronic)</label>
+                  </div>
+                  <div class="field">
+                    <label>สถานะของปัญหาทางคลินิก (Clinical Status) *</label>
+                    <select class="ctrl">
+                      <option selected>กำลังรักษา (Active)</option>
+                      <option>อยู่ระหว่างการส่งตรวจ (Pending)</option>
+                      <option>หายหรือสงบ (Resolved/Inactive)</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label>ระดับความรุนแรงของโรค (Severity)</label>
+                    <select class="ctrl">
+                      <option>เล็กน้อย (Mild)</option>
+                      <option>ปานกลาง (Moderate)</option>
+                      <option selected>รุนแรง (Severe)</option>
+                      <option>วิกฤต/อันตรายถึงชีวิต (Life-threatening)</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label>ระยะเวลาที่ปรากฏอาการ (Clinical Duration)</label>
+                    <input class="ctrl" type="text" value="เรื้อรังหลายเดือน">
+                  </div>
+                  <div class="field">
+                    <label>ระดับความแม่นยำในการวินิจฉัย (Diagnostic Certainty)</label>
+                    <select class="ctrl">
+                      <option selected>มีหลักฐานสนับสนุนชัดเจน (High)</option>
+                      <option>มีหลักฐานบางส่วน (Medium)</option>
+                      <option>เป็นไปได้แต่ยังไม่ยืนยัน (Low)</option>
+                    </select>
+                  </div>
+                  <div class="field full">
+                    <label>ผลทางห้องปฏิบัติการทางคลินิก (Confirmatory Finding / Evidence)</label>
+                    <textarea class="ctrl" rows="3">Echocardiogram: LA enlargement, decreased FS% · consistent with Congestive Heart Failure</textarea>
+                  </div>
+                  <div class="field full">
+                    <label>ผลการวิเคราะห์ในทางคลินิก (Clinical Reasoning)</label>
+                    <textarea class="ctrl" rows="3">สัตว์มีอาการไอเรื้อรัง หอบเหนื่อย · พบ murmur และหลักฐานจาก echo สอดคล้องกับ CHF · เฝ้าระวัง pulmonary edema</textarea>
+                  </div>
+                  <div class="field full">
+                    <label>หมายเหตุเฉพาะตัว (Problem Note)</label>
+                    <textarea class="ctrl" rows="2">ปรับยาหัวใจตาม protocol · นัดติดตาม 1–2 สัปดาห์</textarea>
+                  </div>
+                </div>
+                <div class="pdt-add-actions">
+                  <button class="btn-append-pdt" type="button" onclick="appendPdtConcept()">Save/Apply</button>
+                </div>
+              </div>
+            </div>
+
         </div>
         <div class="editor-panel">
           <div class="editor-panel-head"><span>Record Meta</span><button class="btn-confirm" onclick="assessConfirm(2)">&#10003; Confirm</button></div>
           <div class="editor-panel-body">
-            <div class="req-tags"><span style="font-size:11px;color:#6b7280;">Required</span><span class="tag ok">✓ Problem</span><span class="tag ok">✓ DVM</span><span class="tag ok">✓ Dept</span><span class="tag visit" style="font-weight:500;">exam-card-69001235</span></div>
+            <div class="req-tags"><span class="tag visit" style="font-weight:500;">exam-card-69001235</span></div>
             <div class="form-group"><label>DVM</label><div class="meta-readonly">นิพนธ์ วงศ์ประเสริฐ</div></div>
             <div class="form-group"><label>Department</label><div class="meta-readonly">อายุรกรรมทั่วไป (ในเวลา)</div></div>
             <hr class="meta-divider">
             <div class="meta-section-label">Assessment Note</div>
-            <div class="form-group"><label>สรุปการประเมิน (Assessment Summary)</label><textarea>สัตว์มีอาการไอเรื้อรัง หอบเหนื่อย ตรวจพบ heart murmur grade 4/6 ผล echo พบ LA enlargement และ decreased FS% ยืนยันการวินิจฉัย Congestive Heart Failure จาก mitral valve disease แนะนำให้ furosemide pimobendan จำกัดการออกกำลัง ติดตาม echo ทุก 3 เดือน</textarea></div>
+            <div class="form-group"><label>สรุปการประเมิน (Assessment Summary)</label><textarea class="assess-summary" rows="10">สรุปภาพรวมทางคลินิก (Assessment Summary)
+สัตว์มีอาการไอเรื้อรัง หอบเหนื่อย โดยเฉพาะตอนกลางคืนและหลังออกกำลังกาย
+ตรวจร่างกายพบหัวใจเต้นเร็ว มี murmur ชัดเจน · เยื่อเมือกซีดเล็กน้อย
+ผล Echocardiogram: LA enlargement, decreased FS% สอดคล้องกับ Congestive Heart Failure
+สถานะปัจจุบัน: Active · Severity: Moderate–Severe · Certainty: High
+Clinical Course: Chronic + Follow-up
+แผน: ปรับยาหัวใจตาม protocol · จำกัดเกลือ · นัดติดตาม 1–2 สัปดาห์
+เฝ้าระวัง pulmonary edema และภาวะขาดออกซิเจน
+เจ้าของเข้าใจความเรื้อรังของโรคและแผนการรักษาต่อเนื่อง
+บันทึกเพิ่มเติม: แนะนำพักผ่อนลดกิจกรรมหนักจนกว่าอาการคงที่</textarea></div>
           </div>
         </div>
       </div>
       </div>
-
       <!-- TAB 3 -->
       <div class="tab-content inactive" id="content-3" style="display:none;">
       <div class="grid">
-        <div class="editor-panel">
-          <div class="editor-panel-head">Categories</div>
-          <div class="editor-panel-body">
-            <div class="cat"><div class="name">General</div><div class="count">3 items</div></div>
-            <div class="cat"><div class="name">Gastrointestinal</div><div class="count">12 items</div></div>
-            <div class="cat active"><div class="name">Respiratory</div><div class="count">8 items</div></div>
-            <div class="cat"><div class="name">Cardiovascular</div><div class="count">6 items</div></div>
-            <div class="cat"><div class="name">Musculoskeletal</div><div class="count">5 items</div></div>
-            <div class="cat"><div class="name">Dermatology</div><div class="count">9 items</div></div>
-            <div class="cat"><div class="name">Neurology</div><div class="count">4 items</div></div>
-            <div class="cat"><div class="name">Urogenital</div><div class="count">7 items</div></div>
-            <div class="cat"><div class="name">Endocrine</div><div class="count">3 items</div></div>
-            <div class="cat"><div class="name">Ophthalmology</div><div class="count">2 items</div></div>
-          </div>
-        </div>
-        <div class="editor-panel">
-          <div class="editor-panel-head"><span>Problem/Diagnosis List</span></div>
-          <div class="editor-panel-body">
-            <input class="search" type="text" placeholder="🔍 Search problem / diagnosis...">
-            <div class="item"><div class="t">Pneumonia</div><div class="s">SNOMED: 233604007</div><div class="s">Finding</div></div>
-            <div class="item"><div class="t">Bronchitis</div><div class="s">SNOMED: 32398005</div><div class="s">Finding</div></div>
-            <div class="item active"><div class="t">Pulmonary Edema</div><div class="s">SNOMED: 765730005</div><div class="s">Disorder</div></div>
-            <div class="item"><div class="t">Asthma</div><div class="s">SNOMED: 195967001</div><div class="s">Disorder</div></div>
-            <div class="item"><div class="t">Pleural Effusion</div><div class="s">SNOMED: 60046008</div><div class="s">Disorder</div></div>
-          </div>
-        </div>
-        <div class="editor-panel">
-          <div class="editor-panel-head"><span>Selected Problems/Diagnosis</span><span><span class="badge">📋 2 selected</span></span></div>
-          <div class="editor-panel-body">
-            <div class="sel-list">
-              <div class="sel-row">
-                <div class="sel-row-top"><div class="num">1</div><div class="pname">Pneumonia</div><button class="ic">✎</button><button class="x">✕</button></div>
-                <div class="sel-row-badges"><span class="ptype finding">Finding</span><span class="ptype dx">Dx</span><span class="ptype status-active">Active</span><span class="last-update">09/07/26 08:52</span></div>
+        <div class="editor-panel pdt-main-col">
+          <div class="pdt-selected-block">
+            <div class="editor-panel-head">
+              <span>Selected Problem / Diagnosis Terms (PDT) <span class="badge" id="sel-badge-3">📋 1 selected</span></span>
+            </div>
+            <div class="editor-panel-body">
+              <div class="sel-list" id="sel-list-3">
+              <div class="sel-row active" data-pdt-name="Pulmonary Edema" data-pdt-cat="dx" data-pdt-status="active">
+                <div class="sel-row-top"><div class="num">1</div><div class="pname">Pulmonary Edema</div><button class="ic" type="button" onclick="editSelectedPdt(this)" title="Edit">✎</button><button class="x" type="button">✕</button></div>
+                <div class="sel-row-badges"><span class="ptype dx">Dx</span><span class="ptype status-active">Active</span><span class="last-update">09/07/26 08:00</span></div>
               </div>
-              <div class="sel-row">
-                <div class="sel-row-top"><div class="num">2</div><div class="pname">Bronchitis</div><button class="ic">✎</button><button class="x">✕</button></div>
-                <div class="sel-row-badges"><span class="ptype finding">Finding</span><span class="ptype sign">Sign</span><span class="ptype status-resolved">Resolved/Inactive</span><span class="last-update">09/07/26 09:05</span></div>
               </div>
             </div>
-            <div class="detail-banner"><div class="detail-banner-top"><div><div class="lbl">ยังไม่บันทึก</div><div class="name">Pulmonary Edema</div><span class="tag" style="background:#f3f4f6;color:#9ca3af;">- ยังไม่บันทึก</span></div></div></div>
-            <div class="detail-grid">
-              <div class="field"><label>ประเภทปัญหา (Problem Type)</label><div class="meta-readonly"><span class="ptype ddx">DDx</span></div></div>
-              <div class="field"><label>พยากรณ์โรค (Prognosis)</label><div class="meta-readonly"><span class="ptype prog-guarded">Guarded</span></div></div>
-              <div class="field-course"><label>ลักษณะการดำเนิน (Course)</label><label class="course-check"><input type="checkbox" disabled> ต่อเนื่อง (Follow)</label><label class="course-check"><input type="checkbox" disabled> เรื้อรัง (Chronic)</label></div>
-              <div class="field"><label>สถานะ (Status)</label><div class="meta-readonly"><span class="ptype status-active">Active</span></div></div>
-              <div class="field"><label>ความรุนแรง (Severity)</label><div class="meta-readonly">รุนแรง (Severe)</div></div>
-              <div class="field"><label>ประเมินเวลา (Expected Duration)</label><div class="meta-readonly">3-7 วัน</div></div>
-              <div class="field"><label>ระดับความมั่นใจ (Confidence)</label><div class="meta-readonly">มีหลักฐานสนับสนุนชัดเจน (High)</div></div>
-              <div class="field full"><label>การยืนยัน (Confirmatory Findings)</label><div class="meta-readonly full">X-ray: diffuse alveolar pattern</div></div>
-              <div class="field full"><label>เหตุผลทางคลินิก (Clinical Reasoning)</label><div class="meta-readonly full">สัตว์มีอาการหอบเหนื่อย ไอ ผล X-ray พบ diffuse alveolar pattern สอดคล้องกับ pulmonary edema</div></div>
-              <div class="field full"><label>หมายเหตุรายการ (Problem Note)</label><div class="meta-readonly full">ให้ furosemide IV oxygen therapy ติดตาม X-ray ซ้ำ</div></div>
-              <div class="field full"><label>ความสัมพันธ์ของการวินิจฉัย (Relation Diagnosis)</label><div class="meta-readonly">อยู่ในแผนพัฒนาระยะท้าย</div></div>
-            </div>
           </div>
+            <div class="pdt-add-block"><div class="pdt-add-body"><div class="pdt-empty-hint">Tab นี้ดูอย่างเดียว (inactive)</div></div></div>
         </div>
         <div class="editor-panel">
           <div class="editor-panel-head"><span>Record Meta</span><button class="btn-confirm-inactive">&#10003; Confirm</button></div>
           <div class="editor-panel-body">
-            <div class="req-tags"><span style="font-size:11px;color:#6b7280;">Required</span><span class="tag ok">✓ Problem</span><span class="tag ok">✓ DVM</span><span class="tag ok">✓ Dept</span><span class="tag visit" style="font-weight:500;">exam-card-69001236</span></div>
+            <div class="req-tags"><span class="tag visit" style="font-weight:500;">exam-card-69001236</span></div>
             <div class="form-group"><label>DVM</label><div class="meta-readonly">วิชัย ใจดี</div></div>
             <div class="form-group"><label>Department</label><div class="meta-readonly">ภาพวินิจฉัย (นอกเวลา)</div></div>
             <hr class="meta-divider">
             <div class="meta-section-label">Assessment Note</div>
-            <div class="form-group"><label>สรุปการประเมิน (Assessment Summary)</label><div class="meta-readonly full">สัตว์มีอาการหอบเหนื่อย ไอ ผล X-ray พบ diffuse alveolar pattern ยืนยันการวินิจฉัย Pulmonary Edema แนะนำให้ furosemide IV oxygen therapy</div></div>
+            <div class="form-group"><label>สรุปการประเมิน (Assessment Summary)</label><div class="meta-readonly full">Pulmonary Edema — อ่านอย่างเดียว</div></div>
           </div>
         </div>
       </div>
       </div>
-
       <!-- TAB 4 -->
       <div class="tab-content inactive" id="content-4" style="display:none;">
       <div class="grid">
-        <div class="editor-panel">
-          <div class="editor-panel-head">Categories</div>
-          <div class="editor-panel-body">
-            <div class="cat"><div class="name">General</div><div class="count">3 items</div></div>
-            <div class="cat"><div class="name">Gastrointestinal</div><div class="count">12 items</div></div>
-            <div class="cat"><div class="name">Respiratory</div><div class="count">8 items</div></div>
-            <div class="cat"><div class="name">Cardiovascular</div><div class="count">6 items</div></div>
-            <div class="cat"><div class="name">Musculoskeletal</div><div class="count">5 items</div></div>
-            <div class="cat active"><div class="name">Dermatology</div><div class="count">9 items</div></div>
-            <div class="cat"><div class="name">Neurology</div><div class="count">4 items</div></div>
-            <div class="cat"><div class="name">Urogenital</div><div class="count">7 items</div></div>
-            <div class="cat"><div class="name">Endocrine</div><div class="count">3 items</div></div>
-            <div class="cat"><div class="name">Ophthalmology</div><div class="count">2 items</div></div>
-          </div>
-        </div>
-        <div class="editor-panel">
-          <div class="editor-panel-head"><span>Problem/Diagnosis List</span></div>
-          <div class="editor-panel-body">
-            <input class="search" type="text" placeholder="🔍 Search problem / diagnosis...">
-            <div class="item"><div class="t">Atopic Dermatitis</div><div class="s">SNOMED: 24079001</div><div class="s">Finding</div></div>
-            <div class="item"><div class="t">Flea Allergy Dermatitis</div><div class="s">SNOMED: 418290009</div><div class="s">Finding</div></div>
-            <div class="item active"><div class="t">Pyoderma</div><div class="s">SNOMED: 419828002</div><div class="s">Disorder</div></div>
-            <div class="item"><div class="t">Demodicosis</div><div class="s">SNOMED: 72298006</div><div class="s">Disorder</div></div>
-            <div class="item"><div class="t">Ringworm</div><div class="s">SNOMED: 40556004</div><div class="s">Disorder</div></div>
-          </div>
-        </div>
-        <div class="editor-panel">
-          <div class="editor-panel-head"><span>Selected Problems/Diagnosis</span><span><span class="badge">📋 2 selected</span></span></div>
-          <div class="editor-panel-body">
-            <div class="sel-list">
-              <div class="sel-row">
-                <div class="sel-row-top"><div class="num">1</div><div class="pname">Atopic Dermatitis</div><button class="ic">✎</button><button class="x">✕</button></div>
-                <div class="sel-row-badges"><span class="ptype finding">Finding</span><span class="ptype dx">Dx</span><span class="ptype status-active">Active</span><span class="ptype course-chronic">Chronic</span><span class="last-update">09/07/26 09:18</span></div>
+        <div class="editor-panel pdt-main-col">
+          <div class="pdt-selected-block">
+            <div class="editor-panel-head">
+              <span>Selected Problem / Diagnosis Terms (PDT) <span class="badge" id="sel-badge-4">📋 1 selected</span></span>
+            </div>
+            <div class="editor-panel-body">
+              <div class="sel-list" id="sel-list-4">
+              <div class="sel-row active" data-pdt-name="Pyoderma" data-pdt-cat="dx" data-pdt-status="active">
+                <div class="sel-row-top"><div class="num">1</div><div class="pname">Pyoderma</div><button class="ic" type="button" onclick="editSelectedPdt(this)" title="Edit">✎</button><button class="x" type="button">✕</button></div>
+                <div class="sel-row-badges"><span class="ptype dx">Dx</span><span class="ptype status-active">Active</span><span class="last-update">09/07/26 08:00</span></div>
               </div>
-              <div class="sel-row">
-                <div class="sel-row-top"><div class="num">2</div><div class="pname">Flea Allergy Dermatitis</div><button class="ic">✎</button><button class="x">✕</button></div>
-                <div class="sel-row-badges"><span class="ptype finding">Finding</span><span class="ptype sign">Sign</span><span class="ptype status-resolved">Resolved/Inactive</span><span class="last-update">09/07/26 09:31</span></div>
               </div>
             </div>
-            <div class="detail-banner"><div class="detail-banner-top"><div><div class="lbl">ยังไม่บันทึก</div><div class="name">Pyoderma</div><span class="tag" style="background:#f3f4f6;color:#9ca3af;">- ยังไม่บันทึก</span></div></div></div>
-            <div class="detail-grid">
-              <div class="field"><label>ประเภทปัญหา (Problem Type)</label><div class="meta-readonly"><span class="ptype dx">Dx</span></div></div>
-              <div class="field"><label>พยากรณ์โรค (Prognosis)</label><div class="meta-readonly"><span class="ptype prog-good">Good</span></div></div>
-              <div class="field-course"><label>ลักษณะการดำเนิน (Course)</label><label class="course-check"><input type="checkbox" disabled> ต่อเนื่อง (Follow)</label><label class="course-check"><input type="checkbox" disabled checked> เรื้อรัง (Chronic)</label></div>
-              <div class="field"><label>สถานะ (Status)</label><div class="meta-readonly"><span class="ptype status-active">Active</span></div></div>
-              <div class="field"><label>ความรุนแรง (Severity)</label><div class="meta-readonly">อาการเล็กน้อย (Mild)</div></div>
-              <div class="field"><label>ประเมินเวลา (Expected Duration)</label><div class="meta-readonly">2-4 สัปดาห์</div></div>
-              <div class="field"><label>ระดับความมั่นใจ (Confidence)</label><div class="meta-readonly">มีหลักฐานบางส่วน (Medium)</div></div>
-              <div class="field full"><label>การยืนยัน (Confirmatory Findings)</label><div class="meta-readonly full">Skin scrape: negative for mites, bacterial culture positive</div></div>
-              <div class="field full"><label>เหตุผลทางคลินิก (Clinical Reasoning)</label><div class="meta-readonly full">สัตว์มีอาการคันเรื้อรัง ผิวหนังอักเสบ ตรวจพบ pustules และ erythema ผล skin scrape ไม่พบ mites แต่ bacterial culture positive สอดคล้องกับ pyoderma</div></div>
-              <div class="field full"><label>หมายเหตุรายการ (Problem Note)</label><div class="meta-readonly full">ให้ antibiotic ตามผล culture และ medicated shampoo ติดตามอาการทุก 2 สัปดาห์</div></div>
-              <div class="field full"><label>ความสัมพันธ์ของการวินิจฉัย (Relation Diagnosis)</label><div class="meta-readonly">อยู่ในแผนพัฒนาระยะท้าย</div></div>
-            </div>
           </div>
+            <div class="pdt-add-block"><div class="pdt-add-body"><div class="pdt-empty-hint">Tab นี้ดูอย่างเดียว (inactive)</div></div></div>
         </div>
         <div class="editor-panel">
           <div class="editor-panel-head"><span>Record Meta</span><button class="btn-confirm-inactive">&#10003; Confirm</button></div>
           <div class="editor-panel-body">
-            <div class="req-tags"><span style="font-size:11px;color:#6b7280;">Required</span><span class="tag ok">✓ Problem</span><span class="tag ok">✓ DVM</span><span class="tag ok">✓ Dept</span><span class="tag visit" style="font-weight:500;">exam-card-69001237</span></div>
+            <div class="req-tags"><span class="tag visit" style="font-weight:500;">exam-card-69001237</span></div>
             <div class="form-group"><label>DVM</label><div class="meta-readonly">ปนัดดา ศรีสุข</div></div>
             <div class="form-group"><label>Department</label><div class="meta-readonly">อายุรกรรมทั่วไป (ในเวลา)</div></div>
             <hr class="meta-divider">
             <div class="meta-section-label">Assessment Note</div>
-            <div class="form-group"><label>สรุปการประเมิน (Assessment Summary)</label><div class="meta-readonly full">สัตว์มีอาการคันเรื้อรัง ผิวหนังอักเสบ ตรวจพบ pustules ผล bacterial culture positive ยืนยันการวินิจฉัย Pyoderma แนะนำ antibiotic และ medicated shampoo</div></div>
+            <div class="form-group"><label>สรุปการประเมิน (Assessment Summary)</label><div class="meta-readonly full">Pyoderma — อ่านอย่างเดียว</div></div>
           </div>
         </div>
       </div>
@@ -540,7 +730,7 @@
             <input type="text" id="tbl-search" placeholder="ค้นหา: problem, note, findings, reasoning, dvm, department...">
             <select id="tbl-cat"><option value="">Categories: ทั้งหมด</option><option>General</option><option>Gastrointestinal</option><option>Respiratory</option><option>Cardiovascular</option><option>Musculoskeletal</option><option>Dermatology</option><option>Neurology</option><option>Urogenital</option><option>Endocrine</option><option>Ophthalmology</option></select>
             <select id="tbl-type"><option value="">Clinical Condition Category: ทั้งหมด</option><option>การวินิจฉัยเบื้องต้น (Working Diagnosis)</option><option>อาการและอาการแสดง (Clinical Sign)</option><option>การวินิจฉัยแยกโรค (Differential Diagnosis)</option><option>สงสัยเพื่อพิสูจน์ขจัด (Rule Out)</option></select>
-            <select id="tbl-status"><option value="">Clinical Status: ทั้งหมด</option><option>กำลังรักษา (Active)</option><option>อยู่ระหว่างการตรวจ (Pending)</option><option>หายแล้ว/สงบ (Resolved / Inactive)</option></select>
+            <select id="tbl-status"><option value="">Clinical Status: ทั้งหมด</option><option>กำลังรักษา (Active)</option><option>อยู่ระหว่างการส่งตรวจ (Pending)</option><option>หายแล้ว/สงบ (Resolved / Inactive)</option></select>
             <select id="tbl-course"><option value="">Clinical Course: ทั้งหมด</option><option>เฉียบพลัน (Acute)</option><option>กลับเป็นซ้ำ (Recurrent)</option><option>ติดตามอาการ (Follow-up)</option><option>เรื้อรัง (Chronic)</option></select>
             <select id="tbl-prog"><option value="">Prognosis: ทั้งหมด</option><option>พยากรณ์โรคดี (Good Prognosis)</option><option>ต้องเฝ้าระวัง (Guarded Prognosis)</option><option>พยากรณ์โรคไม่ดี (Poor Prognosis)</option><option>วิกฤต/ทรุดหนัก (Grave Prognosis)</option></select>
             <select id="tbl-sev"><option value="">Severity: ทั้งหมด</option><option>เล็กน้อย (Mild)</option><option>ปานกลาง (Moderate)</option><option>รุนแรง (Severe)</option><option>วิกฤต/อันตรายถึงชีวิต (Life-threatening)</option></select>
@@ -591,22 +781,24 @@
           <li>มี <b>5 tab</b>: Tab 1-4 เป็นการประเมินแต่ละวันที่, Tab 5 เป็นตารางข้อมูลทั้งหมด</li>
           <li>คลิก tab header → ซ่อน content อื่น แสดงเฉพาะ tab ที่เลือก</li>
           <li>Tab ที่เลือกจะมี class <b>active</b> และเปลี่ยน last update by ตาม DVM ของ tab นั้น</li>
+          <li><b>Layout Tab 1–4:</b> <b>2 คอลัมน์</b> — Selected PDT (ซ้าย) | Record Meta (ขวา) · Categories + Concept list + Detail form อยู่ใน <b>Concept Modal</b></li>
           <li><b>Tab 1</b> (นิพนธ์ — คลินิกพิเศษ โรคหัวใจ นอกเวลา): editable ทั้งหมด มี badge NEW</li>
           <li><b>Tab 2</b> (นิพนธ์ — อายุรกรรมทั่วไป ในเวลา): editable ทั้งหมด</li>
           <li><b>Tab 3</b> (วิชัย — ภาพวินิจฉัย นอกเวลา): inactive/greyed out ทุกฟิลด์, ปุ่ม Confirm inactive</li>
           <li><b>Tab 4</b> (ปนัดดา — อายุรกรรมทั่วไป ในเวลา): inactive/greyed out ทุกฟิลด์, ปุ่ม Confirm inactive</li>
-          <li><b>Tab 5</b> (HN 69001234 — ตารางข้อมูลทั้งหมด): แสดงตารางรวม มี filter (Categories, Type, Status, ลักษณะการดำเนิน, Prognosis) และ search</li>
+          <li><b>Tab 5</b> (HN 69001234 — ตารางข้อมูลทั้งหมด): แสดงตารางรวม มี filter และ search</li>
         </ul>
       </div>
       <div class="logic-section">
-        <div class="logic-section-title">2. Rule ของ Selected Problems/Diagnosis (Detail Grid)</div>
+        <div class="logic-section-title">2. Rule ของ Selected PDT + Concept Modal (Detail Grid อยู่ใน modal)</div>
         <ul class="logic-list">
-          <li><b>ประเภทปัญหา (Problem Type)</b> — เลือก: Clinical Sign (Sign), Working Diagnosis (Dx), Differential Diagnosis (DDx), Rule Out (R/O)</li>
-          <li><b>พยากรณ์โรค (Prognosis)</b> — ไม่บังคับ: ตอบสนองการรักษาดี (Good), ต้องเฝ้าระวัง (Guarded), ความคืบหน้าไม่แน่นอน (Poor), อาการรุนแรงมาก (Grave) — ไม่แสดงเมื่อเลือก Rule Out (R/O)</li>
-          <li><b>ลักษณะการดำเนิน (Course)</b> — ไม่บังคับ: checkbox 2 ตัว — ต่อเนื่อง (Follow), เรื้อรัง (Chronic) — เลือกได้ทั้งคู่หรือไม่เลือกเลยก็ได้</li>
-          <li><b>สถานะ (Status)</b> — เลือก: กำลังรักษา (Active), รอผลการตรวจ (Pending), หาย/สงบ (Resolved/Inactive)</li>
-          <li><b>ความรุนแรง (Severity)</b> — ไม่บังคับ: อาการเล็กน้อย (Mild), ปานกลาง (Moderate), รุนแรง (Severe), เสี่ยงอันตรายถึงชีวิต (Life-threatening)</li>
-          <li><b>ประเมินเวลา (Expected Duration)</b> — ไม่บังคับ: text input</li>
+          <li>บล็อกล่าง <b>Add New/Edit PDT Concept</b> กรอกฟอร์มบนหน้าหลัก · กด <b>เลือก Concept</b> เปิด modal 3 คอลัมน์ (Options / Results / Detail)</li>
+          <li>กด <b>✎ Edit</b> ที่ Selected PDT → โหลดรายการนั้นลงฟอร์ม Add New/Edit ด้านล่างเพื่อแก้ไข</li>
+          <li>กด <b>Save/Apply</b> → บันทึก/เพิ่มเข้า Selected PDT ของ visit tab ปัจจุบัน</li>
+          <li><b>Clinical Condition Category</b> — Sign / Dx / DDx / R/O</li>
+          <li><b>Prognosis</b> — ไม่บังคับ · ปิดใช้เมื่อเลือก Rule Out (R/O)</li>
+          <li><b>Clinical Course</b> — checkbox: Acute · Recurrent · Follow-up · Chronic (เลือกได้หลายข้อ)</li>
+          <li><b>Clinical Status / Severity / Duration / Diagnostic Certainty</b> + Findings / Reasoning / Problem Note</li>
           <li><b>ระดับความมั่นใจ (Confidence)</b> — ไม่บังคับ: มีหลักฐานสนับสนุนชัดเจน (High), มีหลักฐานบางส่วน (Medium), เป็นไปได้แต่ยังไม่ยืนยัน (Low)</li>
           <li><b>การยืนยัน (Confirmatory Findings)</b> — full width, ไม่บังคับ: textarea</li>
           <li><b>เหตุผลทางคลินิก (Clinical Reasoning)</b> — full width, ไม่บังคับ: textarea</li>
@@ -637,6 +829,102 @@
       </div>
     </div>
   </div>
+  
+  
+  <div class="pdt-concept-overlay" id="pdt-concept-modal" onclick="if(event.target===this)closePdtConceptModal()">
+    <div class="pdt-concept-box" onclick="event.stopPropagation()">
+      <div class="pdt-concept-head">
+        <div class="pdt-concept-title">Select PDT Concept</div>
+        <div class="pdt-concept-head-actions">
+          <button class="pdt-fs-btn" type="button" title="Fullscreen (mock)">⤢</button>
+          <button class="modal-close" type="button" onclick="closePdtConceptModal()">&#10005;</button>
+        </div>
+      </div>
+      <div class="pdt-concept-body">
+        <aside class="sac-options">
+          <h4>Options</h4>
+          <div class="sub">Filter by Semantic Tag</div>
+          <label class="sac-check"><input type="checkbox" checked disabled> Disorder</label>
+          <label class="sac-check"><input type="checkbox" checked disabled> Finding</label>
+          <label class="sac-check"><input type="checkbox" disabled> Observable Entity</label>
+          <label class="sac-check"><input type="checkbox" disabled> Organism</label>
+          <label class="sac-check"><input type="checkbox" disabled> Procedure</label>
+          <label class="sac-check"><input type="checkbox" disabled> Regime/Therapy</label>
+          <label class="sac-check"><input type="checkbox" disabled> Situation</label>
+          <label class="sac-check"><input type="checkbox" disabled> Specimen</label>
+          <label class="sac-check"><input type="checkbox" disabled> Substance</label>
+        </aside>
+        <section class="sac-results">
+          <div class="sac-search-wrap">
+            <input type="text" value="นิ่ว" readonly placeholder="Type at least 3 characters.">
+          </div>
+          <div class="sac-match">5 matches found.</div>
+          <div class="sac-list">
+            <div class="sac-item active">
+              <div class="t">Gallstones</div>
+              <div class="s">Gallbladder calculus (disorder)<br>SNOMED_CT: 235919008 - disorder</div>
+            </div>
+            <div class="sac-item">
+              <div class="t">Bladder stone</div>
+              <div class="s">Urinary bladder stone (disorder)<br>SNOMED_CT: 70650003 - disorder</div>
+            </div>
+            <div class="sac-item">
+              <div class="t">Renal calculi</div>
+              <div class="s">Kidney stone (disorder)<br>SNOMED_CT: 95570007 - disorder</div>
+            </div>
+            <div class="sac-item">
+              <div class="t">Dental calculus</div>
+              <div class="s">Dental calculus (disorder)<br>SNOMED_CT: 172951001 - disorder</div>
+            </div>
+            <div class="sac-item">
+              <div class="t">Ammonium magnesium phosphate urolithiasis</div>
+              <div class="s">Magnesium ammonium phosphate urolithiasis (disorder)<br>SNOMED_CT: 444600001 - disorder</div>
+            </div>
+          </div>
+          <div class="sac-pager">
+            <button type="button">Prev</button>
+            <span>Page 1 of 1</span>
+            <button type="button">Next</button>
+          </div>
+        </section>
+        <section class="sac-detail">
+          <div class="sac-detail-banner">
+            <div class="sac-detail-banner-top">
+              <div>
+                <h3>Gallstones</h3>
+                <div class="sub">disorder</div>
+                <div class="meta">SNOMED_CT: 235919008<br>Gallbladder calculus (disorder)</div>
+                <div class="sac-badges"><span>SA-PDT</span><span>SNOMED_CT</span><span>Active</span></div>
+              </div>
+              <button class="btn-select-this" type="button" onclick="pickConceptFromModal()">✓ เลือก Concept นี้</button>
+            </div>
+          </div>
+          <div class="sac-detail-body">
+            <div class="sac-card">
+              <h5>Synonyms &amp; Aliases</h5>
+              <ul>
+                <li>Cholecystolithiasis</li>
+                <li>Gallbladder stones</li>
+                <li>Gallbladder calculus</li>
+                <li>GS - Gallstone</li>
+                <li>Gallstone</li>
+                <li>นิ่วถุงน้ำดี</li>
+                <li>นิ่วในถุงน้ำดี</li>
+              </ul>
+            </div>
+            <div class="sac-card">
+              <h5>Assessment Categories</h5>
+              <div class="sac-cat-row">
+                <span class="ok">✓</span><span class="star">★</span>
+                <div><b>Structure of digestive system</b><div style="font-size:11px;color:#64748b;margin-top:2px;">SNOMED_CT: 86767007</div></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
   <div class="confirm-overlay" id="assess-confirm">
     <div class="confirm-box">
       <div class="confirm-icon">⚠</div>
@@ -686,21 +974,132 @@
       });
     });
 
-    function togglePrognosis() {
-      var pt = document.getElementById('tab1-problem-type');
-      var prog = document.getElementById('tab1-prognosis');
-      if (!pt || !prog) return;
-      var val = pt.value;
-      var disabled = val === 'Rule Out (R/O)';
-      prog.disabled = disabled;
-      if (!disabled) {
-        prog.style.background = '';
-        prog.style.color = '';
-      } else {
-        prog.style.background = '#f9fafb';
-        prog.style.color = '#9ca3af';
-        prog.selectedIndex = 0;
+
+    function openPdtConceptModal() {
+      document.getElementById('pdt-concept-modal').classList.add('show');
+    }
+    function closePdtConceptModal() {
+      document.getElementById('pdt-concept-modal').classList.remove('show');
+    }
+    function pickConceptFromModal() {
+      // mock: กลับหน้าหลัก พร้อม Concept ที่สมมุติแล้ว (Gallstones)
+      setConceptPill('Gallstones');
+      closePdtConceptModal();
+    }
+    function getActiveConceptSlot() {
+      var tab = document.querySelector('#assess-modal .vtab.active');
+      var idx = tab ? tab.getAttribute('data-tab') : '1';
+      var content = document.getElementById('content-' + idx);
+      return content ? content.querySelector('.pdt-concept-slot') : null;
+    }
+    function setConceptPill(name) {
+      var slot = getActiveConceptSlot();
+      if (!slot) return;
+      slot.innerHTML = '<span class="pdt-concept-pill">' + name +
+        ' <button class="pill-x" type="button" onclick="clearSelectedConcept(event)">×</button></span>';
+    }
+    function clearSelectedConcept(e) {
+      if (e) e.stopPropagation();
+      var slot = (e && e.target) ? e.target.closest('.pdt-concept-slot') : getActiveConceptSlot();
+      if (!slot) return;
+      slot.innerHTML = '<span class="placeholder">เลือก Concept หรือกรอก Problem Note</span>';
+    }
+    function appendPdtConcept() {
+      // mock: Save/Apply — toast เท่านั้น ไม่ผูก logic จริง
+      closePdtConceptModal();
+      var tab = document.querySelector('#assess-modal .vtab.active');
+      var idx = tab ? tab.getAttribute('data-tab') : '1';
+      var content = document.getElementById('content-' + idx);
+      var conceptName = 'Gallstones';
+      if (content) {
+        var pill = content.querySelector('.pdt-concept-pill');
+        if (pill) {
+          conceptName = pill.childNodes[0] ? pill.childNodes[0].textContent.trim() : pill.textContent.replace('×','').trim();
+        }
+        var head = content.querySelector('.pdt-add-head');
+        if (head) { head.textContent = 'Add New/Edit PDT Concept'; head.classList.remove('is-edit'); }
       }
+      var toast = document.getElementById('assess-toast');
+      document.querySelector('#assess-toast .toast-title').innerHTML = '&#10003; Saved / Applied (mock)';
+      document.getElementById('toast-dvm').innerHTML = 'Concept: <b>' + conceptName + '</b>';
+      document.getElementById('toast-dept').innerHTML = '';
+      document.getElementById('toast-update').innerHTML = '';
+      toast.classList.add('show');
+      setTimeout(function(){ toast.classList.remove('show'); }, 1600);
+    }
+
+    function editSelectedPdt(btn) {
+      var row = btn.closest('.sel-row');
+      if (!row) return;
+      var content = row.closest('.tab-content');
+      if (!content) return;
+      content.querySelectorAll('.sel-row').forEach(function(r) { r.classList.remove('active'); });
+      row.classList.add('active');
+
+      var name = row.getAttribute('data-pdt-name') || (row.querySelector('.pname') || {}).textContent || '';
+      name = (name || '').trim();
+      var addBlock = content.querySelector('.pdt-add-block');
+      if (!addBlock) return;
+
+      var head = addBlock.querySelector('.pdt-add-head');
+      if (head) {
+        head.textContent = 'Add New/Edit PDT Concept — Editing: ' + name;
+        head.classList.add('is-edit');
+      }
+
+      var slot = addBlock.querySelector('.pdt-concept-slot');
+      if (slot) {
+        slot.innerHTML = '<span class="pdt-concept-pill">' + name +
+          ' <button class="pill-x" type="button" onclick="clearSelectedConcept(event)">×</button></span>';
+      }
+
+      // mock: fill a few key fields from selected row attributes
+      var cat = row.getAttribute('data-pdt-cat') || 'dx';
+      var status = row.getAttribute('data-pdt-status') || 'active';
+      var course = (row.getAttribute('data-pdt-course') || '').split(',');
+      var selects = addBlock.querySelectorAll('select.ctrl');
+      if (selects[0]) { // Clinical Condition Category
+        if (cat === 'dx') selects[0].selectedIndex = 0;
+        else if (cat === 'sign') selects[0].selectedIndex = 1;
+        else if (cat === 'ddx') selects[0].selectedIndex = 2;
+        else selects[0].selectedIndex = 3;
+      }
+      if (selects[2]) { // Clinical Status
+        if (status === 'active') selects[2].selectedIndex = 0;
+        else if (status === 'pending') selects[2].selectedIndex = 1;
+        else selects[2].selectedIndex = 2; // resolved
+      }
+      addBlock.querySelectorAll('.course-check input').forEach(function(cb) {
+        var label = (cb.parentElement.textContent || '').toLowerCase();
+        cb.checked =
+          (course.indexOf('acute') >= 0 && label.indexOf('acute') >= 0) ||
+          (course.indexOf('recurrent') >= 0 && label.indexOf('recurrent') >= 0) ||
+          (course.indexOf('follow') >= 0 && label.indexOf('follow') >= 0) ||
+          (course.indexOf('chronic') >= 0 && label.indexOf('chronic') >= 0);
+      });
+
+      // scroll form into view
+      addBlock.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      var body = addBlock.querySelector('.pdt-add-body');
+      if (body) body.scrollTop = 0;
+    }
+
+    function autoSizeAssessSummary(el) {
+      if (!el) return;
+      el.style.height = 'auto';
+      el.style.height = Math.max(48, el.scrollHeight) + 'px';
+    }
+    function initAssessSummaryAutosize() {
+      document.querySelectorAll('textarea.assess-summary').forEach(function(ta) {
+        autoSizeAssessSummary(ta);
+        ta.addEventListener('input', function() { autoSizeAssessSummary(ta); });
+      });
+    }
+    // init on load (and when modal shown)
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initAssessSummaryAutosize);
+    } else {
+      initAssessSummaryAutosize();
     }
 
     /* ===== Assessment table (from assessment_editor) ===== */
@@ -725,15 +1124,15 @@
         {n:'Diabetes Mellitus', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)','เรื้อรัง (Chronic)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'', cat:'Endocrine'},
         {n:'Chronic Kidney Disease', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)','เรื้อรัง (Chronic)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'BUN 65, Creatinine 3.2, USG 1.012', cat:'Urogenital'},
         {n:'Urinary Tract Infection', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Urogenital'},
-        {n:'Hepatic Lipidosis', t:'Differential Diagnosis (DDx)', s:'อยู่ระหว่างการตรวจ (Pending)', c:[], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'Ultrasound: hyperechoic liver, ALT 280', cat:'Gastrointestinal'},
+        {n:'Hepatic Lipidosis', t:'Differential Diagnosis (DDx)', s:'อยู่ระหว่างการส่งตรวจ (Pending)', c:[], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'Ultrasound: hyperechoic liver, ALT 280', cat:'Gastrointestinal'},
         {n:'Fracture (femur)', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'', cat:'Musculoskeletal'},
         {n:'Osteoarthritis', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['เรื้อรัง (Chronic)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'X-ray: joint space narrowing, osteophytes', cat:'Musculoskeletal'},
         {n:'Seizure Disorder', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)','เรื้อรัง (Chronic)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Neurology'},
-        {n:'Intervertebral Disc Disease', t:'Differential Diagnosis (DDx)', s:'อยู่ระหว่างการตรวจ (Pending)', c:['ติดตามอาการ (Follow-up)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'MRI: T12-T13 disc compression', cat:'Neurology'},
+        {n:'Intervertebral Disc Disease', t:'Differential Diagnosis (DDx)', s:'อยู่ระหว่างการส่งตรวจ (Pending)', c:['ติดตามอาการ (Follow-up)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'MRI: T12-T13 disc compression', cat:'Neurology'},
         {n:'Conjunctivitis', t:'Working Diagnosis (Dx)', s:'หายแล้ว/สงบ (Resolved / Inactive)', c:[], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Ophthalmology'},
-        {n:'Glaucoma', t:'Rule Out (R/O)', s:'อยู่ระหว่างการตรวจ (Pending)', c:['ติดตามอาการ (Follow-up)'], p:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'IOP 28 mmHg OD, 14 mmHg OS', cat:'Ophthalmology'},
+        {n:'Glaucoma', t:'Rule Out (R/O)', s:'อยู่ระหว่างการส่งตรวจ (Pending)', c:['ติดตามอาการ (Follow-up)'], p:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'IOP 28 mmHg OD, 14 mmHg OS', cat:'Ophthalmology'},
         {n:'Anemia', t:'Clinical Sign (Sign)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'General'},
-        {n:'Leptospirosis', t:'Rule Out (R/O)', s:'อยู่ระหว่างการตรวจ (Pending)', c:[], p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'MAT titer 1:800 Leptospira canicola', cat:'General'},
+        {n:'Leptospirosis', t:'Rule Out (R/O)', s:'อยู่ระหว่างการส่งตรวจ (Pending)', c:[], p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'MAT titer 1:800 Leptospira canicola', cat:'General'},
         {n:'Tick-borne Disease', t:'Differential Diagnosis (DDx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'General'},
         {n:'Dental Disease', t:'Clinical Sign (Sign)', s:'กำลังรักษา (Active)', c:['เรื้อรัง (Chronic)'], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Oral exam: grade 3 periodontal disease', cat:'General'},
         {n:'Obesity', t:'Clinical Sign (Sign)', s:'กำลังรักษา (Active)', c:['เรื้อรัง (Chronic)'], p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'General'},
@@ -742,21 +1141,21 @@
         {n:'Weight Loss', t:'Clinical Sign (Sign)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Body condition score 3/9, muscle loss', cat:'General'},
         {n:'Lethargy', t:'Clinical Sign (Sign)', s:'หายแล้ว/สงบ (Resolved / Inactive)', c:[], p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'General'},
         {n:'Cushing Syndrome', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)','เรื้อรัง (Chronic)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'LDDST: cortisol 9.5 μg/dL post-dex', cat:'Endocrine'},
-        {n:'Addison Disease', t:'Differential Diagnosis (DDx)', s:'อยู่ระหว่างการตรวจ (Pending)', c:[], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Endocrine'},
+        {n:'Addison Disease', t:'Differential Diagnosis (DDx)', s:'อยู่ระหว่างการส่งตรวจ (Pending)', c:[], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Endocrine'},
         {n:'Hyperthyroidism', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['เรื้อรัง (Chronic)'], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'T4 6.2 μg/dL, free T4 elevated', cat:'Endocrine'},
         {n:'Mast Cell Tumor', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'พยากรณ์โรคไม่ดี (Poor Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Dermatology'},
         {n:'Lymphoma', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)','เรื้อรัง (Chronic)'], p:'วิกฤต/ทรุดหนัก (Grave Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'LN aspirate: large lymphoid blasts, Ki67 high', cat:'General'},
         {n:'Hemorrhagic Gastroenteritis', t:'Working Diagnosis (Dx)', s:'หายแล้ว/สงบ (Resolved / Inactive)', c:[], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
-        {n:'Portosystemic Shunt', t:'Rule Out (R/O)', s:'อยู่ระหว่างการตรวจ (Pending)', c:[], p:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Bile acids 120 μmol/L, ammonia elevated', cat:'Gastrointestinal'},
+        {n:'Portosystemic Shunt', t:'Rule Out (R/O)', s:'อยู่ระหว่างการส่งตรวจ (Pending)', c:[], p:'', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Bile acids 120 μmol/L, ammonia elevated', cat:'Gastrointestinal'},
         {n:'Gastric Dilatation-Volvulus', t:'Working Diagnosis (Dx)', s:'หายแล้ว/สงบ (Resolved / Inactive)', c:[], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
         {n:'Esophagitis', t:'Differential Diagnosis (DDx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Endoscopy: esophageal erosion', cat:'Gastrointestinal'},
         {n:'Colitis', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['เรื้อรัง (Chronic)'], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Gastrointestinal'},
         {n:'Pancreatic Insufficiency', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['เรื้อรัง (Chronic)'], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'TLI 1.2 μg/L (low), B12 180 ng/L', cat:'Gastrointestinal'},
         {n:'Rhinitis', t:'Clinical Sign (Sign)', s:'หายแล้ว/สงบ (Resolved / Inactive)', c:[], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Respiratory'},
-        {n:'Nasal Tumor', t:'Rule Out (R/O)', s:'อยู่ระหว่างการตรวจ (Pending)', c:['ติดตามอาการ (Follow-up)','เรื้อรัง (Chronic)'], p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'CT: nasal mass, biopsy pending', cat:'Respiratory'},
+        {n:'Nasal Tumor', t:'Rule Out (R/O)', s:'อยู่ระหว่างการส่งตรวจ (Pending)', c:['ติดตามอาการ (Follow-up)','เรื้อรัง (Chronic)'], p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'CT: nasal mass, biopsy pending', cat:'Respiratory'},
         {n:'Corneal Ulcer', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Ophthalmology'},
         {n:'Uveitis', t:'Differential Diagnosis (DDx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'ต้องเฝ้าระวัง (Guarded Prognosis)', dvm:'ปนัดดา ศรีสุข', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Slit lamp: flare and cells in anterior chamber', cat:'Ophthalmology'},
-        {n:'Hypoadrenocorticism', t:'Rule Out (R/O)', s:'อยู่ระหว่างการตรวจ (Pending)', c:[], p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Endocrine'},
+        {n:'Hypoadrenocorticism', t:'Rule Out (R/O)', s:'อยู่ระหว่างการส่งตรวจ (Pending)', c:[], p:'', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)', cf:'', cat:'Endocrine'},
         {n:'Prostatitis', t:'Working Diagnosis (Dx)', s:'กำลังรักษา (Active)', c:['ติดตามอาการ (Follow-up)'], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'นิพนธ์ วงศ์ประเสริฐ', dept:'อายุรกรรมทั่วไป (ในเวลา)', cf:'Urinalysis: bacteria, WBC 50+/hpf', cat:'Urogenital'},
         {n:'Pyometra', t:'Working Diagnosis (Dx)', s:'หายแล้ว/สงบ (Resolved / Inactive)', c:[], p:'พยากรณ์โรคดี (Good Prognosis)', dvm:'วิชัย ใจดี', dept:'ภาพวินิจฉัย (นอกเวลา)', cf:'', cat:'Urogenital'}
       ];
@@ -803,13 +1202,13 @@
           summary: 'FLUTD แบบไม่ตัน — ปรับอาหาร urinary และลดความเครียด สังเกตการขับถ่ายที่บ้าน' },
 
         /* Problem/Diagnosis ว่าง — Problem Note เป็นชื่อคำวินิจฉัย (ไม่ใช่ข้อความบรรยาย) */
-        { n: '', note: 'Suspected Feline Infectious Peritonitis', noteIsDx: true, t: 'Rule Out (R/O)', s: 'อยู่ระหว่างการตรวจ (Pending)', c: ['เฉียบพลัน (Acute)'], p: 'พยากรณ์โรคไม่ดี (Poor Prognosis)', cf: 'Exudative pleural effusion, A:G ratio 0.4', cat: 'General', sev: 'วิกฤต/อันตรายถึงชีวิต (Life-threatening)', conf: 'สงสัย/ยังไม่ยืนยัน (Possible / Low)', dur: 'รอผล PCR',
+        { n: '', note: 'Suspected Feline Infectious Peritonitis', noteIsDx: true, t: 'Rule Out (R/O)', s: 'อยู่ระหว่างการส่งตรวจ (Pending)', c: ['เฉียบพลัน (Acute)'], p: 'พยากรณ์โรคไม่ดี (Poor Prognosis)', cf: 'Exudative pleural effusion, A:G ratio 0.4', cat: 'General', sev: 'วิกฤต/อันตรายถึงชีวิต (Life-threatening)', conf: 'สงสัย/ยังไม่ยืนยัน (Possible / Low)', dur: 'รอผล PCR',
           reasoning: 'แมวซึม หายใจลำบาก มีน้ำในช่องอก อัตราส่วน A:G ต่ำ อยู่ระหว่างรอ Real-time PCR',
           summary: 'สงสัย FIP ระหว่างรอผลยืนยัน — ให้ supportive care และแจ้งพยากรณ์โรคกับเจ้าของแล้ว' },
         { n: '', note: 'Immune-mediated Hemolytic Anemia', noteIsDx: true, t: 'Working Diagnosis (Dx)', s: 'กำลังรักษา (Active)', c: ['เฉียบพลัน (Acute)', 'ติดตามอาการ (Follow-up)'], p: 'ต้องเฝ้าระวัง (Guarded Prognosis)', cf: 'PCV 18%, spherocytes, saline agglutination positive', cat: 'General', sev: 'รุนแรง (Severe)', conf: 'น่าจะใช่/มีหลักฐานบางส่วน (Probable / Medium)', dur: '2-4 สัปดาห์',
           reasoning: 'สุนัขซีด อ่อนแรง พบ spherocytes และการเกาะกลุ่มของเม็ดเลือด สอดคล้องกับ IMHA',
           summary: 'เริ่ม immunosuppressive protocol และเฝ้าระวังภาวะแทรกซ้อนจากการให้เลือด' },
-        { n: '', note: 'Cholangiohepatitis', noteIsDx: true, t: 'Differential Diagnosis (DDx)', s: 'อยู่ระหว่างการตรวจ (Pending)', c: ['เรื้อรัง (Chronic)'], p: 'ต้องเฝ้าระวัง (Guarded Prognosis)', cf: 'ALT 320, ALP 280, US: thickened bile duct wall', cat: 'Gastrointestinal', sev: 'ปานกลาง (Moderate)', conf: 'สงสัย/ยังไม่ยืนยัน (Possible / Low)', dur: 'รอผล cytology',
+        { n: '', note: 'Cholangiohepatitis', noteIsDx: true, t: 'Differential Diagnosis (DDx)', s: 'อยู่ระหว่างการส่งตรวจ (Pending)', c: ['เรื้อรัง (Chronic)'], p: 'ต้องเฝ้าระวัง (Guarded Prognosis)', cf: 'ALT 320, ALP 280, US: thickened bile duct wall', cat: 'Gastrointestinal', sev: 'ปานกลาง (Moderate)', conf: 'สงสัย/ยังไม่ยืนยัน (Possible / Low)', dur: 'รอผล cytology',
           reasoning: 'แมวอาเจียนเป็นพักๆ ค่าตับสูง Ultrasound พบท่อน้ำดีหนา วางแผน FNA/cytology',
           summary: 'DDx cholangiohepatitis — รอผลเนื้อเยื่อก่อนกำหนดยาปฏิชีวนะ/immunosuppressive' },
         { n: '', note: 'Intervertebral Disc Disease (T12-T13)', noteIsDx: true, t: 'Working Diagnosis (Dx)', s: 'กำลังรักษา (Active)', c: ['เฉียบพลัน (Acute)'], p: 'ต้องเฝ้าระวัง (Guarded Prognosis)', cf: 'MRI: T12-T13 disc compression, grade III paraparesis', cat: 'Neurology', sev: 'รุนแรง (Severe)', conf: 'ยืนยันชัดเจน (Confirmed / High Certainty)', dur: '1-2 สัปดาห์หลังผ่าตัด',
