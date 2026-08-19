@@ -250,6 +250,7 @@
       </select>
       <select id="f-tag">
         <option value="">Tag: ทั้งหมด</option>
+        <option value="__multitag__">หลาย Tag (2+)</option>
         <option value="__notag__">ยังไม่มี Tag</option>
       </select>
       <button class="btn" id="btn-clear-filters">ล้างตัวกรอง</button>
@@ -496,7 +497,7 @@
     allTags=Object.keys(set).sort(function(a,b){return a.localeCompare(b,"th");});
     var sel=document.getElementById("f-tag");
     var cur=sel.value;
-    while(sel.options.length>2)sel.remove(2);
+    while(sel.options.length>3)sel.remove(3);
     allTags.forEach(function(t){var o=document.createElement("option");o.value=t;o.textContent=t;sel.appendChild(o);});
     if(allTags.indexOf(cur)!==-1)sel.value=cur;
   }
@@ -518,9 +519,17 @@
       var candidates=[{uid:code,baseCode:"",item:item,isSub:false,u:uMaster}];
       subUids.forEach(function(uid){candidates.push({uid:uid,baseCode:code,item:item,isSub:true,u:updateMap[uid]||{tags:[],route:"",dose:"",frequency:"",note:""}});});
 
+      // collect union of all tags across master + sub-rows for multitag check
+      var allRowTags=(function(){
+        var set={};
+        candidates.forEach(function(dr){(dr.u.tags||[]).forEach(function(t){set[t]=true;});});
+        return Object.keys(set);
+      })();
+
       var visible=candidates.filter(function(dr){
         var u=dr.u;
         if(activeTag==="__notag__"){if(u.tags&&u.tags.length)return false;}
+        else if(activeTag==="__multitag__"){if(allRowTags.length<2)return false;}
         else if(activeTag!=="__all__"){if(!u.tags||u.tags.indexOf(activeTag)===-1)return false;}
         if(filterDone==="done"&&!doneMap[dr.uid])return false;
         if(filterDone==="todo"&&doneMap[dr.uid])return false;
