@@ -10,7 +10,7 @@ const filesTree = [
         "label": "Items View (File System API)",
         "type": "file",
         "path": "resource/itemsview.html",
-        "lastUpdate": "2026-08-19T15:30:00.000000"
+        "lastUpdate": "2026-08-19T16:04:00.000000"
       },
       {
         "name": "updateitems.html",

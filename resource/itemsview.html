@@ -218,14 +218,19 @@
     <div class="tabs" id="tabs"></div>
     <div class="toolbar">
       <input id="q" type="search" placeholder="ค้นรหัส / ชื่อ / tag / route…">
+      <select id="f-done">
+        <option value="">สถานะงาน: ทั้งหมด</option>
+        <option value="todo">ยังไม่ทำ</option>
+        <option value="done">ทำแล้ว</option>
+      </select>
+      <select id="f-multi">
+        <option value="">ตำแหน่ง: ทั้งหมด</option>
+        <option value="multi">หลายตำแหน่ง</option>
+        <option value="single">ตำแหน่งเดียว</option>
+      </select>
       <select id="f-tag">
         <option value="">Tag: ทั้งหมด</option>
         <option value="__notag__">ยังไม่มี Tag</option>
-      </select>
-      <select id="f-done">
-        <option value="">สถานะ: ทั้งหมด</option>
-        <option value="todo">ยังไม่ทำ</option>
-        <option value="done">ทำแล้ว</option>
       </select>
       <button class="btn" id="btn-clear-filters">ล้างตัวกรอง</button>
       <span class="spacer"></span>
@@ -288,6 +293,7 @@
   var sortKey = "uid";
   var sortDir = 1;
   var filterDone = "";
+  var filterMulti = "";
   var filterQ = "";
   var itemsFileHandle = null;
   var updateFileHandle = null;
@@ -453,6 +459,10 @@
         // done filter
         if(filterDone==="done"&&!doneMap[dr.uid])return false;
         if(filterDone==="todo"&&doneMap[dr.uid])return false;
+        // position filter
+        var baseForMulti=dr.isSub?dr.baseCode:dr.uid;
+        if(filterMulti==="multi"&&!multiCodes.has(baseForMulti))return false;
+        if(filterMulti==="single"&&multiCodes.has(baseForMulti))return false;
         // text search
         if(qLow){
           var hay=[dr.uid,item.description,item.tradeName,item.commonName,
@@ -760,9 +770,10 @@
   });
   document.getElementById("btn-clear-filters").addEventListener("click",function(){
     document.getElementById("q").value="";
-    document.getElementById("f-tag").value="";
     document.getElementById("f-done").value="";
-    filterQ="";activeTag="__all__";filterDone="";
+    document.getElementById("f-multi").value="";
+    document.getElementById("f-tag").value="";
+    filterQ="";activeTag="__all__";filterDone="";filterMulti="";
     renderTabs();render();
   });
 
@@ -823,10 +834,11 @@
   document.getElementById("btn-save").addEventListener("click",saveUpdateFile);
 
   document.getElementById("q").addEventListener("input",function(){filterQ=this.value;render();});
+  document.getElementById("f-done").addEventListener("change",function(){filterDone=this.value;render();});
+  document.getElementById("f-multi").addEventListener("change",function(){filterMulti=this.value;render();});
   document.getElementById("f-tag").addEventListener("change",function(){
     activeTag=this.value||"__all__";renderTabs();render();
   });
-  document.getElementById("f-done").addEventListener("change",function(){filterDone=this.value;render();});
 
   // ── Init ───────────────────────────────────────────────────────────────────
   renderTabs();
