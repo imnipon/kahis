@@ -23,7 +23,7 @@ const filesTree = [
         "name": "conflict_viewer.html",
         "label": "Conflict Items — Tx Default",
         "type": "file",
-        "path": "resource/updateitemsfiles/conflict_viewer.html",
+        "path": "resource/conflict_viewer.html",
         "lastUpdate": "2026-08-19T17:00:00.000000"
       }
     ]
