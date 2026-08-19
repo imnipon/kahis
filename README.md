@@ -10,6 +10,7 @@
 git clone https://github.com/imnipon/kahis.git
 cd kahis
 python3 -m http.server 8080
+# หรือ: bash scripts/kahis-start.sh
 ```
 
 จากนั้นเปิด:

@@ -1,7 +1,7 @@
 {
   "name": "KAHIS",
   "install": "python3 -c \"print('KAHIS static workspace ready')\"",
-  "start": "python3 -m http.server 8080 --bind 0.0.0.0",
+  "start": "if curl -sf --max-time 1 -o /dev/null http://127.0.0.1:8080/; then echo 'KAHIS already serving on 8080'; exit 0; fi; python3 -m http.server 8080 --bind 0.0.0.0 >/tmp/kahis-http.log 2>&1 & for i in $(seq 1 25); do curl -sf --max-time 1 -o /dev/null http://127.0.0.1:8080/ && echo 'KAHIS landing ready' && exit 0; sleep 0.2; done; echo 'KAHIS HTTP server failed to start' >&2; cat /tmp/kahis-http.log >&2 || true; exit 1",
   "ports": [
     {
       "name": "KAHIS landing",
