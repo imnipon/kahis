@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KAHIS - Items Manager · แบบ 3 Stats+Chips</title>
+<style>
+  :root {
+    --bg: #f3f4f6; --surface: #fff; --text: #111827; --muted: #6b7280;
+    --border: #e5e7eb; --green: #16a34a; --blue: #2563eb;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text); min-height: 100vh;
+  }
+  .mock-switch {
+    display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+    padding: 8px 20px; background: #0f172a; color: #cbd5e1; font-size: 12px;
+  }
+  .mock-switch a {
+    color: #e2e8f0; text-decoration: none; padding: 5px 10px; border-radius: 999px;
+  }
+  .mock-switch a:hover { background: #1e293b; }
+  .mock-switch a.on { background: #be185d; color: #fff; font-weight: 700; }
+  .mock-switch .lab { margin-right: 6px; color: #94a3b8; }
+  .page { max-width: 1440px; margin: 0 auto; padding: 16px 20px 36px; display: flex; flex-direction: column; gap: 14px; }
+  .header { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .brand-row { display: flex; align-items: center; gap: 10px; }
+  .brand-logo { font-weight: 700; font-size: 20px; color: var(--green); }
+  .brand-sub { font-weight: 700; font-size: 20px; }
+  .brand-note { margin-top: 4px; font-size: 12px; color: var(--muted); max-width: 720px; line-height: 1.45; }
+  .header-meta { font-size: 12px; color: var(--muted); text-align: right; }
+
+  .stats { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
+  @media (max-width: 1100px) { .stats { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 640px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+  .stat {
+    background: #fff; border: 1px solid var(--border); border-radius: 14px;
+    padding: 14px 14px 12px; cursor: pointer; text-align: left; font-family: inherit;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .stat:hover { border-color: #93c5fd; }
+  .stat.on { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,.15); }
+  .stat .n { font-size: 26px; font-weight: 800; line-height: 1; letter-spacing: -0.02em; }
+  .stat .l { margin-top: 6px; font-size: 11px; color: var(--muted); font-weight: 600; }
+  .stat.blue .n { color: #2563eb; }
+  .stat.green .n { color: #16a34a; }
+  .stat.rose .n { color: #e11d48; }
+  .stat.amber .n { color: #d97706; }
+  .stat.indigo .n { color: #4f46e5; }
+  .stat.pink .n { color: #db2777; }
+
+  .panel { background: #fff; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .toolbar {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    padding: 10px 14px; border-bottom: 1px solid var(--border);
+  }
+  .toolbar input, .toolbar select {
+    border: 1px solid #d1d5db; border-radius: 8px; padding: 8px 10px; font-size: 13px; font-family: inherit;
+  }
+  .toolbar input#q { min-width: 180px; flex: 1; }
+  .btn {
+    border: none; border-radius: 8px; padding: 8px 12px; font-size: 13px; font-weight: 600;
+    font-family: inherit; cursor: pointer;
+  }
+  .btn-primary { background: var(--blue); color: #fff; }
+  .btn-ghost { background: #fff; border: 1px solid #d1d5db; color: #374151; }
+  .count-hint { margin-left: auto; font-size: 12px; color: var(--muted); }
+  .hint-bar {
+    margin: 10px 14px; padding: 8px 10px; border-radius: 8px; background: #fdf2f8;
+    border: 1px solid #fbcfe8; font-size: 12px; color: #9d174d; line-height: 1.45;
+  }
+  .table-wrap { overflow: auto; max-height: calc(100vh - 340px); }
+  table.items { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.items th {
+    position: sticky; top: 0; z-index: 1; background: #f8fafc; text-align: left;
+    font-weight: 600; color: #475569; padding: 10px 12px; border-bottom: 1px solid var(--border);
+  }
+  table.items td { padding: 12px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+  table.items tr.main:hover td { background: #fafafa; }
+  table.items tr.main { cursor: pointer; }
+  table.items tr.oos td { background: #fff7ed; }
+  table.items tr.expand-row td { background: #f8fafc; padding: 0 12px 14px; border-bottom: 1px solid #e2e8f0; }
+  .code { font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #64748b; }
+  .desc-main { font-weight: 600; line-height: 1.35; }
+  .desc-sub { margin-top: 3px; font-size: 11px; color: #64748b; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 999px;
+    font-size: 11px; font-weight: 700; border: 1px solid transparent;
+  }
+  .chip-a { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+  .chip-b { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
+  .chip-c { background: #fdf2f8; color: #be185d; border-color: #fbcfe8; }
+  .chip-price { background: #111827; color: #fff; font-weight: 600; }
+  .chip-pending { background: #fff7ed; color: #c2410c; border-color: #fed7aa; }
+  .chip-active { background: #dcfce7; color: #166534; }
+  .chip-disabled { background: #f3f4f6; color: #6b7280; }
+  .chip-oos { background: #ffe4e6; color: #be123c; }
+  .expand-panel {
+    border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; background: #fff;
+    display: grid; grid-template-columns: 1.2fr .8fr; gap: 16px;
+  }
+  @media (max-width: 800px) { .expand-panel { grid-template-columns: 1fr; } }
+  .expand-panel h4 { font-size: 13px; margin-bottom: 8px; }
+  .price-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .price-table th, .price-table td { padding: 6px 8px; border-bottom: 1px solid #eef2f7; text-align: left; }
+  .price-table th { color: #64748b; }
+  .meta-line { font-size: 12px; color: #475569; line-height: 1.55; }
+  .empty { padding: 40px; text-align: center; color: var(--muted); }
+  .chev { color: #94a3b8; font-size: 12px; }
+</style>
+</head>
+<body>
+  <nav class="mock-switch">
+    <span class="lab">Items mock:</span>
+    <a href="items_picker.html">เลือกแบบ</a>
+    <a href="items_manager.html">แบบ 1 · Drawer</a>
+    <a href="items_manager_v2.html">แบบ 2 · Catalog/Pricing</a>
+    <a class="on" href="items_manager_v3.html">แบบ 3 · Stats+Chips</a>
+  </nav>
+  <div class="page">
+    <div class="header">
+      <div>
+        <div class="brand-row">
+          <div class="brand-logo">KAHIS</div>
+          <div class="brand-sub">Items Manager · แบบ 3</div>
+        </div>
+        <div class="brand-note">สถิติเด่นคลิกกรองได้ · ชิปสูตร/ราคาในตาราง · กดแถวขยายแผงราคา (เหมาะพรีเซนต์) — ห่างตารางเดิมมากกว่าแบบ 1</div>
+      </div>
+      <div class="header-meta"><span id="src-label">seed</span><br><b id="loaded-label">0</b></div>
+    </div>
+
+    <div class="stats" id="stats"></div>
+
+    <div class="panel">
+      <div class="toolbar">
+        <input type="search" id="q" placeholder="ค้นหา code / ชื่อ…">
+        <select id="f-cat"><option value="">Category: All</option></select>
+        <button class="btn btn-primary" type="button" onclick="render()">Search</button>
+        <button class="btn btn-ghost" type="button" onclick="clearAll()">Clear filter</button>
+        <span class="count-hint" id="count-hint"></span>
+      </div>
+      <div class="hint-bar">คลิกการ์ดสถิติเพื่อกรอง · คลิกแถวเพื่อขยาย/ย่อแผงราคา A/B/C · ชิปดำ = สรุปราคา</div>
+      <div class="table-wrap">
+        <table class="items">
+          <thead>
+            <tr>
+              <th style="width:28px"></th>
+              <th>Item</th>
+              <th>Unit</th>
+              <th>Price chips</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+        <div class="empty" id="empty" style="display:none;">ไม่พบรายการตามตัวกรอง</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="items_seed.js"></script>
+  <script>
+    var items = (typeof ITEMS_SEED !== 'undefined' ? ITEMS_SEED : []).slice();
+    var quick = { key: 'all', value: null };
+    var expanded = {};
+
+    function esc(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+    function fmt(n) {
+      if (n == null || n === '') return '—';
+      return Number(n).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ฿';
+    }
+    function formulaLabel(it) {
+      return it.formulaLabel || (it.formula === 'A' ? 'A - Unit' : it.formula === 'B' ? 'B - Range' : 'C - Every-N');
+    }
+    function priceChipText(it) {
+      var p = it.pricing || {};
+      if (it.priceStatus === 'pending') return 'Pending';
+      if (it.formula === 'A') return fmt(p.unitPrice != null ? p.unitPrice : it.unitPrice);
+      if (it.formula === 'B') {
+        var n = (p.ranges || []).length;
+        return n ? (n + ' bands') : 'Pending';
+      }
+      return p.everyQty != null ? ('ทุก ' + p.everyQty) : 'Pending';
+    }
+    function counts() {
+      return {
+        all: items.length,
+        active: items.filter(function (i) { return i.status === 'Active'; }).length,
+        disabled: items.filter(function (i) { return i.status === 'Disabled'; }).length,
+        oos: items.filter(function (i) { return i.availability === 'out_of_stock'; }).length,
+        pending: items.filter(function (i) { return i.priceStatus === 'pending'; }).length,
+        a: items.filter(function (i) { return i.formula === 'A'; }).length,
+        b: items.filter(function (i) { return i.formula === 'B'; }).length,
+        c: items.filter(function (i) { return i.formula === 'C'; }).length
+      };
+    }
+    function renderStats() {
+      var c = counts();
+      var cards = [
+        { key: 'all', value: null, n: c.all, l: 'ทั้งหมด', cls: 'blue' },
+        { key: 'status', value: 'Active', n: c.active, l: 'Active', cls: 'green' },
+        { key: 'avail', value: 'out_of_stock', n: c.oos, l: 'ยาหมด', cls: 'rose' },
+        { key: 'pending', value: 'pending', n: c.pending, l: 'รอตั้งราคา', cls: 'amber' },
+        { key: 'formula', value: 'A', n: c.a, l: 'Formula A', cls: 'indigo' },
+        { key: 'formula', value: 'B', n: c.b + '/' + c.c, l: 'Formula B / C (' + c.b + '·' + c.c + ')', cls: 'pink', rawValue: 'BC' }
+      ];
+      document.getElementById('stats').innerHTML = cards.map(function (card, idx) {
+        var on = quick.key === card.key && (
+          card.rawValue === 'BC' ? (quick.value === 'BC') :
+          String(quick.value) === String(card.value)
+        );
+        if (card.key === 'all' && quick.key === 'all') on = true;
+        var val = card.rawValue || card.value;
+        return '<button type="button" class="stat ' + card.cls + (on ? ' on' : '') + '" onclick="setQuick(\'' + card.key + '\',' + JSON.stringify(val) + ')">' +
+          '<div class="n">' + card.n + '</div><div class="l">' + esc(card.l) + '</div></button>';
+      }).join('');
+    }
+    function setQuick(key, value) {
+      if (quick.key === key && String(quick.value) === String(value)) {
+        quick = { key: 'all', value: null };
+      } else {
+        quick = { key: key, value: value };
+      }
+      renderStats();
+      render();
+    }
+    function clearAll() {
+      document.getElementById('q').value = '';
+      document.getElementById('f-cat').value = '';
+      quick = { key: 'all', value: null };
+      expanded = {};
+      renderStats();
+      render();
+    }
+    function filtered() {
+      var q = document.getElementById('q').value.trim().toLowerCase();
+      var cat = document.getElementById('f-cat').value;
+      return items.filter(function (it) {
+        if (cat && it.categoryName !== cat) return false;
+        if (quick.key === 'status' && it.status !== quick.value) return false;
+        if (quick.key === 'avail' && it.availability !== quick.value) return false;
+        if (quick.key === 'pending' && it.priceStatus !== 'pending') return false;
+        if (quick.key === 'formula') {
+          if (quick.value === 'BC') {
+            if (it.formula !== 'B' && it.formula !== 'C') return false;
+          } else if (it.formula !== quick.value) return false;
+        }
+        if (q) {
+          var blob = [it.itemCode, it.name, it.description, it.tradeName].join(' ').toLowerCase();
+          if (blob.indexOf(q) < 0) return false;
+        }
+        return true;
+      });
+    }
+    function expandHtml(it) {
+      var p = it.pricing || {};
+      var left = '';
+      if (it.formula === 'A') {
+        left = '<h4>A — Unit price</h4><div class="meta-line">' + esc(fmt(p.unitPrice != null ? p.unitPrice : it.unitPrice)) + ' / ' + esc(it.unit || '') + '</div>';
+      } else if (it.formula === 'B') {
+        var rows = (p.ranges || []).map(function (r) {
+          return '<tr><td>' + esc(r.from) + ' – ' + esc(r.to) + '</td><td>' + esc(fmt(r.price)) + '</td></tr>';
+        }).join('') || '<tr><td colspan="2">ยังไม่ตั้งช่วง</td></tr>';
+        left = '<h4>B — Range price</h4><table class="price-table"><thead><tr><th>ช่วง</th><th>ราคา</th></tr></thead><tbody>' + rows + '</tbody></table>';
+      } else {
+        left = '<h4>C — Every-N</h4><div class="meta-line">ทุก ' + esc(p.everyQty) + ' · ' + esc(fmt(p.price)) + '</div>';
+      }
+      var right =
+        '<h4>รายละเอียด</h4>' +
+        '<div class="meta-line"><b>Receipt:</b> ' + esc(it.receiptCategory || '—') + '<br>' +
+        '<b>Tx/Rx default:</b> ' + (it.txDefault ? 'T✓' : 'T—') + ' / ' + (it.rxDefault ? 'R✓' : 'R—') + '<br>' +
+        '<b>Catalog:</b> ' + esc(it.status) + '<br>' +
+        '<b>Availability:</b> ' + esc(it.availability === 'out_of_stock' ? 'ยาหมด' : 'available') +
+        (it.outOfStock ? (' · ' + esc(it.outOfStock.note) + ' (' + esc(it.outOfStock.by) + ')') : '') +
+        '</div>';
+      return '<div class="expand-panel"><div>' + left + '</div><div>' + right + '</div></div>';
+    }
+    function toggle(code) {
+      expanded[code] = !expanded[code];
+      render();
+    }
+    function render() {
+      var rows = filtered();
+      document.getElementById('count-hint').textContent = 'แสดง ' + rows.length + ' / ' + items.length;
+      var tb = document.getElementById('tbody');
+      var empty = document.getElementById('empty');
+      if (!rows.length) { tb.innerHTML = ''; empty.style.display = ''; return; }
+      empty.style.display = 'none';
+      tb.innerHTML = rows.map(function (it) {
+        var fchip = it.formula === 'A' ? 'chip-a' : it.formula === 'B' ? 'chip-b' : 'chip-c';
+        var priceCls = it.priceStatus === 'pending' ? 'chip-pending' : 'chip-price';
+        var open = !!expanded[it.itemCode];
+        var html = '<tr class="main' + (it.availability === 'out_of_stock' ? ' oos' : '') + '" onclick="toggle(\'' + esc(it.itemCode) + '\')">' +
+          '<td class="chev">' + (open ? '▾' : '▸') + '</td>' +
+          '<td><div class="code">' + esc(it.itemCode) + '</div>' +
+            '<div class="desc-main">' + esc(it.description || it.name) + '</div>' +
+            '<div class="desc-sub">' + esc(it.categoryName || '') + '</div></td>' +
+          '<td>' + esc(it.unit) + '</td>' +
+          '<td><div class="chips">' +
+            '<span class="chip ' + fchip + '">' + esc(formulaLabel(it)) + '</span>' +
+            '<span class="chip ' + priceCls + '">' + esc(priceChipText(it)) + '</span>' +
+          '</div></td>' +
+          '<td><div class="chips">' +
+            '<span class="chip ' + (it.status === 'Active' ? 'chip-active' : 'chip-disabled') + '">' + esc(it.status) + '</span>' +
+            (it.availability === 'out_of_stock' ? '<span class="chip chip-oos">ยาหมด</span>' : '') +
+          '</div></td></tr>';
+        if (open) {
+          html += '<tr class="expand-row"><td colspan="5">' + expandHtml(it) + '</td></tr>';
+        }
+        return html;
+      }).join('');
+    }
+
+    var cats = {};
+    items.forEach(function (it) { if (it.categoryName) cats[it.categoryName] = true; });
+    Object.keys(cats).sort(function (a, b) { return a.localeCompare(b, 'th'); }).forEach(function (c) {
+      var opt = document.createElement('option');
+      opt.value = c; opt.textContent = c;
+      document.getElementById('f-cat').appendChild(opt);
+    });
+    ['q', 'f-cat'].forEach(function (id) {
+      document.getElementById(id).addEventListener('input', render);
+      document.getElementById(id).addEventListener('change', render);
+    });
+    if (typeof ITEMS_SEED_META !== 'undefined') {
+      document.getElementById('src-label').textContent = ITEMS_SEED_META.source;
+    }
+    document.getElementById('loaded-label').textContent = items.length + ' loaded';
+    renderStats();
+    render();
+  </script>
+</body>
+</html>

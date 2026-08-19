@@ -19,4 +19,10 @@ const assessmentFiles = [
   { title: "Module Map", file: "NP/subjective/module-map.md", lastUpdate: "2026-07-13T10:00:00.000000" },
   { title: "Exam Card Logic Flowchart", file: "NP/exam_card_logic_flowchart.md", lastUpdate: "2026-08-06T22:16:00.000000" },
   { title: "Editor UI Shell Map", file: "NP/editor_ui_shell_map.md", lastUpdate: "2026-08-08T18:20:00.000000" },
+  { title: "Items Manager · เลือกแบบ Mock", file: "NP/items/items_picker.html", lastUpdate: "2026-08-18T19:15:00.000000" },
+  { title: "Items Manager · แบบ 1 Drawer", file: "NP/items/items_manager.html", lastUpdate: "2026-08-18T20:00:00.000000" },
+  { title: "Items Manager · แบบ 2 Catalog/Pricing", file: "NP/items/items_manager_v2.html", lastUpdate: "2026-08-18T19:15:00.000000" },
+  { title: "Items Manager · แบบ 3 Stats+Chips", file: "NP/items/items_manager_v3.html", lastUpdate: "2026-08-18T19:15:00.000000" },
+  { title: "Items Manager Manual", file: "NP/items/items_manual.md", lastUpdate: "2026-08-18T20:00:00.000000" },
+  { title: "Items Manager Design Notes", file: "NP/items/items_design_notes.md", lastUpdate: "2026-08-18T19:15:00.000000" },
 ];

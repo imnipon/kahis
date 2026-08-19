@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KAHIS - Items Manager · แบบ 2 Catalog/Pricing</title>
+<style>
+  :root {
+    --bg: #f0f2f5; --surface: #fff; --text: #1f2937; --muted: #6b7280;
+    --border: #e5e7eb; --green: #22c55e; --blue: #2563eb; --red: #dc2626;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text); min-height: 100vh;
+  }
+  .mock-switch {
+    display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+    padding: 8px 20px; background: #0f172a; color: #cbd5e1; font-size: 12px;
+  }
+  .mock-switch a {
+    color: #e2e8f0; text-decoration: none; padding: 5px 10px; border-radius: 999px;
+    border: 1px solid transparent;
+  }
+  .mock-switch a:hover { background: #1e293b; }
+  .mock-switch a.on { background: #22c55e; color: #052e16; font-weight: 700; border-color: #16a34a; }
+  .mock-switch .lab { margin-right: 6px; color: #94a3b8; }
+  .page { max-width: 1440px; margin: 0 auto; padding: 16px 20px 36px; display: flex; flex-direction: column; gap: 12px; }
+  .header { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: flex-start; }
+  .brand-row { display: flex; align-items: center; gap: 10px; }
+  .brand-logo { font-weight: 700; font-size: 20px; color: var(--green); }
+  .brand-sub { font-weight: 700; font-size: 20px; }
+  .brand-note { margin-top: 4px; font-size: 12px; color: var(--muted); max-width: 720px; line-height: 1.45; }
+  .header-meta { font-size: 12px; color: var(--muted); text-align: right; }
+  .mode-tabs {
+    display: inline-flex; background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 4px; gap: 4px;
+  }
+  .mode-tabs button {
+    border: none; background: transparent; padding: 8px 16px; border-radius: 8px;
+    font-size: 13px; font-weight: 600; font-family: inherit; cursor: pointer; color: #64748b;
+  }
+  .mode-tabs button.on { background: #0f172a; color: #fff; }
+  .panel { background: #fff; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .toolbar {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    padding: 10px 14px; border-bottom: 1px solid var(--border);
+  }
+  .toolbar input, .toolbar select {
+    border: 1px solid #d1d5db; border-radius: 8px; padding: 8px 10px; font-size: 13px; font-family: inherit;
+  }
+  .toolbar input#q { min-width: 180px; flex: 1; }
+  .btn { border: none; border-radius: 8px; padding: 8px 12px; font-size: 13px; font-weight: 600; font-family: inherit; cursor: pointer; }
+  .btn-primary { background: var(--blue); color: #fff; }
+  .btn-ghost { background: #fff; border: 1px solid #d1d5db; color: #374151; }
+  .btn-add { background: var(--green); color: #fff; }
+  .count-hint { margin-left: auto; font-size: 12px; color: var(--muted); }
+  .hint-bar {
+    margin: 10px 14px; padding: 8px 10px; border-radius: 8px; background: #f0fdf4;
+    border: 1px solid #bbf7d0; font-size: 12px; color: #166534; line-height: 1.45;
+  }
+  .split { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(320px, .85fr); min-height: 520px; }
+  @media (max-width: 980px) { .split { grid-template-columns: 1fr; } }
+  .table-wrap { overflow: auto; max-height: calc(100vh - 280px); }
+  table.items { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.items th {
+    position: sticky; top: 0; z-index: 1; background: #f8fafc; text-align: left;
+    font-weight: 600; color: #475569; padding: 10px 12px; border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  table.items td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+  table.items tr:hover td { background: #f8fafc; }
+  table.items tr.selected td { background: #eff6ff; }
+  table.items tr.oos td { background: #fff7ed; }
+  .code { font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #64748b; }
+  .desc-main { font-weight: 600; line-height: 1.35; }
+  .desc-sub { margin-top: 3px; font-size: 11px; color: #64748b; }
+  .badge { display: inline-flex; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+  .badge-active { background: #dcfce7; color: #166534; }
+  .badge-disabled { background: #f3f4f6; color: #6b7280; }
+  .badge-oos { background: #ffedd5; color: #9a3412; }
+  .badge-a { background: #eff6ff; color: #1d4ed8; }
+  .badge-b { background: #ecfdf5; color: #047857; }
+  .badge-c { background: #fdf2f8; color: #be185d; }
+  .def-dot {
+    display: inline-flex; width: 22px; height: 22px; border-radius: 6px; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700;
+  }
+  .def-on { background: #dcfce7; color: #166534; }
+  .def-off { background: #f1f5f9; color: #94a3b8; }
+  .editor {
+    border-left: 1px solid var(--border); padding: 16px; background: #fafbfc; overflow-y: auto;
+    max-height: calc(100vh - 280px);
+  }
+  @media (max-width: 980px) { .editor { border-left: none; border-top: 1px solid var(--border); } }
+  .editor h3 { font-size: 15px; margin-bottom: 4px; }
+  .editor .sub { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+  .field { margin-bottom: 12px; }
+  .field label { display: block; font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 4px; }
+  .field input, .field select, .field textarea {
+    width: 100%; border: 1px solid #d1d5db; border-radius: 8px; padding: 8px 10px;
+    font-size: 13px; font-family: inherit; background: #fff;
+  }
+  .range-row { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 6px; margin-bottom: 6px; align-items: center; }
+  .price-box { border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; background: #fff; margin-top: 8px; }
+  .empty-editor { color: var(--muted); font-size: 13px; padding: 24px 8px; text-align: center; }
+  .toast {
+    position: fixed; right: 20px; bottom: 20px; background: #111827; color: #fff;
+    padding: 10px 14px; border-radius: 10px; font-size: 13px; opacity: 0; transition: opacity .2s; z-index: 50;
+  }
+  .toast.show { opacity: 1; }
+  .empty { padding: 36px; text-align: center; color: var(--muted); }
+</style>
+</head>
+<body>
+  <nav class="mock-switch">
+    <span class="lab">Items mock:</span>
+    <a href="items_picker.html">เลือกแบบ</a>
+    <a href="items_manager.html">แบบ 1 · Drawer</a>
+    <a class="on" href="items_manager_v2.html">แบบ 2 · Catalog/Pricing</a>
+    <a href="items_manager_v3.html">แบบ 3 · Stats+Chips</a>
+  </nav>
+  <div class="page">
+    <div class="header">
+      <div>
+        <div class="brand-row">
+          <div class="brand-logo">KAHIS</div>
+          <div class="brand-sub">Items Manager · แบบ 2</div>
+        </div>
+        <div class="brand-note">แยกโหมด Catalog (ดูแลรายการ) กับ Pricing (ตั้งสูตร A/B/C) — สลับงานชัด · เหมาะเวลาตั้งราคา B/C ที่ต้องการพื้นที่</div>
+      </div>
+      <div class="header-meta"><span id="src-label">seed</span><br><b id="loaded-label">0</b></div>
+    </div>
+
+    <div class="mode-tabs">
+      <button type="button" id="tab-catalog" class="on" onclick="setMode('catalog')">Catalog mode</button>
+      <button type="button" id="tab-pricing" onclick="setMode('pricing')">Pricing mode</button>
+    </div>
+
+    <div class="panel">
+      <div class="toolbar">
+        <input type="search" id="q" placeholder="ค้นหา code / ชื่อ…">
+        <select id="f-status"><option value="">Status: All</option><option value="Active">Active</option><option value="Disabled">Disabled</option></select>
+        <select id="f-avail"><option value="">Availability: All</option><option value="available">Available</option><option value="out_of_stock">ยาหมด</option></select>
+        <select id="f-formula"><option value="">Formula: All</option><option value="A">A</option><option value="B">B</option><option value="C">C</option></select>
+        <button class="btn btn-primary" type="button" onclick="render()">Search</button>
+        <button class="btn btn-ghost" type="button" onclick="clearFilters()">Clear</button>
+        <button class="btn btn-add" type="button" onclick="toast('Add New (mock)')">+ Add New</button>
+        <span class="count-hint" id="count-hint"></span>
+      </div>
+      <div class="hint-bar" id="hint"></div>
+      <div id="view-catalog">
+        <div class="table-wrap">
+          <table class="items">
+            <thead>
+              <tr>
+                <th>Item Code</th>
+                <th>Description</th>
+                <th>Unit</th>
+                <th>Receipt</th>
+                <th>Tx / Rx</th>
+                <th>Status</th>
+                <th>Availability</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tbody-cat"></tbody>
+          </table>
+          <div class="empty" id="empty-cat" style="display:none;">ไม่พบรายการ</div>
+        </div>
+      </div>
+      <div id="view-pricing" style="display:none;">
+        <div class="split">
+          <div class="table-wrap">
+            <table class="items">
+              <thead>
+                <tr>
+                  <th>Item Code</th>
+                  <th>Description</th>
+                  <th>Formula</th>
+                  <th>สรุปราคา</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-price"></tbody>
+            </table>
+            <div class="empty" id="empty-price" style="display:none;">ไม่พบรายการ</div>
+          </div>
+          <aside class="editor" id="editor">
+            <div class="empty-editor">เลือกแถวซ้ายเพื่อตั้งราคา A / B / C</div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script src="items_seed.js"></script>
+  <script>
+    var items = (typeof ITEMS_SEED !== 'undefined' ? ITEMS_SEED : []).slice();
+    var mode = 'catalog';
+    var selectedCode = null;
+
+    function esc(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+    function fmt(n) {
+      if (n == null || n === '') return '—';
+      return Number(n).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ฿';
+    }
+    function formulaLabel(it) {
+      return it.formulaLabel || (it.formula === 'A' ? 'A - Unit price' : it.formula === 'B' ? 'B - Range price' : 'C - Every-N price');
+    }
+    function priceSummary(it) {
+      var p = it.pricing || {};
+      if (it.priceStatus === 'pending') return 'Pending';
+      if (it.formula === 'A') return fmt(p.unitPrice != null ? p.unitPrice : it.unitPrice) + ' / ' + (it.unit || '');
+      if (it.formula === 'B') {
+        var n = (p.ranges || []).length;
+        return n ? (n + ' ช่วง · เริ่ม ' + fmt(p.ranges[0].price)) : 'Pending';
+      }
+      return (p.everyQty != null) ? ('ทุก ' + p.everyQty + ' · ' + fmt(p.price)) : 'Pending';
+    }
+    function toast(msg) {
+      var t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(function () { t.classList.remove('show'); }, 1600);
+    }
+    function getFilters() {
+      return {
+        q: document.getElementById('q').value.trim().toLowerCase(),
+        status: document.getElementById('f-status').value,
+        avail: document.getElementById('f-avail').value,
+        formula: document.getElementById('f-formula').value
+      };
+    }
+    function filtered() {
+      var f = getFilters();
+      return items.filter(function (it) {
+        if (f.status && it.status !== f.status) return false;
+        if (f.avail && it.availability !== f.avail) return false;
+        if (f.formula && it.formula !== f.formula) return false;
+        if (f.q) {
+          var blob = [it.itemCode, it.name, it.description, it.tradeName, it.receiptCategory].join(' ').toLowerCase();
+          if (blob.indexOf(f.q) < 0) return false;
+        }
+        return true;
+      });
+    }
+    function findItem(code) {
+      for (var i = 0; i < items.length; i++) if (items[i].itemCode === code) return items[i];
+      return null;
+    }
+    function setMode(m) {
+      mode = m;
+      document.getElementById('tab-catalog').classList.toggle('on', m === 'catalog');
+      document.getElementById('tab-pricing').classList.toggle('on', m === 'pricing');
+      document.getElementById('view-catalog').style.display = m === 'catalog' ? '' : 'none';
+      document.getElementById('view-pricing').style.display = m === 'pricing' ? '' : 'none';
+      document.getElementById('hint').textContent = m === 'catalog'
+        ? 'Catalog mode: ดูแลชื่อ · unit · receipt · Tx/Rx · Active/Disabled · ยาหมด — ไม่โชว์แผงราคาเต็ม'
+        : 'Pricing mode: เลือกแถวซ้าย → แก้สูตร A/B/C ทางขวา (mock save ในหน่วยความจำหน้านี้)';
+      render();
+    }
+    function clearFilters() {
+      ['q', 'f-status', 'f-avail', 'f-formula'].forEach(function (id) { document.getElementById(id).value = ''; });
+      render();
+    }
+    function statusHtml(it) {
+      var h = it.status === 'Disabled'
+        ? '<span class="badge badge-disabled">Disabled</span>'
+        : '<span class="badge badge-active">Active</span>';
+      return h;
+    }
+    function availHtml(it) {
+      if (it.availability === 'out_of_stock') return '<span class="badge badge-oos">ยาหมด</span>';
+      return '<span class="muted" style="font-size:12px">Available</span>';
+    }
+    function renderCatalog(rows) {
+      var tb = document.getElementById('tbody-cat');
+      var empty = document.getElementById('empty-cat');
+      if (!rows.length) { tb.innerHTML = ''; empty.style.display = ''; return; }
+      empty.style.display = 'none';
+      tb.innerHTML = rows.map(function (it) {
+        return '<tr' + (it.availability === 'out_of_stock' ? ' class="oos"' : '') + '>' +
+          '<td class="code">' + esc(it.itemCode) + '</td>' +
+          '<td><div class="desc-main">' + esc(it.description || it.name) + '</div>' +
+            '<div class="desc-sub">' + esc(it.categoryName || '') + '</div></td>' +
+          '<td>' + esc(it.unit) + '</td>' +
+          '<td style="font-size:12px;max-width:180px">' + esc(it.receiptCategory || '—') + '</td>' +
+          '<td><span class="def-dot ' + (it.txDefault ? 'def-on' : 'def-off') + '">T</span> ' +
+              '<span class="def-dot ' + (it.rxDefault ? 'def-on' : 'def-off') + '">R</span></td>' +
+          '<td>' + statusHtml(it) + '</td>' +
+          '<td>' + availHtml(it) + '</td>' +
+          '<td><button class="btn btn-ghost" type="button" onclick="goPrice(\'' + esc(it.itemCode) + '\')">ตั้งราคา</button></td>' +
+        '</tr>';
+      }).join('');
+    }
+    function goPrice(code) {
+      selectedCode = code;
+      setMode('pricing');
+      renderEditor();
+    }
+    function selectRow(code) {
+      selectedCode = code;
+      render();
+      renderEditor();
+    }
+    function renderPricingList(rows) {
+      var tb = document.getElementById('tbody-price');
+      var empty = document.getElementById('empty-price');
+      if (!rows.length) { tb.innerHTML = ''; empty.style.display = ''; return; }
+      empty.style.display = 'none';
+      tb.innerHTML = rows.map(function (it) {
+        var cls = (it.itemCode === selectedCode ? ' selected' : '') + (it.availability === 'out_of_stock' ? ' oos' : '');
+        var fcls = it.formula === 'A' ? 'badge-a' : it.formula === 'B' ? 'badge-b' : 'badge-c';
+        return '<tr class="' + cls.trim() + '" onclick="selectRow(\'' + esc(it.itemCode) + '\')" style="cursor:pointer">' +
+          '<td class="code">' + esc(it.itemCode) + '</td>' +
+          '<td><div class="desc-main">' + esc(it.description || it.name) + '</div></td>' +
+          '<td><span class="badge ' + fcls + '">' + esc(formulaLabel(it)) + '</span></td>' +
+          '<td style="font-size:12px">' + esc(priceSummary(it)) + '</td>' +
+        '</tr>';
+      }).join('');
+    }
+    function renderEditor() {
+      var el = document.getElementById('editor');
+      var it = findItem(selectedCode);
+      if (!it) {
+        el.innerHTML = '<div class="empty-editor">เลือกแถวซ้ายเพื่อตั้งราคา A / B / C</div>';
+        return;
+      }
+      var p = it.pricing || {};
+      var ranges = (p.ranges || []).map(function (r, i) {
+        return '<div class="range-row" data-i="' + i + '">' +
+          '<input type="number" step="0.01" value="' + esc(r.from) + '" data-k="from" title="from">' +
+          '<input type="number" step="0.01" value="' + esc(r.to) + '" data-k="to" title="to">' +
+          '<input type="number" step="0.01" value="' + esc(r.price) + '" data-k="price" title="price">' +
+          '<button class="btn btn-ghost" type="button" onclick="removeRange(' + i + ')">×</button></div>';
+      }).join('');
+      el.innerHTML =
+        '<h3>' + esc(it.description || it.name) + '</h3>' +
+        '<div class="sub">' + esc(it.itemCode) + ' · ' + esc(it.unit) + '</div>' +
+        '<div class="field"><label>Formula</label>' +
+          '<select id="ed-formula" onchange="onFormulaChange()">' +
+            '<option value="A"' + (it.formula === 'A' ? ' selected' : '') + '>A - Unit price</option>' +
+            '<option value="B"' + (it.formula === 'B' ? ' selected' : '') + '>B - Range price</option>' +
+            '<option value="C"' + (it.formula === 'C' ? ' selected' : '') + '>C - Every-N price</option>' +
+          '</select></div>' +
+        '<div class="price-box" id="ed-body"></div>' +
+        '<div style="display:flex;gap:8px;margin-top:12px">' +
+          '<button class="btn btn-primary" type="button" onclick="savePricing()">Save price (mock)</button>' +
+          '<button class="btn btn-ghost" type="button" onclick="toast(\'ยกเลิก — ไม่บันทึก\')">Cancel</button>' +
+        '</div>';
+      paintEditorBody(it);
+    }
+    function paintEditorBody(it) {
+      var body = document.getElementById('ed-body');
+      var f = document.getElementById('ed-formula').value;
+      var p = it.pricing || {};
+      if (f === 'A') {
+        body.innerHTML =
+          '<div class="field"><label>ราคาต่อหน่วย</label>' +
+          '<input id="ed-unit" type="number" step="0.01" value="' + esc(p.unitPrice != null ? p.unitPrice : (it.unitPrice || '')) + '"></div>' +
+          '<div style="font-size:12px;color:#64748b">Sell = unitPrice × จำนวน</div>';
+        return;
+      }
+      if (f === 'B') {
+        var ranges = (p.ranges || []);
+        if (!ranges.length) ranges = [{ from: 0.01, to: 1, price: 0 }];
+        body.innerHTML =
+          '<div style="font-size:12px;font-weight:600;margin-bottom:8px">ช่วงจำนวน → ราคา</div>' +
+          '<div id="ed-ranges">' + ranges.map(function (r, i) {
+            return '<div class="range-row">' +
+              '<input type="number" step="0.01" value="' + esc(r.from) + '" data-k="from">' +
+              '<input type="number" step="0.01" value="' + esc(r.to) + '" data-k="to">' +
+              '<input type="number" step="0.01" value="' + esc(r.price) + '" data-k="price">' +
+              '<button class="btn btn-ghost" type="button" onclick="removeRange(' + i + ')">×</button></div>';
+          }).join('') + '</div>' +
+          '<button class="btn btn-ghost" type="button" style="margin-top:8px" onclick="addRange()">+ เพิ่มช่วง</button>';
+        return;
+      }
+      body.innerHTML =
+        '<div class="field"><label>ทุกๆ จำนวน (N)</label><input id="ed-every" type="number" step="1" value="' + esc(p.everyQty != null ? p.everyQty : '') + '"></div>' +
+        '<div class="field"><label>ราคาต่อรอบ</label><input id="ed-cprice" type="number" step="0.01" value="' + esc(p.price != null ? p.price : '') + '"></div>' +
+        '<div style="font-size:12px;color:#64748b">เช่น สั่ง 25 เมื่อทุก 10 = 3 รอบ × ราคา</div>';
+    }
+    function onFormulaChange() {
+      var it = findItem(selectedCode);
+      if (!it) return;
+      paintEditorBody(it);
+    }
+    function addRange() {
+      var it = findItem(selectedCode);
+      if (!it) return;
+      if (!it.pricing) it.pricing = { type: 'B', ranges: [] };
+      if (!it.pricing.ranges) it.pricing.ranges = [];
+      it.pricing.ranges.push({ from: 0, to: 0, price: 0 });
+      paintEditorBody(it);
+    }
+    function removeRange(i) {
+      var it = findItem(selectedCode);
+      if (!it || !it.pricing || !it.pricing.ranges) return;
+      it.pricing.ranges.splice(i, 1);
+      paintEditorBody(it);
+    }
+    function savePricing() {
+      var it = findItem(selectedCode);
+      if (!it) return;
+      var f = document.getElementById('ed-formula').value;
+      it.formula = f;
+      it.formulaLabel = f === 'A' ? 'A - Unit price' : f === 'B' ? 'B - Range price' : 'C - Every-N price';
+      if (f === 'A') {
+        var u = parseFloat(document.getElementById('ed-unit').value);
+        it.pricing = { type: 'A', unitPrice: isNaN(u) ? null : u };
+        it.unitPrice = it.pricing.unitPrice;
+        it.priceStatus = it.pricing.unitPrice == null ? 'pending' : 'priced';
+      } else if (f === 'B') {
+        var rows = document.querySelectorAll('#ed-ranges .range-row');
+        var ranges = [];
+        rows.forEach(function (row) {
+          var inputs = row.querySelectorAll('input');
+          ranges.push({
+            from: parseFloat(inputs[0].value),
+            to: parseFloat(inputs[1].value),
+            price: parseFloat(inputs[2].value)
+          });
+        });
+        it.pricing = { type: 'B', ranges: ranges };
+        it.priceStatus = ranges.length ? 'priced' : 'pending';
+      } else {
+        var every = parseFloat(document.getElementById('ed-every').value);
+        var price = parseFloat(document.getElementById('ed-cprice').value);
+        it.pricing = { type: 'C', everyQty: isNaN(every) ? null : every, price: isNaN(price) ? null : price };
+        it.priceStatus = (it.pricing.everyQty != null && it.pricing.price != null) ? 'priced' : 'pending';
+      }
+      toast('Saved pricing · ' + it.itemCode);
+      render();
+      renderEditor();
+    }
+    function render() {
+      var rows = filtered();
+      document.getElementById('count-hint').textContent = 'แสดง ' + rows.length + ' / ' + items.length;
+      if (mode === 'catalog') renderCatalog(rows);
+      else {
+        renderPricingList(rows);
+        if (selectedCode) renderEditor();
+      }
+    }
+
+    ['q', 'f-status', 'f-avail', 'f-formula'].forEach(function (id) {
+      document.getElementById(id).addEventListener('input', render);
+      document.getElementById(id).addEventListener('change', render);
+    });
+    if (typeof ITEMS_SEED_META !== 'undefined') {
+      document.getElementById('src-label').textContent = ITEMS_SEED_META.source;
+    }
+    document.getElementById('loaded-label').textContent = items.length + ' loaded';
+    setMode('catalog');
+  </script>
+</body>
+</html>

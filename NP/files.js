@@ -153,6 +153,56 @@ const filesTree = [
         ]
       },
       {
+        "name": "items",
+        "label": "Items Manager",
+        "type": "folder",
+        "path": "NP/items",
+        "children": [
+          {
+            "name": "items_picker.html",
+            "type": "file",
+            "path": "NP/items/items_picker.html",
+            "lastUpdate": "2026-08-18T19:35:00.000000"
+          },
+          {
+            "name": "items_manager.html",
+            "type": "file",
+            "path": "NP/items/items_manager.html",
+            "lastUpdate": "2026-08-18T20:00:00.000000"
+          },
+          {
+            "name": "items_manager_v2.html",
+            "type": "file",
+            "path": "NP/items/items_manager_v2.html",
+            "lastUpdate": "2026-08-18T19:15:00.000000"
+          },
+          {
+            "name": "items_manager_v3.html",
+            "type": "file",
+            "path": "NP/items/items_manager_v3.html",
+            "lastUpdate": "2026-08-18T19:15:00.000000"
+          },
+          {
+            "name": "items_dialogs.js",
+            "type": "file",
+            "path": "NP/items/items_dialogs.js",
+            "lastUpdate": "2026-08-18T20:00:00.000000"
+          },
+          {
+            "name": "items_manual.md",
+            "type": "file",
+            "path": "NP/items/items_manual.md",
+            "lastUpdate": "2026-08-18T20:00:00.000000"
+          },
+          {
+            "name": "items_design_notes.md",
+            "type": "file",
+            "path": "NP/items/items_design_notes.md",
+            "lastUpdate": "2026-08-18T19:15:00.000000"
+          }
+        ]
+      },
+      {
         "name": "exam_card_logic_flowchart.md",
         "type": "file",
         "path": "NP/exam_card_logic_flowchart.md",

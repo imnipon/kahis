@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KAHIS - Items Manager · เลือกแบบ Mock</title>
+<style>
+  :root {
+    --bg: #eef2f7; --surface: #fff; --text: #0f172a; --muted: #64748b;
+    --border: #e2e8f0; --green: #16a34a; --blue: #2563eb;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background:
+      radial-gradient(900px 420px at 10% -10%, #dbeafe 0%, transparent 55%),
+      radial-gradient(700px 380px at 100% 0%, #dcfce7 0%, transparent 50%),
+      var(--bg);
+    color: var(--text); min-height: 100vh;
+  }
+  .page { max-width: 1080px; margin: 0 auto; padding: 36px 20px 48px; }
+  .brand { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; }
+  .brand-logo { font-weight: 800; font-size: 28px; color: var(--green); letter-spacing: -0.02em; }
+  .brand-sub { font-weight: 700; font-size: 22px; color: #0f172a; }
+  .lede { color: var(--muted); font-size: 14px; line-height: 1.55; max-width: 640px; margin-bottom: 28px; }
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 20px 18px 18px; display: flex; flex-direction: column; gap: 12px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08); }
+  .tag {
+    display: inline-flex; align-self: flex-start; padding: 3px 10px; border-radius: 999px;
+    font-size: 11px; font-weight: 700; letter-spacing: .02em;
+  }
+  .tag-1 { background: #eff6ff; color: #1d4ed8; }
+  .tag-2 { background: #ecfdf5; color: #047857; }
+  .tag-3 { background: #fdf2f8; color: #be185d; }
+  .card h2 { font-size: 17px; line-height: 1.35; }
+  .card p { font-size: 13px; color: var(--muted); line-height: 1.5; flex: 1; }
+  .card ul { margin: 0; padding-left: 18px; font-size: 12px; color: #475569; line-height: 1.55; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-top: 4px; padding: 10px 14px; border-radius: 10px; text-decoration: none;
+    font-size: 13px; font-weight: 700; background: var(--blue); color: #fff;
+  }
+  .btn.alt { background: #0f172a; }
+  .btn.pink { background: #be185d; }
+  .foot { margin-top: 22px; font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .foot a { color: #2563eb; }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="brand">
+      <div class="brand-logo">KAHIS</div>
+      <div class="brand-sub">Items Manager · Mock Gallery</div>
+    </div>
+    <p class="lede">
+      เลือกดู mock แต่ละแบบแยกกัน — seed เดียวจาก Order TX (~298 รายการ) · ราคา A/B/C · ยาหมดแยกจาก Disabled
+    </p>
+    <div class="grid">
+      <article class="card">
+        <span class="tag tag-1">แบบที่ 1 · แนะนำเริ่ม</span>
+        <h2>ตารางบาง + Drawer ราคาเต็ม</h2>
+        <p>ใกล้ UI เดิม · คอลัมน์ครบแถวเดียว · Status Active/Disabled + ยาหมด · Action = Edit + เมนู ⋮</p>
+        <ul>
+          <li>ตารางหลักตามต้นแบบ 14 คอลัมน์</li>
+          <li>Action แยก Admin / ห้องยา</li>
+          <li>Drawer ราคา A/B/C</li>
+        </ul>
+        <a class="btn" href="items_manager.html">เปิดแบบที่ 1</a>
+      </article>
+      <article class="card">
+        <span class="tag tag-2">แบบที่ 2</span>
+        <h2>แยกโหมด Catalog / Pricing</h2>
+        <p>สลับงาน “ดูแลรายการ” กับ “ตั้งราคา” · โหมด Pricing มีแผงแก้ A/B/C แนวตั้งเต็ม</p>
+        <ul>
+          <li>Catalog: ชื่อ · unit · receipt · status</li>
+          <li>Pricing: list + editor ขวา</li>
+          <li>แยกบทบาทงานชัด</li>
+        </ul>
+        <a class="btn alt" href="items_manager_v2.html">เปิดแบบที่ 2</a>
+      </article>
+      <article class="card">
+        <span class="tag tag-3">แบบที่ 3</span>
+        <h2>สถิติเด่น + ชิปราคา</h2>
+        <p>การ์ดสถิติคลิกกรองได้ · ชิปสูตร/ราคาในตาราง · กดแถวขยายแผงราคา (พรีเซนต์ดี)</p>
+        <ul>
+          <li>เห็นภาพรวม A/B/C / OOS เร็ว</li>
+          <li>Price chips อ่านง่าย</li>
+          <li>Expand row แทน Drawer</li>
+        </ul>
+        <a class="btn pink" href="items_manager_v3.html">เปิดแบบที่ 3</a>
+      </article>
+    </div>
+    <p class="foot">
+      เอกสาร: <a href="items_design_notes.md">items_design_notes.md</a> ·
+      <a href="items_manual.md">items_manual.md</a> ·
+      seed: <code>items_seed.js</code>
+    </p>
+  </div>
+</body>
+</html>
