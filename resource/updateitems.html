@@ -30,6 +30,8 @@
   .btn:hover{background:#f8fafc;}
   .btn-blue{border-color:#93c5fd;color:#2563eb;}
   .btn-blue:hover{background:#eff6ff;}
+  .btn-green{border-color:#86efac;color:#16a34a;}
+  .btn-green:hover{background:#f0fdf4;}
   .spacer{flex:1;min-width:8px;}
 
   .tabs{display:flex;flex-wrap:wrap;gap:4px;padding:8px 10px;border-bottom:1px solid var(--border);background:#f8fafc;}
@@ -151,6 +153,8 @@
         <span class="hint" id="shown-hint"></span>
         <button class="btn" type="button" id="btn-export-tab">Export CSV แท็บนี้</button>
         <button class="btn btn-blue" type="button" id="btn-export-all">Export CSV ทั้งหมด</button>
+        <button class="btn btn-green" type="button" id="btn-export-items">Export Items CSV</button>
+        <button class="btn btn-green" type="button" id="btn-export-tx">Export Tx Default CSV</button>
         <button class="btn" type="button" id="btn-reset-done">ล้างติ๊กในแท็บนี้</button>
       </div>
       <div class="table-wrap">
@@ -374,6 +378,34 @@
     function dlCsv(name,lines){var text="\uFEFF"+CSV_H.join(",")+"\n"+lines.join("\n");var blob=new Blob([text],{type:"text/csv;charset=utf-8"});var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(a.href);}
     document.getElementById("btn-export-tab").addEventListener("click",function(){var rows=tabItems().map(rowCsv);dlCsv("updateitems-"+(activeTab==="all"?"all":activeTab.replace(/[\\/:*?"<>|]/g,"-"))+".csv",rows);toast("Export "+rows.length+" แถว");});
     document.getElementById("btn-export-all").addEventListener("click",function(){dlCsv("updateitems-all-placements.csv",DATA.placements.map(rowCsv));toast("Export ทั้งหมด "+DATA.placements.length+" แถว");});
+
+    // Export Items CSV — schema ตรงกับ KAHIS import (unique per item_code, เรียงตาม item_code)
+    var ITEMS_H=["Item Code(รหัส)","Description(ชื่อยา/บริการ)","Trade Name(ชื่อการค้า)","Common Name(ชื่อใช้เรียกบ่อย)","Unit(หน่วยนับ)","Receipt Category(หมวดใบเสร็จ)","Alert Min","Alert Max","Formula","Sell Price(ราคาขาย)","Rx Default","Status"];
+    document.getElementById("btn-export-items").addEventListener("click",function(){
+      var seen={};var rows=[];
+      DATA.placements.slice().sort(function(a,b){return String(a.itemCode).localeCompare(String(b.itemCode),"th");}).forEach(function(p){
+        if(seen[p.itemCode])return;seen[p.itemCode]=true;
+        rows.push([p.itemCode,p.description,p.tradeName,p.commonName,p.unit,p.receipt,p.alertMin,p.alertMax,p.formula,p.sellPrice,p.rxDefault,p.status].map(ce).join(","));
+      });
+      var text="\uFEFF"+ITEMS_H.join(",")+"\n"+rows.join("\n");
+      var blob=new Blob([text],{type:"text/csv;charset=utf-8"});
+      var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="kahis_items_import.csv";
+      document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(a.href);
+      toast("Export Items "+rows.length+" รายการ (unique item_code)");
+    });
+
+    // Export Tx Default CSV — 1 แถวต่อ placement (337 แถว) ตาม schema Add Tx Default
+    var TX_H=["Item Code(รหัส)","Tab(หมวด)","Route(วิธีการให้ยา)","Dose(หน่วยการใช้งาน)","Frequency/Rate(ความถี่)","Note(รายละเอียด)"];
+    document.getElementById("btn-export-tx").addEventListener("click",function(){
+      var rows=DATA.placements.slice().sort(function(a,b){return String(a.itemCode).localeCompare(String(b.itemCode),"th");}).map(function(p){
+        return [p.itemCode,p.tab,p.route,p.usageUnit,p.frequency,p.note].map(ce).join(",");
+      });
+      var text="\uFEFF"+TX_H.join(",")+"\n"+rows.join("\n");
+      var blob=new Blob([text],{type:"text/csv;charset=utf-8"});
+      var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="kahis_tx_default_import.csv";
+      document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(a.href);
+      toast("Export Tx Default "+rows.length+" placements");
+    });
 
     render();
   })();
