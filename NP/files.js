@@ -14,10 +14,17 @@ const filesTree = [
       },
       {
         "name": "updateitems.html",
-        "label": "Update Items (TX)",
+        "label": "Update Items (TX catalog)",
         "type": "file",
         "path": "resource/updateitems.html",
         "lastUpdate": "2026-08-19T14:50:00.000000"
+      },
+      {
+        "name": "conflict_viewer.html",
+        "label": "Conflict Items — Tx Default",
+        "type": "file",
+        "path": "resource/updateitemsfiles/conflict_viewer.html",
+        "lastUpdate": "2026-08-19T17:00:00.000000"
       }
     ]
   },
