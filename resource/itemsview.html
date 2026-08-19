@@ -15,7 +15,7 @@
   .topbar h1{font-size:18px;font-weight:700;color:#fff;margin:2px 0 4px;}
   .topbar p{font-size:12px;color:#94a3b8;line-height:1.45;}
   .topbar-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-  .topbar-btns{display:flex;gap:6px;flex-wrap:wrap;}
+  .topbar-btns{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
   .stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
   .stat{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:6px 10px;font-size:12px;color:#cbd5e1;}
   .stat b{color:#fff;font-variant-numeric:tabular-nums;}
@@ -26,6 +26,8 @@
   .tbtn:hover{background:#334155;}
   .tbtn-green{border-color:#4ade80;color:#86efac;}.tbtn-green:hover{background:#14532d;}
   .tbtn-blue{border-color:#60a5fa;color:#93c5fd;}.tbtn-blue:hover{background:#1e3a5f;}
+  .tbtn-amber{border-color:#fbbf24;color:#fcd34d;}.tbtn-amber:hover{background:#451a03;}
+  .file-hint{font-size:11px;color:#64748b;white-space:nowrap;max-width:220px;overflow:hidden;text-overflow:ellipsis;}
 
   /* ── Page layout ── */
   .page{padding:12px 14px 24px;}
@@ -144,32 +146,33 @@
   .toast{position:fixed;right:18px;bottom:18px;background:#111827;color:#fff;padding:10px 14px;border-radius:10px;font-size:13px;z-index:500;opacity:0;pointer-events:none;transition:opacity .2s;}
   .toast.show{opacity:1;}
 
-  /* ── Update-prompt banner ── */
-  #update-banner{position:fixed;top:0;left:0;right:0;z-index:400;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:16px;}
-  #update-banner.hidden{display:none;}
-  .update-card{background:#fff;border-radius:12px;padding:24px 28px;max-width:440px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25);}
-  .update-card h3{font-size:15px;font-weight:700;margin-bottom:6px;}
-  .update-card p{font-size:13px;color:#6b7280;margin-bottom:18px;line-height:1.5;}
-  .update-card-btns{display:flex;gap:8px;justify-content:flex-end;}
-  input[type="checkbox"]{width:16px;height:16px;cursor:pointer;accent-color:#16a34a;}
-
   /* tag popup */
   .tag-popup{position:fixed;z-index:300;background:#fff;border:1px solid #d1d5db;border-radius:8px;padding:10px;box-shadow:0 4px 16px rgba(0,0,0,.12);min-width:220px;}
   .tag-input-wrap{display:flex;gap:6px;margin-top:8px;}
   .tag-input-wrap input{flex:1;padding:6px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;}
 
-  /* overlay */
+  /* overlay / modal */
   #overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:center;justify-content:center;}
   #overlay.hidden{display:none;}
   .modal{background:#fff;border-radius:12px;padding:28px;width:460px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.2);}
   .modal h2{font-size:16px;font-weight:700;margin-bottom:6px;}
   .modal p{font-size:13px;color:#6b7280;margin-bottom:18px;line-height:1.5;}
-  .modal .steps{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
-  .modal .step{display:flex;gap:10px;align-items:flex-start;}
-  .modal .step-n{width:22px;height:22px;border-radius:50%;background:#1d4ed8;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px;}
-  .modal .step-t{font-size:12px;color:#374151;line-height:1.5;}
-  .modal .step-t b{color:#111;}
   .modal-btns{display:flex;gap:8px;justify-content:flex-end;}
+
+  /* summary modal */
+  #summary-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:250;display:flex;align-items:center;justify-content:center;}
+  #summary-overlay.hidden{display:none;}
+  .summary-modal{background:#fff;border-radius:12px;padding:28px;width:480px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+  .summary-modal h2{font-size:16px;font-weight:700;margin-bottom:4px;}
+  .summary-modal .fname{font-size:12px;color:#2563eb;font-family:ui-monospace,monospace;margin-bottom:16px;word-break:break-all;}
+  .summary-modal .sm-row{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid #f1f5f9;}
+  .summary-modal .sm-row:last-child{border-bottom:none;}
+  .summary-modal .sm-label{color:#6b7280;}
+  .summary-modal .sm-value{font-weight:600;color:#111827;text-align:right;max-width:280px;word-break:break-word;}
+  .summary-modal .sm-section{margin:14px 0 6px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#94a3b8;}
+  .summary-modal-btns{display:flex;justify-content:flex-end;margin-top:20px;}
+
+  input[type="checkbox"]{width:16px;height:16px;cursor:pointer;accent-color:#16a34a;}
 </style>
 </head>
 <body>
@@ -178,19 +181,21 @@
 <div id="overlay">
   <div class="modal">
     <h2>Items View</h2>
-    <p>โหลดข้อมูลจาก 2 ไฟล์ · join ด้วย Item Code · รองรับ sub-code (-1, -2, …) สำหรับ placement เพิ่มเติม</p>
-    <div class="steps">
-      <div class="step">
-        <div class="step-n">1</div>
-        <div class="step-t"><b>Items CSV</b> — ไฟล์หลักจากระบบ KAHIS<br><span style="color:#9ca3af">เช่น items_export_enabled_AT_20260818.csv</span></div>
-      </div>
-      <div class="step">
-        <div class="step-n">2</div>
-        <div class="step-t"><b>Update CSV</b> (ไม่บังคับ) — ไฟล์ Tag + Tx Default ที่สร้างเอง<br><span style="color:#9ca3af">ยังไม่มี? กด Cancel — ระบบสร้างให้เมื่อ Save</span></div>
-      </div>
-    </div>
+    <p>แนะนำให้กด <b>Upload Master CSV</b> เพื่อเริ่ม จากนั้นกด <b>Upload Update CSV</b> ถ้ามีไฟล์ที่แก้ไขไว้แล้ว</p>
     <div class="modal-btns">
-      <button class="btn btn-blue" id="btn-open-items-modal">เปิด Items CSV</button>
+      <button class="btn btn-blue" id="btn-welcome-ok">เข้าใจแล้ว</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Post-load summary overlay ── -->
+<div id="summary-overlay" class="hidden">
+  <div class="summary-modal">
+    <h2>โหลดไฟล์สำเร็จ</h2>
+    <div class="fname" id="summary-fname"></div>
+    <div id="summary-body"></div>
+    <div class="summary-modal-btns">
+      <button class="btn btn-blue" id="btn-summary-close">ปิด</button>
     </div>
   </div>
 </div>
@@ -205,8 +210,15 @@
     </div>
     <div class="spacer"></div>
     <div class="topbar-btns">
-      <button class="tbtn tbtn-blue" id="btn-reload-items">โหลด Items ใหม่</button>
-      <button class="tbtn" id="btn-open-update">เปิด/เปลี่ยน Update CSV</button>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
+        <button class="tbtn tbtn-blue" id="btn-reload-items">Upload Master CSV</button>
+        <span class="file-hint" id="hint-master" style="display:none;"></span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
+        <button class="tbtn" id="btn-open-update">Upload Update CSV</button>
+        <span class="file-hint" id="hint-update" style="display:none;"></span>
+      </div>
+      <button class="tbtn tbtn-amber" id="btn-export-update" style="display:none;">Export Update CSV</button>
       <button class="tbtn tbtn-green" id="btn-save" disabled>💾 บันทึก</button>
     </div>
   </div>
@@ -243,8 +255,6 @@
       <button class="btn" id="btn-clear-filters">ล้างตัวกรอง</button>
       <span class="spacer"></span>
       <span class="hint" id="shown-hint"></span>
-      <button class="btn" id="btn-export-tab">Export CSV แท็บนี้</button>
-      <button class="btn btn-blue" id="btn-export-all">Export CSV ทั้งหมด</button>
       <button class="btn" id="btn-reset-done">ล้างติ๊กในแท็บนี้</button>
     </div>
     <div class="table-wrap">
@@ -285,18 +295,6 @@
 </div>
 
 <div class="toast" id="toast"></div>
-
-<!-- ── Update-prompt banner ── -->
-<div id="update-banner" class="hidden">
-  <div class="update-card">
-    <h3>เปิด Update CSV ด้วยไหม?</h3>
-    <p>ถ้ามีไฟล์ Tag + Tx Default อยู่แล้ว กด <b>เปิด Update CSV</b><br>ถ้ายังไม่มี กด <b>เริ่มใหม่</b> — ระบบจะสร้างให้เมื่อบันทึก</p>
-    <div class="update-card-btns">
-      <button class="btn" id="banner-btn-skip">เริ่มใหม่ (ไม่มีไฟล์)</button>
-      <button class="btn btn-blue" id="banner-btn-open">เปิด Update CSV</button>
-    </div>
-  </div>
-</div>
 
 <script>
 (function(){
@@ -385,6 +383,7 @@
     }
     return map;
   }
+  // Only write rows that have actual data (Tag, Route, Dose, Frequency, or Note non-empty)
   function serializeUpdateCsv(){
     var lines=[UPDATE_H.join(",")],written={};
     masterItems.forEach(function(item){
@@ -396,11 +395,19 @@
         written[code]=true;
       }
       getSubUids(code).forEach(function(uid){
-        var u=updateMap[uid];if(u){lines.push([uid,code,u.tags.join("|"),u.route,u.dose,u.frequency,u.note].map(ce).join(","));written[uid]=true;}
+        var u=updateMap[uid];
+        if(u&&(u.tags.length||u.route||u.dose||u.frequency||u.note)){
+          lines.push([uid,code,u.tags.join("|"),u.route,u.dose,u.frequency,u.note].map(ce).join(","));
+        }
+        written[uid]=true;
       });
     });
     Object.keys(updateMap).forEach(function(uid){
-      if(!written[uid]){var u=updateMap[uid];lines.push([uid,u.baseCode||"",u.tags.join("|"),u.route,u.dose,u.frequency,u.note].map(ce).join(","));}
+      if(!written[uid]){
+        var u=updateMap[uid];
+        if(u.tags.length||u.route||u.dose||u.frequency||u.note)
+          lines.push([uid,u.baseCode||"",u.tags.join("|"),u.route,u.dose,u.frequency,u.note].map(ce).join(","));
+      }
     });
     return "\uFEFF"+lines.join("\n");
   }
@@ -430,7 +437,6 @@
 
   // ── Rebuild multi-codes ────────────────────────────────────────────────────
   function rebuildMulti(){
-    // count appearances per base code
     var cnt={};
     masterItems.forEach(function(it){var c=it.itemCode;cnt[c]=(cnt[c]||0)+1;});
     Object.keys(updateMap).forEach(function(uid){
@@ -444,7 +450,6 @@
     var set={};
     Object.values(updateMap).forEach(function(u){(u.tags||[]).forEach(function(t){set[t]=true;});});
     allTags=Object.keys(set).sort(function(a,b){return a.localeCompare(b,"th");});
-    // update f-tag select
     var sel=document.getElementById("f-tag");
     var cur=sel.value;
     while(sel.options.length>2)sel.remove(2);
@@ -466,24 +471,18 @@
       var code=item.itemCode;
       var uMaster=updateMap[code]||{baseCode:"",tags:[],route:"",dose:"",frequency:"",note:""};
       var subUids=getSubUids(code);
-      // gather all rows for this master
       var candidates=[{uid:code,baseCode:"",item:item,isSub:false,u:uMaster}];
       subUids.forEach(function(uid){candidates.push({uid:uid,baseCode:code,item:item,isSub:true,u:updateMap[uid]||{tags:[],route:"",dose:"",frequency:"",note:""}});});
 
-      // filter candidates
       var visible=candidates.filter(function(dr){
         var u=dr.u;
-        // tag filter
         if(activeTag==="__notag__"){if(u.tags&&u.tags.length)return false;}
         else if(activeTag!=="__all__"){if(!u.tags||u.tags.indexOf(activeTag)===-1)return false;}
-        // done filter
         if(filterDone==="done"&&!doneMap[dr.uid])return false;
         if(filterDone==="todo"&&doneMap[dr.uid])return false;
-        // position filter
         var baseForMulti=dr.isSub?dr.baseCode:dr.uid;
         if(filterMulti==="multi"&&!multiCodes.has(baseForMulti))return false;
         if(filterMulti==="single"&&multiCodes.has(baseForMulti))return false;
-        // text search
         if(qLow){
           var hay=[dr.uid,item.description,item.tradeName,item.commonName,
             (u.tags||[]).join(" "),u.route,u.dose,u.frequency,u.note,item.unit,item.receipt].join(" ").toLowerCase();
@@ -492,7 +491,6 @@
         return true;
       });
       if(!visible.length)return;
-      // mark last sub
       var lastIdx=visible.length-1;
       visible.forEach(function(dr,i){dr.isLastSub=i===lastIdx&&dr.isSub;});
       out.push.apply(out,visible);
@@ -557,7 +555,6 @@
       else{if(isDone)cls+=" done";if(dr.isLastSub)cls+=" sub-last";}
       tr.className=cls.trim();
 
-      // ── Done checkbox ──
       var tdDone=document.createElement("td");
       tdDone.className="sticky-done col-done";
       var cb=document.createElement("input");cb.type="checkbox";cb.checked=isDone;
@@ -567,14 +564,12 @@
       });
       tdDone.appendChild(cb);tr.appendChild(tdDone);
 
-      // ── Item Code ──
       var tdCode=document.createElement("td");
       tdCode.className="col-code"+(isSub?" sub":"");
       tdCode.textContent=uid;
       if(isMulti&&!isSub){var mb=document.createElement("span");mb.className="multi-badge";mb.textContent="×"+(Object.keys(updateMap).filter(function(u2){return baseCodeOf(u2)===uid;}).length+1);tdCode.appendChild(mb);}
       tr.appendChild(tdCode);
 
-      // ── Tag cell ──
       var tdTag=document.createElement("td");
       var tagWrap=document.createElement("div");tagWrap.className="tag-cell";
       tags.forEach(function(t){
@@ -591,7 +586,6 @@
       addBtn.addEventListener("click",function(e){e.stopPropagation();showTagInput(uid,dr.baseCode,addBtn);});
       tagWrap.appendChild(addBtn);tdTag.appendChild(tagWrap);tr.appendChild(tdTag);
 
-      // ── Name cells with copy ──
       ["description","tradeName","commonName"].forEach(function(k){
         var td=document.createElement("td");td.className="col-name";
         var wrap=document.createElement("div");wrap.className="name-cell";
@@ -605,7 +599,6 @@
         wrap.appendChild(val);wrap.appendChild(cpBtn);td.appendChild(wrap);tr.appendChild(td);
       });
 
-      // ── Tx Default inline inputs ──
       [{key:"route",cls:"col-tx"},{key:"dose",cls:"col-tx"},{key:"frequency",cls:"col-tx"},{key:"note",cls:"col-tx"}].forEach(function(f){
         var td=document.createElement("td");td.className=f.cls;
         var inp=document.createElement("input");inp.className="tx-input";inp.value=u[f.key]||"";
@@ -615,7 +608,6 @@
         td.appendChild(inp);tr.appendChild(td);
       });
 
-      // ── Extra read-only fields ──
       var extraFields=[
         {k:"unit",cls:"col-unit"},{k:"receipt",cls:"col-receipt"},
         {k:"alertMin",cls:"col-num"},{k:"alertMax",cls:"col-num"},
@@ -640,7 +632,6 @@
         tr.appendChild(td);
       });
 
-      // ── Actions ──
       var tdAct=document.createElement("td");tdAct.style.whiteSpace="nowrap";
       if(!isSub){
         var addSub=document.createElement("button");addSub.className="btn-add-sub";addSub.textContent="+ Sub";
@@ -745,43 +736,36 @@
     setTimeout(function(){t.classList.remove("show");},2500);
   }
 
-  // ── CSV Export ─────────────────────────────────────────────────────────────
-  var CSV_H=["ทำแล้ว","Item Code","Base Code","Tag","Description","Trade Name","Common Name",
-    "Route","Dose/หน่วยการใช้งาน","Frequency/Rate","Note",
-    "Unit","Receipt Category","Alert Min","Alert Max","Formula","Sell Price","Rx Default","Status"];
-  function rowCsv(dr){
-    var u=dr.u,item=dr.item;
-    return [doneMap[dr.uid]?"Y":"",dr.uid,dr.baseCode,(u.tags||[]).join("|"),
-      item.description,item.tradeName,item.commonName,
-      u.route,u.dose,u.frequency,u.note,
-      item.unit,item.receipt,item.alertMin,item.alertMax,item.formula,item.sellPrice,item.rxDefault,item.status
-    ].map(ce).join(",");
+  // ── Summary modal ──────────────────────────────────────────────────────────
+  function showSummaryModal(fname, bodyHtml){
+    document.getElementById("summary-fname").textContent="📄 "+fname;
+    document.getElementById("summary-body").innerHTML=bodyHtml;
+    document.getElementById("summary-overlay").classList.remove("hidden");
   }
-  function dlCsv(name,rows){
-    var text="\uFEFF"+CSV_H.join(",")+"\n"+rows.join("\n");
+  document.getElementById("btn-summary-close").addEventListener("click",function(){
+    document.getElementById("summary-overlay").classList.add("hidden");
+  });
+
+  function summaryRow(label, value){
+    return '<div class="sm-row"><span class="sm-label">'+label+'</span><span class="sm-value">'+value+'</span></div>';
+  }
+
+  // ── Export Update CSV (download) ───────────────────────────────────────────
+  function fmtLocalDt(){
+    var d=new Date();
+    function z(n){return String(n).padStart(2,"0");}
+    return ""+d.getFullYear()+z(d.getMonth()+1)+z(d.getDate())+z(d.getHours())+z(d.getMinutes())+z(d.getSeconds());
+  }
+  document.getElementById("btn-export-update").addEventListener("click",function(){
+    var text=serializeUpdateCsv();
+    var fname="Update_items_at_"+fmtLocalDt()+".csv";
     var blob=new Blob([text],{type:"text/csv;charset=utf-8"});
-    var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;
+    var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fname;
     document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(a.href);
-  }
-  document.getElementById("btn-export-tab").addEventListener("click",function(){
-    var rows=buildDisplayRows().map(rowCsv);
-    dlCsv("itemsview-"+(activeTag==="__all__"?"all":activeTag.replace(/[\\/:*?"<>|]/g,"-"))+".csv",rows);
-    toast("Export "+rows.length+" แถว");
+    var rowCount=Object.keys(updateMap).filter(function(uid){var u=updateMap[uid];return u&&(u.tags.length||u.route||u.dose||u.frequency||u.note);}).length;
+    toast("Export "+rowCount+" แถว → "+fname);
   });
-  document.getElementById("btn-export-all").addEventListener("click",function(){
-    // all master + subs
-    var allRows=[];
-    masterItems.forEach(function(item){
-      var code=item.itemCode;
-      var uMaster=updateMap[code]||{baseCode:"",tags:[],route:"",dose:"",frequency:"",note:""};
-      allRows.push({uid:code,baseCode:"",item:item,isSub:false,u:uMaster});
-      getSubUids(code).forEach(function(uid){
-        allRows.push({uid:uid,baseCode:code,item:item,isSub:true,u:updateMap[uid]||{tags:[],route:"",dose:"",frequency:"",note:""}});
-      });
-    });
-    dlCsv("itemsview-all.csv",allRows.map(rowCsv));
-    toast("Export ทั้งหมด "+allRows.length+" แถว");
-  });
+
   document.getElementById("btn-reset-done").addEventListener("click",function(){
     var rows=buildDisplayRows();
     if(!confirm("ล้างติ๊กในมุมมองนี้ "+rows.length+" รายการ?"))return;
@@ -807,13 +791,18 @@
       masterMap={};masterItems.forEach(function(it){masterMap[it.itemCode]=it;});
       document.getElementById("topbar-kicker").textContent="Items View · "+file.name+" · "+masterItems.length+" รายการ";
       document.getElementById("overlay").classList.add("hidden");
+      document.getElementById("hint-master").textContent="📄 master: "+file.name;
+      document.getElementById("hint-master").style.display="";
+      document.getElementById("btn-export-update").style.display="";
       rebuildMulti();rebuildTags();renderTabs();render();
-      toast("โหลด "+masterItems.length+" รายการ");
-      promptOpenUpdate();
+
+      // post-load summary for master
+      var sample=masterItems.slice(0,3).map(function(it){return it.itemCode+(it.description?" – "+it.description:"");});
+      var bodyHtml='<div class="sm-section">Master CSV</div>';
+      bodyHtml+=summaryRow("จำนวน items ทั้งหมด","<b>"+masterItems.length+"</b> รายการ");
+      bodyHtml+=summaryRow("ตัวอย่าง item codes",sample.map(function(s){return'<span style="font-family:monospace;font-size:11px;">'+escHtml(s)+'</span>';}).join("<br>"));
+      showSummaryModal(file.name,bodyHtml);
     }catch(e){if(e.name!=="AbortError")toast("เปิดไม่ได้: "+e.message);}
-  }
-  function promptOpenUpdate(){
-    document.getElementById("update-banner").classList.remove("hidden");
   }
   async function openUpdateFile(){
     try{
@@ -824,9 +813,23 @@
       dirty=false;
       document.getElementById("stat-dirty").style.display="none";
       document.getElementById("btn-save").disabled=true;
-      document.getElementById("update-banner").classList.add("hidden");
+      document.getElementById("hint-update").textContent="📄 update: "+file.name;
+      document.getElementById("hint-update").style.display="";
       rebuildMulti();rebuildTags();renderTabs();render();
-      toast("โหลด Update CSV: "+file.name);
+
+      // post-load summary for update
+      var allUids=Object.keys(updateMap);
+      var withData=allUids.filter(function(uid){var u=updateMap[uid];return u&&(u.tags.length||u.route||u.dose||u.frequency||u.note);});
+      var withTx=allUids.filter(function(uid){var u=updateMap[uid];return u&&(u.route||u.dose||u.frequency||u.note);});
+      var tagSet={};
+      allUids.forEach(function(uid){(updateMap[uid].tags||[]).forEach(function(t){tagSet[t]=true;});});
+      var distinctTags=Object.keys(tagSet).sort(function(a,b){return a.localeCompare(b,"th");});
+
+      var bodyHtml='<div class="sm-section">Update CSV</div>';
+      bodyHtml+=summaryRow("แถวที่มีข้อมูล","<b>"+withData.length+"</b> แถว");
+      bodyHtml+=summaryRow("Tags ที่พบ",distinctTags.length?distinctTags.map(function(t){return'<span style="display:inline-block;background:#dbeafe;color:#1e40af;padding:1px 7px;border-radius:10px;font-size:11px;margin:1px 2px;">'+escHtml(t)+'</span>';}).join(" "):'<span style="color:#9ca3af">ไม่มี</span>');
+      bodyHtml+=summaryRow("แถวที่มี Tx Default","<b>"+withTx.length+"</b> แถว");
+      showSummaryModal(file.name,bodyHtml);
     }catch(e){if(e.name!=="AbortError")toast("เปิดไม่ได้: "+e.message);}
   }
   async function saveUpdateFile(){
@@ -847,15 +850,15 @@
     }catch(e){if(e.name!=="AbortError")toast("บันทึกไม่ได้: "+e.message);}
   }
 
+  function escHtml(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
   // ── Event wiring ───────────────────────────────────────────────────────────
-  document.getElementById("btn-open-items-modal").addEventListener("click",openItemsFile);
+  document.getElementById("btn-welcome-ok").addEventListener("click",function(){
+    document.getElementById("overlay").classList.add("hidden");
+  });
   document.getElementById("btn-reload-items").addEventListener("click",openItemsFile);
   document.getElementById("btn-open-update").addEventListener("click",openUpdateFile);
   document.getElementById("btn-save").addEventListener("click",saveUpdateFile);
-  document.getElementById("banner-btn-open").addEventListener("click",openUpdateFile);
-  document.getElementById("banner-btn-skip").addEventListener("click",function(){
-    document.getElementById("update-banner").classList.add("hidden");
-  });
 
   document.getElementById("q").addEventListener("input",function(){filterQ=this.value;render();});
   document.getElementById("f-done").addEventListener("change",function(){filterDone=this.value;render();});
