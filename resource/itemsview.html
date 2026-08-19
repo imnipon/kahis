@@ -555,7 +555,7 @@
   // ── Render tabs ────────────────────────────────────────────────────────────
   function renderTabs(){
     var container=document.getElementById("tabs");container.innerHTML="";
-    var btns=[{tag:"__all__",label:"ทั้งหมด"},{tag:"__notag__",label:"ยังไม่มี Tag"}]
+    var btns=[{tag:"__all__",label:"ทั้งหมด"},{tag:"__notag__",label:"ยังไม่มี Tag"},{tag:"__multitag__",label:"มากกว่า 1 Tag"}]
       .concat(allTags.map(function(t){return{tag:t,label:t};}));
     btns.forEach(function(b){
       var btn=document.createElement("button");btn.className="tab"+(b.tag===activeTag?" on":"");
@@ -563,6 +563,15 @@
       if(b.tag==="__all__") cnt=masterItems.length;
       else if(b.tag==="__notag__"){
         cnt=masterItems.filter(function(it){var u=updateMap[it.itemCode];return!u||!u.tags||!u.tags.length;}).length;
+      } else if(b.tag==="__multitag__"){
+        cnt=masterItems.filter(function(it){
+          var code=it.itemCode;
+          var uMaster=updateMap[code]||{tags:[]};
+          var set={};
+          (uMaster.tags||[]).forEach(function(t){set[t]=true;});
+          getSubUids(code).forEach(function(uid2){((updateMap[uid2]||{}).tags||[]).forEach(function(t){set[t]=true;});});
+          return Object.keys(set).length>=2;
+        }).length;
       } else {
         cnt=masterItems.filter(function(it){
           if((updateMap[it.itemCode]||{tags:[]}).tags.indexOf(b.tag)!==-1)return true;
