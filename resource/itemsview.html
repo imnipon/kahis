@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Items View</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Tahoma,sans-serif;font-size:13px;background:#f3f4f6;color:#1f2937;}
+.topbar{display:flex;align-items:center;gap:8px;padding:10px 14px;background:#fff;border-bottom:1px solid #e5e7eb;flex-wrap:wrap;}
+.topbar h1{font-size:15px;font-weight:700;color:#111827;margin-right:4px;}
+.btn{padding:5px 12px;border-radius:6px;border:1px solid #d1d5db;background:#fff;color:#374151;cursor:pointer;font-size:12px;white-space:nowrap;}
+.btn:hover{background:#f9fafb;}
+.btn-blue{border-color:#93c5fd;color:#2563eb;} .btn-blue:hover{background:#eff6ff;}
+.btn-save{border-color:#86efac;color:#16a34a;font-weight:600;} .btn-save:hover{background:#f0fdf4;}
+.btn-save:disabled{opacity:.4;cursor:default;}
+.badge{font-size:11px;padding:2px 7px;border-radius:9px;background:#fef3c7;color:#92400e;font-weight:600;}
+.badge.dirty{background:#fee2e2;color:#b91c1c;}
+.spacer{flex:1;}
+.hint{font-size:11px;color:#9ca3af;}
+
+.tabs-row{display:flex;align-items:center;gap:4px;padding:8px 14px;background:#fff;border-bottom:1px solid #e5e7eb;flex-wrap:wrap;}
+.tab-btn{padding:4px 12px;border-radius:16px;border:1px solid #d1d5db;background:#fff;color:#6b7280;cursor:pointer;font-size:12px;}
+.tab-btn.active{background:#1d4ed8;color:#fff;border-color:#1d4ed8;}
+.tab-btn:hover:not(.active){background:#f3f4f6;}
+
+.page{padding:12px 14px;}
+.table-wrap{overflow:auto;max-height:calc(100vh - 140px);border:1px solid #e5e7eb;border-radius:8px;background:#fff;}
+table{border-collapse:collapse;width:100%;min-width:1200px;}
+th{position:sticky;top:0;background:#f8fafc;font-size:11px;font-weight:600;color:#64748b;padding:6px 8px;border-bottom:2px solid #e2e8f0;white-space:nowrap;user-select:none;cursor:pointer;}
+th:hover{background:#e8edf3;}
+th.grp-item{background:#eff6ff;color:#1d4ed8;}
+th.grp-tx{background:#f0fdf4;color:#15803d;}
+th.sort-asc::after{content:" ↑";opacity:.8;}
+th.sort-desc::after{content:" ↓";opacity:.8;}
+td{padding:5px 8px;border-bottom:1px solid #f1f5f9;vertical-align:top;}
+tr:hover td{background:#fafafa;}
+tr.has-tag td{background:#fefce8;}
+tr.has-tag:hover td{background:#fef9c3;}
+
+.tag-cell{display:flex;flex-wrap:wrap;gap:3px;align-items:center;}
+.tag-chip{display:inline-flex;align-items:center;gap:2px;padding:1px 7px;border-radius:10px;background:#dbeafe;color:#1e40af;font-size:11px;font-weight:500;}
+.tag-chip .rm{cursor:pointer;font-size:10px;color:#93c5fd;margin-left:1px;} .tag-chip .rm:hover{color:#1e40af;}
+.tag-add{padding:1px 6px;border-radius:10px;border:1px dashed #93c5fd;background:transparent;color:#3b82f6;font-size:11px;cursor:pointer;}
+.tag-add:hover{background:#eff6ff;}
+
+.tx-cell{display:flex;flex-direction:column;gap:2px;min-width:220px;}
+.tx-field{display:flex;align-items:baseline;gap:4px;}
+.tx-label{font-size:10px;color:#9ca3af;white-space:nowrap;min-width:52px;}
+.tx-input{flex:1;border:1px solid transparent;border-radius:4px;padding:2px 5px;font-size:12px;background:transparent;color:#374151;font-family:inherit;}
+.tx-input:hover{border-color:#d1d5db;background:#fff;}
+.tx-input:focus{border-color:#93c5fd;background:#fff;outline:none;}
+.tx-input.changed{background:#fef9c3;border-color:#fbbf24;}
+
+.code-cell{font-family:monospace;font-size:11px;color:#6b7280;}
+.multi-badge{display:inline-block;width:7px;height:7px;border-radius:50%;background:#f97316;margin-right:3px;vertical-align:middle;}
+
+.toast{position:fixed;bottom:20px;right:20px;background:#1f2937;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;z-index:999;opacity:0;transition:opacity .3s;}
+.toast.show{opacity:1;}
+
+#overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;display:flex;align-items:center;justify-content:center;}
+#overlay.hidden{display:none;}
+.modal{background:#fff;border-radius:12px;padding:28px;width:440px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+.modal h2{font-size:16px;font-weight:700;margin-bottom:6px;}
+.modal p{font-size:13px;color:#6b7280;margin-bottom:18px;line-height:1.5;}
+.modal .steps{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+.modal .step{display:flex;gap:10px;align-items:flex-start;}
+.modal .step-n{width:22px;height:22px;border-radius:50%;background:#1d4ed8;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px;}
+.modal .step-t{font-size:12px;color:#374151;line-height:1.5;}
+.modal .step-t b{color:#111;}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end;}
+
+.tag-input-wrap{display:flex;gap:6px;margin-top:12px;}
+.tag-input-wrap input{flex:1;padding:6px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;}
+</style>
+</head>
+<body>
+
+<div id="overlay">
+  <div class="modal">
+    <h2>Items View</h2>
+    <p>โหลดข้อมูลจาก 2 ไฟล์ — ระบบจะ join ด้วย Item Code และแสดงผลทั้งหมด</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-n">1</div>
+        <div class="step-t"><b>Items CSV</b> — ไฟล์หลักจากระบบ KAHIS<br><span style="color:#9ca3af">เช่น items_export_enabled_AT_20260818.csv</span></div>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <div class="step-t"><b>Update CSV</b> (ไม่บังคับ) — ไฟล์ Tag + Tx Default ที่เราสร้างเอง<br><span style="color:#9ca3af">ถ้ายังไม่มีกด "สร้างใหม่" — ระบบจะสร้างให้อัตโนมัติ</span></div>
+      </div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-blue" id="btn-open-items">เปิด Items CSV</button>
+    </div>
+  </div>
+</div>
+
+<div class="topbar">
+  <h1>Items View</h1>
+  <span class="hint" id="hint-items"></span>
+  <span class="badge" id="badge-dirty" style="display:none">มีการแก้ไข</span>
+  <div class="spacer"></div>
+  <span class="hint" id="stat-shown"></span>
+  <button class="btn btn-save" id="btn-save" disabled>💾 บันทึก Update CSV</button>
+  <button class="btn btn-blue" id="btn-reload-items">โหลด Items ใหม่</button>
+  <button class="btn" id="btn-open-update">เปิด/เปลี่ยน Update CSV</button>
+</div>
+
+<div class="tabs-row" id="tabs-row">
+  <button class="tab-btn active" data-tag="__all__">ทั้งหมด</button>
+  <button class="tab-btn" data-tag="__notag__">ยังไม่มี Tag</button>
+</div>
+
+<div class="page">
+  <div class="table-wrap">
+    <table id="tbl">
+      <thead>
+        <tr>
+          <th data-k="itemCode" class="grp-item">Item Code</th>
+          <th data-k="description" class="grp-item">Description</th>
+          <th data-k="tradeName" class="grp-item">Trade Name</th>
+          <th data-k="commonName" class="grp-item">Common Name</th>
+          <th data-k="unit" class="grp-item">Unit</th>
+          <th data-k="receipt" class="grp-item">Receipt Category</th>
+          <th data-k="status" class="grp-item">Status</th>
+          <th class="grp-tx" style="cursor:default">Tag</th>
+          <th class="grp-tx" style="cursor:default;min-width:240px;">Tx Default</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  // ── State ──────────────────────────────────────────────
+  var items = [];          // [{itemCode, description, tradeName, commonName, unit, receipt, status, ...}]
+  var updateMap = {};      // itemCode → {tags:[], route, dose, frequency, note}
+  var dirty = false;
+  var activeTag = "__all__";
+  var sortKey = "itemCode";
+  var sortDir = 1;
+  var itemsFileHandle = null;
+  var updateFileHandle = null;
+  var allTags = [];        // distinct tags across all items
+
+  // ── CSV helpers ────────────────────────────────────────
+  function parseCSV(text) {
+    var lines = text.replace(/\r\n/g,"\n").replace(/\r/g,"\n").split("\n");
+    var rows = [];
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i];
+      if (!line.trim()) continue;
+      rows.push(parseLine(line));
+    }
+    return rows;
+  }
+  function parseLine(line) {
+    var fields = [], cur = "", inQ = false;
+    for (var i = 0; i < line.length; i++) {
+      var c = line[i];
+      if (inQ) {
+        if (c === '"' && line[i+1] === '"') { cur += '"'; i++; }
+        else if (c === '"') inQ = false;
+        else cur += c;
+      } else {
+        if (c === '"') inQ = true;
+        else if (c === ',') { fields.push(cur); cur = ""; }
+        else cur += c;
+      }
+    }
+    fields.push(cur);
+    return fields;
+  }
+  function ce(v) {
+    var s = String(v == null ? "" : v);
+    return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
+
+  // ── Load Items CSV ─────────────────────────────────────
+  function parseItemsCsv(text) {
+    var rows = parseCSV(text);
+    if (rows.length < 2) return [];
+    var h = rows[0].map(function(x){ return x.trim(); });
+    function col(name) {
+      for (var i = 0; i < h.length; i++) if (h[i].toLowerCase().indexOf(name.toLowerCase()) !== -1) return i;
+      return -1;
+    }
+    var iCode = col("Item Code"), iDesc = col("Description"), iTrade = col("Trade Name"),
+        iCommon = col("Common Name"), iUnit = col("Unit("), iReceipt = col("Receipt"),
+        iAlertMin = col("Alert Min"), iAlertMax = col("Alert Max"), iFormula = col("Formula"),
+        iSell = col("Sell Price"), iRx = col("Rx Default"), iStatus = col("Status");
+    var out = [];
+    for (var r = 1; r < rows.length; r++) {
+      var row = rows[r];
+      if (!row[iCode] || !row[iCode].trim()) continue;
+      var code = row[iCode].replace(/^'/,"").trim();
+      out.push({
+        itemCode: code,
+        description: (row[iDesc]||"").trim(),
+        tradeName: (row[iTrade]||"").trim(),
+        commonName: (row[iCommon]||"").trim(),
+        unit: (row[iUnit]||"").trim(),
+        receipt: (row[iReceipt]||"").trim(),
+        alertMin: (row[iAlertMin]||"").trim(),
+        alertMax: (row[iAlertMax]||"").trim(),
+        formula: (row[iFormula]||"").trim(),
+        sellPrice: (row[iSell]||"").trim(),
+        rxDefault: (row[iRx]||"").trim(),
+        status: (row[iStatus]||"").trim(),
+      });
+    }
+    return out;
+  }
+
+  // ── Load/Save Update CSV ───────────────────────────────
+  var UPDATE_H = ["Item Code","Tag","Route","Dose","Frequency","Note"];
+  function parseUpdateCsv(text) {
+    var rows = parseCSV(text);
+    if (rows.length < 1) return {};
+    var map = {};
+    for (var r = 1; r < rows.length; r++) {
+      var row = rows[r];
+      var code = (row[0]||"").replace(/^'/,"").trim();
+      if (!code) continue;
+      var tagsRaw = (row[1]||"").trim();
+      map[code] = {
+        tags: tagsRaw ? tagsRaw.split("|").map(function(t){ return t.trim(); }).filter(Boolean) : [],
+        route: (row[2]||"").trim(),
+        dose: (row[3]||"").trim(),
+        frequency: (row[4]||"").trim(),
+        note: (row[5]||"").trim(),
+      };
+    }
+    return map;
+  }
+  function serializeUpdateCsv() {
+    var lines = [UPDATE_H.join(",")];
+    items.forEach(function(item) {
+      var u = updateMap[item.itemCode] || {};
+      var tags = u.tags || [];
+      var route = u.route || "";
+      var dose = u.dose || "";
+      var freq = u.frequency || "";
+      var note = u.note || "";
+      if (!tags.length && !route && !dose && !freq && !note) return; // skip empty
+      lines.push([item.itemCode, tags.join("|"), route, dose, freq, note].map(ce).join(","));
+    });
+    return "\uFEFF" + lines.join("\n");
+  }
+
+  // ── Tags helper ────────────────────────────────────────
+  function rebuildTags() {
+    var set = {};
+    Object.values(updateMap).forEach(function(u) {
+      (u.tags||[]).forEach(function(t){ set[t] = true; });
+    });
+    allTags = Object.keys(set).sort(function(a,b){ return a.localeCompare(b,"th"); });
+    renderTabs();
+  }
+
+  // ── Render tabs ────────────────────────────────────────
+  function renderTabs() {
+    var row = document.getElementById("tabs-row");
+    var btns = [{tag:"__all__",label:"ทั้งหมด"},{tag:"__notag__",label:"ยังไม่มี Tag"}]
+      .concat(allTags.map(function(t){ return {tag:t,label:t}; }));
+    row.innerHTML = "";
+    btns.forEach(function(b) {
+      var btn = document.createElement("button");
+      btn.className = "tab-btn" + (b.tag === activeTag ? " active" : "");
+      btn.setAttribute("data-tag", b.tag);
+      btn.textContent = b.label;
+      if (b.tag !== "__all__" && b.tag !== "__notag__") {
+        var cnt = items.filter(function(item) {
+          return (updateMap[item.itemCode]||{tags:[]}).tags.indexOf(b.tag) !== -1;
+        }).length;
+        btn.textContent += " (" + cnt + ")";
+      }
+      btn.addEventListener("click", function() { activeTag = b.tag; renderTabs(); renderTable(); });
+      row.appendChild(btn);
+    });
+  }
+
+  // ── Filter + Sort ──────────────────────────────────────
+  function filtered() {
+    var base = items;
+    if (activeTag === "__notag__") {
+      base = items.filter(function(item) {
+        var u = updateMap[item.itemCode];
+        return !u || !u.tags || u.tags.length === 0;
+      });
+    } else if (activeTag !== "__all__") {
+      base = items.filter(function(item) {
+        var u = updateMap[item.itemCode];
+        return u && u.tags && u.tags.indexOf(activeTag) !== -1;
+      });
+    }
+    return base.slice().sort(function(a,b) {
+      var av = String(a[sortKey]||""), bv = String(b[sortKey]||"");
+      var r = av.localeCompare(bv,"th");
+      if (r===0) r = String(a.itemCode).localeCompare(String(b.itemCode),"th");
+      return r * sortDir;
+    });
+  }
+
+  // ── Render table ───────────────────────────────────────
+  function renderTable() {
+    var rows = filtered();
+    document.getElementById("stat-shown").textContent = "แสดง " + rows.length + " / " + items.length + " รายการ";
+    var tbody = document.getElementById("tbody");
+    tbody.innerHTML = "";
+    rows.forEach(function(item) {
+      var u = updateMap[item.itemCode] || {tags:[], route:"", dose:"", frequency:"", note:""};
+      var tags = u.tags || [];
+      var tr = document.createElement("tr");
+      if (tags.length) tr.className = "has-tag";
+
+      // Item Code
+      var tdCode = document.createElement("td");
+      tdCode.className = "code-cell";
+      tdCode.textContent = item.itemCode;
+      tr.appendChild(tdCode);
+
+      // Read-only fields
+      ["description","tradeName","commonName","unit","receipt","status"].forEach(function(k) {
+        var td = document.createElement("td");
+        td.textContent = item[k] || "";
+        tr.appendChild(td);
+      });
+
+      // Tag cell
+      var tdTag = document.createElement("td");
+      var tagWrap = document.createElement("div");
+      tagWrap.className = "tag-cell";
+      tags.forEach(function(t) {
+        var chip = document.createElement("span");
+        chip.className = "tag-chip";
+        chip.textContent = t;
+        var rm = document.createElement("span");
+        rm.className = "rm";
+        rm.textContent = "✕";
+        rm.addEventListener("click", function() {
+          ensureUpdate(item.itemCode);
+          updateMap[item.itemCode].tags = updateMap[item.itemCode].tags.filter(function(x){ return x !== t; });
+          setDirty();
+          rebuildTags();
+          renderTable();
+        });
+        chip.appendChild(rm);
+        tagWrap.appendChild(chip);
+      });
+      var addBtn = document.createElement("button");
+      addBtn.className = "tag-add";
+      addBtn.textContent = "+ Tag";
+      addBtn.addEventListener("click", function(e) {
+        e.stopPropagation();
+        showTagInput(item.itemCode, addBtn);
+      });
+      tagWrap.appendChild(addBtn);
+      tdTag.appendChild(tagWrap);
+      tr.appendChild(tdTag);
+
+      // Tx Default cell
+      var tdTx = document.createElement("td");
+      var txWrap = document.createElement("div");
+      txWrap.className = "tx-cell";
+      [
+        {label:"Route", key:"route"},
+        {label:"Dose", key:"dose"},
+        {label:"Freq", key:"frequency"},
+        {label:"Note", key:"note"},
+      ].forEach(function(f) {
+        var row = document.createElement("div");
+        row.className = "tx-field";
+        var lbl = document.createElement("span");
+        lbl.className = "tx-label";
+        lbl.textContent = f.label;
+        var inp = document.createElement("input");
+        inp.className = "tx-input";
+        inp.value = u[f.key] || "";
+        inp.addEventListener("change", function() {
+          ensureUpdate(item.itemCode);
+          updateMap[item.itemCode][f.key] = inp.value;
+          setDirty();
+        });
+        row.appendChild(lbl);
+        row.appendChild(inp);
+        txWrap.appendChild(row);
+      });
+      tdTx.appendChild(txWrap);
+      tr.appendChild(tdTx);
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  // ── Tag input popup ────────────────────────────────────
+  var tagPopupTarget = null;
+  function showTagInput(itemCode, anchor) {
+    // remove existing popup
+    var existing = document.getElementById("tag-popup");
+    if (existing) existing.remove();
+    if (tagPopupTarget === itemCode) { tagPopupTarget = null; return; }
+    tagPopupTarget = itemCode;
+    var popup = document.createElement("div");
+    popup.id = "tag-popup";
+    popup.style.cssText = "position:fixed;z-index:50;background:#fff;border:1px solid #d1d5db;border-radius:8px;padding:10px;box-shadow:0 4px 16px rgba(0,0,0,.12);min-width:220px;";
+    var rect = anchor.getBoundingClientRect();
+    popup.style.top = (rect.bottom + 4) + "px";
+    popup.style.left = rect.left + "px";
+
+    // existing tags as suggestions
+    var u = updateMap[itemCode] || {tags:[]};
+    var existing_tags = u.tags || [];
+    var suggestions = allTags.filter(function(t){ return existing_tags.indexOf(t) === -1; });
+    if (suggestions.length) {
+      var sugDiv = document.createElement("div");
+      sugDiv.style.cssText = "display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;";
+      suggestions.forEach(function(t) {
+        var b = document.createElement("button");
+        b.className = "tag-chip";
+        b.style.cursor = "pointer";
+        b.textContent = t;
+        b.addEventListener("click", function() { addTag(itemCode, t); popup.remove(); tagPopupTarget = null; });
+        sugDiv.appendChild(b);
+      });
+      popup.appendChild(sugDiv);
+    }
+
+    var wrap = document.createElement("div");
+    wrap.className = "tag-input-wrap";
+    var inp = document.createElement("input");
+    inp.placeholder = "พิมพ์ tag ใหม่...";
+    var btn = document.createElement("button");
+    btn.className = "btn btn-blue";
+    btn.textContent = "เพิ่ม";
+    btn.addEventListener("click", function() {
+      var val = inp.value.trim();
+      if (val) { addTag(itemCode, val); popup.remove(); tagPopupTarget = null; }
+    });
+    inp.addEventListener("keydown", function(e) {
+      if (e.key === "Enter") { var val = inp.value.trim(); if (val) { addTag(itemCode, val); popup.remove(); tagPopupTarget = null; } }
+      if (e.key === "Escape") { popup.remove(); tagPopupTarget = null; }
+    });
+    wrap.appendChild(inp);
+    wrap.appendChild(btn);
+    popup.appendChild(wrap);
+    document.body.appendChild(popup);
+    inp.focus();
+    setTimeout(function() {
+      document.addEventListener("click", function rm(e) {
+        if (!popup.contains(e.target) && e.target !== anchor) { popup.remove(); tagPopupTarget = null; document.removeEventListener("click", rm); }
+      });
+    }, 0);
+  }
+  function addTag(itemCode, tag) {
+    ensureUpdate(itemCode);
+    var tags = updateMap[itemCode].tags;
+    if (tags.indexOf(tag) === -1) tags.push(tag);
+    setDirty();
+    rebuildTags();
+    renderTable();
+  }
+  function ensureUpdate(itemCode) {
+    if (!updateMap[itemCode]) updateMap[itemCode] = {tags:[], route:"", dose:"", frequency:"", note:""};
+  }
+
+  // ── Dirty state ────────────────────────────────────────
+  function setDirty() {
+    dirty = true;
+    document.getElementById("badge-dirty").style.display = "";
+    document.getElementById("btn-save").disabled = false;
+  }
+
+  // ── Toast ──────────────────────────────────────────────
+  function toast(msg) {
+    var t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(function(){ t.classList.remove("show"); }, 2500);
+  }
+
+  // ── File System Access API ─────────────────────────────
+  async function openItemsFile() {
+    try {
+      var [fh] = await window.showOpenFilePicker({ types:[{description:"CSV",accept:{"text/csv":[".csv"]}}] });
+      itemsFileHandle = fh;
+      var file = await fh.getFile();
+      var text = await file.text();
+      items = parseItemsCsv(text);
+      document.getElementById("hint-items").textContent = file.name + " · " + items.length + " รายการ";
+      document.getElementById("overlay").classList.add("hidden");
+      rebuildTags();
+      renderTable();
+      toast("โหลด " + items.length + " รายการ");
+      // ถามเปิด update file
+      promptOpenUpdate();
+    } catch(e) {
+      if (e.name !== "AbortError") toast("เปิดไม่ได้: " + e.message);
+    }
+  }
+
+  async function promptOpenUpdate() {
+    if (!confirm("ต้องการเปิด Update CSV (Tag + Tx Default) ด้วยไหม?\n\nกด OK เพื่อเปิดไฟล์ที่มีอยู่\nกด Cancel เพื่อเริ่มใหม่ (จะบันทึกสร้างไฟล์ใหม่เมื่อกด Save)")) return;
+    await openUpdateFile();
+  }
+
+  async function openUpdateFile() {
+    try {
+      var [fh] = await window.showOpenFilePicker({ types:[{description:"CSV",accept:{"text/csv":[".csv"]}}] });
+      updateFileHandle = fh;
+      var file = await fh.getFile();
+      var text = await file.text();
+      updateMap = parseUpdateCsv(text);
+      dirty = false;
+      document.getElementById("badge-dirty").style.display = "none";
+      document.getElementById("btn-save").disabled = true;
+      rebuildTags();
+      renderTable();
+      toast("โหลด Update CSV: " + file.name);
+    } catch(e) {
+      if (e.name !== "AbortError") toast("เปิดไม่ได้: " + e.message);
+    }
+  }
+
+  async function saveUpdateFile() {
+    var text = serializeUpdateCsv();
+    if (updateFileHandle) {
+      try {
+        var writable = await updateFileHandle.createWritable();
+        await writable.write(text);
+        await writable.close();
+        dirty = false;
+        document.getElementById("badge-dirty").style.display = "none";
+        document.getElementById("btn-save").disabled = true;
+        toast("บันทึกแล้ว ✓");
+        return;
+      } catch(e) {
+        toast("บันทึกไม่ได้: " + e.message);
+      }
+    }
+    // ยังไม่มี handle — ให้เลือก save location
+    try {
+      var fh = await window.showSaveFilePicker({
+        suggestedName: "items_update.csv",
+        types:[{description:"CSV",accept:{"text/csv":[".csv"]}}]
+      });
+      updateFileHandle = fh;
+      var writable = await fh.createWritable();
+      await writable.write(text);
+      await writable.close();
+      dirty = false;
+      document.getElementById("badge-dirty").style.display = "none";
+      document.getElementById("btn-save").disabled = true;
+      toast("บันทึกแล้ว ✓");
+    } catch(e) {
+      if (e.name !== "AbortError") toast("บันทึกไม่ได้: " + e.message);
+    }
+  }
+
+  // ── Sort headers ───────────────────────────────────────
+  document.querySelectorAll("table thead th[data-k]").forEach(function(th) {
+    th.addEventListener("click", function() {
+      var k = th.getAttribute("data-k");
+      if (k === sortKey) sortDir *= -1;
+      else { sortKey = k; sortDir = 1; }
+      document.querySelectorAll("table thead th[data-k]").forEach(function(t){ t.classList.remove("sort-asc","sort-desc"); });
+      th.classList.add(sortDir===1?"sort-asc":"sort-desc");
+      renderTable();
+    });
+  });
+
+  // ── Button wiring ──────────────────────────────────────
+  document.getElementById("btn-open-items").addEventListener("click", openItemsFile);
+  document.getElementById("btn-reload-items").addEventListener("click", openItemsFile);
+  document.getElementById("btn-open-update").addEventListener("click", openUpdateFile);
+  document.getElementById("btn-save").addEventListener("click", saveUpdateFile);
+
+  // default sort indicator
+  document.querySelector("th[data-k='itemCode']").classList.add("sort-asc");
+})();
+</script>
+</body>
+</html>
