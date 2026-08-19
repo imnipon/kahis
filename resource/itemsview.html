@@ -143,6 +143,14 @@
   .empty-row{padding:40px 16px;text-align:center;color:var(--muted);}
   .toast{position:fixed;right:18px;bottom:18px;background:#111827;color:#fff;padding:10px 14px;border-radius:10px;font-size:13px;z-index:500;opacity:0;pointer-events:none;transition:opacity .2s;}
   .toast.show{opacity:1;}
+
+  /* ── Update-prompt banner ── */
+  #update-banner{position:fixed;top:0;left:0;right:0;z-index:400;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:16px;}
+  #update-banner.hidden{display:none;}
+  .update-card{background:#fff;border-radius:12px;padding:24px 28px;max-width:440px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+  .update-card h3{font-size:15px;font-weight:700;margin-bottom:6px;}
+  .update-card p{font-size:13px;color:#6b7280;margin-bottom:18px;line-height:1.5;}
+  .update-card-btns{display:flex;gap:8px;justify-content:flex-end;}
   input[type="checkbox"]{width:16px;height:16px;cursor:pointer;accent-color:#16a34a;}
 
   /* tag popup */
@@ -277,6 +285,18 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- ── Update-prompt banner ── -->
+<div id="update-banner" class="hidden">
+  <div class="update-card">
+    <h3>เปิด Update CSV ด้วยไหม?</h3>
+    <p>ถ้ามีไฟล์ Tag + Tx Default อยู่แล้ว กด <b>เปิด Update CSV</b><br>ถ้ายังไม่มี กด <b>เริ่มใหม่</b> — ระบบจะสร้างให้เมื่อบันทึก</p>
+    <div class="update-card-btns">
+      <button class="btn" id="banner-btn-skip">เริ่มใหม่ (ไม่มีไฟล์)</button>
+      <button class="btn btn-blue" id="banner-btn-open">เปิด Update CSV</button>
+    </div>
+  </div>
+</div>
 
 <script>
 (function(){
@@ -792,9 +812,8 @@
       promptOpenUpdate();
     }catch(e){if(e.name!=="AbortError")toast("เปิดไม่ได้: "+e.message);}
   }
-  async function promptOpenUpdate(){
-    if(!confirm("ต้องการเปิด Update CSV (Tag + Tx Default) ด้วยไหม?\n\nOK = เปิดไฟล์ที่มีอยู่\nCancel = เริ่มใหม่"))return;
-    await openUpdateFile();
+  function promptOpenUpdate(){
+    document.getElementById("update-banner").classList.remove("hidden");
   }
   async function openUpdateFile(){
     try{
@@ -805,6 +824,7 @@
       dirty=false;
       document.getElementById("stat-dirty").style.display="none";
       document.getElementById("btn-save").disabled=true;
+      document.getElementById("update-banner").classList.add("hidden");
       rebuildMulti();rebuildTags();renderTabs();render();
       toast("โหลด Update CSV: "+file.name);
     }catch(e){if(e.name!=="AbortError")toast("เปิดไม่ได้: "+e.message);}
@@ -832,6 +852,10 @@
   document.getElementById("btn-reload-items").addEventListener("click",openItemsFile);
   document.getElementById("btn-open-update").addEventListener("click",openUpdateFile);
   document.getElementById("btn-save").addEventListener("click",saveUpdateFile);
+  document.getElementById("banner-btn-open").addEventListener("click",openUpdateFile);
+  document.getElementById("banner-btn-skip").addEventListener("click",function(){
+    document.getElementById("update-banner").classList.add("hidden");
+  });
 
   document.getElementById("q").addEventListener("input",function(){filterQ=this.value;render();});
   document.getElementById("f-done").addEventListener("change",function(){filterDone=this.value;render();});
