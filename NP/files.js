@@ -1,5 +1,20 @@
 const filesTree = [
   {
+    "name": "resource",
+    "label": "Resource & Tools",
+    "type": "folder",
+    "path": "resource",
+    "children": [
+      {
+        "name": "updateitems.html",
+        "label": "Update Items (TX)",
+        "type": "file",
+        "path": "resource/updateitems.html",
+        "lastUpdate": "2026-08-19T14:50:00.000000"
+      }
+    ]
+  },
+  {
     "name": "NP",
     "type": "folder",
     "path": "NP",
