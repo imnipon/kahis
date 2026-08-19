@@ -2,110 +2,175 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Items View</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KAHIS · Items View</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Segoe UI',Tahoma,sans-serif;font-size:13px;background:#f3f4f6;color:#1f2937;}
+  :root{--bg:#f0f2f5;--surface:#fff;--text:#1f2937;--muted:#6b7280;--border:#e5e7eb;--navy:#0f172a;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 
-/* ── Top bar ── */
-.topbar{display:flex;align-items:center;gap:8px;padding:10px 14px;background:#fff;border-bottom:1px solid #e5e7eb;flex-wrap:wrap;}
-.topbar h1{font-size:15px;font-weight:700;color:#111827;margin-right:4px;}
-.btn{padding:5px 12px;border-radius:6px;border:1px solid #d1d5db;background:#fff;color:#374151;cursor:pointer;font-size:12px;white-space:nowrap;}
-.btn:hover{background:#f9fafb;}
-.btn-blue{border-color:#93c5fd;color:#2563eb;}.btn-blue:hover{background:#eff6ff;}
-.btn-save{border-color:#86efac;color:#16a34a;font-weight:600;}.btn-save:hover{background:#f0fdf4;}
-.btn-save:disabled{opacity:.4;cursor:default;}
-.btn-red{border-color:#fca5a5;color:#dc2626;}.btn-red:hover{background:#fef2f2;}
-.badge{font-size:11px;padding:2px 7px;border-radius:9px;background:#fef3c7;color:#92400e;font-weight:600;}
-.spacer{flex:1;}
-.hint{font-size:11px;color:#9ca3af;}
+  /* ── Topbar ── */
+  .topbar{background:var(--navy);color:#e2e8f0;padding:10px 16px 12px;}
+  .topbar .kicker{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#94a3b8;}
+  .topbar h1{font-size:18px;font-weight:700;color:#fff;margin:2px 0 4px;}
+  .topbar p{font-size:12px;color:#94a3b8;line-height:1.45;}
+  .topbar-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .topbar-btns{display:flex;gap:6px;flex-wrap:wrap;}
+  .stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+  .stat{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:6px 10px;font-size:12px;color:#cbd5e1;}
+  .stat b{color:#fff;font-variant-numeric:tabular-nums;}
+  .stat.ok b{color:#86efac;}
+  .stat.warn b{color:#fdba74;}
+  .stat.sub b{color:#c4b5fd;}
+  .tbtn{border-radius:6px;padding:5px 10px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;border:1px solid #334155;background:#1e293b;color:#e2e8f0;}
+  .tbtn:hover{background:#334155;}
+  .tbtn-green{border-color:#4ade80;color:#86efac;}.tbtn-green:hover{background:#14532d;}
+  .tbtn-blue{border-color:#60a5fa;color:#93c5fd;}.tbtn-blue:hover{background:#1e3a5f;}
 
-/* ── Tabs ── */
-.tabs-row{display:flex;align-items:center;gap:4px;padding:8px 14px;background:#fff;border-bottom:1px solid #e5e7eb;flex-wrap:wrap;}
-.tab-btn{padding:4px 12px;border-radius:16px;border:1px solid #d1d5db;background:#fff;color:#6b7280;cursor:pointer;font-size:12px;}
-.tab-btn.active{background:#1d4ed8;color:#fff;border-color:#1d4ed8;}
-.tab-btn:hover:not(.active){background:#f3f4f6;}
+  /* ── Page layout ── */
+  .page{padding:12px 14px 24px;}
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
 
-/* ── Table ── */
-.page{padding:12px 14px;}
-.table-wrap{overflow:auto;max-height:calc(100vh - 148px);border:1px solid #e5e7eb;border-radius:8px;background:#fff;}
-table{border-collapse:collapse;width:100%;min-width:1200px;}
-th{position:sticky;top:0;z-index:2;background:#f8fafc;font-size:11px;font-weight:600;color:#64748b;padding:6px 8px;border-bottom:2px solid #e2e8f0;white-space:nowrap;user-select:none;cursor:pointer;}
-th:hover{background:#e8edf3;}
-th.grp-item{background:#eff6ff;color:#1d4ed8;}
-th.grp-tx{background:#f0fdf4;color:#15803d;cursor:default;}
-th.sort-asc::after{content:" ↑";opacity:.8;}
-th.sort-desc::after{content:" ↓";opacity:.8;}
-td{padding:5px 8px;border-bottom:1px solid #f1f5f9;vertical-align:top;}
+  /* ── Tabs ── */
+  .tabs{display:flex;flex-wrap:wrap;gap:4px;padding:8px 10px;border-bottom:1px solid var(--border);background:#f8fafc;}
+  .tab{border:1px solid transparent;background:transparent;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;color:#64748b;padding:6px 10px;border-radius:999px;}
+  .tab:hover{background:#e2e8f0;color:#0f172a;}
+  .tab.on{background:#dbeafe;color:#1d4ed8;border-color:#93c5fd;}
+  .tab .n{display:inline-block;min-width:16px;margin-left:4px;font-variant-numeric:tabular-nums;font-weight:700;font-size:11px;opacity:.75;}
 
-/* ── Row states ── */
-tr.master td{background:#fff;}
-tr.master:hover td{background:#f8fafc;}
-tr.has-tag.master td{background:#fefce8;}
-tr.has-tag.master:hover td{background:#fef9c3;}
+  /* ── Toolbar ── */
+  .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--border);background:#fff;}
+  .toolbar input,.toolbar select{border:1px solid #d1d5db;border-radius:6px;padding:7px 10px;font-size:13px;font-family:inherit;background:#fff;height:34px;}
+  .toolbar input#q{width:220px;}
+  .btn{border-radius:6px;padding:7px 12px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;height:34px;display:inline-flex;align-items:center;gap:6px;border:1px solid #d1d5db;background:#fff;color:#374151;}
+  .btn:hover{background:#f8fafc;}
+  .btn-blue{border-color:#93c5fd;color:#2563eb;}.btn-blue:hover{background:#eff6ff;}
+  .btn-save{border-color:#86efac;color:#16a34a;font-weight:700;}.btn-save:hover{background:#f0fdf4;}
+  .btn-save:disabled{opacity:.4;cursor:default;}
+  .spacer{flex:1;min-width:8px;}
+  .hint{font-size:11px;color:#94a3b8;}
 
-/* sub-row: indented, light purple tint */
-tr.sub-row td{background:#faf5ff;border-bottom:1px solid #ede9fe;}
-tr.sub-row:hover td{background:#f3e8ff;}
-tr.sub-row td.code-cell{padding-left:24px;color:#7c3aed;}
-tr.sub-row td.code-cell::before{content:"↳ ";color:#a78bfa;font-size:10px;}
+  /* ── Table ── */
+  .table-wrap{overflow:auto;max-height:calc(100vh - 280px);}
+  table.items{width:max-content;min-width:100%;border-collapse:collapse;font-size:12.5px;}
+  table.items th{position:sticky;top:0;z-index:3;background:#f8fafc;text-align:left;font-weight:600;color:#475569;padding:8px 8px;border-bottom:1px solid var(--border);white-space:nowrap;vertical-align:bottom;}
+  table.items th.grp-item{background:#eff6ff;border-bottom-color:#bfdbfe;}
+  table.items th.grp-tx{background:#f0fdf4;border-bottom-color:#86efac;}
+  table.items th.grp-extra{background:#fafaf9;border-bottom-color:#e7e5e4;}
+  table.items th.grp-act{background:#faf5ff;border-bottom-color:#ddd6fe;}
+  table.items th .th-en{display:block;font-size:12px;color:#334155;}
+  table.items th .th-th{display:block;font-size:10px;color:#94a3b8;font-weight:500;margin-top:1px;}
+  table.items th .grp-label{display:block;font-size:9px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#64748b;margin-bottom:2px;}
+  table.items td{padding:7px 8px;border-bottom:1px solid #f1f5f9;vertical-align:top;color:#1f2937;}
+  table.items tr:hover td{background:#f8fafc;}
+  table.items tr.done td{background:#f0fdf4;}
+  table.items tr.done:hover td{background:#dcfce7;}
+  table.items tr.multi td{background:#fff7ed;}
+  table.items tr.multi:hover td{background:#ffedd5;}
+  table.items tr.done.multi td{background:#f0fdf4;}
+  /* sub-rows */
+  table.items tr.sub-row td{background:#faf5ff;border-bottom:1px solid #ede9fe;}
+  table.items tr.sub-row:hover td{background:#f3e8ff;}
+  table.items tr.sub-row.done td{background:#f0fdf4;}
+  table.items tr.sub-last td{border-bottom:2px solid #c4b5fd;}
 
-/* last sub-row before next master gets thicker border */
-tr.sub-last td{border-bottom:2px solid #ddd6fe;}
+  /* sticky done col */
+  th.sticky-done,td.sticky-done{position:sticky;left:0;z-index:2;box-shadow:1px 0 0 #e5e7eb;background:inherit;}
+  th.sticky-done{z-index:5;background:#f8fafc;}
+  td.sticky-done{background:#fff;}
+  tr:hover td.sticky-done{background:#f8fafc;}
+  tr.done td.sticky-done{background:#f0fdf4;}
+  tr.multi td.sticky-done{background:#fff7ed;}
+  tr.done.multi td.sticky-done{background:#f0fdf4;}
+  tr.sub-row td.sticky-done{background:#faf5ff;}
+  tr.sub-row:hover td.sticky-done{background:#f3e8ff;}
+  tr.sub-row.done td.sticky-done{background:#f0fdf4;}
 
-.code-cell{font-family:monospace;font-size:11px;color:#6b7280;}
+  .col-done{width:52px;text-align:center;}
+  .col-code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;color:#64748b;white-space:nowrap;}
+  .col-code.sub{color:#7c3aed;padding-left:20px;position:relative;}
+  .col-code.sub::before{content:"↳ ";position:absolute;left:6px;color:#a78bfa;font-size:10px;}
+  .col-name{min-width:180px;max-width:240px;}
+  .col-tx{min-width:90px;max-width:160px;}
+  .col-unit,.col-rx,.col-status{white-space:nowrap;}
+  .col-num{text-align:right;white-space:nowrap;}
 
-/* ── Tags ── */
-.tag-cell{display:flex;flex-wrap:wrap;gap:3px;align-items:center;min-width:120px;}
-.tag-chip{display:inline-flex;align-items:center;gap:2px;padding:1px 7px;border-radius:10px;background:#dbeafe;color:#1e40af;font-size:11px;font-weight:500;}
-.tag-chip .rm{cursor:pointer;font-size:10px;color:#93c5fd;margin-left:1px;}.tag-chip .rm:hover{color:#1e40af;}
-.tag-add{padding:1px 6px;border-radius:10px;border:1px dashed #93c5fd;background:transparent;color:#3b82f6;font-size:11px;cursor:pointer;}
-.tag-add:hover{background:#eff6ff;}
+  /* name cells */
+  .name-cell{display:flex;align-items:flex-start;gap:5px;}
+  .name-val{flex:1;min-width:0;font-size:12px;line-height:1.45;color:#111827;word-break:break-word;}
+  .name-val.empty{color:#cbd5e1;font-style:italic;}
 
-/* ── Tx Default ── */
-.tx-cell{display:flex;flex-direction:column;gap:2px;min-width:240px;}
-.tx-field{display:flex;align-items:baseline;gap:4px;}
-.tx-label{font-size:10px;color:#9ca3af;white-space:nowrap;min-width:50px;}
-.tx-input{flex:1;border:1px solid transparent;border-radius:4px;padding:2px 5px;font-size:12px;background:transparent;color:#374151;font-family:inherit;}
-.tx-input:hover{border-color:#d1d5db;background:#fff;}
-.tx-input:focus{border-color:#93c5fd;background:#fff;outline:none;}
+  /* copy button */
+  .copy-btn{flex:none;width:24px;height:24px;border-radius:5px;border:1px solid #d1d5db;background:#fff;color:#6b7280;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0;}
+  .copy-btn:hover{background:#f1f5f9;color:#374151;border-color:#9ca3af;}
 
-/* ── Sub-row actions ── */
-.sub-actions{display:flex;gap:4px;align-items:center;margin-top:4px;}
-.btn-add-sub{padding:2px 8px;border-radius:8px;border:1px dashed #a78bfa;background:transparent;color:#7c3aed;font-size:11px;cursor:pointer;}
-.btn-add-sub:hover{background:#faf5ff;}
-.btn-del-sub{padding:1px 6px;border-radius:6px;border:1px solid #fca5a5;background:#fff;color:#dc2626;font-size:11px;cursor:pointer;}
-.btn-del-sub:hover{background:#fef2f2;}
+  /* sort */
+  table.items th[data-sort]{cursor:pointer;user-select:none;}
+  table.items th[data-sort]:hover{background:#e8edf3;}
+  table.items th.grp-item[data-sort]:hover{background:#dbeafe;}
+  table.items th.grp-tx[data-sort]:hover{background:#dcfce7;}
+  table.items th.grp-extra[data-sort]:hover{background:#f0f0ef;}
+  .sort-icon{display:inline-block;margin-left:3px;font-size:10px;opacity:.4;vertical-align:middle;}
+  table.items th[data-sort].sort-asc .sort-icon{opacity:1;color:#2563eb;}
+  table.items th[data-sort].sort-desc .sort-icon{opacity:1;color:#2563eb;}
 
-/* ── Popup ── */
-.tag-input-wrap{display:flex;gap:6px;margin-top:8px;}
-.tag-input-wrap input{flex:1;padding:6px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;}
+  /* tx inputs */
+  .tx-input{width:100%;border:1px solid transparent;border-radius:4px;padding:2px 5px;font-size:12px;background:transparent;color:#374151;font-family:inherit;}
+  .tx-input:hover{border-color:#d1d5db;background:#fff;}
+  .tx-input:focus{border-color:#93c5fd;background:#fff;outline:none;}
 
-/* ── Toast ── */
-.toast{position:fixed;bottom:20px;right:20px;background:#1f2937;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;z-index:999;opacity:0;transition:opacity .3s;}
-.toast.show{opacity:1;}
+  /* tag chips */
+  .tag-cell{display:flex;flex-wrap:wrap;gap:3px;align-items:center;min-width:100px;}
+  .tag-chip{display:inline-flex;align-items:center;gap:2px;padding:1px 7px;border-radius:10px;background:#dbeafe;color:#1e40af;font-size:11px;font-weight:500;}
+  .tag-chip .rm{cursor:pointer;font-size:10px;color:#93c5fd;margin-left:1px;}.tag-chip .rm:hover{color:#1e40af;}
+  .tag-add{padding:1px 6px;border-radius:10px;border:1px dashed #93c5fd;background:transparent;color:#3b82f6;font-size:11px;cursor:pointer;}
+  .tag-add:hover{background:#eff6ff;}
 
-/* ── Modal ── */
-#overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;display:flex;align-items:center;justify-content:center;}
-#overlay.hidden{display:none;}
-.modal{background:#fff;border-radius:12px;padding:28px;width:460px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.2);}
-.modal h2{font-size:16px;font-weight:700;margin-bottom:6px;}
-.modal p{font-size:13px;color:#6b7280;margin-bottom:18px;line-height:1.5;}
-.modal .steps{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
-.modal .step{display:flex;gap:10px;align-items:flex-start;}
-.modal .step-n{width:22px;height:22px;border-radius:50%;background:#1d4ed8;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px;}
-.modal .step-t{font-size:12px;color:#374151;line-height:1.5;}
-.modal .step-t b{color:#111;}
-.modal-btns{display:flex;gap:8px;justify-content:flex-end;}
+  /* sub-row actions */
+  .btn-add-sub{padding:2px 7px;border-radius:8px;border:1px dashed #a78bfa;background:transparent;color:#7c3aed;font-size:11px;cursor:pointer;}
+  .btn-add-sub:hover{background:#faf5ff;}
+  .btn-del-sub{padding:2px 6px;border-radius:6px;border:1px solid #fca5a5;background:#fff;color:#dc2626;font-size:11px;cursor:pointer;}
+  .btn-del-sub:hover{background:#fef2f2;}
+
+  .pill{display:inline-block;padding:1px 7px;border-radius:999px;font-size:11px;font-weight:700;}
+  .pill-on{background:#dcfce7;color:#166534;}
+  .pill-off{background:#fee2e2;color:#991b1b;}
+  .pill-yes{background:#dcfce7;color:#166534;}
+  .pill-no{background:#f1f5f9;color:#64748b;}
+  .muted{color:#cbd5e1;}
+  .multi-badge{display:inline-block;margin-left:4px;padding:1px 5px;border-radius:999px;background:#fed7aa;color:#9a3412;font-size:10px;font-weight:800;}
+
+  .empty-row{padding:40px 16px;text-align:center;color:var(--muted);}
+  .toast{position:fixed;right:18px;bottom:18px;background:#111827;color:#fff;padding:10px 14px;border-radius:10px;font-size:13px;z-index:500;opacity:0;pointer-events:none;transition:opacity .2s;}
+  .toast.show{opacity:1;}
+  input[type="checkbox"]{width:16px;height:16px;cursor:pointer;accent-color:#16a34a;}
+
+  /* tag popup */
+  .tag-popup{position:fixed;z-index:300;background:#fff;border:1px solid #d1d5db;border-radius:8px;padding:10px;box-shadow:0 4px 16px rgba(0,0,0,.12);min-width:220px;}
+  .tag-input-wrap{display:flex;gap:6px;margin-top:8px;}
+  .tag-input-wrap input{flex:1;padding:6px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;}
+
+  /* overlay */
+  #overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:center;justify-content:center;}
+  #overlay.hidden{display:none;}
+  .modal{background:#fff;border-radius:12px;padding:28px;width:460px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+  .modal h2{font-size:16px;font-weight:700;margin-bottom:6px;}
+  .modal p{font-size:13px;color:#6b7280;margin-bottom:18px;line-height:1.5;}
+  .modal .steps{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+  .modal .step{display:flex;gap:10px;align-items:flex-start;}
+  .modal .step-n{width:22px;height:22px;border-radius:50%;background:#1d4ed8;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px;}
+  .modal .step-t{font-size:12px;color:#374151;line-height:1.5;}
+  .modal .step-t b{color:#111;}
+  .modal-btns{display:flex;gap:8px;justify-content:flex-end;}
 </style>
 </head>
 <body>
 
+<!-- ── Startup overlay ── -->
 <div id="overlay">
   <div class="modal">
     <h2>Items View</h2>
-    <p>โหลดข้อมูลจาก 2 ไฟล์ — join ด้วย Item Code รองรับ sub-code (-1, -2, …) สำหรับ placement เพิ่มเติม</p>
+    <p>โหลดข้อมูลจาก 2 ไฟล์ · join ด้วย Item Code · รองรับ sub-code (-1, -2, …) สำหรับ placement เพิ่มเติม</p>
     <div class="steps">
       <div class="step">
         <div class="step-n">1</div>
@@ -113,47 +178,96 @@ tr.sub-last td{border-bottom:2px solid #ddd6fe;}
       </div>
       <div class="step">
         <div class="step-n">2</div>
-        <div class="step-t"><b>Update CSV</b> (ไม่บังคับ) — ไฟล์ Tag + Tx Default ที่สร้างเอง<br><span style="color:#9ca3af">ถ้ายังไม่มีกด Cancel — ระบบสร้างให้เมื่อ Save</span></div>
+        <div class="step-t"><b>Update CSV</b> (ไม่บังคับ) — ไฟล์ Tag + Tx Default ที่สร้างเอง<br><span style="color:#9ca3af">ยังไม่มี? กด Cancel — ระบบสร้างให้เมื่อ Save</span></div>
       </div>
     </div>
     <div class="modal-btns">
-      <button class="btn btn-blue" id="btn-open-items">เปิด Items CSV</button>
+      <button class="btn btn-blue" id="btn-open-items-modal">เปิด Items CSV</button>
     </div>
   </div>
 </div>
 
+<!-- ── Topbar ── -->
 <div class="topbar">
-  <h1>Items View</h1>
-  <span class="hint" id="hint-items"></span>
-  <span class="badge" id="badge-dirty" style="display:none">มีการแก้ไข</span>
-  <div class="spacer"></div>
-  <span class="hint" id="stat-shown"></span>
-  <button class="btn btn-save" id="btn-save" disabled>💾 บันทึก Update CSV</button>
-  <button class="btn btn-blue" id="btn-reload-items">โหลด Items ใหม่</button>
-  <button class="btn" id="btn-open-update">เปิด/เปลี่ยน Update CSV</button>
+  <div class="topbar-row">
+    <div>
+      <div class="kicker" id="topbar-kicker">Items View · ยังไม่ได้โหลดไฟล์</div>
+      <h1>Items View</h1>
+      <p>ข้อมูลหลักจาก Items CSV · Tag + Tx Default แก้ไขได้ · บันทึกลง Update CSV · รองรับ sub-code</p>
+    </div>
+    <div class="spacer"></div>
+    <div class="topbar-btns">
+      <button class="tbtn tbtn-blue" id="btn-reload-items">โหลด Items ใหม่</button>
+      <button class="tbtn" id="btn-open-update">เปิด/เปลี่ยน Update CSV</button>
+      <button class="tbtn tbtn-green" id="btn-save" disabled>💾 บันทึก</button>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat">แสดง <b id="st-shown">0</b></div>
+    <div class="stat ok">ทำแล้ว <b id="st-done">0</b></div>
+    <div class="stat">ค้าง <b id="st-todo">0</b></div>
+    <div class="stat warn">หลายตำแหน่ง <b id="st-multi">0</b></div>
+    <div class="stat sub">Sub-rows <b id="st-sub">0</b></div>
+    <div class="stat" id="stat-dirty" style="display:none;border-color:#fca5a5;"><b style="color:#f87171;">มีการแก้ไข</b></div>
+  </div>
 </div>
 
-<div class="tabs-row" id="tabs-row"></div>
-
+<!-- ── Content ── -->
 <div class="page">
-  <div class="table-wrap">
-    <table id="tbl">
-      <thead>
-        <tr>
-          <th data-k="itemCode" class="grp-item">Item Code</th>
-          <th data-k="description" class="grp-item">Description</th>
-          <th data-k="tradeName" class="grp-item">Trade Name</th>
-          <th data-k="commonName" class="grp-item">Common Name</th>
-          <th data-k="unit" class="grp-item">Unit</th>
-          <th data-k="receipt" class="grp-item">Receipt Category</th>
-          <th data-k="status" class="grp-item">Status</th>
-          <th class="grp-tx">Tag</th>
-          <th class="grp-tx" style="min-width:260px;">Tx Default</th>
-          <th class="grp-tx" style="min-width:80px;"></th>
-        </tr>
-      </thead>
-      <tbody id="tbody"></tbody>
-    </table>
+  <div class="panel">
+    <div class="tabs" id="tabs"></div>
+    <div class="toolbar">
+      <input id="q" type="search" placeholder="ค้นรหัส / ชื่อ / tag / route…">
+      <select id="f-tag">
+        <option value="">Tag: ทั้งหมด</option>
+        <option value="__notag__">ยังไม่มี Tag</option>
+      </select>
+      <select id="f-done">
+        <option value="">สถานะ: ทั้งหมด</option>
+        <option value="todo">ยังไม่ทำ</option>
+        <option value="done">ทำแล้ว</option>
+      </select>
+      <button class="btn" id="btn-clear-filters">ล้างตัวกรอง</button>
+      <span class="spacer"></span>
+      <span class="hint" id="shown-hint"></span>
+      <button class="btn" id="btn-export-tab">Export CSV แท็บนี้</button>
+      <button class="btn btn-blue" id="btn-export-all">Export CSV ทั้งหมด</button>
+      <button class="btn" id="btn-reset-done">ล้างติ๊กในแท็บนี้</button>
+    </div>
+    <div class="table-wrap">
+      <table class="items">
+        <thead>
+          <tr>
+            <th class="sticky-done col-done" rowspan="2"><span class="th-en">ทำแล้ว</span><span class="th-th">ติ๊ก</span></th>
+            <th rowspan="2" data-sort="uid"><span class="th-en">Item Code<span class="sort-icon">↕</span></span><span class="th-th">รหัส</span></th>
+            <th rowspan="2" class="grp-tx" style="cursor:default"><span class="th-en">Tag</span><span class="th-th">หมวด</span></th>
+            <th class="grp-item" colspan="3"><span class="grp-label">Item · Edit Item</span></th>
+            <th class="grp-tx" colspan="4"><span class="grp-label">Tx Default · Add Tx Default</span></th>
+            <th class="grp-extra" colspan="8"><span class="grp-label">ข้อมูลเพิ่มเติม</span></th>
+            <th class="grp-act" rowspan="2" style="cursor:default"><span class="th-en">Actions</span></th>
+          </tr>
+          <tr>
+            <th class="grp-item" data-sort="description"><span class="th-en">Description<span class="sort-icon">↕</span></span><span class="th-th">ชื่อยา/บริการ</span></th>
+            <th class="grp-item" data-sort="tradeName"><span class="th-en">Trade Name<span class="sort-icon">↕</span></span><span class="th-th">ชื่อการค้า</span></th>
+            <th class="grp-item" data-sort="commonName"><span class="th-en">Common Name<span class="sort-icon">↕</span></span><span class="th-th">ชื่อใช้เรียกบ่อย</span></th>
+            <th class="grp-tx" data-sort="route"><span class="th-en">Route<span class="sort-icon">↕</span></span><span class="th-th">วิธีการให้ยา</span></th>
+            <th class="grp-tx" data-sort="dose"><span class="th-en">หน่วยการใช้งาน<span class="sort-icon">↕</span></span></th>
+            <th class="grp-tx" data-sort="frequency"><span class="th-en">Frequency / Rate<span class="sort-icon">↕</span></span><span class="th-th">ความถี่ / อัตรา</span></th>
+            <th class="grp-tx" data-sort="note"><span class="th-en">Note<span class="sort-icon">↕</span></span><span class="th-th">รายละเอียดการสั่งยา</span></th>
+            <th class="grp-extra" data-sort="unit"><span class="th-en">Unit<span class="sort-icon">↕</span></span><span class="th-th">หน่วยนับ</span></th>
+            <th class="grp-extra" data-sort="receipt"><span class="th-en">Receipt Category<span class="sort-icon">↕</span></span><span class="th-th">หมวดใบเสร็จ</span></th>
+            <th class="grp-extra" data-sort="alertMin"><span class="th-en">Alert Min<span class="sort-icon">↕</span></span></th>
+            <th class="grp-extra" data-sort="alertMax"><span class="th-en">Alert Max<span class="sort-icon">↕</span></span></th>
+            <th class="grp-extra" data-sort="formula"><span class="th-en">Formula<span class="sort-icon">↕</span></span></th>
+            <th class="grp-extra" data-sort="sellPrice"><span class="th-en">Sell Price<span class="sort-icon">↕</span></span><span class="th-th">ราคาขาย</span></th>
+            <th class="grp-extra" data-sort="rxDefault"><span class="th-en">Rx Default<span class="sort-icon">↕</span></span></th>
+            <th class="grp-extra" data-sort="status"><span class="th-en">Status<span class="sort-icon">↕</span></span><span class="th-th">สถานะ</span></th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="empty-row" id="empty" style="display:none;">ไม่พบรายการตามตัวกรอง</div>
+    </div>
   </div>
 </div>
 
@@ -161,477 +275,508 @@ tr.sub-last td{border-bottom:2px solid #ddd6fe;}
 
 <script>
 (function(){
-  /*
-   * updateMap structure (keyed by uid = itemCode or itemCode-N):
-   * {
-   *   [uid]: {
-   *     baseCode: string,   // empty for master row, itemCode for sub-rows
-   *     tags: string[],
-   *     route: string,
-   *     dose: string,
-   *     frequency: string,
-   *     note: string,
-   *   }
-   * }
-   *
-   * masterMap: itemCode → master item data (from Items CSV)
-   *
-   * Rendering order:
-   *   For each master item (sorted), show master row then its sub-rows in suffix order.
-   */
+  var COPY_ICON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+  var LS_DONE = "kahis-itemsview-done-v1";
 
-  var masterItems = [];   // [{itemCode, description, ...}] from Items CSV
+  // ── State ──────────────────────────────────────────────────────────────────
+  var masterItems = [];   // from Items CSV
   var masterMap = {};     // itemCode → item
-  var updateMap = {};     // uid → {baseCode, tags, route, dose, frequency, note}
+  var updateMap = {};     // uid → {baseCode, tags[], route, dose, frequency, note}
+  var doneMap = loadJson(LS_DONE, {});
   var dirty = false;
   var activeTag = "__all__";
-  var sortKey = "itemCode";
+  var sortKey = "uid";
   var sortDir = 1;
+  var filterDone = "";
+  var filterQ = "";
   var itemsFileHandle = null;
   var updateFileHandle = null;
   var allTags = [];
+  var multiCodes = new Set(); // uids that appear > 1 time across master+subs
+
+  function loadJson(k, def){ try{ return JSON.parse(localStorage.getItem(k)||"null")||def; }catch(e){ return def; } }
+  function saveJson(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
 
   // ── CSV helpers ────────────────────────────────────────────────────────────
-  function parseCSV(text) {
-    var lines = text.replace(/\r\n/g,"\n").replace(/\r/g,"\n").split("\n");
-    var rows = [];
-    for (var i = 0; i < lines.length; i++) {
-      if (!lines[i].trim()) continue;
-      rows.push(parseLine(lines[i]));
-    }
+  function parseCSV(text){
+    var lines=text.replace(/\r\n/g,"\n").replace(/\r/g,"\n").split("\n"),rows=[];
+    for(var i=0;i<lines.length;i++){if(lines[i].trim())rows.push(parseLine(lines[i]));}
     return rows;
   }
-  function parseLine(line) {
-    var fields=[], cur="", inQ=false;
-    for (var i=0; i<line.length; i++) {
+  function parseLine(line){
+    var fields=[],cur="",inQ=false;
+    for(var i=0;i<line.length;i++){
       var c=line[i];
-      if (inQ) {
-        if (c==='"' && line[i+1]==='"'){cur+='"';i++;}
-        else if (c==='"') inQ=false;
-        else cur+=c;
-      } else {
-        if (c==='"') inQ=true;
-        else if (c===','){fields.push(cur);cur="";}
-        else cur+=c;
-      }
+      if(inQ){if(c==='"'&&line[i+1]==='"'){cur+='"';i++;}else if(c==='"')inQ=false;else cur+=c;}
+      else{if(c==='"')inQ=true;else if(c===','){fields.push(cur);cur="";}else cur+=c;}
     }
-    fields.push(cur);
-    return fields;
+    fields.push(cur);return fields;
   }
-  function ce(v) {
-    var s=String(v==null?"":v);
-    return /[",\n\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;
-  }
+  function ce(v){var s=String(v==null?"":v);return /[",\n\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;}
 
-  // ── Parse Items CSV (master) ───────────────────────────────────────────────
-  function parseItemsCsv(text) {
-    var rows=parseCSV(text);
-    if (rows.length<2) return [];
+  // ── Parse Items CSV ────────────────────────────────────────────────────────
+  function parseItemsCsv(text){
+    var rows=parseCSV(text);if(rows.length<2)return[];
     var h=rows[0].map(function(x){return x.trim();});
-    function col(name){for(var i=0;i<h.length;i++)if(h[i].toLowerCase().indexOf(name.toLowerCase())!==-1)return i;return -1;}
+    function col(n){for(var i=0;i<h.length;i++)if(h[i].toLowerCase().indexOf(n.toLowerCase())!==-1)return i;return -1;}
     var iCode=col("Item Code"),iDesc=col("Description"),iTrade=col("Trade Name"),
         iCommon=col("Common Name"),iUnit=col("Unit("),iReceipt=col("Receipt"),
-        iAlertMin=col("Alert Min"),iAlertMax=col("Alert Max"),iFormula=col("Formula"),
+        iAMin=col("Alert Min"),iAMax=col("Alert Max"),iFormula=col("Formula"),
         iSell=col("Sell Price"),iRx=col("Rx Default"),iStatus=col("Status");
     var out=[];
-    for (var r=1;r<rows.length;r++) {
+    for(var r=1;r<rows.length;r++){
       var row=rows[r];
-      if (!row[iCode]||!row[iCode].trim()) continue;
+      if(!row[iCode]||!row[iCode].trim())continue;
       var code=row[iCode].replace(/^'/,"").trim();
-      out.push({
-        itemCode:code,
-        description:(row[iDesc]||"").trim(),
-        tradeName:(row[iTrade]||"").trim(),
-        commonName:(row[iCommon]||"").trim(),
-        unit:(row[iUnit]||"").trim(),
-        receipt:(row[iReceipt]||"").trim(),
-        alertMin:(row[iAlertMin]||"").trim(),
-        alertMax:(row[iAlertMax]||"").trim(),
-        formula:(row[iFormula]||"").trim(),
-        sellPrice:(row[iSell]||"").trim(),
-        rxDefault:(row[iRx]||"").trim(),
-        status:(row[iStatus]||"").trim(),
-      });
+      out.push({itemCode:code,description:(row[iDesc]||"").trim(),tradeName:(row[iTrade]||"").trim(),
+        commonName:(row[iCommon]||"").trim(),unit:(row[iUnit]||"").trim(),receipt:(row[iReceipt]||"").trim(),
+        alertMin:(row[iAMin]||"").trim(),alertMax:(row[iAMax]||"").trim(),formula:(row[iFormula]||"").trim(),
+        sellPrice:(row[iSell]||"").trim(),rxDefault:(row[iRx]||"").trim(),status:(row[iStatus]||"").trim()});
     }
     return out;
   }
 
-  // ── Parse Update CSV ───────────────────────────────────────────────────────
+  // ── Parse/Serialize Update CSV ─────────────────────────────────────────────
   // Header: Item Code, Base Code, Tag, Route, Dose, Frequency, Note
   var UPDATE_H=["Item Code","Base Code","Tag","Route","Dose","Frequency","Note"];
-  function parseUpdateCsv(text) {
-    var rows=parseCSV(text);
-    if (rows.length<1) return {};
-    // detect old format (no Base Code col) vs new
-    var firstH=rows[0][0]||"";
-    var hasBase = rows[0].length>=7 && (rows[0][1]||"").trim().toLowerCase().indexOf("base")!==-1;
+  function parseUpdateCsv(text){
+    var rows=parseCSV(text);if(!rows.length)return{};
+    var hasBase=rows[0].length>=7&&(rows[0][1]||"").trim().toLowerCase().indexOf("base")!==-1;
     var map={};
-    for (var r=1;r<rows.length;r++) {
+    for(var r=1;r<rows.length;r++){
       var row=rows[r];
-      var uid=(row[0]||"").replace(/^'/,"").trim();
-      if (!uid) continue;
-      if (hasBase) {
-        var baseCode=(row[1]||"").replace(/^'/,"").trim();
-        var tagsRaw=(row[2]||"").trim();
-        map[uid]={
-          baseCode:baseCode,
-          tags:tagsRaw?tagsRaw.split("|").map(function(t){return t.trim();}).filter(Boolean):[],
-          route:(row[3]||"").trim(),
-          dose:(row[4]||"").trim(),
-          frequency:(row[5]||"").trim(),
-          note:(row[6]||"").trim(),
-        };
+      var uid=(row[0]||"").replace(/^'/,"").trim();if(!uid)continue;
+      if(hasBase){
+        var bc=(row[1]||"").replace(/^'/,"").trim();
+        var tr2=(row[2]||"").trim();
+        map[uid]={baseCode:bc,tags:tr2?tr2.split("|").map(function(t){return t.trim();}).filter(Boolean):[],
+          route:(row[3]||"").trim(),dose:(row[4]||"").trim(),frequency:(row[5]||"").trim(),note:(row[6]||"").trim()};
       } else {
-        // old format: Item Code, Tag, Route, Dose, Frequency, Note
-        var tagsRaw2=(row[1]||"").trim();
-        map[uid]={
-          baseCode:"",
-          tags:tagsRaw2?tagsRaw2.split("|").map(function(t){return t.trim();}).filter(Boolean):[],
-          route:(row[2]||"").trim(),
-          dose:(row[3]||"").trim(),
-          frequency:(row[4]||"").trim(),
-          note:(row[5]||"").trim(),
-        };
+        var tr3=(row[1]||"").trim();
+        map[uid]={baseCode:"",tags:tr3?tr3.split("|").map(function(t){return t.trim();}).filter(Boolean):[],
+          route:(row[2]||"").trim(),dose:(row[3]||"").trim(),frequency:(row[4]||"").trim(),note:(row[5]||"").trim()};
       }
     }
     return map;
   }
-
-  // ── Serialize Update CSV ───────────────────────────────────────────────────
-  function serializeUpdateCsv() {
-    var lines=[UPDATE_H.join(",")];
-    // collect all uids: master rows first (from masterItems order), then orphan sub-rows
-    var written={};
-    masterItems.forEach(function(item) {
+  function serializeUpdateCsv(){
+    var lines=[UPDATE_H.join(",")],written={};
+    masterItems.forEach(function(item){
       var code=item.itemCode;
-      // master row
-      if (updateMap[code]) {
+      if(updateMap[code]){
         var u=updateMap[code];
-        if (u.tags.length||u.route||u.dose||u.frequency||u.note) {
+        if(u.tags.length||u.route||u.dose||u.frequency||u.note)
           lines.push([code,"",u.tags.join("|"),u.route,u.dose,u.frequency,u.note].map(ce).join(","));
-        }
         written[code]=true;
       }
-      // sub-rows for this code
-      getSubUids(code).forEach(function(uid) {
-        var u=updateMap[uid];
-        if (u) {
-          lines.push([uid,code,u.tags.join("|"),u.route,u.dose,u.frequency,u.note].map(ce).join(","));
-          written[uid]=true;
-        }
+      getSubUids(code).forEach(function(uid){
+        var u=updateMap[uid];if(u){lines.push([uid,code,u.tags.join("|"),u.route,u.dose,u.frequency,u.note].map(ce).join(","));written[uid]=true;}
       });
     });
-    // any remaining uids not written (orphans from deleted masters)
-    Object.keys(updateMap).forEach(function(uid) {
-      if (!written[uid]) {
-        var u=updateMap[uid];
-        lines.push([uid,u.baseCode||"",u.tags.join("|"),u.route,u.dose,u.frequency,u.note].map(ce).join(","));
-      }
+    Object.keys(updateMap).forEach(function(uid){
+      if(!written[uid]){var u=updateMap[uid];lines.push([uid,u.baseCode||"",u.tags.join("|"),u.route,u.dose,u.frequency,u.note].map(ce).join(","));}
     });
     return "\uFEFF"+lines.join("\n");
   }
 
   // ── Sub-code helpers ───────────────────────────────────────────────────────
-  function getSubUids(baseCode) {
-    // find all uids of form baseCode-N, sorted numerically
-    var re=new RegExp("^"+escapeRe(baseCode)+"-(\\d+)$");
-    var uids=Object.keys(updateMap).filter(function(uid){return re.test(uid);});
-    uids.sort(function(a,b){
-      var na=parseInt(re.exec(a)[1],10), nb=parseInt(re.exec(b)[1],10);
-      return na-nb;
+  function escRe(s){return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");}
+  function getSubUids(base){
+    var re=new RegExp("^"+escRe(base)+"-(\\d+)$");
+    return Object.keys(updateMap).filter(function(uid){return re.test(uid);})
+      .sort(function(a,b){return parseInt(re.exec(a)[1],10)-parseInt(re.exec(b)[1],10);});
+  }
+  function nextSubUid(base){
+    var subs=getSubUids(base);if(!subs.length)return base+"-1";
+    var last=subs[subs.length-1];
+    return base+"-"+(parseInt(last.replace(base+"-",""),10)+1);
+  }
+  function baseCodeOf(uid){
+    var m=uid.match(/^(.+)-(\d+)$/);return m?m[1]:"";
+  }
+  function masterItemOf(uid){
+    var base=baseCodeOf(uid);
+    return masterMap[base]||masterMap[uid]||null;
+  }
+  function ensureUpdate(uid,baseCode){
+    if(!updateMap[uid])updateMap[uid]={baseCode:baseCode||"",tags:[],route:"",dose:"",frequency:"",note:""};
+  }
+
+  // ── Rebuild multi-codes ────────────────────────────────────────────────────
+  function rebuildMulti(){
+    // count appearances per base code
+    var cnt={};
+    masterItems.forEach(function(it){var c=it.itemCode;cnt[c]=(cnt[c]||0)+1;});
+    Object.keys(updateMap).forEach(function(uid){
+      var bc=baseCodeOf(uid);if(bc)cnt[bc]=(cnt[bc]||0)+1;
     });
-    return uids;
-  }
-  function escapeRe(s){return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");}
-  function nextSubUid(baseCode) {
-    var uids=getSubUids(baseCode);
-    if (!uids.length) return baseCode+"-1";
-    var last=uids[uids.length-1];
-    var n=parseInt(last.replace(baseCode+"-",""),10);
-    return baseCode+"-"+(n+1);
-  }
-  function ensureUpdate(uid, baseCode) {
-    if (!updateMap[uid]) updateMap[uid]={baseCode:baseCode||"",tags:[],route:"",dose:"",frequency:"",note:""};
+    multiCodes=new Set(Object.keys(cnt).filter(function(c){return cnt[c]>1;}));
   }
 
   // ── Tags ───────────────────────────────────────────────────────────────────
-  function rebuildTags() {
+  function rebuildTags(){
     var set={};
     Object.values(updateMap).forEach(function(u){(u.tags||[]).forEach(function(t){set[t]=true;});});
     allTags=Object.keys(set).sort(function(a,b){return a.localeCompare(b,"th");});
-    renderTabs();
+    // update f-tag select
+    var sel=document.getElementById("f-tag");
+    var cur=sel.value;
+    while(sel.options.length>2)sel.remove(2);
+    allTags.forEach(function(t){var o=document.createElement("option");o.value=t;o.textContent=t;sel.appendChild(o);});
+    if(allTags.indexOf(cur)!==-1)sel.value=cur;
   }
 
   // ── Build display rows ─────────────────────────────────────────────────────
-  // Returns flat array of display row objects:
-  // {uid, baseCode, item (master data), isSub, isLastSub}
-  function buildDisplayRows() {
-    // sort master items
+  function buildDisplayRows(){
+    var qLow=filterQ.toLowerCase();
     var sorted=masterItems.slice().sort(function(a,b){
-      var av=String(a[sortKey]||""), bv=String(b[sortKey]||"");
+      var av=String(a[sortKey]||a.itemCode||""),bv=String(b[sortKey]||b.itemCode||"");
       var r=av.localeCompare(bv,"th");
-      if (r===0) r=String(a.itemCode).localeCompare(String(b.itemCode),"th");
+      if(r===0)r=String(a.itemCode).localeCompare(String(b.itemCode),"th");
       return r*sortDir;
     });
-
     var out=[];
-    sorted.forEach(function(item) {
+    sorted.forEach(function(item){
       var code=item.itemCode;
-      var u=updateMap[code]||{baseCode:"",tags:[],route:"",dose:"",frequency:"",note:""};
-
-      // filter by tag
+      var uMaster=updateMap[code]||{baseCode:"",tags:[],route:"",dose:"",frequency:"",note:""};
       var subUids=getSubUids(code);
-      var masterTags=u.tags||[];
-      var allItemTags=masterTags.slice();
-      subUids.forEach(function(uid){
-        var su=updateMap[uid];
-        if (su)(su.tags||[]).forEach(function(t){if(allItemTags.indexOf(t)===-1)allItemTags.push(t);});
+      // gather all rows for this master
+      var candidates=[{uid:code,baseCode:"",item:item,isSub:false,u:uMaster}];
+      subUids.forEach(function(uid){candidates.push({uid:uid,baseCode:code,item:item,isSub:true,u:updateMap[uid]||{tags:[],route:"",dose:"",frequency:"",note:""}});});
+
+      // filter candidates
+      var visible=candidates.filter(function(dr){
+        var u=dr.u;
+        // tag filter
+        if(activeTag==="__notag__"){if(u.tags&&u.tags.length)return false;}
+        else if(activeTag!=="__all__"){if(!u.tags||u.tags.indexOf(activeTag)===-1)return false;}
+        // done filter
+        if(filterDone==="done"&&!doneMap[dr.uid])return false;
+        if(filterDone==="todo"&&doneMap[dr.uid])return false;
+        // text search
+        if(qLow){
+          var hay=[dr.uid,item.description,item.tradeName,item.commonName,
+            (u.tags||[]).join(" "),u.route,u.dose,u.frequency,u.note,item.unit,item.receipt].join(" ").toLowerCase();
+          if(hay.indexOf(qLow)===-1)return false;
+        }
+        return true;
       });
-
-      var showMaster=false, showSubs=[];
-      if (activeTag==="__all__") {
-        showMaster=true; showSubs=subUids;
-      } else if (activeTag==="__notag__") {
-        if (!allItemTags.length){showMaster=true;showSubs=subUids;}
-      } else {
-        if (masterTags.indexOf(activeTag)!==-1) showMaster=true;
-        showSubs=subUids.filter(function(uid){
-          var su=updateMap[uid];
-          return su&&su.tags&&su.tags.indexOf(activeTag)!==-1;
-        });
-        if (!showMaster&&showSubs.length===0&&allItemTags.indexOf(activeTag)!==-1) showMaster=true;
-      }
-
-      if (!showMaster&&showSubs.length===0) return;
-
-      out.push({uid:code,baseCode:"",item:item,isSub:false,isLastSub:showSubs.length===0});
-      showSubs.forEach(function(uid,i){
-        out.push({uid:uid,baseCode:code,item:item,isSub:true,isLastSub:i===showSubs.length-1});
-      });
+      if(!visible.length)return;
+      // mark last sub
+      var lastIdx=visible.length-1;
+      visible.forEach(function(dr,i){dr.isLastSub=i===lastIdx&&dr.isSub;});
+      out.push.apply(out,visible);
     });
     return out;
   }
 
   // ── Render tabs ────────────────────────────────────────────────────────────
-  function renderTabs() {
-    var row=document.getElementById("tabs-row");
-    row.innerHTML="";
-    [{tag:"__all__",label:"ทั้งหมด"},{tag:"__notag__",label:"ยังไม่มี Tag"}]
-      .concat(allTags.map(function(t){return{tag:t,label:t};}))
-      .forEach(function(b){
-        var btn=document.createElement("button");
-        btn.className="tab-btn"+(b.tag===activeTag?" active":"");
-        btn.textContent=b.label;
-        if (b.tag!=="__all__"&&b.tag!=="__notag__") {
-          var cnt=masterItems.filter(function(item){
-            var u=updateMap[item.itemCode];
-            if (u&&u.tags&&u.tags.indexOf(b.tag)!==-1) return true;
-            return getSubUids(item.itemCode).some(function(uid){
-              var su=updateMap[uid];return su&&su.tags&&su.tags.indexOf(b.tag)!==-1;
-            });
-          }).length;
-          btn.textContent+=" ("+cnt+")";
-        }
-        btn.addEventListener("click",function(){activeTag=b.tag;renderTabs();renderTable();});
-        row.appendChild(btn);
-      });
+  function renderTabs(){
+    var container=document.getElementById("tabs");container.innerHTML="";
+    var btns=[{tag:"__all__",label:"ทั้งหมด"},{tag:"__notag__",label:"ยังไม่มี Tag"}]
+      .concat(allTags.map(function(t){return{tag:t,label:t};}));
+    btns.forEach(function(b){
+      var btn=document.createElement("button");btn.className="tab"+(b.tag===activeTag?" on":"");
+      var cnt=0;
+      if(b.tag==="__all__") cnt=masterItems.length;
+      else if(b.tag==="__notag__"){
+        cnt=masterItems.filter(function(it){var u=updateMap[it.itemCode];return!u||!u.tags||!u.tags.length;}).length;
+      } else {
+        cnt=masterItems.filter(function(it){
+          if((updateMap[it.itemCode]||{tags:[]}).tags.indexOf(b.tag)!==-1)return true;
+          return getSubUids(it.itemCode).some(function(uid){var su=updateMap[uid];return su&&su.tags&&su.tags.indexOf(b.tag)!==-1;});
+        }).length;
+      }
+      btn.innerHTML=b.label+'<span class="n">'+cnt+'</span>';
+      btn.addEventListener("click",function(){activeTag=b.tag;renderTabs();render();});
+      container.appendChild(btn);
+    });
   }
 
   // ── Render table ───────────────────────────────────────────────────────────
-  function renderTable() {
-    var displayRows=buildDisplayRows();
-    document.getElementById("stat-shown").textContent=
-      "แสดง "+displayRows.filter(function(r){return !r.isSub;}).length+" / "+masterItems.length+" items";
+  function render(){
+    updateSortHeaders();
+    var rows=buildDisplayRows();
+    var masterCount=rows.filter(function(r){return !r.isSub;}).length;
+    var subCount=rows.filter(function(r){return r.isSub;}).length;
+    var doneCount=rows.filter(function(r){return !r.isSub&&doneMap[r.uid];}).length;
+    var multiCount=rows.filter(function(r){return !r.isSub&&multiCodes.has(r.uid);}).length;
+    document.getElementById("st-shown").textContent=masterCount;
+    document.getElementById("st-done").textContent=doneCount;
+    document.getElementById("st-todo").textContent=masterCount-doneCount;
+    document.getElementById("st-multi").textContent=multiCount;
+    document.getElementById("st-sub").textContent=subCount;
+    document.getElementById("shown-hint").textContent="แสดง "+rows.length+" แถว";
+
     var tbody=document.getElementById("tbody");
     tbody.innerHTML="";
+    var empty=document.getElementById("empty");
+    if(!rows.length){empty.style.display="";return;}
+    empty.style.display="none";
 
-    displayRows.forEach(function(dr) {
-      var uid=dr.uid, item=dr.item, isSub=dr.isSub;
-      var u=updateMap[uid]||{baseCode:dr.baseCode,tags:[],route:"",dose:"",frequency:"",note:""};
+    rows.forEach(function(dr){
+      var uid=dr.uid,item=dr.item,isSub=dr.isSub;
+      var u=dr.u;
       var tags=u.tags||[];
+      var isDone=!!doneMap[uid];
+      var isMulti=multiCodes.has(isSub?dr.baseCode:uid);
 
       var tr=document.createElement("tr");
-      var cls=isSub?"sub-row":"master";
-      if (!isSub&&tags.length) cls+=" has-tag";
-      if (dr.isLastSub&&isSub) cls+=" sub-last";
-      tr.className=cls;
+      var cls=isSub?"sub-row":"";
+      if(!isSub){if(isDone)cls+=" done";if(isMulti)cls+=" multi";}
+      else{if(isDone)cls+=" done";if(dr.isLastSub)cls+=" sub-last";}
+      tr.className=cls.trim();
 
-      // Item Code
+      // ── Done checkbox ──
+      var tdDone=document.createElement("td");
+      tdDone.className="sticky-done col-done";
+      var cb=document.createElement("input");cb.type="checkbox";cb.checked=isDone;
+      cb.addEventListener("change",function(){
+        if(cb.checked)doneMap[uid]=1;else delete doneMap[uid];
+        saveJson(LS_DONE,doneMap);render();
+      });
+      tdDone.appendChild(cb);tr.appendChild(tdDone);
+
+      // ── Item Code ──
       var tdCode=document.createElement("td");
-      tdCode.className="code-cell";
+      tdCode.className="col-code"+(isSub?" sub":"");
       tdCode.textContent=uid;
+      if(isMulti&&!isSub){var mb=document.createElement("span");mb.className="multi-badge";mb.textContent="×"+(Object.keys(updateMap).filter(function(u2){return baseCodeOf(u2)===uid;}).length+1);tdCode.appendChild(mb);}
       tr.appendChild(tdCode);
 
-      // Read-only master fields
-      ["description","tradeName","commonName","unit","receipt","status"].forEach(function(k){
-        var td=document.createElement("td");
-        td.textContent=item[k]||"";
-        if (isSub) td.style.color="#9ca3af"; // dimmed for sub-rows
-        tr.appendChild(td);
-      });
-
-      // Tag cell
+      // ── Tag cell ──
       var tdTag=document.createElement("td");
-      var tagWrap=document.createElement("div");
-      tagWrap.className="tag-cell";
+      var tagWrap=document.createElement("div");tagWrap.className="tag-cell";
       tags.forEach(function(t){
-        var chip=document.createElement("span");
-        chip.className="tag-chip";
-        chip.textContent=t;
-        var rm=document.createElement("span");
-        rm.className="rm"; rm.textContent="✕";
+        var chip=document.createElement("span");chip.className="tag-chip";chip.textContent=t;
+        var rm=document.createElement("span");rm.className="rm";rm.textContent="✕";
         rm.addEventListener("click",function(){
           ensureUpdate(uid,dr.baseCode);
           updateMap[uid].tags=updateMap[uid].tags.filter(function(x){return x!==t;});
-          setDirty(); rebuildTags(); renderTable();
+          setDirty();rebuildTags();renderTabs();render();
         });
-        chip.appendChild(rm);
-        tagWrap.appendChild(chip);
+        chip.appendChild(rm);tagWrap.appendChild(chip);
       });
-      var addBtn=document.createElement("button");
-      addBtn.className="tag-add"; addBtn.textContent="+ Tag";
+      var addBtn=document.createElement("button");addBtn.className="tag-add";addBtn.textContent="+ Tag";
       addBtn.addEventListener("click",function(e){e.stopPropagation();showTagInput(uid,dr.baseCode,addBtn);});
-      tagWrap.appendChild(addBtn);
-      tdTag.appendChild(tagWrap);
-      tr.appendChild(tdTag);
+      tagWrap.appendChild(addBtn);tdTag.appendChild(tagWrap);tr.appendChild(tdTag);
 
-      // Tx Default cell
-      var tdTx=document.createElement("td");
-      var txWrap=document.createElement("div");
-      txWrap.className="tx-cell";
-      [{label:"Route",key:"route"},{label:"Dose",key:"dose"},{label:"Freq",key:"frequency"},{label:"Note",key:"note"}]
-        .forEach(function(f){
-          var rowEl=document.createElement("div");
-          rowEl.className="tx-field";
-          var lbl=document.createElement("span");
-          lbl.className="tx-label"; lbl.textContent=f.label;
-          var inp=document.createElement("input");
-          inp.className="tx-input"; inp.value=u[f.key]||"";
-          inp.addEventListener("change",function(){
-            ensureUpdate(uid,dr.baseCode);
-            updateMap[uid][f.key]=inp.value;
-            setDirty();
-          });
-          rowEl.appendChild(lbl); rowEl.appendChild(inp);
-          txWrap.appendChild(rowEl);
+      // ── Name cells with copy ──
+      ["description","tradeName","commonName"].forEach(function(k){
+        var td=document.createElement("td");td.className="col-name";
+        var wrap=document.createElement("div");wrap.className="name-cell";
+        var val=document.createElement("span");val.className="name-val"+(item[k]?"":"  empty");
+        val.textContent=item[k]||"—";if(isSub){val.style.color="#9ca3af";}
+        var cpBtn=document.createElement("button");cpBtn.className="copy-btn";cpBtn.innerHTML=COPY_ICON;
+        cpBtn.title="คัดลอก";
+        cpBtn.addEventListener("click",function(){
+          navigator.clipboard.writeText(item[k]||"").then(function(){toast("คัดลอกแล้ว");});
         });
-      tdTx.appendChild(txWrap);
-      tr.appendChild(tdTx);
+        wrap.appendChild(val);wrap.appendChild(cpBtn);td.appendChild(wrap);tr.appendChild(td);
+      });
 
-      // Actions cell
-      var tdAct=document.createElement("td");
-      tdAct.style.whiteSpace="nowrap";
-      if (!isSub) {
-        // master row: button to add sub-row
-        var addSub=document.createElement("button");
-        addSub.className="btn-add-sub"; addSub.textContent="+ Sub";
-        addSub.title="เพิ่ม placement เพิ่มเติม (sub-code)";
+      // ── Tx Default inline inputs ──
+      [{key:"route",cls:"col-tx"},{key:"dose",cls:"col-tx"},{key:"frequency",cls:"col-tx"},{key:"note",cls:"col-tx"}].forEach(function(f){
+        var td=document.createElement("td");td.className=f.cls;
+        var inp=document.createElement("input");inp.className="tx-input";inp.value=u[f.key]||"";
+        inp.addEventListener("change",function(){
+          ensureUpdate(uid,dr.baseCode);updateMap[uid][f.key]=inp.value;setDirty();
+        });
+        td.appendChild(inp);tr.appendChild(td);
+      });
+
+      // ── Extra read-only fields ──
+      var extraFields=[
+        {k:"unit",cls:"col-unit"},{k:"receipt",cls:"col-receipt"},
+        {k:"alertMin",cls:"col-num"},{k:"alertMax",cls:"col-num"},
+        {k:"formula",cls:""},{k:"sellPrice",cls:"col-price"},
+        {k:"rxDefault",cls:"col-rx"},{k:"status",cls:"col-status"}
+      ];
+      extraFields.forEach(function(f){
+        var td=document.createElement("td");td.className=f.cls;
+        var v=item[f.k]||"";
+        if(f.k==="status"){
+          var p=document.createElement("span");
+          p.className="pill "+(v==="Active"?"pill-on":"pill-off");p.textContent=v||"—";
+          td.appendChild(p);
+        } else if(f.k==="rxDefault"){
+          var p2=document.createElement("span");
+          p2.className="pill "+(v==="มี"?"pill-yes":"pill-no");p2.textContent=v||"—";
+          td.appendChild(p2);
+        } else {
+          td.textContent=v;if(!v)td.innerHTML='<span class="muted">—</span>';
+        }
+        if(isSub)td.style.color="#9ca3af";
+        tr.appendChild(td);
+      });
+
+      // ── Actions ──
+      var tdAct=document.createElement("td");tdAct.style.whiteSpace="nowrap";
+      if(!isSub){
+        var addSub=document.createElement("button");addSub.className="btn-add-sub";addSub.textContent="+ Sub";
+        addSub.title="เพิ่ม placement เพิ่มเติม";
         addSub.addEventListener("click",function(){
           var newUid=nextSubUid(item.itemCode);
           updateMap[newUid]={baseCode:item.itemCode,tags:[],route:"",dose:"",frequency:"",note:""};
-          setDirty(); renderTable();
-          // scroll to new row
+          rebuildMulti();setDirty();render();
           setTimeout(function(){
-            var rows=document.querySelectorAll("tr.sub-row td.code-cell");
-            rows.forEach(function(td){if(td.textContent===newUid)td.closest("tr").scrollIntoView({block:"center"});});
+            document.querySelectorAll("tr.sub-row td.col-code").forEach(function(td){
+              if(td.textContent===newUid)td.closest("tr").scrollIntoView({block:"center"});
+            });
           },50);
         });
         tdAct.appendChild(addSub);
       } else {
-        // sub-row: delete button
-        var delSub=document.createElement("button");
-        delSub.className="btn-del-sub"; delSub.textContent="✕ ลบ";
+        var delSub=document.createElement("button");delSub.className="btn-del-sub";delSub.textContent="✕ ลบ";
         delSub.title="ลบ sub-row นี้";
         delSub.addEventListener("click",function(){
-          if (!confirm("ลบ "+uid+" ?")) return;
-          delete updateMap[uid];
-          setDirty(); rebuildTags(); renderTable();
+          if(!confirm("ลบ "+uid+" ?"))return;
+          delete updateMap[uid];delete doneMap[uid];
+          saveJson(LS_DONE,doneMap);rebuildMulti();rebuildTags();setDirty();renderTabs();render();
         });
         tdAct.appendChild(delSub);
       }
       tr.appendChild(tdAct);
-
       tbody.appendChild(tr);
     });
   }
 
+  // ── Sort headers ───────────────────────────────────────────────────────────
+  function updateSortHeaders(){
+    document.querySelectorAll("table.items th[data-sort]").forEach(function(th){
+      th.classList.remove("sort-asc","sort-desc");
+      var icon=th.querySelector(".sort-icon");
+      if(th.getAttribute("data-sort")===sortKey){
+        th.classList.add(sortDir===1?"sort-asc":"sort-desc");
+        if(icon)icon.textContent=sortDir===1?"↑":"↓";
+      } else {if(icon)icon.textContent="↕";}
+    });
+  }
+  document.querySelector("table.items thead").addEventListener("click",function(e){
+    var th=e.target.closest("th[data-sort]");if(!th)return;
+    var k=th.getAttribute("data-sort");
+    if(k===sortKey)sortDir*=-1;else{sortKey=k;sortDir=1;}
+    render();
+  });
+
   // ── Tag popup ──────────────────────────────────────────────────────────────
   var tagPopupTarget=null;
-  function showTagInput(uid, baseCode, anchor) {
-    var existing=document.getElementById("tag-popup");
-    if (existing) existing.remove();
-    if (tagPopupTarget===uid){tagPopupTarget=null;return;}
+  function showTagInput(uid,baseCode,anchor){
+    var existing=document.getElementById("tag-popup");if(existing)existing.remove();
+    if(tagPopupTarget===uid){tagPopupTarget=null;return;}
     tagPopupTarget=uid;
-    var popup=document.createElement("div");
-    popup.id="tag-popup";
-    popup.style.cssText="position:fixed;z-index:200;background:#fff;border:1px solid #d1d5db;border-radius:8px;padding:10px;box-shadow:0 4px 16px rgba(0,0,0,.12);min-width:220px;";
+    var popup=document.createElement("div");popup.id="tag-popup";popup.className="tag-popup";
     var rect=anchor.getBoundingClientRect();
-    popup.style.top=(rect.bottom+4)+"px";
-    popup.style.left=rect.left+"px";
+    popup.style.top=(rect.bottom+4)+"px";popup.style.left=rect.left+"px";
 
     var u=updateMap[uid]||{tags:[]};
-    var existing_tags=u.tags||[];
-    var suggestions=allTags.filter(function(t){return existing_tags.indexOf(t)===-1;});
-    if (suggestions.length){
-      var sugDiv=document.createElement("div");
-      sugDiv.style.cssText="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;";
+    var existingTags=u.tags||[];
+    var suggestions=allTags.filter(function(t){return existingTags.indexOf(t)===-1;});
+    if(suggestions.length){
+      var sugDiv=document.createElement("div");sugDiv.style.cssText="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;";
       suggestions.forEach(function(t){
-        var b=document.createElement("button");
-        b.className="tag-chip"; b.style.cursor="pointer"; b.textContent=t;
+        var b=document.createElement("button");b.className="tag-chip";b.style.cursor="pointer";b.textContent=t;
         b.addEventListener("click",function(){addTag(uid,baseCode,t);popup.remove();tagPopupTarget=null;});
         sugDiv.appendChild(b);
       });
       popup.appendChild(sugDiv);
     }
-    var wrap=document.createElement("div"); wrap.className="tag-input-wrap";
-    var inp=document.createElement("input"); inp.placeholder="พิมพ์ tag ใหม่...";
-    var btn=document.createElement("button"); btn.className="btn btn-blue"; btn.textContent="เพิ่ม";
+    var wrap=document.createElement("div");wrap.className="tag-input-wrap";
+    var inp=document.createElement("input");inp.placeholder="พิมพ์ tag ใหม่...";
+    var btn=document.createElement("button");btn.className="btn btn-blue";btn.textContent="เพิ่ม";
     btn.addEventListener("click",function(){var v=inp.value.trim();if(v){addTag(uid,baseCode,v);popup.remove();tagPopupTarget=null;}});
     inp.addEventListener("keydown",function(e){
       if(e.key==="Enter"){var v=inp.value.trim();if(v){addTag(uid,baseCode,v);popup.remove();tagPopupTarget=null;}}
       if(e.key==="Escape"){popup.remove();tagPopupTarget=null;}
     });
-    wrap.appendChild(inp); wrap.appendChild(btn);
-    popup.appendChild(wrap);
-    document.body.appendChild(popup); inp.focus();
+    wrap.appendChild(inp);wrap.appendChild(btn);popup.appendChild(wrap);
+    document.body.appendChild(popup);inp.focus();
     setTimeout(function(){
       document.addEventListener("click",function rm(e){
         if(!popup.contains(e.target)&&e.target!==anchor){popup.remove();tagPopupTarget=null;document.removeEventListener("click",rm);}
       });
     },0);
   }
-  function addTag(uid, baseCode, tag) {
-    ensureUpdate(uid, baseCode);
+  function addTag(uid,baseCode,tag){
+    ensureUpdate(uid,baseCode);
     var tags=updateMap[uid].tags;
-    if (tags.indexOf(tag)===-1) tags.push(tag);
-    setDirty(); rebuildTags(); renderTable();
+    if(tags.indexOf(tag)===-1)tags.push(tag);
+    setDirty();rebuildTags();renderTabs();render();
   }
 
-  // ── Dirty ──────────────────────────────────────────────────────────────────
+  // ── Dirty / Toast ──────────────────────────────────────────────────────────
   function setDirty(){
     dirty=true;
-    document.getElementById("badge-dirty").style.display="";
+    document.getElementById("stat-dirty").style.display="";
     document.getElementById("btn-save").disabled=false;
   }
-
-  // ── Toast ──────────────────────────────────────────────────────────────────
   function toast(msg){
-    var t=document.getElementById("toast");
-    t.textContent=msg; t.classList.add("show");
+    var t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");
     setTimeout(function(){t.classList.remove("show");},2500);
   }
+
+  // ── CSV Export ─────────────────────────────────────────────────────────────
+  var CSV_H=["ทำแล้ว","Item Code","Base Code","Tag","Description","Trade Name","Common Name",
+    "Route","Dose/หน่วยการใช้งาน","Frequency/Rate","Note",
+    "Unit","Receipt Category","Alert Min","Alert Max","Formula","Sell Price","Rx Default","Status"];
+  function rowCsv(dr){
+    var u=dr.u,item=dr.item;
+    return [doneMap[dr.uid]?"Y":"",dr.uid,dr.baseCode,(u.tags||[]).join("|"),
+      item.description,item.tradeName,item.commonName,
+      u.route,u.dose,u.frequency,u.note,
+      item.unit,item.receipt,item.alertMin,item.alertMax,item.formula,item.sellPrice,item.rxDefault,item.status
+    ].map(ce).join(",");
+  }
+  function dlCsv(name,rows){
+    var text="\uFEFF"+CSV_H.join(",")+"\n"+rows.join("\n");
+    var blob=new Blob([text],{type:"text/csv;charset=utf-8"});
+    var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;
+    document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(a.href);
+  }
+  document.getElementById("btn-export-tab").addEventListener("click",function(){
+    var rows=buildDisplayRows().map(rowCsv);
+    dlCsv("itemsview-"+(activeTag==="__all__"?"all":activeTag.replace(/[\\/:*?"<>|]/g,"-"))+".csv",rows);
+    toast("Export "+rows.length+" แถว");
+  });
+  document.getElementById("btn-export-all").addEventListener("click",function(){
+    // all master + subs
+    var allRows=[];
+    masterItems.forEach(function(item){
+      var code=item.itemCode;
+      var uMaster=updateMap[code]||{baseCode:"",tags:[],route:"",dose:"",frequency:"",note:""};
+      allRows.push({uid:code,baseCode:"",item:item,isSub:false,u:uMaster});
+      getSubUids(code).forEach(function(uid){
+        allRows.push({uid:uid,baseCode:code,item:item,isSub:true,u:updateMap[uid]||{tags:[],route:"",dose:"",frequency:"",note:""}});
+      });
+    });
+    dlCsv("itemsview-all.csv",allRows.map(rowCsv));
+    toast("Export ทั้งหมด "+allRows.length+" แถว");
+  });
+  document.getElementById("btn-reset-done").addEventListener("click",function(){
+    var rows=buildDisplayRows();
+    if(!confirm("ล้างติ๊กในมุมมองนี้ "+rows.length+" รายการ?"))return;
+    rows.forEach(function(dr){delete doneMap[dr.uid];});
+    saveJson(LS_DONE,doneMap);render();toast("ล้างแล้ว");
+  });
+  document.getElementById("btn-clear-filters").addEventListener("click",function(){
+    document.getElementById("q").value="";
+    document.getElementById("f-tag").value="";
+    document.getElementById("f-done").value="";
+    filterQ="";activeTag="__all__";filterDone="";
+    renderTabs();render();
+  });
 
   // ── File System Access API ─────────────────────────────────────────────────
   async function openItemsFile(){
     try{
       var [fh]=await window.showOpenFilePicker({types:[{description:"CSV",accept:{"text/csv":[".csv"]}}]});
       itemsFileHandle=fh;
-      var file=await fh.getFile(); var text=await file.text();
+      var file=await fh.getFile();var text=await file.text();
       masterItems=parseItemsCsv(text);
       masterMap={};masterItems.forEach(function(it){masterMap[it.itemCode]=it;});
-      document.getElementById("hint-items").textContent=file.name+" · "+masterItems.length+" รายการ";
+      document.getElementById("topbar-kicker").textContent="Items View · "+file.name+" · "+masterItems.length+" รายการ";
       document.getElementById("overlay").classList.add("hidden");
-      rebuildTags(); renderTable();
+      rebuildMulti();rebuildTags();renderTabs();render();
       toast("โหลด "+masterItems.length+" รายการ");
       promptOpenUpdate();
     }catch(e){if(e.name!=="AbortError")toast("เปิดไม่ได้: "+e.message);}
@@ -644,12 +789,12 @@ tr.sub-last td{border-bottom:2px solid #ddd6fe;}
     try{
       var [fh]=await window.showOpenFilePicker({types:[{description:"CSV",accept:{"text/csv":[".csv"]}}]});
       updateFileHandle=fh;
-      var file=await fh.getFile(); var text=await file.text();
+      var file=await fh.getFile();var text=await file.text();
       updateMap=parseUpdateCsv(text);
       dirty=false;
-      document.getElementById("badge-dirty").style.display="none";
+      document.getElementById("stat-dirty").style.display="none";
       document.getElementById("btn-save").disabled=true;
-      rebuildTags(); renderTable();
+      rebuildMulti();rebuildTags();renderTabs();render();
       toast("โหลด Update CSV: "+file.name);
     }catch(e){if(e.name!=="AbortError")toast("เปิดไม่ได้: "+e.message);}
   }
@@ -657,45 +802,35 @@ tr.sub-last td{border-bottom:2px solid #ddd6fe;}
     var text=serializeUpdateCsv();
     if(updateFileHandle){
       try{
-        var w=await updateFileHandle.createWritable();
-        await w.write(text); await w.close();
-        dirty=false;
-        document.getElementById("badge-dirty").style.display="none";
-        document.getElementById("btn-save").disabled=true;
-        toast("บันทึกแล้ว ✓"); return;
+        var w=await updateFileHandle.createWritable();await w.write(text);await w.close();
+        dirty=false;document.getElementById("stat-dirty").style.display="none";
+        document.getElementById("btn-save").disabled=true;toast("บันทึกแล้ว ✓");return;
       }catch(e){toast("บันทึกไม่ได้: "+e.message);}
     }
     try{
       var fh=await window.showSaveFilePicker({suggestedName:"items_update.csv",types:[{description:"CSV",accept:{"text/csv":[".csv"]}}]});
       updateFileHandle=fh;
-      var w=await fh.createWritable(); await w.write(text); await w.close();
-      dirty=false;
-      document.getElementById("badge-dirty").style.display="none";
-      document.getElementById("btn-save").disabled=true;
-      toast("บันทึกแล้ว ✓");
+      var w=await fh.createWritable();await w.write(text);await w.close();
+      dirty=false;document.getElementById("stat-dirty").style.display="none";
+      document.getElementById("btn-save").disabled=true;toast("บันทึกแล้ว ✓");
     }catch(e){if(e.name!=="AbortError")toast("บันทึกไม่ได้: "+e.message);}
   }
 
-  // ── Sort headers ───────────────────────────────────────────────────────────
-  document.querySelectorAll("table thead th[data-k]").forEach(function(th){
-    th.addEventListener("click",function(){
-      var k=th.getAttribute("data-k");
-      if(k===sortKey) sortDir*=-1; else{sortKey=k;sortDir=1;}
-      document.querySelectorAll("table thead th[data-k]").forEach(function(t){t.classList.remove("sort-asc","sort-desc");});
-      th.classList.add(sortDir===1?"sort-asc":"sort-desc");
-      renderTable();
-    });
-  });
-
-  // ── Buttons ────────────────────────────────────────────────────────────────
-  document.getElementById("btn-open-items").addEventListener("click",openItemsFile);
+  // ── Event wiring ───────────────────────────────────────────────────────────
+  document.getElementById("btn-open-items-modal").addEventListener("click",openItemsFile);
   document.getElementById("btn-reload-items").addEventListener("click",openItemsFile);
   document.getElementById("btn-open-update").addEventListener("click",openUpdateFile);
   document.getElementById("btn-save").addEventListener("click",saveUpdateFile);
 
-  // init
-  document.querySelector("th[data-k='itemCode']").classList.add("sort-asc");
+  document.getElementById("q").addEventListener("input",function(){filterQ=this.value;render();});
+  document.getElementById("f-tag").addEventListener("change",function(){
+    activeTag=this.value||"__all__";renderTabs();render();
+  });
+  document.getElementById("f-done").addEventListener("change",function(){filterDone=this.value;render();});
+
+  // ── Init ───────────────────────────────────────────────────────────────────
   renderTabs();
+  updateSortHeaders();
 })();
 </script>
 </body>
