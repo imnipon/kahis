@@ -1,0 +1,11 @@
+{
+  "name": "KAHIS",
+  "install": "python3 -c \"print('KAHIS static workspace ready')\"",
+  "start": "python3 -m http.server 8080 --bind 0.0.0.0",
+  "ports": [
+    {
+      "name": "KAHIS landing",
+      "port": 8080
+    }
+  ]
+}
