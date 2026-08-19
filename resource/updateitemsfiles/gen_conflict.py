@@ -1,0 +1,298 @@
+import csv, json, sys, os
+sys.stdout.reconfigure(encoding='utf-8')
+
+BASE = r'C:\Users\C18\Documents\Cursor\kahis\resource'
+OUT  = r'C:\Users\C18\Documents\Cursor\kahis\resource\updateitemsfiles\conflict_viewer.html'
+
+CONFLICT_CODES = [
+    '020000000081','020000000141','020000000021','020000000055',
+    '020000000038','020000000105','020000000002','020000000034',
+]
+
+# ── 1. Master CSV ──────────────────────────────────────────────────────────────
+master = {}
+with open(os.path.join(BASE, 'items_export_enabled_AT_20260818.csv'), encoding='utf-8-sig') as f:
+    for row in csv.DictReader(f):
+        code = row['Item Code(รหัส)'].lstrip("'").strip()
+        master[code] = row
+
+# ── 2. All-placements CSV ──────────────────────────────────────────────────────
+placements_by_code = {}
+with open(os.path.join(BASE, 'updateitems-all-placements.csv'), encoding='utf-8-sig') as f:
+    for row in csv.DictReader(f):
+        code = row.get('Item Code', '').lstrip("'").strip()
+        if code in CONFLICT_CODES:
+            placements_by_code.setdefault(code, []).append(dict(row))
+
+# ── 3. Build groups JSON ───────────────────────────────────────────────────────
+groups = []
+for code in CONFLICT_CODES:
+    m = master.get(code, {})
+    rows = placements_by_code.get(code, [])
+
+    def mv(key, default=''):
+        return m.get(key, default) or default
+
+    placements = []
+    for r in rows:
+        def rv(key, default=''):
+            return r.get(key, default) or default
+        placements.append({
+            'tab':         rv('Tab'),
+            'done':        rv('ทำแล้ว'),
+            'itemCode':    rv('Item Code').lstrip("'").strip(),
+            'description': rv('Description'),
+            'tradeName':   rv('Trade Name'),
+            'commonName':  rv('Common Name'),
+            'route':       rv('Route'),
+            'dose':        rv('หน่วยการใช้งาน'),
+            'frequency':   rv('Frequency/Rate'),
+            'note':        rv('Note'),
+            'unit':        rv('Unit'),
+            'receipt':     rv('Receipt Category'),
+            'sellPrice':   rv('Sell Price'),
+            'rxDefault':   rv('Rx Default'),
+            'status':      rv('Status'),
+        })
+
+    groups.append({
+        'itemCode':    code,
+        'description': mv('Description(ชื่อยา/บริการ)'),
+        'tradeName':   mv('Trade Name(ชื่อการค้า)'),
+        'commonName':  mv('Common Name(ชื่อใช้เรียกบ่อย)'),
+        'unit':        mv('Unit(หน่วยนับ)'),
+        'receipt':     mv('Receipt Category(หมวดใบเสร็จ)'),
+        'sellPrice':   mv('Sell Price(ราคาขาย)'),
+        'rxDefault':   mv('Rx Default'),
+        'status':      mv('Status'),
+        'placements':  placements,
+    })
+
+json_data = json.dumps(groups, ensure_ascii=False, indent=2)
+
+# ── 4. Build HTML ──────────────────────────────────────────────────────────────
+HTML = '''<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KAHIS · Conflict Items – Tx Default</title>
+<style>
+  :root {
+    --bg:#f0f2f5;--surface:#fff;--text:#1f2937;--muted:#6b7280;
+    --border:#e5e7eb;--navy:#0f172a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+  .topbar{background:var(--navy);color:#e2e8f0;padding:10px 16px 14px;}
+  .topbar .kicker{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#94a3b8;}
+  .topbar h1{font-size:18px;font-weight:700;color:#fff;margin:2px 0 4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .topbar p{font-size:12px;color:#94a3b8;line-height:1.45;}
+  .badge{display:inline-block;padding:2px 10px;border-radius:999px;background:#f59e0b;color:#fff;font-size:12px;font-weight:800;}
+
+  .page{padding:14px 14px 40px;}
+  .group{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:18px;}
+  .group-header{background:#0f172a;color:#e2e8f0;padding:10px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .group-code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:#94a3b8;white-space:nowrap;}
+  .group-name{font-size:14px;font-weight:700;color:#fff;flex:1;min-width:0;}
+  .group-meta{font-size:11px;color:#64748b;margin-top:2px;}
+  .conflict-pill{display:inline-block;padding:2px 9px;border-radius:999px;background:#f59e0b;color:#fff;font-size:11px;font-weight:800;white-space:nowrap;}
+
+  .table-wrap{overflow-x:auto;}
+  table.items{width:max-content;min-width:100%;border-collapse:collapse;font-size:12.5px;}
+  table.items th{position:sticky;top:0;z-index:3;background:#f8fafc;text-align:left;font-weight:600;color:#475569;padding:8px 8px;border-bottom:1px solid var(--border);white-space:nowrap;vertical-align:bottom;}
+  table.items th.grp-item{background:#eff6ff;border-bottom-color:#bfdbfe;}
+  table.items th.grp-tx{background:#f0fdf4;border-bottom-color:#86efac;}
+  table.items th.grp-extra{background:#fafaf9;border-bottom-color:#e7e5e4;}
+  table.items th .th-en{display:block;font-size:12px;color:#334155;}
+  table.items th .th-th{display:block;font-size:10px;color:#94a3b8;font-weight:500;margin-top:1px;}
+  table.items th .grp-label{display:block;font-size:9px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#64748b;margin-bottom:2px;}
+  table.items td{padding:7px 8px;border-bottom:1px solid #f1f5f9;vertical-align:top;color:#1f2937;}
+  table.items tr:last-child td{border-bottom:none;}
+  table.items tr:hover td{background:#f8fafc;}
+  table.items tr:hover td.diff{background:#fde68a;}
+
+  .col-code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;color:#64748b;white-space:nowrap;}
+  .col-tab{white-space:nowrap;}
+  .tab-tag{display:inline-block;padding:2px 8px;border-radius:999px;background:#e0e7ff;color:#3730a3;font-size:11px;font-weight:700;}
+  .tab-tag.xray{background:#dbeafe;color:#1e40af;}
+  .tab-tag.inject{background:#e0e7ff;color:#3730a3;}
+  .tab-tag.surgery{background:#fae8ff;color:#6b21a8;}
+  .tab-tag.emg{background:#fee2e2;color:#991b1b;}
+  .col-name{min-width:180px;max-width:260px;}
+  .col-unit{white-space:nowrap;}
+  .col-num{text-align:right;white-space:nowrap;}
+  .col-rx,.col-status{white-space:nowrap;}
+  .muted{color:#cbd5e1;}
+  .pill{display:inline-block;padding:1px 7px;border-radius:999px;font-size:11px;font-weight:700;}
+  .pill-yes{background:#dcfce7;color:#166534;}
+  .pill-no{background:#f1f5f9;color:#64748b;}
+  .pill-on{background:#dcfce7;color:#166534;}
+  .pill-off{background:#fee2e2;color:#991b1b;}
+  input[type="checkbox"]{width:16px;height:16px;cursor:pointer;accent-color:#16a34a;}
+
+  /* diff highlight */
+  td.diff{background:#fef3c7;position:relative;}
+  td.diff::after{
+    content:'≠';position:absolute;top:2px;right:3px;
+    font-size:9px;color:#d97706;font-weight:700;opacity:.7;
+  }
+
+  .toast{position:fixed;right:18px;bottom:18px;background:#111827;color:#fff;padding:10px 14px;border-radius:10px;font-size:13px;z-index:50;opacity:0;pointer-events:none;transition:opacity .2s;}
+  .toast.show{opacity:1;}
+  .copy-btn{
+    flex:none;width:24px;height:24px;border-radius:5px;
+    border:1px solid #d1d5db;background:#fff;color:#6b7280;
+    cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0;
+  }
+  .copy-btn:hover{background:#f1f5f9;color:#374151;border-color:#9ca3af;}
+  .name-cell{display:flex;align-items:flex-start;gap:5px;}
+  .name-val{flex:1;min-width:0;font-size:12px;line-height:1.45;color:#111827;word-break:break-word;}
+  .name-val.empty{color:#cbd5e1;font-style:italic;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="kicker">KAHIS · Items Update</div>
+  <h1>Conflict Items · Tx Default ต่างกันระหว่าง placement <span class="badge">8 รายการ</span></h1>
+  <p>รายการยาที่มี Tx Default แตกต่างกันระหว่าง placement — ตรวจสอบและกำหนดค่าให้ตรงกัน</p>
+</div>
+
+<div class="page" id="page"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const DATA = ''' + json_data + ''';
+
+const TAB_COLOR = {
+  'XRAY': 'xray',
+  'ยาฉีด': 'inject',
+  'ผ่าตัด': 'surgery',
+  'ยาฉุกเฉิน': 'emg',
+};
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function pill(val) {
+  const v = String(val||'').trim();
+  if (!v || v === '-') return '<span class="muted">—</span>';
+  if (v === 'มี') return '<span class="pill pill-yes">มี</span>';
+  if (v === 'ไม่มี') return '<span class="pill pill-no">ไม่มี</span>';
+  if (v === 'Active') return '<span class="pill pill-on">Active</span>';
+  if (v === 'Inactive') return '<span class="pill pill-off">Inactive</span>';
+  return esc(v);
+}
+
+function tabTag(tab) {
+  const cls = TAB_COLOR[tab] || '';
+  return `<span class="tab-tag ${cls}">${esc(tab)}</span>`;
+}
+
+function copyBtn(text) {
+  const safe = (text||'').replace(/\\\\/g,'\\\\\\\\').replace(/'/g,"\\\\'");
+  return `<button class="copy-btn" onclick="cp('${safe}')" title="copy">
+    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8">
+      <rect x="4" y="4" width="9" height="9" rx="1.5"/>
+      <path d="M4 4V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-1"/>
+    </svg>
+  </button>`;
+}
+
+function nameCellHtml(val) {
+  const v = val||'';
+  if (!v) return `<div class="name-cell"><span class="name-val empty">—</span></div>`;
+  return `<div class="name-cell"><span class="name-val">${esc(v)}</span>${copyBtn(v)}</div>`;
+}
+
+function buildGroup(g) {
+  const placements = g.placements;
+  // for each field, collect values to find differences
+  const fields = ['route','dose','frequency','note','unit','receipt','sellPrice','rxDefault','status'];
+  const baseVals = {};
+  fields.forEach(f => { baseVals[f] = placements[0]?.[f] ?? ''; });
+
+  function tdDiff(val, baseVal, html) {
+    const isDiff = String(val||'').trim() !== String(baseVal||'').trim();
+    return `<td class="${isDiff ? 'diff' : ''}">${html}</td>`;
+  }
+
+  const rows = placements.map((p, i) => {
+    const isFirst = i === 0;
+    return `<tr>
+      <td class="col-done" style="text-align:center"><input type="checkbox"${p.done==='1'||p.done==='true'||p.done==='TRUE' ? ' checked' : ''}></td>
+      <td class="col-code">${esc(p.itemCode)}</td>
+      <td class="col-tab">${tabTag(p.tab)}</td>
+      <td class="col-name">${nameCellHtml(p.description)}</td>
+      <td class="col-name">${nameCellHtml(p.tradeName)}</td>
+      <td>${nameCellHtml(p.commonName)}</td>
+      ${tdDiff(p.route, baseVals.route, p.route ? `<span>${esc(p.route)}</span>` : '<span class="muted">—</span>')}
+      ${tdDiff(p.dose, baseVals.dose, p.dose ? esc(p.dose) : '<span class="muted">—</span>')}
+      ${tdDiff(p.frequency, baseVals.frequency, p.frequency ? esc(p.frequency) : '<span class="muted">—</span>')}
+      ${tdDiff(p.note, baseVals.note, p.note ? esc(p.note) : '<span class="muted">—</span>')}
+      ${tdDiff(p.unit, baseVals.unit, p.unit ? esc(p.unit) : '<span class="muted">—</span>')}
+      ${tdDiff(p.receipt, baseVals.receipt, p.receipt ? esc(p.receipt) : '<span class="muted">—</span>')}
+      ${tdDiff(p.sellPrice, baseVals.sellPrice, p.sellPrice ? `<span style="font-size:11px">${esc(p.sellPrice)}</span>` : '<span class="muted">—</span>')}
+      ${tdDiff(p.rxDefault, baseVals.rxDefault, pill(p.rxDefault))}
+      ${tdDiff(p.status, baseVals.status, pill(p.status))}
+    </tr>`;
+  }).join('');
+
+  return `<div class="group">
+  <div class="group-header">
+    <div>
+      <div class="group-code">${esc(g.itemCode)}</div>
+      <div class="group-name">${esc(g.description)}</div>
+      ${g.tradeName && g.tradeName !== g.description ? `<div class="group-meta">Trade: ${esc(g.tradeName)}${g.commonName && g.commonName !== g.tradeName ? ' · ' + esc(g.commonName) : ''}</div>` : ''}
+    </div>
+    <span class="conflict-pill">⚠ Tx conflict · ${placements.length} placements</span>
+  </div>
+  <div class="table-wrap">
+  <table class="items">
+    <thead>
+      <tr>
+        <th class="grp-item" style="width:52px;text-align:center"><span class="th-en">Done</span><span class="th-th">ทำแล้ว</span></th>
+        <th class="grp-item"><span class="th-en">Item Code</span></th>
+        <th class="grp-item"><span class="th-en">Tag</span><span class="th-th">ตำแหน่ง</span></th>
+        <th class="grp-item"><span class="th-en">Description</span><span class="th-th">ชื่อยา</span></th>
+        <th class="grp-item"><span class="th-en">Trade Name</span></th>
+        <th class="grp-item"><span class="th-en">Common Name</span></th>
+        <th class="grp-tx"><span class="th-en">Route</span><span class="th-th">วิธีให้</span></th>
+        <th class="grp-tx"><span class="th-en">Dose</span></th>
+        <th class="grp-tx"><span class="th-en">Frequency</span></th>
+        <th class="grp-tx"><span class="th-en">Note</span></th>
+        <th class="grp-extra"><span class="th-en">Unit</span></th>
+        <th class="grp-extra"><span class="th-en">Receipt Category</span></th>
+        <th class="grp-extra"><span class="th-en">Sell Price</span></th>
+        <th class="grp-extra"><span class="th-en">Rx Default</span></th>
+        <th class="grp-extra"><span class="th-en">Status</span></th>
+      </tr>
+    </thead>
+    <tbody>${rows}</tbody>
+  </table>
+  </div>
+</div>`;
+}
+
+document.getElementById('page').innerHTML = DATA.map(buildGroup).join('');
+
+function cp(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const t = document.getElementById('toast');
+    t.textContent = 'Copied!';
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 1800);
+  });
+}
+</script>
+</body>
+</html>'''
+
+with open(OUT, 'w', encoding='utf-8') as f:
+    f.write(HTML)
+
+print(f'Written: {OUT}')
+print(f'Groups: {len(groups)}')
+for g in groups:
+    print(f"  {g['itemCode']} {g['description'][:35]} — {len(g['placements'])} placements")
