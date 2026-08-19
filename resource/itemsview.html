@@ -365,6 +365,11 @@
   var UPDATE_H=["Item Code","Base Code","Tag","Route","Dose","Frequency","Note"];
   function parseUpdateCsv(text){
     var rows=parseCSV(text);if(!rows.length)return{};
+    var h0=(rows[0][0]||"").trim();
+    // OLD placement format: Tab,ทำแล้ว,Item Code,ตำแหน่ง,Description,...,Route,หน่วยการใช้งาน,Frequency/Rate,Note,...
+    if(h0.toLowerCase()==="tab"){
+      return parsePlacementCsv(rows);
+    }
     var hasBase=rows[0].length>=7&&(rows[0][1]||"").trim().toLowerCase().indexOf("base")!==-1;
     var map={};
     for(var r=1;r<rows.length;r++){
@@ -381,6 +386,45 @@
           route:(row[2]||"").trim(),dose:(row[3]||"").trim(),frequency:(row[4]||"").trim(),note:(row[5]||"").trim()};
       }
     }
+    return map;
+  }
+  // Parse old placement CSV (header row[0]==="Tab") into the same updateMap format.
+  // Columns: Tab(0), ทำแล้ว(1), Item Code(2), ตำแหน่ง(3), ..., Route(7), หน่วยการใช้งาน(8), Frequency/Rate(9), Note(10)
+  function parsePlacementCsv(rows){
+    var groups={},order=[];
+    for(var r=1;r<rows.length;r++){
+      var row=rows[r];
+      var code=(row[2]||"").replace(/^'/,"").trim();if(!code)continue;
+      var entry={tab:(row[0]||"").trim(),route:(row[7]||"").trim(),
+        dose:(row[8]||"").trim(),frequency:(row[9]||"").trim(),note:(row[10]||"").trim()};
+      if(!groups[code]){groups[code]=[];order.push(code);}
+      groups[code].push(entry);
+    }
+    var map={};
+    order.forEach(function(code){
+      var placements=groups[code];
+      if(placements.length===1){
+        var p=placements[0];
+        map[code]={baseCode:"",tags:p.tab?[p.tab]:[],route:p.route,dose:p.dose,frequency:p.frequency,note:p.note};
+      } else {
+        var allSame=placements.every(function(p){
+          return p.route===placements[0].route&&p.dose===placements[0].dose&&
+                 p.frequency===placements[0].frequency&&p.note===placements[0].note;
+        });
+        if(allSame){
+          var tabs=placements.map(function(p){return p.tab;}).filter(Boolean);
+          map[code]={baseCode:"",tags:tabs,route:placements[0].route,dose:placements[0].dose,
+            frequency:placements[0].frequency,note:placements[0].note};
+        } else {
+          var p0=placements[0];
+          map[code]={baseCode:"",tags:p0.tab?[p0.tab]:[],route:p0.route,dose:p0.dose,frequency:p0.frequency,note:p0.note};
+          for(var i=1;i<placements.length;i++){
+            var pi=placements[i];
+            map[code+"-"+i]={baseCode:code,tags:pi.tab?[pi.tab]:[],route:pi.route,dose:pi.dose,frequency:pi.frequency,note:pi.note};
+          }
+        }
+      }
+    });
     return map;
   }
   // Only write rows that have actual data (Tag, Route, Dose, Frequency, or Note non-empty)

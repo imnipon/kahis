@@ -1,0 +1,15 @@
+Total placements: 337
+Unique item codes: 298
+Single-placement items: 263
+Multi-placement same Tx: 27 (written as 1 row with multiple tags)
+Multi-placement conflict Tx: 8 (written as sub-codes)
+
+Conflict item codes:
+  020000000081 — tabs: XRAY;ยาฉีด
+  020000000141 — tabs: ยาฉีด;ผ่าตัด
+  020000000021 — tabs: ยาฉีด;ผ่าตัด
+  020000000055 — tabs: ยาฉีด;ยาฉุกเฉิน
+  020000000038 — tabs: ยาฉีด;ยาฉุกเฉิน
+  020000000105 — tabs: ยาฉีด;ผ่าตัด
+  020000000002 — tabs: ยาฉีด;ผ่าตัด
+  020000000034 — tabs: ผ่าตัด;ยาฉุกเฉิน

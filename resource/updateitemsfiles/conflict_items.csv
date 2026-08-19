@@ -1,0 +1,9 @@
+﻿Item Code,Placement Count,Tags,Route Values,Dose Values,Frequency Values,Note Values
+020000000081,2,XRAY;ยาฉีด,;,ซีซี;ซีซี,;Dilute with NSS to a total volume of …...cc,Dilute with NSS to a total volume of …...cc;
+020000000141,2,ยาฉีด;ผ่าตัด,IM;IM,ซีซี;ซีซี,;IV,;
+020000000021,2,ยาฉีด;ผ่าตัด,IM;IM,ซีซี;ซีซี,;,;ทำให้คลื่นไส้อาเจียนได้
+020000000055,2,ยาฉีด;ยาฉุกเฉิน,IV slow;IV,ซีซี;ซีซี,;,;
+020000000038,2,ยาฉีด;ยาฉุกเฉิน,IV slow;IV,ซีซี;ซีซี,;,;
+020000000105,2,ยาฉีด;ผ่าตัด,IV;IV,ซีซี;ซีซี,;q2h,;
+020000000002,2,ยาฉีด;ผ่าตัด,IV;IV,ซีซี;ซีซี,;q90min,;
+020000000034,2,ผ่าตัด;ยาฉุกเฉิน,IV/PR;IV,ซีซี;ซีซี,;,;per rectum
