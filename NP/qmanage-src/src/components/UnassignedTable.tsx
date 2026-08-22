@@ -2,15 +2,15 @@ import { useMemo, useState } from 'react';
 import { useQueueStore } from '../store/QueueStore';
 import type { QueueItem } from '../types';
 import { formatDateTime, formatDateTimeFull } from '../utils/date';
-import StationAssignModal from '../components/StationAssignModal';
-import LogModal from '../components/LogModal';
+import StationAssignModal from './StationAssignModal';
+import LogModal from './LogModal';
 import { parseHisQRaw } from '../services/autoDetect';
-import { QCell } from './WorklistPage';
-import { AlertTriangle, ListPlus, EyeOff, Search, History, X } from 'lucide-react';
+import { QCell } from '../pages/WorklistPage';
+import { ListPlus, History } from 'lucide-react';
 
-export default function UnassignedPage() {
+/** ตารางรายการ "ไม่จัดกลุ่มคิว" — ใช้เป็น tab ภายใน WorklistPage (ค้นหาใช้ search ที่รับมาจากภายนอก) */
+export default function UnassignedTable({ search }: { search: string }) {
   const { queueItems, getVisit } = useQueueStore();
-  const [search, setSearch] = useState('');
   const [assignTarget, setAssignTarget] = useState<QueueItem | null>(null);
   const [logTarget, setLogTarget] = useState<QueueItem | null>(null);
 
@@ -25,6 +25,7 @@ export default function UnassignedPage() {
     return allItems.filter(
       (item) =>
         item.hn.toLowerCase().includes(s) ||
+        item.visitNo.toLowerCase().includes(s) ||
         item.petName.toLowerCase().includes(s) ||
         item.ownerName.toLowerCase().includes(s) ||
         item.hisQRaw.toLowerCase().includes(s)
@@ -32,45 +33,8 @@ export default function UnassignedPage() {
   }, [allItems, search]);
 
   return (
-    <div>
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <h1 className="flex items-center gap-2 text-lg font-bold text-slate-800">
-            <AlertTriangle className="h-5 w-5 text-amber-500" />
-            ไม่จัดกลุ่มคิว
-          </h1>
-          <p className="text-sm text-slate-400">
-            รายการที่ auto-detect หาสถานีไม่ได้ (รหัส HIS ไม่ตรง / ลงทะเบียนเอง) ต้องจัดคิวด้วยตนเอง ({items.length}/{allItems.length} รายการ)
-          </p>
-        </div>
-        <span className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-500">
-          <EyeOff className="h-3.5 w-3.5" />
-          แท็บนี้ไม่แสดงบนจอสาธารณะ (TV)
-        </span>
-      </div>
-
-      <div className="mb-3 flex flex-wrap items-center gap-2 rounded-xl border border-amber-200 bg-amber-50/50 p-2.5">
-        <div className="relative min-w-[220px] flex-1">
-          <Search className="pointer-events-none absolute left-2.5 top-2.5 h-4 w-4 text-slate-400" />
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="ค้นหา HN / ชื่อสัตว์ / เจ้าของ / รหัส HIS"
-            className="w-full rounded-lg border border-slate-200 bg-white py-2 pl-9 pr-3 text-sm focus:border-blue-400 focus:outline-none"
-          />
-        </div>
-        {search.trim() !== '' && (
-          <button
-            onClick={() => setSearch('')}
-            className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100"
-          >
-            <X className="h-3.5 w-3.5" />
-            ล้างตัวกรอง
-          </button>
-        )}
-      </div>
-
-      <div className="max-h-[calc(100vh-280px)] overflow-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+    <>
+      <div className="max-h-[calc(100vh-320px)] overflow-auto rounded-xl border border-slate-200 bg-white shadow-sm">
         <table className="w-full text-left text-sm">
           <thead className="sticky top-0 z-10 bg-slate-50 text-xs uppercase text-slate-400">
             <tr>
@@ -100,7 +64,10 @@ export default function UnassignedPage() {
                   <td className="px-4 py-3">
                     <QCell item={item} />
                   </td>
-                  <td className="whitespace-nowrap px-4 py-3 font-semibold text-slate-800">{item.hn}</td>
+                  <td className="whitespace-nowrap px-4 py-3 font-semibold text-slate-800">
+                    <div>{item.hn}</div>
+                    <div className="font-mono text-[11px] font-normal text-slate-400">{item.visitNo}</div>
+                  </td>
                   <td className="whitespace-nowrap px-4 py-3 text-slate-700">{item.petName}</td>
                   <td className="whitespace-nowrap px-4 py-3 text-slate-500">{item.species}</td>
                   <td className="whitespace-nowrap px-4 py-3 text-slate-500">{item.ownerName}</td>
@@ -150,6 +117,6 @@ export default function UnassignedPage() {
 
       {assignTarget && <StationAssignModal item={assignTarget} onClose={() => setAssignTarget(null)} />}
       {logTarget && <LogModal item={logTarget} onClose={() => setLogTarget(null)} />}
-    </div>
+    </>
   );
 }

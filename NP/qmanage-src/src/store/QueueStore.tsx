@@ -25,6 +25,7 @@ interface QueueStoreValue {
   getLogsForItem: (queueItemId: string) => QueueLog[];
   assignStation: (queueItemId: string, stationCode: string) => void;
   callVisit: (queueItemId: string, stationCode: string) => void;
+  undoCall: (queueItemId: string, stationCode: string) => void;
   markMissed: (queueItemId: string, stationCode: string) => void;
   holdVisit: (queueItemId: string, stationCode: string) => void;
   resumeFromHold: (queueItemId: string, stationCode: string) => void;
@@ -134,6 +135,7 @@ export function QueueStoreProvider({ children }: { children: React.ReactNode }) 
             referPeerStation: null,
             enteredAt: now,
             calledAt: null,
+            preCallStatus: null,
             updatedAt: now,
             updatedBy: DEFAULT_ACTOR,
             note: '',
@@ -165,9 +167,35 @@ export function QueueStoreProvider({ children }: { children: React.ReactNode }) 
 
   const callVisit = useCallback(
     (queueItemId: string, stationCode: string) => {
-      updateVisitStatus(queueItemId, stationCode, { status: 'calling' as VisitStatus, calledAt: new Date().toISOString() }, 'เรียก');
+      setState((prev) => {
+        const key = visitKey(queueItemId, stationCode);
+        const now = new Date().toISOString();
+        const visits = prev.visits.map((v) =>
+          v.id === key ? { ...v, preCallStatus: v.status, status: 'calling' as VisitStatus, calledAt: now, updatedAt: now, updatedBy: DEFAULT_ACTOR } : v
+        );
+        const logs = pushLog(prev.logs, queueItemId, stationCode, 'เรียก');
+        return { ...prev, visits, logs };
+      });
     },
-    [updateVisitStatus]
+    [pushLog]
+  );
+
+  /** ปุ่ม "กดผิด" — คืนสถานะก่อนกด "เรียก" (ใช้เฉพาะระหว่างสถานะ calling) */
+  const undoCall = useCallback(
+    (queueItemId: string, stationCode: string) => {
+      setState((prev) => {
+        const key = visitKey(queueItemId, stationCode);
+        const now = new Date().toISOString();
+        const visits = prev.visits.map((v) =>
+          v.id === key
+            ? { ...v, status: v.preCallStatus ?? ('waiting' as VisitStatus), preCallStatus: null, calledAt: null, updatedAt: now, updatedBy: DEFAULT_ACTOR }
+            : v
+        );
+        const logs = pushLog(prev.logs, queueItemId, stationCode, 'กดผิด (ยกเลิกการเรียก)', 'คืนสถานะก่อนหน้า');
+        return { ...prev, visits, logs };
+      });
+    },
+    [pushLog]
   );
 
   const markMissed = useCallback(
@@ -224,6 +252,7 @@ export function QueueStoreProvider({ children }: { children: React.ReactNode }) 
               referPeerStation: fromStation,
               enteredAt: now,
               calledAt: null,
+              preCallStatus: null,
               updatedAt: now,
               updatedBy: DEFAULT_ACTOR,
               note: '',
@@ -287,6 +316,7 @@ export function QueueStoreProvider({ children }: { children: React.ReactNode }) 
       getLogsForItem,
       assignStation,
       callVisit,
+      undoCall,
       markMissed,
       holdVisit,
       resumeFromHold,
@@ -306,6 +336,7 @@ export function QueueStoreProvider({ children }: { children: React.ReactNode }) 
       getLogsForItem,
       assignStation,
       callVisit,
+      undoCall,
       markMissed,
       holdVisit,
       resumeFromHold,

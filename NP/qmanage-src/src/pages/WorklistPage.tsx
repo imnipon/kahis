@@ -5,12 +5,13 @@ import type { QueueItem, StationVisit, VisitStatus } from '../types';
 import { STATUS_LABEL_TH, UNASSIGNED_CODE } from '../types';
 import { StationBadge } from '../components/StationBadge';
 import { StatusBadge } from '../components/StatusBadge';
+import UnassignedTable from '../components/UnassignedTable';
 import { formatDateTime, formatDateTimeFull, formatDateShort, todayISO } from '../utils/date';
 import { sortWorklistRows, isClosedStatus } from '../utils/sort';
 import { parseHisQRaw } from '../services/autoDetect';
 import StatusModal from '../components/StatusModal';
 import LogModal from '../components/LogModal';
-import { Search, Settings2, History, X, CalendarDays } from 'lucide-react';
+import { Search, Settings2, History, X, CalendarDays, AlertTriangle, EyeOff, Tv, ExternalLink } from 'lucide-react';
 
 const FILTERABLE_STATIONS = [...CLINICAL_STATIONS, ...TERMINAL_STATIONS];
 const STATUS_OPTIONS = Object.keys(STATUS_LABEL_TH) as VisitStatus[];
@@ -68,7 +69,7 @@ function StatusRoomCell({ visit, room }: { visit: StationVisit; room: string }) 
             visit.status === 'refer_from' ? 'border-violet-400 bg-violet-100 text-violet-700' : 'border-gray-300 bg-gray-100 text-gray-500'
           }`}
         >
-          Transfer {visit.status === 'refer_from' ? 'from' : 'to'} {peerLabel(visit.referPeerStation)}
+          {visit.status === 'refer_from' ? 'ส่งจาก' : 'ส่งต่อ'} {peerLabel(visit.referPeerStation)}
         </span>
       ) : (
         <StatusBadge status={visit.status} />
@@ -79,7 +80,7 @@ function StatusRoomCell({ visit, room }: { visit: StationVisit; room: string }) 
 }
 
 export default function WorklistPage() {
-  const { queueItems, getVisit, isLoading } = useQueueStore();
+  const { queueItems, visits, isLoading } = useQueueStore();
   const [search, setSearch] = useState('');
   const [stationFilter, setStationFilter] = useState('ALL');
   const [statusFilter, setStatusFilter] = useState('ALL');
@@ -91,22 +92,29 @@ export default function WorklistPage() {
   const dateInputRef = useRef<HTMLInputElement>(null);
   const dateLabel = filterDate === todayISO() ? 'วันนี้' : formatDateShort(filterDate);
 
-  const hasFilters = search.trim() !== '' || stationFilter !== 'ALL' || statusFilter !== 'ALL';
+  const isUnassignedTab = stationFilter === UNASSIGNED_CODE;
+
+  const hasFilters = search.trim() !== '' || (stationFilter !== 'ALL' && !isUnassignedTab) || statusFilter !== 'ALL';
   const clearFilters = () => {
     setSearch('');
     setStationFilter('ALL');
     setStatusFilter('ALL');
   };
 
+  const openMonitor = () => {
+    const url = `${import.meta.env.BASE_URL}#/monitor`;
+    window.open(url, 'qmanage-monitor', 'width=1400,height=900,noopener,noreferrer');
+  };
+
   const rows = useMemo(() => {
-    const withVisit = queueItems
-      .filter((q) => !q.deleted && q.currentStation !== UNASSIGNED_CODE)
-      .map((item) => {
-        const visit = getVisit(item.id, item.currentStation);
-        return visit ? { item, visit } : null;
+    const withVisit = visits
+      .filter((v) => v.stationCode !== UNASSIGNED_CODE)
+      .map((visit) => {
+        const item = queueItems.find((q) => q.id === visit.queueItemId);
+        return item && !item.deleted ? { item, visit } : null;
       })
       .filter((x): x is { item: QueueItem; visit: StationVisit } => x !== null)
-      .filter((r) => stationFilter === 'ALL' || r.item.currentStation === stationFilter)
+      .filter((r) => stationFilter === 'ALL' || r.visit.stationCode === stationFilter)
       .filter((r) => statusFilter === 'ALL' || r.visit.status === statusFilter)
       .filter((r) => {
         if (!search.trim()) return true;
@@ -114,23 +122,49 @@ export default function WorklistPage() {
         const { item } = r;
         return (
           item.hn.toLowerCase().includes(s) ||
+          item.visitNo.toLowerCase().includes(s) ||
           item.petName.toLowerCase().includes(s) ||
           item.ownerName.toLowerCase().includes(s) ||
           item.hisQRaw.toLowerCase().includes(s)
         );
       });
     return sortWorklistRows(withVisit);
-  }, [queueItems, getVisit, stationFilter, statusFilter, search]);
+  }, [visits, queueItems, stationFilter, statusFilter, search]);
 
-  const totalActive = queueItems.filter((q) => !q.deleted && q.currentStation !== UNASSIGNED_CODE).length;
+  const totalActive = visits.filter((v) => v.stationCode !== UNASSIGNED_CODE).length;
+  const unassignedCount = queueItems.filter((q) => !q.deleted && q.currentStation === UNASSIGNED_CODE).length;
 
   return (
     <div>
-      <div className="mb-4">
-        <h1 className="text-lg font-bold text-slate-800">รายการลงทะเบียน (Work Schedule)</h1>
-        <p className="text-sm text-slate-400">
-          รายการที่จัดเข้าสถานีแล้ว — กดปุ่ม “จัดการคิว” เพื่อเรียก/พัก/ส่งต่อ ({rows.length}/{totalActive} รายการ)
-        </p>
+      <div className="mb-4 flex flex-wrap items-start justify-between gap-2">
+        <div>
+          {isUnassignedTab ? (
+            <h1 className="flex items-center gap-2 text-lg font-bold text-slate-800">
+              <AlertTriangle className="h-5 w-5 text-amber-500" />
+              ไม่จัดกลุ่มคิว
+            </h1>
+          ) : (
+            <h1 className="text-lg font-bold text-slate-800">รายการลงทะเบียน (Work Schedule)</h1>
+          )}
+          {isUnassignedTab ? (
+            <p className="text-sm text-slate-400">
+              รายการที่ auto-detect หาสถานีไม่ได้ (รหัส HIS ไม่ตรง / ลงทะเบียนเอง) ต้องจัดคิวด้วยตนเอง ({unassignedCount} รายการ)
+            </p>
+          ) : (
+            <p className="text-sm text-slate-400">
+              รายการที่จัดเข้าสถานีแล้ว — กดปุ่ม “จัดการคิว” เพื่อเรียก/พัก/ส่งต่อ ({rows.length}/{totalActive} รายการ)
+            </p>
+          )}
+        </div>
+        <button
+          onClick={openMonitor}
+          className="flex items-center gap-1.5 whitespace-nowrap rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100"
+          title="เปิดจอแสดงผลคิวในหน้าต่างใหม่ (สำหรับ TV/มอนิเตอร์สาธารณะ)"
+        >
+          <Tv className="w-4 h-4" />
+          เปิดจอ
+          <ExternalLink className="w-3 h-3 text-slate-400" />
+        </button>
       </div>
 
       <div className="mb-3 flex flex-wrap items-center gap-1.5">
@@ -140,6 +174,14 @@ export default function WorklistPage() {
           style={{ backgroundColor: stationFilter === 'ALL' ? '#1e293b' : '#f1f5f9', color: stationFilter === 'ALL' ? 'white' : '#64748b' }}
         >
           ทั้งหมด
+        </button>
+        <button
+          onClick={() => setStationFilter(UNASSIGNED_CODE)}
+          className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-bold transition-colors"
+          style={{ backgroundColor: isUnassignedTab ? '#f59e0b' : '#fef3c7', color: isUnassignedTab ? 'white' : '#b45309' }}
+        >
+          <AlertTriangle className="h-3 w-3" />
+          ไม่จัดกลุ่มคิว
         </button>
         {FILTERABLE_STATIONS.map((s) => (
           <button
@@ -154,7 +196,11 @@ export default function WorklistPage() {
         ))}
       </div>
 
-      <div className="mb-3 flex flex-wrap items-center gap-2 rounded-xl border border-slate-200 bg-slate-50/70 p-2.5">
+      <div
+        className={`mb-3 flex flex-wrap items-center gap-2 rounded-xl border p-2.5 ${
+          isUnassignedTab ? 'border-amber-200 bg-amber-50/50' : 'border-slate-200 bg-slate-50/70'
+        }`}
+      >
         <div className="relative min-w-[220px] flex-1">
           <Search className="pointer-events-none absolute left-2.5 top-2.5 h-4 w-4 text-slate-400" />
           <input
@@ -164,53 +210,63 @@ export default function WorklistPage() {
             className="w-full rounded-lg border border-slate-200 bg-white py-2 pl-9 pr-3 text-sm focus:border-blue-400 focus:outline-none"
           />
         </div>
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm focus:border-blue-400 focus:outline-none"
-        >
-          <option value="ALL">สถานะ: ทั้งหมด</option>
-          {STATUS_OPTIONS.map((st) => (
-            <option key={st} value={st}>
-              {STATUS_LABEL_TH[st]}
-            </option>
-          ))}
-        </select>
-        <div className="relative">
-          <button
-            onClick={() => setShowDatePicker((v) => !v)}
-            title="ตัวอย่าง UI — ยังไม่ผูก logic กรองจริง"
-            className="flex items-center gap-1.5 whitespace-nowrap rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100"
-          >
-            <CalendarDays className="h-3.5 w-3.5" />
-            วันที่: {dateLabel}
-          </button>
-          {showDatePicker && (
-            <div className="absolute right-0 top-full z-20 mt-1.5 w-56 rounded-xl border border-slate-200 bg-white p-3 shadow-lg">
-              <input
-                ref={dateInputRef}
-                type="date"
-                value={filterDate}
-                onChange={(e) => setFilterDate(e.target.value || todayISO())}
-                className="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-sm focus:border-blue-400 focus:outline-none"
-              />
-              <div className="mt-2 flex items-center justify-between">
-                <button
-                  onClick={() => setFilterDate(todayISO())}
-                  className="text-xs font-semibold text-blue-600 hover:underline"
-                >
-                  กลับไปวันนี้
-                </button>
-                <button onClick={() => setShowDatePicker(false)} className="text-xs font-medium text-slate-400 hover:text-slate-600">
-                  ปิด
-                </button>
-              </div>
-              <p className="mt-2 border-t border-slate-100 pt-2 text-[11px] leading-snug text-slate-400">
-                ตัวอย่าง UI — ยังไม่ผูก logic กรองจริง (เตรียมไว้สำหรับฟีเจอร์ค้นหาย้อนหลังในอนาคต)
-              </p>
+        {!isUnassignedTab && (
+          <>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm focus:border-blue-400 focus:outline-none"
+            >
+              <option value="ALL">สถานะ: ทั้งหมด</option>
+              {STATUS_OPTIONS.map((st) => (
+                <option key={st} value={st}>
+                  {STATUS_LABEL_TH[st]}
+                </option>
+              ))}
+            </select>
+            <div className="relative">
+              <button
+                onClick={() => setShowDatePicker((v) => !v)}
+                title="ตัวอย่าง UI — ยังไม่ผูก logic กรองจริง"
+                className="flex items-center gap-1.5 whitespace-nowrap rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100"
+              >
+                <CalendarDays className="h-3.5 w-3.5" />
+                วันที่: {dateLabel}
+              </button>
+              {showDatePicker && (
+                <div className="absolute right-0 top-full z-20 mt-1.5 w-56 rounded-xl border border-slate-200 bg-white p-3 shadow-lg">
+                  <input
+                    ref={dateInputRef}
+                    type="date"
+                    value={filterDate}
+                    onChange={(e) => setFilterDate(e.target.value || todayISO())}
+                    className="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-sm focus:border-blue-400 focus:outline-none"
+                  />
+                  <div className="mt-2 flex items-center justify-between">
+                    <button
+                      onClick={() => setFilterDate(todayISO())}
+                      className="text-xs font-semibold text-blue-600 hover:underline"
+                    >
+                      กลับไปวันนี้
+                    </button>
+                    <button onClick={() => setShowDatePicker(false)} className="text-xs font-medium text-slate-400 hover:text-slate-600">
+                      ปิด
+                    </button>
+                  </div>
+                  <p className="mt-2 border-t border-slate-100 pt-2 text-[11px] leading-snug text-slate-400">
+                    ตัวอย่าง UI — ยังไม่ผูก logic กรองจริง (เตรียมไว้สำหรับฟีเจอร์ค้นหาย้อนหลังในอนาคต)
+                  </p>
+                </div>
+              )}
             </div>
-          )}
-        </div>
+          </>
+        )}
+        {isUnassignedTab && (
+          <span className="flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-slate-500">
+            <EyeOff className="h-3.5 w-3.5" />
+            แท็บนี้ไม่แสดงบนจอสาธารณะ (TV)
+          </span>
+        )}
         {hasFilters && (
           <button
             onClick={clearFilters}
@@ -224,6 +280,8 @@ export default function WorklistPage() {
 
       {isLoading ? (
         <div className="rounded-xl border border-slate-200 bg-white p-10 text-center text-slate-400">กำลังโหลดข้อมูล...</div>
+      ) : isUnassignedTab ? (
+        <UnassignedTable search={search} />
       ) : (
         <div className="max-h-[calc(100vh-320px)] overflow-auto rounded-xl border border-slate-200 bg-white shadow-sm">
           <table className="w-full text-left text-sm">
@@ -246,7 +304,7 @@ export default function WorklistPage() {
               {rows.map(({ item, visit }) => {
                 const closed = isClosedStatus(visit.status);
                 return (
-                  <tr key={item.id} className={closed ? 'bg-slate-50/60 text-slate-400' : 'hover:bg-slate-50'}>
+                  <tr key={visit.id} className={closed ? 'bg-slate-50/60 text-slate-400' : 'hover:bg-slate-50'}>
                     <td className="whitespace-nowrap px-4 py-3 text-xs text-slate-500">
                       <div>T {visit.referAt ? formatDateTimeFull(visit.referAt) : '—'}</div>
                       <div>C {formatDateTimeFull(item.checkInAt)}</div>
@@ -254,7 +312,10 @@ export default function WorklistPage() {
                     <td className="px-4 py-3">
                       <QCell item={item} />
                     </td>
-                    <td className={`whitespace-nowrap px-4 py-3 font-semibold ${closed ? 'text-slate-400' : 'text-slate-800'}`}>{item.hn}</td>
+                    <td className={`whitespace-nowrap px-4 py-3 font-semibold ${closed ? 'text-slate-400' : 'text-slate-800'}`}>
+                      <div>{item.hn}</div>
+                      <div className={`font-mono text-[11px] font-normal ${closed ? 'text-slate-300' : 'text-slate-400'}`}>{item.visitNo}</div>
+                    </td>
                     <td className={`whitespace-nowrap px-4 py-3 ${closed ? 'text-slate-400' : 'text-slate-700'}`}>{item.petName}</td>
                     <td className={`whitespace-nowrap px-4 py-3 ${closed ? 'text-slate-400' : 'text-slate-500'}`}>{item.species}</td>
                     <td className={`whitespace-nowrap px-4 py-3 ${closed ? 'text-slate-400' : 'text-slate-500'}`}>{item.ownerName}</td>
@@ -284,7 +345,7 @@ export default function WorklistPage() {
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <StationBadge code={item.currentStation} size="sm" />
+                      <StationBadge code={visit.stationCode} size="sm" />
                     </td>
                     <td className="px-4 py-3">
                       <StatusRoomCell visit={visit} room={item.room} />

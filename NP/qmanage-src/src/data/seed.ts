@@ -25,6 +25,14 @@ function nextHn(): string {
   return `${yy}${seq}`;
 }
 
+/** เลขที่ visit ของการมาครั้งนี้ (คนละความหมายกับ hn) — รูปแบบเดียวกันแต่มี prefix "VN" เช่น "VN53027918" */
+function nextVisitNo(): string {
+  const currentBeYear2 = (new Date().getFullYear() + 543) % 100;
+  const yy = String(randInt(currentBeYear2 - 19, currentBeYear2)).padStart(2, '0');
+  const seq = String(randInt(0, 999999)).padStart(6, '0');
+  return `VN${yy}${seq}`;
+}
+
 function visitKey(queueItemId: string, stationCode: string): string {
   return `${queueItemId}__${stationCode}`;
 }
@@ -63,6 +71,7 @@ function buildNormalItem(stationCode: string, status: VisitStatus, checkInHour: 
   const item: QueueItem = {
     id,
     hn: nextHn(),
+    visitNo: nextVisitNo(),
     ...basePerson(),
     hisQRaw,
     hisQList: parsed.hisQList,
@@ -81,6 +90,7 @@ function buildNormalItem(stationCode: string, status: VisitStatus, checkInHour: 
     referPeerStation: null,
     enteredAt: checkInAt,
     calledAt: status === 'waiting' ? null : todayAt(checkInHour, randInt(0, 59)),
+    preCallStatus: null,
     updatedAt: checkInAt,
     updatedBy: 'ระบบ HIS',
     note: '',
@@ -101,6 +111,7 @@ function buildSixCodeShowcaseItem(): { item: QueueItem; visit: StationVisit } {
   const item: QueueItem = {
     id,
     hn: nextHn(),
+    visitNo: nextVisitNo(),
     ...basePerson(),
     hisQRaw,
     hisQList: parsed.hisQList,
@@ -119,6 +130,7 @@ function buildSixCodeShowcaseItem(): { item: QueueItem; visit: StationVisit } {
     referPeerStation: null,
     enteredAt: checkInAt,
     calledAt: null,
+    preCallStatus: null,
     updatedAt: checkInAt,
     updatedBy: 'ระบบ HIS',
     note: `ตัวอย่างรหัสคิวจาก HIS ครบ 6 ชุด — ใช้ชุดที่ 1 (Q1) ในการจัดกลุ่มอัตโนมัติ`,
@@ -138,6 +150,7 @@ function buildMultiCodeItem(primaryStation: string, otherPrefixes: string[]): { 
   const item: QueueItem = {
     id,
     hn: nextHn(),
+    visitNo: nextVisitNo(),
     ...basePerson(),
     hisQRaw,
     hisQList: parsed.hisQList,
@@ -156,6 +169,7 @@ function buildMultiCodeItem(primaryStation: string, otherPrefixes: string[]): { 
     referPeerStation: null,
     enteredAt: checkInAt,
     calledAt: null,
+    preCallStatus: null,
     updatedAt: checkInAt,
     updatedBy: 'ระบบ HIS',
     note: `รหัสคิวจาก HIS มีหลายชุด (${codes.length} ชุด) — ใช้ชุดที่ 1 (Q1) ในการจัดกลุ่มอัตโนมัติ`,
@@ -173,6 +187,7 @@ function buildUnassignedItem(manual: boolean): { item: QueueItem; visit: Station
   const item: QueueItem = {
     id,
     hn: nextHn(),
+    visitNo: nextVisitNo(),
     ...basePerson(),
     hisQRaw,
     hisQList: parsed.hisQList,
@@ -191,6 +206,7 @@ function buildUnassignedItem(manual: boolean): { item: QueueItem; visit: Station
     referPeerStation: null,
     enteredAt: checkInAt,
     calledAt: null,
+    preCallStatus: null,
     updatedAt: checkInAt,
     updatedBy: manual ? 'เจ้าหน้าที่ (กรอกเอง)' : 'ระบบ HIS',
     note: manual ? 'ลงทะเบียนเองไม่ได้รันจากระบบ HIS' : `รหัส HIS "${hisQRaw}" ไม่ตรงกับสถานีใดในระบบ`,
@@ -208,6 +224,7 @@ function buildWardCase(stationCode: string): { item: QueueItem; visit: StationVi
   const item: QueueItem = {
     id,
     hn: nextHn(),
+    visitNo: nextVisitNo(),
     ...basePerson(),
     hisQRaw: '',
     hisQList: [],
@@ -226,6 +243,7 @@ function buildWardCase(stationCode: string): { item: QueueItem; visit: StationVi
     referPeerStation: 'WARD',
     enteredAt: referAt,
     calledAt: null,
+    preCallStatus: null,
     updatedAt: referAt,
     updatedBy: 'เจ้าหน้าที่หอผู้ป่วย (Ward)',
     note: 'ส่งต่อจากหอผู้ป่วย (Ward) — check-in เดิมไม่ใช่วันนี้ แต่การส่งต่อเกิดขึ้นวันนี้เท่านั้น',
@@ -250,6 +268,7 @@ function buildReferralPair(
   const item: QueueItem = {
     id,
     hn: nextHn(),
+    visitNo: nextVisitNo(),
     ...basePerson(),
     hisQRaw,
     hisQList: parsed.hisQList,
@@ -268,6 +287,7 @@ function buildReferralPair(
     referPeerStation: destStation,
     enteredAt: checkInAt,
     calledAt: todayAt(randInt(10, 11), randInt(0, 59)),
+    preCallStatus: null,
     updatedAt: referAt,
     updatedBy: 'เจ้าหน้าที่สถานีต้นทาง',
     note: `ส่งต่อไปยัง ${destStation}`,
@@ -282,6 +302,7 @@ function buildReferralPair(
     referPeerStation: sourceStation,
     enteredAt: referAt,
     calledAt: null,
+    preCallStatus: null,
     updatedAt: referAt,
     updatedBy: 'เจ้าหน้าที่สถานีต้นทาง',
     note: `รับส่งต่อจาก ${sourceStation}`,
@@ -310,6 +331,7 @@ function buildTerminalCase(
   const item: QueueItem = {
     id,
     hn: nextHn(),
+    visitNo: nextVisitNo(),
     ...basePerson(),
     hisQRaw,
     hisQList: parsed.hisQList,
@@ -328,6 +350,7 @@ function buildTerminalCase(
     referPeerStation: terminalCode,
     enteredAt: checkInAt,
     calledAt: todayAt(randInt(9, 10), randInt(0, 59)),
+    preCallStatus: null,
     updatedAt: referAt,
     updatedBy: 'สัตวแพทย์',
     note: `ตรวจเสร็จแล้ว ส่งต่อไปยัง ${terminalCode}`,
@@ -342,6 +365,7 @@ function buildTerminalCase(
     referPeerStation: fromClinical,
     enteredAt: referAt,
     calledAt: terminalStatus === 'refer_from' ? null : todayAt(randInt(13, 14), randInt(0, 59)),
+    preCallStatus: null,
     updatedAt: referAt,
     updatedBy: 'เจ้าหน้าที่',
     note: '',

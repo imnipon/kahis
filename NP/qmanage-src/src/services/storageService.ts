@@ -2,7 +2,7 @@ import type { QueueItem, QueueLog, StationVisit } from '../types';
 import { generateSeed } from '../data/seed';
 
 // bump ทุกครั้งที่โครงสร้าง/เนื้อหา seed เปลี่ยน เพื่อบังคับให้ localStorage เก่า (mockup) ถูกทิ้งแล้ว generate ใหม่
-export const STORAGE_KEY = 'qmanage_state_v3';
+export const STORAGE_KEY = 'qmanage_state_v4';
 const SIMULATED_LATENCY_MS = 120;
 
 export interface PersistedState {

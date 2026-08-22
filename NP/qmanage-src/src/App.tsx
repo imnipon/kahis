@@ -2,7 +2,6 @@ import { HashRouter, Routes, Route } from 'react-router-dom';
 import { QueueStoreProvider } from './store/QueueStore';
 import Layout from './components/Layout';
 import WorklistPage from './pages/WorklistPage';
-import UnassignedPage from './pages/UnassignedPage';
 import MonitorPage from './pages/MonitorPage';
 
 function App() {
@@ -13,7 +12,6 @@ function App() {
           <Route path="/monitor" element={<MonitorPage />} />
           <Route element={<Layout />}>
             <Route path="/" element={<WorklistPage />} />
-            <Route path="/unassigned" element={<UnassignedPage />} />
           </Route>
         </Routes>
       </HashRouter>

@@ -46,6 +46,7 @@ export const STATUS_LABEL_TH: Record<VisitStatus, string> = {
 export interface QueueItem {
   id: string;
   hn: string;
+  visitNo: string; // "VNYY123456" — เลขที่ visit ของการมาครั้งนี้ (คนละความหมายกับ hn ที่เป็นเลขทะเบียนสัตว์)
   petName: string;
   species: string;
   ownerName: string;
@@ -72,6 +73,7 @@ export interface StationVisit {
   referPeerStation: string | null; // สถานีอีกฝั่งของการส่งต่อ
   enteredAt: string; // ISO datetime แรกที่เข้าสถานีนี้
   calledAt: string | null;
+  preCallStatus: VisitStatus | null; // สถานะก่อนกด "เรียก" — ใช้คืนค่าตอนกด "กดผิด"
   updatedAt: string;
   updatedBy: string;
   note: string;
