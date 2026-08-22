@@ -182,6 +182,26 @@ const filesTree = [
         ]
       },
       {
+        "name": "qmanage",
+        "label": "Board (Queue Management)",
+        "type": "folder",
+        "path": "NP/qmanage",
+        "children": [
+          {
+            "name": "index.html",
+            "type": "file",
+            "path": "NP/qmanage/index.html",
+            "lastUpdate": "2026-08-22T19:34:03.000000"
+          },
+          {
+            "name": "for_dev_qmanage.md",
+            "type": "file",
+            "path": "NP/qmanage/docs/for_dev_qmanage.md",
+            "lastUpdate": "2026-08-22T19:34:03.000000"
+          }
+        ]
+      },
+      {
         "name": "items",
         "label": "Items Manager",
         "type": "folder",

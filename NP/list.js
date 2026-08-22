@@ -25,4 +25,6 @@ const assessmentFiles = [
   { title: "Items Manager · แบบ 3 Stats+Chips", file: "NP/items/items_manager_v3.html", lastUpdate: "2026-08-18T19:15:00.000000" },
   { title: "Items Manager Manual", file: "NP/items/items_manual.md", lastUpdate: "2026-08-18T20:00:00.000000" },
   { title: "Items Manager Design Notes", file: "NP/items/items_design_notes.md", lastUpdate: "2026-08-18T19:15:00.000000" },
+  { title: "Board — Queue Management (Mockup)", file: "NP/qmanage/index.html", lastUpdate: "2026-08-22T19:34:03.000000" },
+  { title: "Board — For Dev / Logic", file: "NP/qmanage/docs/for_dev_qmanage.md", lastUpdate: "2026-08-22T19:34:03.000000" },
 ];
