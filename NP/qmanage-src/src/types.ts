@@ -50,6 +50,7 @@ export interface QueueItem {
   species: string;
   ownerName: string;
   dvmName: string;
+  hisNote: string; // ข้อความ/อาการเบื้องต้นที่จำลองมาจาก HIS (คนละส่วนกับ StationVisit.note ที่เป็น audit note)
   room: string; // ห้องตรวจจาก HIS
   hisQRaw: string; // ดิบจาก HIS เช่น "MA001, SA045" ("" ถ้ากรอกเอง)
   hisQList: string[]; // parsed ทั้งหมด (สูงสุด 6 ชุด)

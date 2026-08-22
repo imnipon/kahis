@@ -1,6 +1,6 @@
 import type { QueueItem, StationVisit } from '../../types';
 import { formatDateTime } from '../../utils/date';
-import { Bell } from 'lucide-react';
+import { Bell, DoorOpen } from 'lucide-react';
 
 function displayCode(item: QueueItem): string {
   return item.primaryHisQ || item.hn;
@@ -8,23 +8,26 @@ function displayCode(item: QueueItem): string {
 
 export function QueueTile({
   item,
-  visit,
   color,
   variant,
+  caption,
 }: {
   item: QueueItem;
-  visit: StationVisit;
   color: string;
-  variant?: 'inprocess' | 'noshow';
+  variant?: 'inprocess' | 'hold' | 'noshow';
+  /** ข้อความบรรทัดเล็กใต้เลขคิว (เช่น ห้องตรวจ) — ไม่ระบุ = ไม่แสดงบรรทัดนี้เลย */
+  caption?: string;
 }) {
   const bg =
     variant === 'inprocess'
       ? { background: 'linear-gradient(135deg,#86efac,#4ade80)', color: '#14532d', textShadow: 'none' }
+      : variant === 'hold'
+      ? { background: 'linear-gradient(135deg,#fdba74,#fb923c)', color: '#7c2d12', textShadow: 'none' }
       : variant === 'noshow'
       ? { backgroundColor: '#94a3b8', opacity: 0.85, color: 'white' }
-      : { backgroundColor: color, color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.2)' };
+      // รอเรียก: สีอ่อนกว่าป้ายคิวของ "กำลังเรียก" (ซึ่งใช้สีเข้มเต็ม) เพื่อลำดับความสำคัญทางสายตา
+      : { backgroundColor: `${color}22`, color, textShadow: 'none' };
 
-  const timeLabel = formatDateTime(visit.referAt || item.checkInAt);
   const tip = [item.hn, item.petName, item.ownerName].filter(Boolean).join(' · ');
 
   return (
@@ -49,10 +52,11 @@ export function QueueTile({
       }}
     >
       <span>{displayCode(item)}</span>
-      <span style={{ fontSize: '0.6rem', fontWeight: 500, letterSpacing: 0, opacity: 0.82, lineHeight: 1, textShadow: 'none' }}>
-        {visit.status === 'refer_from' ? `ส่งต่อจาก ${visit.referPeerStation === 'WARD' ? 'Ward' : visit.referPeerStation} · ` : ''}
-        {timeLabel}
-      </span>
+      {caption && (
+        <span style={{ fontSize: '0.6rem', fontWeight: 500, letterSpacing: 0, opacity: 0.82, lineHeight: 1, textShadow: 'none' }}>
+          {caption}
+        </span>
+      )}
     </div>
   );
 }
@@ -67,26 +71,30 @@ export function QueueCallingCard({ item, visit, color }: { item: QueueItem; visi
     >
       <div className="self-stretch shrink-0" style={{ width: 6, backgroundColor: color, borderRadius: '0.875rem 0 0 0.875rem' }} />
       <div
-        className="shrink-0 flex flex-col items-center text-white font-black leading-none"
+        className="self-stretch shrink-0 flex flex-col items-center justify-center text-white font-black leading-none"
         style={{
           background: color,
-          fontSize: '1.75rem',
+          fontSize: '2.1rem',
           letterSpacing: '0.06em',
           textShadow: '0 1px 3px rgba(0,0,0,0.2)',
-          padding: '0.3rem 0.875rem',
-          borderRadius: '0.625rem',
-          margin: '0.875rem 0 0.875rem 0.875rem',
+          padding: '0.5rem 1.25rem',
+          minWidth: '6.5rem',
+          gap: '0.2rem',
         }}
       >
         <span>{displayCode(item)}</span>
         {visit.status === 'refer_from' && (
-          <span style={{ fontSize: '0.55rem', fontWeight: 500, opacity: 0.85, textShadow: 'none' }}>ส่งต่อ</span>
+          <span style={{ fontSize: '0.6rem', fontWeight: 500, opacity: 0.85, textShadow: 'none' }}>ส่งต่อ</span>
         )}
       </div>
       <div className="flex-1 min-w-0 flex flex-col text-right" style={{ gap: '0.18rem', margin: '0.75rem 1rem 0.75rem 0.75rem' }}>
         <div className="font-bold text-gray-800 truncate" style={{ fontSize: '1rem' }} title={hnPet}>{hnPet}</div>
         <div className="font-medium text-gray-500 truncate" style={{ fontSize: '0.8rem' }}>{item.ownerName || '—'}</div>
-        <div className="flex items-center justify-end gap-1.5 font-bold" style={{ fontSize: '0.8rem', color: '#475569' }}>
+        <div className="flex items-center justify-end gap-2 font-bold" style={{ fontSize: '0.8rem', color: '#475569' }}>
+          <span className="flex items-center gap-1 shrink-0">
+            <DoorOpen className="w-3 h-3" />
+            {item.room || '—'}
+          </span>
           <span className="flex items-center gap-1 shrink-0">
             <Bell className="w-3 h-3" />
             เรียก {callTime}

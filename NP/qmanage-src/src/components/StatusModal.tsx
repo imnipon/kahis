@@ -86,7 +86,7 @@ export default function StatusModal({ item, onClose }: { item: QueueItem; onClos
 
       <div className="flex flex-wrap gap-2">
         {!isTerminal && (visit.status === 'waiting' || visit.status === 'refer_from') && (
-          <ActionButton icon={PhoneCall} label="เรียก" onClick={() => { store.callVisit(item.id, stationCode); close(); }} color="amber" />
+          <ActionButton icon={PhoneCall} label="เรียก" onClick={() => store.callVisit(item.id, stationCode)} color="amber" />
         )}
         {!isTerminal && visit.status === 'waiting' && (
           <ActionButton icon={PauseCircle} label="พัก" onClick={() => { store.holdVisit(item.id, stationCode); close(); }} color="orange" />
@@ -104,14 +104,14 @@ export default function StatusModal({ item, onClose }: { item: QueueItem; onClos
           </>
         )}
         {!isTerminal && visit.status === 'missed' && (
-          <ActionButton icon={PhoneCall} label="เรียกอีกครั้ง" onClick={() => { store.callVisit(item.id, stationCode); close(); }} color="amber" />
+          <ActionButton icon={PhoneCall} label="เรียกอีกครั้ง" onClick={() => store.callVisit(item.id, stationCode)} color="amber" />
         )}
         {!isTerminal && visit.status === 'in_progress' && (
           <ActionButton icon={LogOut} label="จบ/ออกจากห้องตรวจ" onClick={() => setPicker('finish')} color="emerald" />
         )}
 
         {isTerminal && (visit.status === 'waiting' || visit.status === 'refer_from') && (
-          <ActionButton icon={PhoneCall} label="เรียก" onClick={() => { store.callVisit(item.id, stationCode); close(); }} color="amber" />
+          <ActionButton icon={PhoneCall} label="เรียก" onClick={() => store.callVisit(item.id, stationCode)} color="amber" />
         )}
         {isTerminal && visit.status === 'calling' && (
           <>
@@ -120,7 +120,7 @@ export default function StatusModal({ item, onClose }: { item: QueueItem; onClos
           </>
         )}
         {isTerminal && visit.status === 'missed' && (
-          <ActionButton icon={PhoneCall} label="เรียกอีกครั้ง" onClick={() => { store.callVisit(item.id, stationCode); close(); }} color="amber" />
+          <ActionButton icon={PhoneCall} label="เรียกอีกครั้ง" onClick={() => store.callVisit(item.id, stationCode)} color="amber" />
         )}
         {isTerminal && visit.status === 'in_progress' && (
           <ActionButton icon={CheckCircle2} label="จบงาน" onClick={() => { store.finishTerminal(item.id, stationCode); close(); }} color="emerald" />

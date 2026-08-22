@@ -1,6 +1,6 @@
 import type { QueueItem, StationVisit, QueueLog, VisitStatus } from '../types';
 import { CLINICAL_STATIONS, TERMINAL_STATIONS } from './stations';
-import { PET_NAMES, OWNER_NAMES, DVM_NAMES, SPECIES, ROOMS, rand, randInt } from './mockNames';
+import { PET_NAMES, OWNER_NAMES, DVM_NAMES, SPECIES, ROOMS, HIS_NOTES, rand, randInt } from './mockNames';
 import { daysAgoISO, todayAt } from '../utils/date';
 import { parseHisQRaw } from '../services/autoDetect';
 
@@ -10,7 +10,6 @@ export interface SeedResult {
   logs: QueueLog[];
 }
 
-let hnSeq = 1000;
 let idSeq = 1;
 
 function nextId(prefix: string): string {
@@ -18,9 +17,12 @@ function nextId(prefix: string): string {
   return `${prefix}-${idSeq}`;
 }
 
+/** HN จำลองแบบเลขทะเบียนจริง: ปี พ.ศ. 2 หลัก (ย้อนหลัง ~20 ปีจากปีปัจจุบัน) + เลข 6 หลัก เช่น "53027918" */
 function nextHn(): string {
-  hnSeq += 1;
-  return `HN-${hnSeq}`;
+  const currentBeYear2 = (new Date().getFullYear() + 543) % 100;
+  const yy = String(randInt(currentBeYear2 - 19, currentBeYear2)).padStart(2, '0');
+  const seq = String(randInt(0, 999999)).padStart(6, '0');
+  return `${yy}${seq}`;
 }
 
 function visitKey(queueItemId: string, stationCode: string): string {
@@ -28,12 +30,12 @@ function visitKey(queueItemId: string, stationCode: string): string {
 }
 
 function basePerson() {
-  const [species, breed] = rand(SPECIES);
   return {
     petName: rand(PET_NAMES),
-    species: `${species} (${breed})`,
+    species: rand(SPECIES),
     ownerName: rand(OWNER_NAMES),
     dvmName: rand(DVM_NAMES),
+    hisNote: rand(HIS_NOTES),
     room: rand(ROOMS),
   };
 }
@@ -82,6 +84,44 @@ function buildNormalItem(stationCode: string, status: VisitStatus, checkInHour: 
     updatedAt: checkInAt,
     updatedBy: 'ระบบ HIS',
     note: '',
+  };
+
+  return { item, visit };
+}
+
+/** ตัวอย่างรายการที่มีรหัส HIS ครบ 6 ชุด (Q1-Q6) — ตั้ง checkInAt ให้เช้าที่สุดเพื่อให้เป็นแถวบนสุดของตาราง Worklist */
+function buildSixCodeShowcaseItem(): { item: QueueItem; visit: StationVisit } {
+  const id = nextId('q');
+  const primaryStation = CLINICAL_STATIONS[0].code;
+  const otherCodes = CLINICAL_STATIONS.slice(1, 6).map((s) => `${s.code}${String(randInt(1, 60)).padStart(3, '0')}`);
+  const hisQRaw = [`${primaryStation}${String(randInt(1, 60)).padStart(3, '0')}`, ...otherCodes].join(', ');
+  const parsed = parseHisQRaw(hisQRaw);
+  const checkInAt = todayAt(6, 30);
+
+  const item: QueueItem = {
+    id,
+    hn: nextHn(),
+    ...basePerson(),
+    hisQRaw,
+    hisQList: parsed.hisQList,
+    primaryHisQ: parsed.primaryHisQ,
+    isManualEntry: false,
+    checkInAt,
+    currentStation: primaryStation,
+  };
+
+  const visit: StationVisit = {
+    id: visitKey(id, primaryStation),
+    queueItemId: id,
+    stationCode: primaryStation,
+    status: 'waiting',
+    referAt: null,
+    referPeerStation: null,
+    enteredAt: checkInAt,
+    calledAt: null,
+    updatedAt: checkInAt,
+    updatedBy: 'ระบบ HIS',
+    note: `ตัวอย่างรหัสคิวจาก HIS ครบ 6 ชุด — ใช้ชุดที่ 1 (Q1) ในการจัดกลุ่มอัตโนมัติ`,
   };
 
   return { item, visit };
@@ -159,10 +199,10 @@ function buildUnassignedItem(manual: boolean): { item: QueueItem; visit: Station
   return { item, visit };
 }
 
-/** เคสส่งมาจาก ward: checkInAt เป็นเมื่อวาน แต่ referAt (ส่งเข้าคิว) เป็นวันนี้เสมอ */
+/** เคสส่งมาจาก ward: checkInAt เป็นวันย้อนหลัง (สุ่ม 1-14 วัน — สัตว์ป่วยในเข้ามาหลายวันแล้ว) แต่ referAt (ส่งเข้าคิว) เป็นวันนี้เสมอ */
 function buildWardCase(stationCode: string): { item: QueueItem; visit: StationVisit } {
   const id = nextId('q');
-  const checkInAt = daysAgoISO(1, randInt(8, 18), randInt(0, 59));
+  const checkInAt = daysAgoISO(randInt(1, 14), randInt(8, 18), randInt(0, 59));
   const referAt = todayAt(randInt(7, 10), randInt(0, 59));
 
   const item: QueueItem = {
@@ -319,6 +359,14 @@ export function generateSeed(): SeedResult {
 
   const statusCycle: VisitStatus[] = ['waiting', 'calling', 'missed', 'in_progress', 'on_hold'];
 
+  // 0) ตัวอย่างรหัส HIS ครบ 6 ชุด (Q1-Q6) — เช็คอินเช้าสุดเพื่อโชว์เป็นแถวบนสุดของตาราง
+  {
+    const { item, visit } = buildSixCodeShowcaseItem();
+    queueItems.push(item);
+    visits.push(visit);
+    pushLog(logs, item.id, item.currentStation, 'ลงทะเบียนเข้าคิว', `hisQ ครบ 6 ชุด: ${item.hisQRaw} — ใช้ Q1 = ${item.primaryHisQ}`);
+  }
+
   // 1) รายการปกติ: ทุกสถานีคลินิก x ทุกสถานะหลัก (8 x 5 = 40)
   for (const station of CLINICAL_STATIONS) {
     statusCycle.forEach((status, i) => {
@@ -354,7 +402,7 @@ export function generateSeed(): SeedResult {
     pushLog(logs, item.id, 'UNASSIGNED', 'ลงทะเบียนเข้าคิว', `รหัส HIS "${item.hisQRaw}" ไม่รู้จัก`);
   }
 
-  // 4) เคสส่งมาจาก ward (checkInAt เมื่อวาน + referAt วันนี้) — 6 รายการ
+  // 4) เคสส่งมาจาก ward (checkInAt ย้อนหลัง 1-14 วัน + referAt วันนี้) — 6 รายการ
   const wardStations = ['MA', 'ER', 'SA', 'VA', 'CA', 'WI'];
   for (const station of wardStations) {
     const { item, visit } = buildWardCase(station);

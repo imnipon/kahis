@@ -27,13 +27,14 @@ export function StationIcon({ code, className }: { code: string; className?: str
 export function StationBadge({ code, size = 'md' }: { code: string; size?: 'sm' | 'md' | 'lg' }) {
   const station = getStation(code);
   if (!station) return null;
-  const sizeCls = size === 'lg' ? 'text-base px-3 py-1.5 gap-2' : size === 'sm' ? 'text-xs px-2 py-0.5 gap-1' : 'text-sm px-2.5 py-1 gap-1.5';
+  const sizeCls = size === 'lg' ? 'text-base px-3 py-1.5' : size === 'sm' ? 'text-xs px-2 py-0.5' : 'text-sm px-2.5 py-1';
   return (
     <span
-      className={`inline-flex items-center rounded-full font-semibold text-white ${sizeCls}`}
-      style={{ backgroundColor: station.color }}
+      className={`inline-flex items-center gap-1 whitespace-nowrap rounded-full font-semibold ${sizeCls}`}
+      style={{ backgroundColor: `${station.color}1A`, color: station.color }}
     >
-      <StationIcon code={code} className={size === 'lg' ? 'w-4 h-4' : 'w-3.5 h-3.5'} />
+      <span className="font-mono">{station.code}</span>
+      <span className="opacity-60">·</span>
       {station.name}
     </span>
   );

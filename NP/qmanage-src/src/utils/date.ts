@@ -50,3 +50,9 @@ export function formatDateTime(iso: string | null | undefined): string {
   if (isToday(iso)) return time;
   return `${formatDateShort(iso)} ${time}`;
 }
+
+/** แสดง "วันที่ HH:MM" เสมอ — ไม่ซ่อนวันที่แม้เป็นวันนี้ (ใช้กับคอลัมน์ Time ที่ต้องเทียบ T/C ต่างวันกัน) */
+export function formatDateTimeFull(iso: string | null | undefined): string {
+  if (!iso) return '—';
+  return `${formatDateShort(iso)} ${formatTime(iso)}`;
+}

@@ -21,7 +21,7 @@ export function WaitingCol({ rows, color }: { rows: Row[]; color: string }) {
         {rows.length === 0 ? (
           <EmptyCol label="ไม่มีคิว" icon={Coffee} />
         ) : (
-          rows.map(({ item, visit }) => <QueueTile key={item.id} item={item} visit={visit} color={color} />)
+          rows.map(({ item }) => <QueueTile key={item.id} item={item} color={color} />)
         )}
       </div>
     </div>
@@ -54,14 +54,22 @@ export function CallingCol({ rows, color }: { rows: Row[]; color: string }) {
 
 export function InProcessCol({ rows }: { rows: Row[] }) {
   return (
-    <div className="rounded-2xl border border-green-200 shadow-sm p-3 flex flex-col min-h-0 flex-1" style={{ background: 'linear-gradient(160deg,#f0fdf4,#dcfce7)' }}>
+    <div className="rounded-2xl border border-green-200 shadow-sm p-3 flex flex-col min-h-0 flex-[2]" style={{ background: 'linear-gradient(160deg,#f0fdf4,#dcfce7)' }}>
       <div className="flex items-center gap-2 mb-3 pb-2 border-b border-green-200 shrink-0">
         <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 shadow-sm" style={{ background: 'linear-gradient(135deg,#15803d,#22c55e)' }}>
           <Play className="w-4 h-4 text-white" />
         </div>
         <div>
-          <div className="font-black text-green-800 leading-tight" style={{ fontSize: '0.875rem' }}>กำลังดำเนินการ / พัก</div>
-          <div className="font-bold uppercase tracking-widest text-green-500" style={{ fontSize: '0.625rem' }}>IN PROCESS</div>
+          <div className="font-black leading-tight" style={{ fontSize: '0.875rem' }}>
+            <span className="text-green-800">กำลังดำเนินการ</span>
+            <span className="text-slate-400"> / </span>
+            <span style={{ color: '#ea580c' }}>พัก</span>
+          </div>
+          <div className="font-bold uppercase tracking-widest" style={{ fontSize: '0.625rem' }}>
+            <span className="text-green-500">IN PROCESS</span>
+            <span className="text-slate-300"> / </span>
+            <span style={{ color: '#fb923c' }}>ON HOLD</span>
+          </div>
         </div>
         <span className="ml-auto font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full" style={{ fontSize: '0.75rem' }}>{rows.length}</span>
       </div>
@@ -70,7 +78,13 @@ export function InProcessCol({ rows }: { rows: Row[] }) {
           <EmptyCol label="ไม่มีคิว" icon={Coffee} />
         ) : (
           rows.map(({ item, visit }) => (
-            <QueueTile key={item.id} item={item} visit={visit} color="" variant={visit.status === 'on_hold' ? 'noshow' : 'inprocess'} />
+            <QueueTile
+              key={item.id}
+              item={item}
+              color=""
+              variant={visit.status === 'on_hold' ? 'hold' : 'inprocess'}
+              caption={item.room || '—'}
+            />
           ))
         )}
       </div>
@@ -95,7 +109,7 @@ export function MissedCol({ rows }: { rows: Row[] }) {
         {rows.length === 0 ? (
           <EmptyCol label="ไม่มีคิว" icon={BellOff} />
         ) : (
-          rows.map(({ item, visit }) => <QueueTile key={item.id} item={item} visit={visit} color="" variant="noshow" />)
+          rows.map(({ item }) => <QueueTile key={item.id} item={item} color="" variant="noshow" />)
         )}
       </div>
     </div>

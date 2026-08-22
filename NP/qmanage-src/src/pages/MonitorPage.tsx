@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useQueueStore } from '../store/QueueStore';
 import { PUBLIC_STATIONS, getStation } from '../data/stations';
-import { StationIcon } from '../components/StationBadge';
 import { WaitingCol, CallingCol, InProcessCol, MissedCol } from '../components/monitor/MonitorColumns';
 import { sortByQueueTime } from '../utils/sort';
 import { RefreshCw, Maximize, Minimize, Tv } from 'lucide-react';
@@ -81,7 +80,6 @@ export default function MonitorPage() {
                   color: activeStation === s.code ? 'white' : '#64748b',
                 }}
               >
-                <StationIcon code={s.code} className="w-3.5 h-3.5" />
                 {s.code}
               </button>
             ))}
@@ -104,7 +102,6 @@ export default function MonitorPage() {
       )}
 
       <div className="flex items-center gap-2 px-4 py-2 shrink-0" style={{ backgroundColor: stationColor }}>
-        <StationIcon code={activeStation} className="w-5 h-5 text-white" />
         <span className="font-black text-white text-lg">{station?.name}</span>
         <span className="text-white/70 font-bold text-sm">({activeStation})</span>
       </div>
@@ -132,7 +129,6 @@ export default function MonitorPage() {
                 className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 font-bold transition-colors"
                 style={{ fontSize: '0.75rem', backgroundColor: activeStation === s.code ? s.color : 'transparent', color: 'white' }}
               >
-                <StationIcon code={s.code} className="w-3.5 h-3.5" />
                 {s.code}
               </button>
             ))}
