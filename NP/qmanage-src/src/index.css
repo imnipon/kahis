@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'IBMPlexSansThaiLooped';
+  src: url('/kahis/NP/qmanage/fonts/IBMPlexSansThaiLooped-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IBMPlexSansThaiLooped';
+  src: url('/kahis/NP/qmanage/fonts/IBMPlexSansThaiLooped-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IBMPlexSansThaiLooped';
+  src: url('/kahis/NP/qmanage/fonts/IBMPlexSansThaiLooped-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IBMPlexSansThaiLooped';
+  src: url('/kahis/NP/qmanage/fonts/IBMPlexSansThaiLooped-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sarabun';
+  src: url('/kahis/NP/qmanage/fonts/Sarabun-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sarabun';
+  src: url('/kahis/NP/qmanage/fonts/Sarabun-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sarabun';
+  src: url('/kahis/NP/qmanage/fonts/Sarabun-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-display: swap;
+}
+
+:root {
+  font-family: 'IBMPlexSansThaiLooped', 'Sarabun', sans-serif;
+}
+
+html, body, #root {
+  margin: 0;
+  height: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@keyframes tileIn {
+  from { opacity: 0; transform: scale(0.85); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes callSlideIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
