@@ -616,7 +616,6 @@ flowchart TB
   Shell[EditorShell]
   Shell --> Head[HeaderActionBar]
   Shell --> Tabs[SectionTabBar]
-  Shell --> Meta[MetaInfoBar HN/pet]
   Shell --> Work[ModuleWorkspace]
 
   Head --> Brand[BrandTitle KAHIS / Pet Note]
@@ -627,13 +626,14 @@ flowchart TB
 
   Tabs --> W[Weight from VPE]
   Tabs --> V[VetNote]
-  Tabs --> A[Allergy]
   Tabs --> O[StaffNote]
-  Tabs --> Vac[Vaccine]
+  Tabs --> A[Allergy]
+  Tabs --> Vac[Vaccine Deworm]
   Tabs --> Sur[Surgery]
 
   Work --> InfoW[InfoBanner VPE-only entry]
-  Work --> Input[InputCard + LevelTags + Disable]
+  Work --> Modal[NoteFormModal Add or View]
+  Work --> Confirm[DisableConfirm overlay]
   Work --> Tbl[AggregateTable User/Dept/Status/Update]
   Work --> Banner[SampleBanner on Vaccine/Surgery]
 ```
@@ -644,10 +644,11 @@ flowchart TB
 | :---: | :--- | :--- | :--- |
 | 2 | **SectionTabBar** | `.visit-tabs` | reuse VisitTabBar · หัวข้อโมดูล |
 | 2.a | **SectionTab** | `.vtab` | accent `#db2777` |
-| 4.1 | **InputCard** | `.input-card` | Weight / Note form |
-| 4.2 | **LevelTags** | `.level-tag` | เหมือน Plan |
-| 4.3 | **AggregateTable** | `.data-table` | + Edit |
-| 4.4 | **SampleBanner** | `.sample-banner` | ข้อมูลตัวอย่าง Items |
+| 4.1 | **NoteFormModal** | `#note-form-modal` | Add (Apply) · Edit = อ่านอย่างเดียว + Disable |
+| 4.2 | **DisableConfirm** | `#disable-confirm` | confirm ก่อน Disable |
+| 4.3 | **LevelTags** | `.level-tag` | เหมือน Plan · ล็อกตอน View |
+| 4.4 | **AggregateTable** | `.data-table` | Edit ดูรายการ · ไม่แก้ข้อความ |
+| 4.5 | **SampleBanner** | `.sample-banner` | ข้อมูลตัวอย่าง Items |
 
 ---
 
@@ -684,3 +685,4 @@ flowchart TB
 | 2026-08-08 | เพิ่ม §0.1 ค่า CSS มาตรฐานของ Shell |
 | 2026-08-08 | กำหนดลำดับวางข้อมูล: Mermaid → ตาราง Layer → CSS · แปลง §0–5 จาก ASCII เป็นรูปแบบนี้ |
 | 2026-08-25 | เพิ่ม §6 Pet Note (HN-level · Section tabs) |
+| 2026-08-25 | §6 — ลำดับแท็บ Staff/Allergy · Edit view-only · DisableConfirm · เอา MetaInfoBar |

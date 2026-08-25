@@ -10,7 +10,7 @@
 ## 1. Overview (ผู้ใช้)
 
 - **Pet Note** = ฟังก์ชันระดับ **HN** — เปิดเมื่อเข้า HN แล้ว ไม่ผูก visit tab เดียว
-- รวม: น้ำหนัก · Vet Note · ประวัติแพ้ยา · Staff Note (บันทึกเจ้าหน้าที่) · ประวัติวัคซีน · ประวัติผ่าตัด
+- รวม: น้ำหนัก · Vet Note · Staff Note (บันทึกเจ้าหน้าที่) · ประวัติแพ้ยา · ประวัติวัคซีนและถ่ายพยาธิ · ประวัติผ่าตัด
 - ขนาด modal มาตรฐาน Plan / Objective: ~`1400px × 95vh`
 - **ไม่มี** MetaInfoBar (HN / สายพันธุ์ / logged-in) ใน shell ปัจจุบัน — context HN มาจากหน้าแม่
 
@@ -40,16 +40,17 @@ flowchart TB
 
   Tabs --> W[Weight from VPE]
   Tabs --> V[VetNote]
-  Tabs --> A[Allergy]
   Tabs --> O[StaffNote]
-  Tabs --> Vac[Vaccine]
+  Tabs --> A[Allergy]
+  Tabs --> Vac[Vaccine Deworm]
   Tabs --> Sur[Surgery]
 
   W --> BannerW[InfoBanner]
   W --> Tw[Table + Copy/PDF]
   V --> Toolbar[Add new + Copy + PDF]
-  V --> Modal[NoteFormModal]
-  V --> Tnotes[Table sort + Edit]
+  V --> Modal[NoteFormModal Add or View]
+  V --> Confirm[DisableConfirm]
+  V --> Tnotes[Table sort + Edit view-only]
   Vac --> Sample[SampleBanner]
   Vac --> Titems[Items table]
 ```
@@ -65,7 +66,7 @@ flowchart TB
 | 4 | ModuleWorkspace | `.tab-content` | ต่อหัวข้อ |
 | 4.1 | PanelToolbar | `.panel-toolbar` | ชื่อตาราง + Add/Copy/PDF |
 | 4.2 | AggregateTable | `.data-table` | sort · wrap · `.cell-dt` สำหรับวันเวลา |
-| 4.3 | NoteFormModal | `#note-form-modal` | Add / Edit โน้ต |
+| 4.3 | NoteFormModal | `#note-form-modal` | Add โน้ต · Edit ดูอย่างเดียว + Disable |
 | 4.4 | SampleBanner | `.sample-banner` | วัคซีน / ผ่าตัด |
 
 ---
@@ -89,7 +90,7 @@ flowchart TB
 
 เครื่องมือ: **Copy** · **PDF (mock)** · คลิกหัวคอลัมน์เพื่อ sort
 
-### 3.2 Vet Note · ประวัติแพ้ยา · Staff Note
+### 3.2 Vet Note · Staff Note · ประวัติแพ้ยา
 
 ตารางคอลัมน์เหมือนกันทั้ง 3 แท็บ:
 
@@ -105,13 +106,14 @@ flowchart TB
 | Update by | ผู้แก้ล่าสุด |
 | Action | Edit |
 
-- **+ Add new** / **Edit** → เปิด modal (ข้อความ + Level · Disable ตอนแก้)
-- สิทธิ์แก้/Disable: **เจ้าของรายการ** หรือ **Admin**
+- **+ Add new** → modal สร้างรายการ (Apply)
+- **Edit** → modal อ่านอย่างเดียว · ปุ่ม **ยกเลิก** + **Disable** (confirm อีกรอบ) · แก้ข้อความ/Level ไม่ได้
+- สิทธิ์ Disable: **เจ้าของรายการ** หรือ **Admin**
 - Copy / PDF เช่นเดียวกับแท็บอื่น
 
 แท็บนี้คือ **Staff Note** / **บันทึกเจ้าหน้าที่** — โน้ตจาก user ระดับเจ้าหน้าที่ (ต้อนรับ · การเงิน · แอดมินคลินิก ฯลฯ) ไม่ใช่ DVM · แยกแผนกด้วยคอลัมน์ Department
 
-### 3.3 ประวัติวัคซีน & ถ่ายพยาธิ
+### 3.3 ประวัติวัคซีนและถ่ายพยาธิ
 
 > **ข้อมูลเป็นเพียงตัวอย่าง (seed · AAHA-inspired)** — เมื่อระบบ items สมบูรณ์ สามารถสร้าง Tag ของ item ต่างๆได้ โดยส่วนนี้ดึง items ที่มี tag `vaccine`, `deworm`
 
@@ -192,8 +194,8 @@ ItemHistoryRow {
 
 1. Weight ไม่สร้าง/แก้ใน Pet Note — ไป VPE  
 2. เรียง Weight / Items ตาม `processOn || createdOn`  
-3. Edit/Disable โน้ต: `currentUser === row.user` หรือ `admin`  
-4. Disable / Apply แก้ → stamp update fields · ไม่เปลี่ยนเจ้าของ  
+3. Disable โน้ต: `currentUser === row.user` หรือ `admin` · Edit เปิดดูอย่างเดียว  
+4. Disable (หลัง confirm) → stamp update fields · ไม่เปลี่ยนเจ้าของ · ไม่มี Enable กลับ  
 5. Copy = plain text แถว คั่นคอลัมน์ด้วย `|` (ตัดคอลัมน์ Action)  
 6. PDF = mock  
 7. Date/time ในตารางใช้คลาส `.cell-dt` (monospace + `tabular-nums`)
@@ -254,3 +256,5 @@ ItemHistoryRow {
 | 2026-08-25 | เอา MetaInfoBar · Copy/PDF · Add/Edit modal |
 | 2026-08-25 | คอลัมน์ Created/Last Update/User Update · เอาแหล่งออก |
 | 2026-08-25 | อัปเดต Logic/Rule + md · `.cell-dt` · เปลี่ยนชื่อเป็น Staff Note |
+| 2026-08-25 | สลับลำดับแท็บ: น้ำหนัก · Vet · Staff · แพ้ยา · วัคซีน/ถ่ายพยาธิ · ผ่าตัด |
+| 2026-08-25 | Edit = ดูอย่างเดียว · Disable + confirm · ไม่แก้ข้อความ |

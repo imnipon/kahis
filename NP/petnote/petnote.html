@@ -59,6 +59,7 @@
     align-items: center; justify-content: center; padding: 16px;
   }
   .confirm-overlay.show { display: flex; }
+  #disable-confirm { z-index: 6000; }
   .confirm-box {
     background: #fff; border-radius: 12px; box-shadow: var(--qb-shadow);
     padding: 24px 28px; max-width: 420px; width: 100%; text-align: center;
@@ -239,6 +240,12 @@
   .level-tag.green.active { background: #22c55e; border-color: #16a34a; color: #fff; }
   .level-tag.yellow.active { background: #eab308; border-color: #ca8a04; color: #fff; }
   .level-tag.red.active { background: #ef4444; border-color: #dc2626; color: #fff; }
+  .note-form-body.is-readonly .ctrl {
+    background: #f9fafb; color: #374151; cursor: default;
+  }
+  .note-form-body.is-readonly .level-tag {
+    pointer-events: none; opacity: .92;
+  }
 
   .input-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 4px; }
   .btn-apply {
@@ -349,10 +356,6 @@
     background: #fef2f2; color: #dc2626; font: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
   }
   .btn-disable:hover { background: #fee2e2; }
-  .btn-enable {
-    padding: 8px 14px; border: 1px solid #86efac; border-radius: 8px;
-    background: #f0fdf4; color: #16a34a; font: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
-  }
   .btn-edit:disabled, .btn-edit.is-locked {
     opacity: .45; cursor: not-allowed; border-color: #e5e7eb; background: #f9fafb; color: #9ca3af;
   }
@@ -473,7 +476,7 @@
         <div class="obj-brand-sub">Pet Note</div>
       </div>
       <div class="examcard-bar">
-        <div class="mock-user-bar" title="Mock login สำหรับทดสอบสิทธิ์ Edit/Disable">
+        <div class="mock-user-bar" title="Mock login สำหรับทดสอบสิทธิ์ Disable">
           <span>Login as</span>
           <select id="mock-login" onchange="onMockLoginChange()">
             <option value="dvm" selected>นิพนธ์ (DVM)</option>
@@ -497,9 +500,9 @@
     <div class="visit-tabs" id="section-tabs">
       <div class="vtab active" data-sec="weight"><div class="line1">น้ำหนัก</div><div class="line2">จาก VPE</div></div>
       <div class="vtab" data-sec="vet"><div class="line1">Vet Note</div><div class="line2">สัตวแพทย์</div></div>
-      <div class="vtab" data-sec="allergy"><div class="line1">ประวัติแพ้ยา</div><div class="line2">Drug allergy</div></div>
       <div class="vtab" data-sec="staff"><div class="line1">Staff Note</div><div class="line2">บันทึกเจ้าหน้าที่</div></div>
-      <div class="vtab" data-sec="vaccine"><div class="line1">ประวัติวัคซีน</div><div class="line2">จาก Items · tag</div></div>
+      <div class="vtab" data-sec="allergy"><div class="line1">ประวัติแพ้ยา</div><div class="line2">Drug allergy</div></div>
+      <div class="vtab" data-sec="vaccine"><div class="line1">ประวัติวัคซีนและถ่ายพยาธิ</div><div class="line2">vaccine · deworm</div></div>
       <div class="vtab" data-sec="surgery"><div class="line1">ประวัติผ่าตัด</div><div class="line2">จาก Items · tag</div></div>
     </div>
 
@@ -550,7 +553,7 @@
         <div class="panel-toolbar">
           <div>
             <div class="panel-title">รายการ Vet Note</div>
-            <div style="font-size:11px;color:#94a3b8;margin-top:2px;">Text + Level 3 สี · Edit/Disable ได้เฉพาะเจ้าของหรือ Admin</div>
+            <div style="font-size:11px;color:#94a3b8;margin-top:2px;">Text + Level 3 สี · Edit ดูรายการ · Disable ได้เฉพาะเจ้าของหรือ Admin</div>
           </div>
           <div class="panel-actions">
             <button class="btn-tool add" type="button" onclick="openAddNote('vet')">+ Add new</button>
@@ -578,6 +581,45 @@
               </tr>
             </thead>
             <tbody id="vet-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- STAFF NOTE -->
+    <div class="tab-content" id="sec-staff">
+      <div class="table-panel">
+        <div class="panel-toolbar">
+          <div>
+            <div class="panel-title">รายการ Staff Note</div>
+            <div style="font-size:11px;color:#94a3b8;margin-top:2px;">โน้ตจากเจ้าหน้าที่ (ต้อนรับ · การเงิน ฯลฯ) · รูปแบบเดียวกับ Vet Note</div>
+          </div>
+          <div class="panel-actions">
+            <button class="btn-tool add" type="button" onclick="openAddNote('staff')">+ Add new</button>
+            <button class="btn-tool copy" type="button" onclick="copyTable('staff')">Copy</button>
+            <button class="btn-tool pdf" type="button" onclick="mockPdf('staff')" title="mock">PDF</button>
+          </div>
+        </div>
+        <div class="data-table-wrap">
+          <table class="data-table tbl-notes" data-table="staff">
+            <colgroup>
+              <col class="c-rec"><col class="c-text"><col class="c-lv"><col class="c-user"><col class="c-dept">
+              <col class="c-st"><col class="c-upd"><col class="c-upby"><col class="c-act">
+            </colgroup>
+            <thead>
+              <tr>
+                <th class="sortable cell-dt" data-key="recordOn" onclick="sortTable('staff','recordOn')">Record on <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="text" onclick="sortTable('staff','text')">ข้อความ <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="level" onclick="sortTable('staff','level')">Level <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="user" onclick="sortTable('staff','user')">User <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="department" onclick="sortTable('staff','department')">Department <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="status" onclick="sortTable('staff','status')">Status <span class="sort-ind"></span></th>
+                <th class="sortable cell-dt" data-key="updateOn" onclick="sortTable('staff','updateOn')">Update <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="updateBy" onclick="sortTable('staff','updateBy')">Update by <span class="sort-ind"></span></th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="staff-tbody"></tbody>
           </table>
         </div>
       </div>
@@ -617,45 +659,6 @@
               </tr>
             </thead>
             <tbody id="allergy-tbody"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- OFFICE NOTE -->
-    <div class="tab-content" id="sec-staff">
-      <div class="table-panel">
-        <div class="panel-toolbar">
-          <div>
-            <div class="panel-title">รายการ Staff Note</div>
-            <div style="font-size:11px;color:#94a3b8;margin-top:2px;">โน้ตจากเจ้าหน้าที่ (ต้อนรับ · การเงิน ฯลฯ) · รูปแบบเดียวกับ Vet Note</div>
-          </div>
-          <div class="panel-actions">
-            <button class="btn-tool add" type="button" onclick="openAddNote('staff')">+ Add new</button>
-            <button class="btn-tool copy" type="button" onclick="copyTable('staff')">Copy</button>
-            <button class="btn-tool pdf" type="button" onclick="mockPdf('staff')" title="mock">PDF</button>
-          </div>
-        </div>
-        <div class="data-table-wrap">
-          <table class="data-table tbl-notes" data-table="staff">
-            <colgroup>
-              <col class="c-rec"><col class="c-text"><col class="c-lv"><col class="c-user"><col class="c-dept">
-              <col class="c-st"><col class="c-upd"><col class="c-upby"><col class="c-act">
-            </colgroup>
-            <thead>
-              <tr>
-                <th class="sortable cell-dt" data-key="recordOn" onclick="sortTable('staff','recordOn')">Record on <span class="sort-ind"></span></th>
-                <th class="sortable" data-key="text" onclick="sortTable('staff','text')">ข้อความ <span class="sort-ind"></span></th>
-                <th class="sortable" data-key="level" onclick="sortTable('staff','level')">Level <span class="sort-ind"></span></th>
-                <th class="sortable" data-key="user" onclick="sortTable('staff','user')">User <span class="sort-ind"></span></th>
-                <th class="sortable" data-key="department" onclick="sortTable('staff','department')">Department <span class="sort-ind"></span></th>
-                <th class="sortable" data-key="status" onclick="sortTable('staff','status')">Status <span class="sort-ind"></span></th>
-                <th class="sortable cell-dt" data-key="updateOn" onclick="sortTable('staff','updateOn')">Update <span class="sort-ind"></span></th>
-                <th class="sortable" data-key="updateBy" onclick="sortTable('staff','updateBy')">Update by <span class="sort-ind"></span></th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="staff-tbody"></tbody>
           </table>
         </div>
       </div>
@@ -787,8 +790,20 @@
     </div>
     <div class="note-form-foot">
       <button class="btn-cancel" type="button" onclick="closeNoteForm()">ยกเลิก</button>
-      <button class="btn-disable" type="button" id="note-form-disable" style="display:none;" onclick="toggleDisableNoteFromModal()">Disable</button>
-      <button class="btn-apply" type="button" onclick="saveNoteFromModal()">✓ Apply</button>
+      <button class="btn-disable" type="button" id="note-form-disable" style="display:none;" onclick="requestDisableNoteFromModal()">Disable</button>
+      <button class="btn-apply" type="button" id="note-form-apply" onclick="saveNoteFromModal()">✓ Apply</button>
+    </div>
+  </div>
+</div>
+
+<div class="confirm-overlay" id="disable-confirm">
+  <div class="confirm-box">
+    <div class="confirm-icon">⚠️</div>
+    <div class="confirm-title">Disable รายการนี้?</div>
+    <div class="confirm-msg" id="disable-confirm-msg">รายการจะถูกทำเครื่องหมาย Disable · ไม่สามารถแก้ข้อความได้อีก</div>
+    <div class="confirm-actions">
+      <button class="confirm-back" type="button" onclick="cancelDisableConfirm()">ยกเลิก</button>
+      <button class="confirm-close-danger" type="button" onclick="confirmDisableNote()">Disable</button>
     </div>
   </div>
 </div>
@@ -817,16 +832,16 @@
       <p style="margin-top:12px;font-weight:700;color:#3d4e1a;">แท็บ &amp; แหล่งข้อมูล</p>
       <ul>
         <li><b>น้ำหนัก</b> — อ่านอย่างเดียวจาก VPE · คอลัมน์ Process on · Wt (kg) · Note · DVM/User · Department · Created on · Last Update · User Update · เรียงตาม Process on (ว่าง = Created on) · <b>บันทึกเพิ่มที่ VPE เท่านั้น</b></li>
-        <li><b>Vet Note / ประวัติแพ้ยา / Staff Note</b> — เขียนใน Pet Note · Add/Edit ผ่าน <b>modal</b> · Level Symbol 3 สี · ตาราง: Record on · ข้อความ · Level · User · Department · Status · Update · Update by · Action</li>
-        <li><b>ประวัติวัคซีน</b> — อ่านจาก Items tag <code>vaccine</code>, <code>deworm</code> · Note จาก TX label · คอลัมน์เหมือนผ่าตัด (ไม่มีแหล่ง) · Process on ว่างแสดง Created on โดยไม่ใส่ข้อความกำกับ</li>
+        <li><b>Vet Note / Staff Note / ประวัติแพ้ยา</b> — Add ผ่าน modal · Edit เปิด modal อ่านอย่างเดียว (แก้ข้อความไม่ได้) · Disable จาก modal + confirm · Level Symbol 3 สี</li>
+        <li><b>ประวัติวัคซีนและถ่ายพยาธิ</b> — อ่านจาก Items tag <code>vaccine</code>, <code>deworm</code> · Note จาก TX label · คอลัมน์เหมือนผ่าตัด (ไม่มีแหล่ง) · Process on ว่างแสดง Created on โดยไม่ใส่ข้อความกำกับ</li>
         <li><b>ประวัติผ่าตัด</b> — อ่านจาก Items tag <code>surgery</code> · โครงคอลัมเท่าวัคซีน</li>
       </ul>
 
-      <p style="margin-top:12px;font-weight:700;color:#3d4e1a;">สิทธิ์ Edit / Disable (โน้ต)</p>
+      <p style="margin-top:12px;font-weight:700;color:#3d4e1a;">สิทธิ์ Disable (โน้ต)</p>
       <ul>
-        <li>แก้หรือ Disable ได้เฉพาะ <b>เจ้าของรายการ</b> (User ที่บันทึก) หรือ <b>Admin</b></li>
-        <li>Disable / Apply ตอนแก้ → stamp Last Update (= Update) และ User Update (= Update by)</li>
-        <li>ไม่เปลี่ยน User / Department เจ้าของเดิมตอนแก้</li>
+        <li>ปุ่ม <b>Edit</b> เปิด modal ดูรายการ — <b>ไม่แก้ข้อความ/Level ได้</b></li>
+        <li>Disable ได้เฉพาะ <b>เจ้าของรายการ</b> หรือ <b>Admin</b> · กด Disable แล้วต้อง confirm อีกครั้ง</li>
+        <li>Disable สำเร็จ → stamp Update / Update by · ไม่เปลี่ยน User / Department เจ้าของเดิม</li>
       </ul>
 
       <p style="margin-top:12px;font-weight:700;color:#3d4e1a;">เครื่องมือตาราง</p>
@@ -1094,7 +1109,7 @@ function canEditRow(row) {
 function onMockLoginChange() {
   var key = document.getElementById('mock-login').value;
   CURRENT = USERS[key] || USERS.dvm;
-  ['vet', 'allergy', 'staff'].forEach(function (k) {
+  ['vet', 'staff', 'allergy'].forEach(function (k) {
     if (editState[k]) cancelEdit(k);
     else renderNotes(k);
   });
@@ -1202,7 +1217,7 @@ function renderNotes(kind) {
     var allowed = canEditRow(r);
     var editBtn = allowed
       ? '<button class="btn-edit" type="button" onclick="startEditNote(\'' + kind + '\',\'' + r.id + '\')">Edit</button>'
-      : '<button class="btn-edit is-locked" type="button" onclick="showToast(\'แก้/Disable ได้เฉพาะเจ้าของรายการหรือ Admin\')" title="ไม่มีสิทธิ์">Edit</button>';
+      : '<button class="btn-edit is-locked" type="button" onclick="showToast(\'Disable ได้เฉพาะเจ้าของรายการหรือ Admin\')" title="ไม่มีสิทธิ์">Edit</button>';
     return '<tr class="' + editing + dis + '">' +
       '<td class="cell-dt">' + escapeHtml(fmtDateTime(r.recordOn)) + '</td>' +
       '<td>' + escapeHtml(r.text) + '</td>' +
@@ -1247,26 +1262,37 @@ function renderItems(kind, list) {
   }).join('');
 }
 
-function syncDisableBtn(row) {
-  var btn = document.getElementById('note-form-disable');
-  if (!row) {
-    btn.style.display = 'none';
-    return;
-  }
-  btn.style.display = '';
-  if (row.status === 'disable') {
-    btn.textContent = 'Enable';
-    btn.className = 'btn-enable';
+function setNoteFormMode(mode, row) {
+  var body = document.querySelector('#note-form-modal .note-form-body');
+  var textEl = document.getElementById('note-form-text');
+  var applyBtn = document.getElementById('note-form-apply');
+  var disableBtn = document.getElementById('note-form-disable');
+  var levelTags = document.querySelectorAll('#note-form-levels .level-tag');
+  if (mode === 'view') {
+    body.classList.add('is-readonly');
+    textEl.readOnly = true;
+    applyBtn.style.display = 'none';
+    if (row && row.status === 'active') {
+      disableBtn.style.display = '';
+      disableBtn.textContent = 'Disable';
+      disableBtn.className = 'btn-disable';
+    } else {
+      disableBtn.style.display = 'none';
+    }
+    levelTags.forEach(function (t) { t.style.pointerEvents = 'none'; });
   } else {
-    btn.textContent = 'Disable';
-    btn.className = 'btn-disable';
+    body.classList.remove('is-readonly');
+    textEl.readOnly = false;
+    applyBtn.style.display = '';
+    disableBtn.style.display = 'none';
+    levelTags.forEach(function (t) { t.style.pointerEvents = ''; });
   }
 }
 
 var NOTE_LABELS = {
-  vet: { titleAdd: 'Add Vet Note', titleEdit: 'Edit Vet Note', sub: 'สัตวแพทย์ · Text + Level Symbol' },
-  allergy: { titleAdd: 'Add ประวัติแพ้ยา', titleEdit: 'Edit ประวัติแพ้ยา', sub: 'Drug allergy · Text + Level Symbol' },
-  staff: { titleAdd: 'Add Staff Note', titleEdit: 'Edit Staff Note', sub: 'บันทึกเจ้าหน้าที่ · Text + Level Symbol' }
+  vet: { titleAdd: 'Add Vet Note', titleView: 'รายการ Vet Note', sub: 'สัตวแพทย์ · Text + Level Symbol' },
+  allergy: { titleAdd: 'Add ประวัติแพ้ยา', titleView: 'รายการประวัติแพ้ยา', sub: 'Drug allergy · Text + Level Symbol' },
+  staff: { titleAdd: 'Add Staff Note', titleView: 'รายการ Staff Note', sub: 'บันทึกเจ้าหน้าที่ · Text + Level Symbol' }
 };
 
 function openAddNote(kind) {
@@ -1277,7 +1303,7 @@ function openAddNote(kind) {
   document.getElementById('note-form-sub').textContent = meta.sub;
   document.getElementById('note-form-text').value = '';
   setLevel('note-form-levels', kind === 'allergy' ? 'red' : 'green');
-  syncDisableBtn(null);
+  setNoteFormMode('add');
   document.getElementById('note-form-modal').classList.add('show');
   setTimeout(function () { document.getElementById('note-form-text').focus(); }, 50);
 }
@@ -1291,38 +1317,26 @@ function closeNoteForm() {
 
 function saveNoteFromModal() {
   var kind = document.getElementById('note-form-kind').value;
-  if (!kind) return;
+  if (!kind || editState[kind]) return;
   var textEl = document.getElementById('note-form-text');
   var text = textEl.value.trim();
   if (!text) { showToast('กรุณาใส่ข้อความ'); return; }
   var level = getActiveLevel('note-form-levels');
 
-  if (editState[kind]) {
-    var row = notes[kind].find(function (n) { return n.id === editState[kind]; });
-    if (!row) return;
-    if (!canEditRow(row)) { showToast('ไม่มีสิทธิ์แก้ไขรายการนี้'); return; }
-    row.text = text;
-    row.level = level;
-    row.updateOn = nowLocalInput();
-    row.updateBy = CURRENT.name;
-    showToast('อัปเดตรายการแล้ว');
-  } else {
-    seq++;
-    notes[kind].push({
-      id: kind.toUpperCase().slice(0, 2) + seq,
-      recordOn: nowLocalInput(),
-      text: text,
-      level: level,
-      user: CURRENT.name,
-      department: CURRENT.dept,
-      status: 'active',
-      updateOn: null,
-      updateBy: null
-    });
-    showToast('เพิ่มรายการแล้ว');
-  }
+  seq++;
+  notes[kind].push({
+    id: kind.toUpperCase().slice(0, 2) + seq,
+    recordOn: nowLocalInput(),
+    text: text,
+    level: level,
+    user: CURRENT.name,
+    department: CURRENT.dept,
+    status: 'active',
+    updateOn: null,
+    updateBy: null
+  });
+  showToast('เพิ่มรายการแล้ว');
   document.getElementById('note-form-modal').classList.remove('show');
-  editState[kind] = null;
   renderNotes(kind);
 }
 
@@ -1330,32 +1344,50 @@ function startEditNote(kind, id) {
   var row = notes[kind].find(function (n) { return n.id === id; });
   if (!row) return;
   if (!canEditRow(row)) {
-    showToast('แก้/Disable ได้เฉพาะเจ้าของรายการหรือ Admin');
+    showToast('Disable ได้เฉพาะเจ้าของรายการหรือ Admin');
     return;
   }
   editState[kind] = id;
   document.getElementById('note-form-kind').value = kind;
   var meta = NOTE_LABELS[kind];
-  document.getElementById('note-form-title').textContent = meta.titleEdit;
-  document.getElementById('note-form-sub').textContent = meta.sub + ' · ' + row.id;
+  document.getElementById('note-form-title').textContent = meta.titleView;
+  document.getElementById('note-form-sub').textContent = meta.sub + ' · อ่านอย่างเดียว · ' + row.id;
   document.getElementById('note-form-text').value = row.text;
   setLevel('note-form-levels', row.level);
-  syncDisableBtn(row);
+  setNoteFormMode('view', row);
   document.getElementById('note-form-modal').classList.add('show');
   renderNotes(kind);
 }
 
-function toggleDisableNoteFromModal() {
+function requestDisableNoteFromModal() {
   var kind = document.getElementById('note-form-kind').value;
   if (!kind || !editState[kind]) return;
   var row = notes[kind].find(function (n) { return n.id === editState[kind]; });
-  if (!row) return;
+  if (!row || row.status === 'disable') return;
   if (!canEditRow(row)) { showToast('ไม่มีสิทธิ์'); return; }
-  row.status = row.status === 'disable' ? 'active' : 'disable';
+  var preview = row.text.length > 80 ? row.text.slice(0, 80) + '…' : row.text;
+  document.getElementById('disable-confirm-msg').textContent =
+    'รายการ "' + preview + '" จะถูกทำเครื่องหมาย Disable · ไม่สามารถแก้ข้อความได้อีก';
+  document.getElementById('disable-confirm').classList.add('show');
+}
+
+function cancelDisableConfirm() {
+  document.getElementById('disable-confirm').classList.remove('show');
+}
+
+function confirmDisableNote() {
+  var kind = document.getElementById('note-form-kind').value;
+  if (!kind || !editState[kind]) { cancelDisableConfirm(); return; }
+  var row = notes[kind].find(function (n) { return n.id === editState[kind]; });
+  if (!row) { cancelDisableConfirm(); return; }
+  if (!canEditRow(row)) { showToast('ไม่มีสิทธิ์'); cancelDisableConfirm(); return; }
+  row.status = 'disable';
   row.updateOn = nowLocalInput();
   row.updateBy = CURRENT.name;
-  showToast(row.status === 'disable' ? 'Disable แล้ว' : 'Enable แล้ว');
-  syncDisableBtn(row);
+  cancelDisableConfirm();
+  document.getElementById('note-form-modal').classList.remove('show');
+  editState[kind] = null;
+  showToast('Disable แล้ว');
   renderNotes(kind);
 }
 
