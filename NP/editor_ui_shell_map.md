@@ -603,21 +603,69 @@ flowchart TB
 
 ---
 
-## 6. ActionGroup เปรียบเทียบข้ามโมดูล
+## 6. Pet Note (HN-level)
 
-| ปุ่ม | Plan | Assessment | VPE | Objective | Subjective |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| FilterTrigger | ✓ | — (Date/VisitPick) | — (ซ่อน) | ✓ | — |
-| LogicBadge | ✓ | ✓ | ✓ | ✓ | ตาม modal |
-| DocBadgeGroup | ✓ | — | — | — | — |
-| GoTodayBtn | ✓ | ✓ | ซ่อน | ✓ | — |
-| DatePick / VisitPick | — | ✓ | ซ่อน | — | — |
-| RefreshBtn | ✓ | ✓ | ซ่อน | ✓ | — |
-| CloseBtn | ✓ | ✓ | ✓ | ✓ | ตาม modal |
+**ไฟล์:** `NP/petnote/petnote.html` · **ModuleTitle:** `Pet Note` · เอกสาร: `petnote.md`
+
+> ระดับ **HN** (ไม่ผูก visit เดียว) · Section tabs แทน Visit tabs · accent ชมพู
+
+### โครง (Mermaid)
+
+```mermaid
+flowchart TB
+  Shell[EditorShell]
+  Shell --> Head[HeaderActionBar]
+  Shell --> Tabs[SectionTabBar]
+  Shell --> Meta[MetaInfoBar HN/pet]
+  Shell --> Work[ModuleWorkspace]
+
+  Head --> Brand[BrandTitle KAHIS / Pet Note]
+  Head --> Act[ActionGroup]
+  Act --> L[LogicBadge]
+  Act --> Doc[DocBadgeGroup]
+  Act --> C[CloseBtn]
+
+  Tabs --> W[Weight from VPE]
+  Tabs --> V[VetNote]
+  Tabs --> A[Allergy]
+  Tabs --> O[StaffNote]
+  Tabs --> Vac[Vaccine]
+  Tabs --> Sur[Surgery]
+
+  Work --> InfoW[InfoBanner VPE-only entry]
+  Work --> Input[InputCard + LevelTags + Disable]
+  Work --> Tbl[AggregateTable User/Dept/Status/Update]
+  Work --> Banner[SampleBanner on Vaccine/Surgery]
+```
+
+### ตาราง Layer (เฉพาะส่วนที่เพิ่มจาก Shared)
+
+| Layer | Logical name | CSS | หมายเหตุ |
+| :---: | :--- | :--- | :--- |
+| 2 | **SectionTabBar** | `.visit-tabs` | reuse VisitTabBar · หัวข้อโมดูล |
+| 2.a | **SectionTab** | `.vtab` | accent `#db2777` |
+| 4.1 | **InputCard** | `.input-card` | Weight / Note form |
+| 4.2 | **LevelTags** | `.level-tag` | เหมือน Plan |
+| 4.3 | **AggregateTable** | `.data-table` | + Edit |
+| 4.4 | **SampleBanner** | `.sample-banner` | ข้อมูลตัวอย่าง Items |
 
 ---
 
-## 7. กฎการตั้งชื่อเมื่อคุยงาน
+## 7. ActionGroup เปรียบเทียบข้ามโมดูล
+
+| ปุ่ม | Plan | Assessment | VPE | Objective | Subjective | Pet Note |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| FilterTrigger | ✓ | — (Date/VisitPick) | — (ซ่อน) | ✓ | — | — |
+| LogicBadge | ✓ | ✓ | ✓ | ✓ | ตาม modal | ✓ |
+| DocBadgeGroup | ✓ | — | — | — | — | ✓ |
+| GoTodayBtn | ✓ | ✓ | ซ่อน | ✓ | — | — |
+| DatePick / VisitPick | — | ✓ | ซ่อน | — | — | — |
+| RefreshBtn | ✓ | ✓ | ซ่อน | ✓ | — | — |
+| CloseBtn | ✓ | ✓ | ✓ | ✓ | ตาม modal | ✓ |
+
+---
+
+## 8. กฎการตั้งชื่อเมื่อคุยงาน
 
 1. พูด **Logical name** ก่อน แล้ววงเล็บ class เช่น `HeaderActionBar (.assess-editor-header)`  
 2. อ้าง **Layer** จากตารางเมื่อต้องการชี้ระดับ (เช่น Layer 1 = เหนือ tabs)  
@@ -628,10 +676,11 @@ flowchart TB
 
 ---
 
-## 8. ประวัติ
+## 9. ประวัติ
 
 | วันที่ | เปลี่ยน |
 | :--- | :--- |
 | 2026-08-08 | สร้างไฟล์ — ร่าง UI shell + ชื่อเรียกทุกโมดูล อิง Plan เป็นต้นแบบขนาด |
 | 2026-08-08 | เพิ่ม §0.1 ค่า CSS มาตรฐานของ Shell |
 | 2026-08-08 | กำหนดลำดับวางข้อมูล: Mermaid → ตาราง Layer → CSS · แปลง §0–5 จาก ASCII เป็นรูปแบบนี้ |
+| 2026-08-25 | เพิ่ม §6 Pet Note (HN-level · Section tabs) |

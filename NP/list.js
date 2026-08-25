@@ -27,4 +27,6 @@ const assessmentFiles = [
   { title: "Items Manager Design Notes", file: "NP/items/items_design_notes.md", lastUpdate: "2026-08-18T19:15:00.000000" },
   { title: "Board — Queue Management (Mockup)", file: "NP/qmanage/index.html", lastUpdate: "2026-08-22T19:34:03.000000" },
   { title: "Board — For Dev / Logic", file: "NP/qmanage/docs/for_dev_qmanage.md", lastUpdate: "2026-08-22T19:34:03.000000" },
+  { title: "Pet Note", file: "NP/petnote/petnote.html", lastUpdate: "2026-08-25T15:50:00.000000" },
+  { title: "Pet Note Manual / For Dev", file: "NP/petnote/petnote.md", lastUpdate: "2026-08-25T15:50:00.000000" },
 ];

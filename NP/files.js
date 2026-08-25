@@ -202,6 +202,26 @@ const filesTree = [
         ]
       },
       {
+        "name": "petnote",
+        "label": "Pet Note",
+        "type": "folder",
+        "path": "NP/petnote",
+        "children": [
+          {
+            "name": "petnote.html",
+            "type": "file",
+            "path": "NP/petnote/petnote.html",
+            "lastUpdate": "2026-08-25T15:50:00.000000"
+          },
+          {
+            "name": "petnote.md",
+            "type": "file",
+            "path": "NP/petnote/petnote.md",
+            "lastUpdate": "2026-08-25T15:50:00.000000"
+          }
+        ]
+      },
+      {
         "name": "items",
         "label": "Items Manager",
         "type": "folder",

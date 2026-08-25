@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KAHIS - Pet Note</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --qb-bg: #F0F2F5;
+    --qb-surface: #FFFFFF;
+    --qb-text: #252525;
+    --qb-muted: #676D75;
+    --qb-border: #E5E7EB;
+    --qb-shadow: 0 4px 24px rgba(0,0,0,.08);
+    --font: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: var(--font);
+    background: var(--qb-bg); color: var(--qb-text);
+    min-height: 100%; display: flex; align-items: center; justify-content: center;
+  }
+
+  .petnote-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 18px; border: 1px solid #f9a8d4; border-radius: 999px;
+    font-size: 14px; background: #fdf2f8; color: #be185d;
+    font-family: inherit; cursor: pointer; font-weight: 500;
+  }
+  .petnote-badge:hover { background: #fce7f3; }
+  .petnote-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #ec4899; }
+
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,.4); z-index: 1000;
+    align-items: center; justify-content: center; padding: 16px;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal-box {
+    background: var(--qb-bg); border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,.28);
+    width: min(1400px, 100%); height: min(95vh, 920px);
+    overflow: hidden; padding: 14px 16px 16px;
+    display: flex; flex-direction: column; min-height: 0;
+  }
+  .modal-close {
+    background: #fff; border: 1px solid #fca5a5; border-radius: 8px;
+    padding: 6px 12px; font-size: 13px; cursor: pointer; color: #dc2626;
+    font-family: inherit; font-weight: 500;
+  }
+  .modal-close:hover { background: #fef2f2; }
+
+  .confirm-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,.4); z-index: 3000;
+    align-items: center; justify-content: center; padding: 16px;
+  }
+  .confirm-overlay.show { display: flex; }
+  .confirm-box {
+    background: #fff; border-radius: 12px; box-shadow: var(--qb-shadow);
+    padding: 24px 28px; max-width: 420px; width: 100%; text-align: center;
+  }
+  .confirm-icon { font-size: 28px; margin-bottom: 12px; }
+  .confirm-title { font-size: 16px; font-weight: 600; color: #374151; margin-bottom: 8px; }
+  .confirm-msg { font-size: 13px; color: #6b7280; line-height: 1.6; margin-bottom: 20px; }
+  .confirm-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .confirm-back {
+    padding: 8px 18px; border: 1px solid #d1d5db; border-radius: 8px;
+    font-size: 13px; background: #fff; color: #374151; font-family: inherit; cursor: pointer; font-weight: 500;
+  }
+  .confirm-close-danger {
+    padding: 8px 18px; border: 1px solid #fca5a5; border-radius: 8px;
+    font-size: 13px; background: #fef2f2; color: #dc2626; font-family: inherit; cursor: pointer; font-weight: 500;
+  }
+
+  .assess-editor-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10px; flex-shrink: 0; gap: 12px;
+  }
+  .obj-brand { display: flex; align-items: center; gap: 12px; }
+  .obj-brand-logo, .obj-brand-sub {
+    font-weight: 700; font-size: 22px; letter-spacing: -0.02em; line-height: 1.1;
+  }
+  .obj-brand-logo { color: #22c55e; }
+  .obj-brand-sub { color: #1f2937; }
+  .examcard-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; position: relative; }
+
+  .logic-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border: 1px solid #a0b070; border-radius: 999px;
+    font-size: 13px; background: #f5f7f0; color: #556b2f; font-family: inherit; cursor: pointer; font-weight: 500;
+  }
+  .doc-badge-group { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .doc-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 7px 12px; border: 1px solid #cbd5e1; border-radius: 999px;
+    font-size: 12px; background: #fff; color: #475569; font-family: inherit; cursor: pointer; font-weight: 500;
+  }
+  .doc-badge:hover { border-color: #a0b070; background: #f5f7f0; color: #3d4e1a; }
+  .doc-badge .md-tag {
+    font-size: 9px; font-weight: 700; letter-spacing: .02em;
+    padding: 1px 5px; border-radius: 4px; background: #e2e8f0; color: #64748b;
+  }
+
+  .md-overlay {
+    display: none; position: fixed; inset: 0; z-index: 12000;
+    background: rgba(15, 23, 42, .45); align-items: center; justify-content: center; padding: 24px;
+  }
+  .md-overlay.show { display: flex; }
+  .md-box {
+    width: min(920px, 100%); max-height: min(86vh, 900px);
+    background: #fff; border-radius: 14px; box-shadow: 0 20px 50px rgba(0,0,0,.2);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .md-box-head {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+    padding: 16px 18px 12px; border-bottom: 1px solid #eef2f4; flex-shrink: 0;
+  }
+  .md-box-title { font-size: 16px; font-weight: 700; color: #3d4e1a; }
+  .md-box-sub { font-size: 11px; color: #94a3b8; margin-top: 2px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .md-box-body {
+    flex: 1; min-height: 0; overflow: auto; padding: 18px 22px 28px;
+    font-size: 13.5px; line-height: 1.65; color: #334155;
+  }
+  .md-box-body h1 { font-size: 1.45rem; color: #1e293b; margin: 0 0 12px; }
+  .md-box-body h2 { font-size: 1.15rem; color: #3d4e1a; margin: 22px 0 10px; padding-bottom: 4px; border-bottom: 1px solid #e8ecd8; }
+  .md-box-body h3 { font-size: 1rem; color: #556b2f; margin: 16px 0 8px; }
+  .md-box-body p { margin: 0 0 10px; }
+  .md-box-body ul, .md-box-body ol { margin: 0 0 12px; padding-left: 1.35em; }
+  .md-box-body li { margin: 3px 0; }
+  .md-box-body code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px; background: #f1f5f9; padding: 1px 5px; border-radius: 4px;
+  }
+  .md-box-body pre {
+    background: #0f172a; color: #e2e8f0; padding: 12px 14px; border-radius: 8px;
+    overflow: auto; font-size: 12px; margin: 0 0 12px;
+  }
+  .md-box-body table { width: 100%; border-collapse: collapse; margin: 0 0 14px; font-size: 12.5px; }
+  .md-box-body th, .md-box-body td { border: 1px solid #e2e8f0; padding: 6px 8px; text-align: left; }
+  .md-box-body th { background: #f8fafc; }
+  .md-box-body blockquote {
+    margin: 0 0 12px; padding: 8px 12px; border-left: 3px solid #a0b070; background: #f8faf5; color: #475569;
+  }
+
+  .visit-tabs {
+    display: flex; gap: 2px; padding: 0; background: #f0f2f5;
+    border-bottom: 2px solid #db2777; flex-shrink: 0; overflow-x: auto;
+  }
+  .vtab {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 6px 14px; border-radius: 8px 8px 0 0; cursor: pointer;
+    font-size: 11px; color: #6b7280; background: #f9fafb;
+    border: 1px solid #e5e7eb; border-bottom: none; border-top: 3px solid transparent;
+    box-sizing: border-box; min-width: 120px; line-height: 1.3; flex-shrink: 0;
+  }
+  .vtab .line1 { font-weight: 600; }
+  .vtab.active .line1 { font-weight: 700; }
+  .vtab.active .line1::before { content: '●'; margin-right: 4px; }
+  .vtab:hover { background: #fdf2f8; }
+  .vtab.active {
+    background: #fff; color: #be185d; border-color: #e5e7eb;
+    border-bottom: 2px solid #fff; border-top-color: #db2777;
+  }
+  .vtab.active .line2 { color: #f472b6; }
+  .vtab .line2 { color: #9ca3af; }
+
+  .visit-topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    box-sizing: border-box; padding: 6px 16px; background: #fff;
+    border-left: 1px solid #e5e7eb; border-right: 1px solid #e5e7eb;
+    font-size: 11px; color: #9ca3af; flex-shrink: 0;
+  }
+  .visit-topbar b { color: #374151; font-weight: 600; }
+  .visit-topbar .for-date { color: #1d4ed8; font-weight: 600; }
+  .pet-chip {
+    display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  }
+  .pet-chip .pill {
+    display: inline-block; padding: 2px 8px; border-radius: 999px;
+    background: #fdf2f8; color: #be185d; font-weight: 600; font-size: 10px;
+  }
+
+  .tab-content {
+    flex: 1; min-height: 0; overflow: hidden; display: none;
+    background: #fff; border: 1px solid #e5e7eb; border-top: none;
+    border-radius: 0 0 12px 12px; padding: 14px 16px;
+  }
+  .tab-content.active { display: flex; flex-direction: column; }
+
+  .sample-banner {
+    flex-shrink: 0; margin-bottom: 12px;
+    padding: 10px 14px; border-radius: 10px;
+    background: #fffbeb; border: 1px solid #fde68a; color: #92400e;
+    font-size: 12.5px; line-height: 1.55;
+  }
+  .sample-banner b { color: #78350f; }
+
+  .input-card {
+    flex-shrink: 0; background: #f8fafc; border: 1px solid #e5e7eb;
+    border-radius: 12px; padding: 14px 16px; margin-bottom: 14px;
+  }
+  .input-card-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px; gap: 10px;
+  }
+  .input-card-title { font-size: 13px; font-weight: 700; color: #374151; }
+  .input-card-sub { font-size: 11px; color: #94a3b8; font-weight: 500; }
+  .form-row {
+    display: grid; grid-template-columns: 110px 1fr; gap: 10px;
+    align-items: center; margin-bottom: 10px;
+  }
+  .form-row.align-top { align-items: start; }
+  .form-row label { font-size: 12px; font-weight: 600; color: #6b7280; }
+  .ctrl {
+    width: 100%; padding: 8px 10px; border: 1px solid #d1d5db; border-radius: 8px;
+    font: inherit; font-size: 13px; background: #fff; color: #1f2937;
+  }
+  .ctrl:focus { outline: none; border-color: #f9a8d4; box-shadow: 0 0 0 3px rgba(236,72,153,.12); }
+  textarea.ctrl { resize: vertical; min-height: 64px; }
+  .weight-row { display: flex; gap: 8px; align-items: center; }
+  .weight-row .ctrl { max-width: 160px; }
+  .unit { font-size: 13px; color: #6b7280; font-weight: 600; }
+
+  .level-tags { display: flex; gap: 8px; flex-wrap: wrap; padding-top: 2px; }
+  .level-tag {
+    width: 36px; height: 36px; border-radius: 8px; border: 1.5px solid #d1d5db;
+    background: #fff; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+    color: #9ca3af; padding: 0;
+  }
+  .level-tag svg { width: 18px; height: 18px; }
+  .level-tag.green { border-color: #86efac; color: #16a34a; }
+  .level-tag.yellow { border-color: #fde68a; color: #ca8a04; }
+  .level-tag.red { border-color: #fca5a5; color: #dc2626; }
+  .level-tag.green.active { background: #22c55e; border-color: #16a34a; color: #fff; }
+  .level-tag.yellow.active { background: #eab308; border-color: #ca8a04; color: #fff; }
+  .level-tag.red.active { background: #ef4444; border-color: #dc2626; color: #fff; }
+
+  .input-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 4px; }
+  .btn-apply {
+    padding: 8px 16px; border: none; border-radius: 8px;
+    background: #22c55e; color: #fff; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  .btn-apply:hover { background: #16a34a; }
+  .btn-cancel {
+    padding: 8px 14px; border: 1px solid #d1d5db; border-radius: 8px;
+    background: #fff; color: #6b7280; font: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
+  }
+  .btn-edit {
+    padding: 5px 10px; border: 1px solid #93c5fd; border-radius: 6px;
+    background: #eff6ff; color: #2563eb; font: inherit; font-size: 11px; font-weight: 600; cursor: pointer;
+  }
+  .btn-edit:hover { background: #dbeafe; }
+
+  .table-panel { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .panel-title {
+    font-size: 13px; font-weight: 700; color: #374151; margin-bottom: 8px; flex-shrink: 0;
+  }
+  .data-table-wrap {
+    flex: 1; min-height: 0; overflow: auto; border: 1px solid #e5e7eb; border-radius: 10px;
+  }
+  .data-table {
+    width: 100%; border-collapse: collapse; font-size: 12.5px;
+    table-layout: fixed;
+  }
+  .data-table thead th {
+    position: sticky; top: 0; z-index: 1; background: #f9fafb; text-align: left;
+    padding: 8px 10px; color: #6b7280; font-weight: 600; border-bottom: 1px solid #e5e7eb;
+    font-size: 11px; white-space: normal; word-break: break-word; line-height: 1.35;
+  }
+  .data-table thead th.sortable {
+    cursor: pointer; user-select: none;
+  }
+  .data-table thead th.sortable:hover { background: #f3f4f6; color: #374151; }
+  .data-table thead th .sort-ind {
+    display: inline-block; margin-left: 3px; font-size: 9px; color: #cbd5e1; vertical-align: middle;
+  }
+  .data-table thead th.sort-asc .sort-ind,
+  .data-table thead th.sort-desc .sort-ind { color: #be185d; }
+  .data-table thead th.sort-asc .sort-ind::after { content: '▲'; }
+  .data-table thead th.sort-desc .sort-ind::after { content: '▼'; }
+  .data-table thead th:not(.sort-asc):not(.sort-desc) .sort-ind::after { content: '⇅'; }
+  .data-table tbody td {
+    padding: 8px 10px; border-bottom: 1px solid #f3f4f6; color: #374151; vertical-align: top;
+    white-space: normal; word-break: break-word; overflow-wrap: anywhere; line-height: 1.45;
+  }
+  /* Date/time คอลัมน์ — ให้ตัวเลขกว้างคงที่ อ่านแนวตั้งเท่ากัน */
+  .data-table tbody td.cell-dt,
+  .data-table thead th.cell-dt {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 12px;
+    letter-spacing: 0;
+    white-space: nowrap;
+    word-break: normal;
+  }
+  .data-table tbody tr:hover { background: #fdf2f8; }
+  .data-table tbody tr.editing { background: #fff7ed; }
+  .data-table tbody tr.is-disable td { color: #9ca3af; text-decoration: line-through; }
+  .data-table tbody tr.is-disable td .status-pill,
+  .data-table tbody tr.is-disable td .lv-pill,
+  .data-table tbody tr.is-disable td .btn-edit { text-decoration: none; }
+  .empty-row td { text-align: center; color: #9ca3af; padding: 28px 12px; }
+
+  /* Note tabs — ความกว้างคอลัมเท่ากันทั้ง Vet / Allergy / Staff */
+  .tbl-notes col.c-rec { width: 11%; }
+  .tbl-notes col.c-text { width: 26%; }
+  .tbl-notes col.c-lv { width: 6%; }
+  .tbl-notes col.c-user { width: 12%; }
+  .tbl-notes col.c-dept { width: 14%; }
+  .tbl-notes col.c-st { width: 7%; }
+  .tbl-notes col.c-upd { width: 11%; }
+  .tbl-notes col.c-upby { width: 11%; }
+  .tbl-notes col.c-act { width: 6%; }
+
+  /* Weight from VPE */
+  .tbl-weight col.c-proc { width: 12%; }
+  .tbl-weight col.c-kg { width: 7%; }
+  .tbl-weight col.c-note { width: 20%; }
+  .tbl-weight col.c-user { width: 12%; }
+  .tbl-weight col.c-dept { width: 14%; }
+  .tbl-weight col.c-created { width: 12%; }
+  .tbl-weight col.c-upd { width: 12%; }
+  .tbl-weight col.c-upby { width: 11%; }
+
+  /* Vaccine / Surgery — ความกว้างเท่ากันทั้งสองแท็บ */
+  .tbl-items col.c-proc { width: 11%; }
+  .tbl-items col.c-age { width: 12%; }
+  .tbl-items col.c-title { width: 14%; }
+  .tbl-items col.c-tag { width: 7%; }
+  .tbl-items col.c-note { width: 14%; }
+  .tbl-items col.c-user { width: 11%; }
+  .tbl-items col.c-dept { width: 11%; }
+  .tbl-items col.c-created { width: 10%; }
+  .tbl-items col.c-upd { width: 10%; }
+  .tbl-items col.c-upby { width: 10%; }
+  .status-pill {
+    display: inline-block; padding: 2px 8px; border-radius: 999px;
+    font-size: 10px; font-weight: 700; white-space: nowrap;
+  }
+  .status-pill.active { background: #dcfce7; color: #15803d; }
+  .status-pill.disable { background: #f3f4f6; color: #6b7280; }
+  .btn-disable {
+    padding: 8px 14px; border: 1px solid #fca5a5; border-radius: 8px;
+    background: #fef2f2; color: #dc2626; font: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
+  }
+  .btn-disable:hover { background: #fee2e2; }
+  .btn-enable {
+    padding: 8px 14px; border: 1px solid #86efac; border-radius: 8px;
+    background: #f0fdf4; color: #16a34a; font: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
+  }
+  .btn-edit:disabled, .btn-edit.is-locked {
+    opacity: .45; cursor: not-allowed; border-color: #e5e7eb; background: #f9fafb; color: #9ca3af;
+  }
+  .info-banner {
+    flex-shrink: 0; margin-bottom: 12px;
+    padding: 10px 14px; border-radius: 10px;
+    background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af;
+    font-size: 12.5px; line-height: 1.55;
+  }
+  .info-banner b { color: #1e3a8a; }
+  .mock-user-bar {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; color: #6b7280;
+  }
+  .mock-user-bar select {
+    padding: 5px 8px; border: 1px solid #d1d5db; border-radius: 6px;
+    font: inherit; font-size: 11px; background: #fff;
+  }
+
+  .lv-pill {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 6px; color: #fff;
+  }
+  .lv-pill svg { width: 12px; height: 12px; }
+  .lv-pill.green { background: #22c55e; }
+  .lv-pill.yellow { background: #eab308; }
+  .lv-pill.red { background: #ef4444; }
+  .tag-chip {
+    display: inline-block; padding: 2px 8px; border-radius: 999px;
+    font-size: 10px; font-weight: 700; background: #ede9fe; color: #6d28d9;
+  }
+  .tag-chip.surgery { background: #ffedd5; color: #c2410c; }
+  .tag-chip.deworm { background: #ecfdf5; color: #047857; }
+
+
+  .panel-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; flex-wrap: wrap; margin-bottom: 8px; flex-shrink: 0;
+  }
+  .panel-toolbar .panel-title { margin-bottom: 0; }
+  .panel-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .btn-tool {
+    padding: 6px 12px; border-radius: 8px; font: inherit; font-size: 12px; font-weight: 600;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 5px;
+  }
+  .btn-tool.copy {
+    border: 1px solid #93c5fd; background: #eff6ff; color: #1d4ed8;
+  }
+  .btn-tool.copy:hover { background: #dbeafe; }
+  .btn-tool.pdf {
+    border: 1px solid #e5e7eb; background: #f9fafb; color: #6b7280; cursor: default; opacity: .85;
+  }
+  .btn-tool.add {
+    border: none; background: #22c55e; color: #fff;
+  }
+  .btn-tool.add:hover { background: #16a34a; }
+
+  .note-form-overlay {
+    display: none; position: fixed; inset: 0; z-index: 5000;
+    background: rgba(0,0,0,.4); align-items: center; justify-content: center; padding: 16px;
+  }
+  .note-form-overlay.show { display: flex; }
+  .note-form-box {
+    width: min(560px, 100%); background: #fff; border-radius: 14px;
+    box-shadow: 0 20px 50px rgba(0,0,0,.22); overflow: hidden;
+    display: flex; flex-direction: column; max-height: min(90vh, 640px);
+  }
+  .note-form-head {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+    padding: 14px 16px; border-bottom: 1px solid #eef2f4; flex-shrink: 0;
+  }
+  .note-form-title { font-size: 15px; font-weight: 700; color: #1f2937; }
+  .note-form-sub { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+  .note-form-body { padding: 16px 18px; overflow: auto; }
+  .note-form-foot {
+    display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap;
+    padding: 12px 16px; border-top: 1px solid #eef2f4; background: #fafafa;
+  }
+
+  .toast {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+    background: #1f2937; color: #fff; padding: 10px 18px; border-radius: 999px;
+    font-size: 13px; z-index: 15000; display: none; box-shadow: 0 8px 24px rgba(0,0,0,.2);
+  }
+  .toast.show { display: block; }
+
+  .logic-overlay {
+    display: none; position: fixed; inset: 0; z-index: 11000;
+    background: rgba(0,0,0,.4); align-items: center; justify-content: center; padding: 16px;
+  }
+  .logic-overlay.show { display: flex; }
+  .logic-box {
+    width: min(640px, 100%); max-height: min(80vh, 720px);
+    background: #fff; border-radius: 14px; box-shadow: 0 20px 50px rgba(0,0,0,.2);
+    overflow: hidden; display: flex; flex-direction: column;
+  }
+  .logic-box-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px; border-bottom: 1px solid #eef2f4;
+  }
+  .logic-box-head h3 { font-size: 15px; color: #3d4e1a; }
+  .logic-box-body { padding: 16px 18px 22px; overflow: auto; font-size: 13px; line-height: 1.6; color: #475569; }
+  .logic-box-body ul { margin: 8px 0 0; padding-left: 1.2em; }
+</style>
+</head>
+<body>
+
+<button class="petnote-badge" type="button" onclick="openPetNote()">
+  <span class="dot"></span> Pet Note
+</button>
+
+<div class="modal-overlay show" id="petnote-modal">
+  <div class="modal-box">
+
+    <div class="assess-editor-header">
+      <div class="obj-brand">
+        <div class="obj-brand-logo">KAHIS</div>
+        <div class="obj-brand-sub">Pet Note</div>
+      </div>
+      <div class="examcard-bar">
+        <div class="mock-user-bar" title="Mock login สำหรับทดสอบสิทธิ์ Edit/Disable">
+          <span>Login as</span>
+          <select id="mock-login" onchange="onMockLoginChange()">
+            <option value="dvm" selected>นิพนธ์ (DVM)</option>
+            <option value="dvm2">วิชัย (DVM)</option>
+            <option value="staff">สุดา (Staff)</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+        <div class="doc-badge-group">
+          <button class="logic-badge" type="button" onclick="document.getElementById('logic-modal').classList.add('show')">
+            <span class="dot" style="width:8px;height:8px;border-radius:50%;background:#556b2f;display:inline-block;"></span> View Logic/Rule
+          </button>
+          <button class="doc-badge" type="button" onclick="openPetnoteMd()" title="petnote.md">
+            <span class="md-tag">.md</span> Manual / For Dev
+          </button>
+        </div>
+        <button class="modal-close" type="button" onclick="document.getElementById('close-confirm').classList.add('show')">&#10005;</button>
+      </div>
+    </div>
+
+    <div class="visit-tabs" id="section-tabs">
+      <div class="vtab active" data-sec="weight"><div class="line1">น้ำหนัก</div><div class="line2">จาก VPE</div></div>
+      <div class="vtab" data-sec="vet"><div class="line1">Vet Note</div><div class="line2">สัตวแพทย์</div></div>
+      <div class="vtab" data-sec="allergy"><div class="line1">ประวัติแพ้ยา</div><div class="line2">Drug allergy</div></div>
+      <div class="vtab" data-sec="staff"><div class="line1">Staff Note</div><div class="line2">บันทึกเจ้าหน้าที่</div></div>
+      <div class="vtab" data-sec="vaccine"><div class="line1">ประวัติวัคซีน</div><div class="line2">จาก Items · tag</div></div>
+      <div class="vtab" data-sec="surgery"><div class="line1">ประวัติผ่าตัด</div><div class="line2">จาก Items · tag</div></div>
+    </div>
+
+
+    <!-- WEIGHT — from Vital Sign & PE -->
+    <div class="tab-content active" id="sec-weight">
+      <div class="info-banner">
+        <b>น้ำหนักจาก Vital Sign &amp; PE (VPE)</b> — แสดง Wt (kg) และ Note จาก VPE
+        · คอลัมน์ Process on · DVM/User · Department · Created on · Last Update · User Update
+        · เรียงตาม <b>Process on</b> (ถ้าไม่กรอก ใช้ค่าเดียวกับ Created on)
+        · <b>การลงข้อมูลเพิ่ม ให้ใช้โมดูล Vital Sign &amp; PE (VPE)</b>
+      </div>
+      <div class="table-panel">
+        <div class="panel-toolbar">
+          <div class="panel-title">ประวัติน้ำหนัก (จาก VPE)</div>
+          <div class="panel-actions">
+            <button class="btn-tool copy" type="button" onclick="copyTable('weight')">Copy</button>
+            <button class="btn-tool pdf" type="button" onclick="mockPdf('weight')" title="mock">PDF</button>
+          </div>
+        </div>
+        <div class="data-table-wrap">
+          <table class="data-table tbl-weight" data-table="weight">
+            <colgroup>
+              <col class="c-proc"><col class="c-kg"><col class="c-note"><col class="c-user"><col class="c-dept">
+              <col class="c-created"><col class="c-upd"><col class="c-upby">
+            </colgroup>
+            <thead>
+              <tr>
+                <th class="sortable cell-dt" data-key="processOn" onclick="sortTable('weight','processOn')">Process on <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="kg" onclick="sortTable('weight','kg')">Wt (kg) <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="note" onclick="sortTable('weight','note')">Note <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="user" onclick="sortTable('weight','user')">DVM/User <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="department" onclick="sortTable('weight','department')">Department <span class="sort-ind"></span></th>
+                <th class="sortable cell-dt" data-key="createdOn" onclick="sortTable('weight','createdOn')">Created on <span class="sort-ind"></span></th>
+                <th class="sortable cell-dt" data-key="lastUpdate" onclick="sortTable('weight','lastUpdate')">Last Update <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="updateBy" onclick="sortTable('weight','updateBy')">User Update <span class="sort-ind"></span></th>
+              </tr>
+            </thead>
+            <tbody id="weight-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- VET NOTE -->
+    <div class="tab-content" id="sec-vet">
+      <div class="table-panel">
+        <div class="panel-toolbar">
+          <div>
+            <div class="panel-title">รายการ Vet Note</div>
+            <div style="font-size:11px;color:#94a3b8;margin-top:2px;">Text + Level 3 สี · Edit/Disable ได้เฉพาะเจ้าของหรือ Admin</div>
+          </div>
+          <div class="panel-actions">
+            <button class="btn-tool add" type="button" onclick="openAddNote('vet')">+ Add new</button>
+            <button class="btn-tool copy" type="button" onclick="copyTable('vet')">Copy</button>
+            <button class="btn-tool pdf" type="button" onclick="mockPdf('vet')" title="mock">PDF</button>
+          </div>
+        </div>
+        <div class="data-table-wrap">
+          <table class="data-table tbl-notes" data-table="vet">
+            <colgroup>
+              <col class="c-rec"><col class="c-text"><col class="c-lv"><col class="c-user"><col class="c-dept">
+              <col class="c-st"><col class="c-upd"><col class="c-upby"><col class="c-act">
+            </colgroup>
+            <thead>
+              <tr>
+                <th class="sortable cell-dt" data-key="recordOn" onclick="sortTable('vet','recordOn')">Record on <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="text" onclick="sortTable('vet','text')">ข้อความ <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="level" onclick="sortTable('vet','level')">Level <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="user" onclick="sortTable('vet','user')">User <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="department" onclick="sortTable('vet','department')">Department <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="status" onclick="sortTable('vet','status')">Status <span class="sort-ind"></span></th>
+                <th class="sortable cell-dt" data-key="updateOn" onclick="sortTable('vet','updateOn')">Update <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="updateBy" onclick="sortTable('vet','updateBy')">Update by <span class="sort-ind"></span></th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="vet-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALLERGY -->
+    <div class="tab-content" id="sec-allergy">
+      <div class="table-panel">
+        <div class="panel-toolbar">
+          <div>
+            <div class="panel-title">รายการประวัติแพ้ยา</div>
+            <div style="font-size:11px;color:#94a3b8;margin-top:2px;">รูปแบบเดียวกับ Vet Note · คนละหัวข้อ</div>
+          </div>
+          <div class="panel-actions">
+            <button class="btn-tool add" type="button" onclick="openAddNote('allergy')">+ Add new</button>
+            <button class="btn-tool copy" type="button" onclick="copyTable('allergy')">Copy</button>
+            <button class="btn-tool pdf" type="button" onclick="mockPdf('allergy')" title="mock">PDF</button>
+          </div>
+        </div>
+        <div class="data-table-wrap">
+          <table class="data-table tbl-notes" data-table="allergy">
+            <colgroup>
+              <col class="c-rec"><col class="c-text"><col class="c-lv"><col class="c-user"><col class="c-dept">
+              <col class="c-st"><col class="c-upd"><col class="c-upby"><col class="c-act">
+            </colgroup>
+            <thead>
+              <tr>
+                <th class="sortable cell-dt" data-key="recordOn" onclick="sortTable('allergy','recordOn')">Record on <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="text" onclick="sortTable('allergy','text')">ข้อความ <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="level" onclick="sortTable('allergy','level')">Level <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="user" onclick="sortTable('allergy','user')">User <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="department" onclick="sortTable('allergy','department')">Department <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="status" onclick="sortTable('allergy','status')">Status <span class="sort-ind"></span></th>
+                <th class="sortable cell-dt" data-key="updateOn" onclick="sortTable('allergy','updateOn')">Update <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="updateBy" onclick="sortTable('allergy','updateBy')">Update by <span class="sort-ind"></span></th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="allergy-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- OFFICE NOTE -->
+    <div class="tab-content" id="sec-staff">
+      <div class="table-panel">
+        <div class="panel-toolbar">
+          <div>
+            <div class="panel-title">รายการ Staff Note</div>
+            <div style="font-size:11px;color:#94a3b8;margin-top:2px;">โน้ตจากเจ้าหน้าที่ (ต้อนรับ · การเงิน ฯลฯ) · รูปแบบเดียวกับ Vet Note</div>
+          </div>
+          <div class="panel-actions">
+            <button class="btn-tool add" type="button" onclick="openAddNote('staff')">+ Add new</button>
+            <button class="btn-tool copy" type="button" onclick="copyTable('staff')">Copy</button>
+            <button class="btn-tool pdf" type="button" onclick="mockPdf('staff')" title="mock">PDF</button>
+          </div>
+        </div>
+        <div class="data-table-wrap">
+          <table class="data-table tbl-notes" data-table="staff">
+            <colgroup>
+              <col class="c-rec"><col class="c-text"><col class="c-lv"><col class="c-user"><col class="c-dept">
+              <col class="c-st"><col class="c-upd"><col class="c-upby"><col class="c-act">
+            </colgroup>
+            <thead>
+              <tr>
+                <th class="sortable cell-dt" data-key="recordOn" onclick="sortTable('staff','recordOn')">Record on <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="text" onclick="sortTable('staff','text')">ข้อความ <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="level" onclick="sortTable('staff','level')">Level <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="user" onclick="sortTable('staff','user')">User <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="department" onclick="sortTable('staff','department')">Department <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="status" onclick="sortTable('staff','status')">Status <span class="sort-ind"></span></th>
+                <th class="sortable cell-dt" data-key="updateOn" onclick="sortTable('staff','updateOn')">Update <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="updateBy" onclick="sortTable('staff','updateBy')">Update by <span class="sort-ind"></span></th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="staff-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- VACCINE -->
+    <div class="tab-content" id="sec-vaccine">
+      <div class="sample-banner">
+        <b>ข้อมูลเป็นเพียงตัวอย่าง (seed · AAHA-inspired)</b> — เมื่อระบบ items สมบูรณ์ สามารถสร้าง Tag ของ item ต่างๆได้
+        โดยส่วน “ประวัติวัคซีน” จะนำ items ที่มี tag คือ <code>vaccine</code>, <code>deworm</code> มาแสดงผล ตามข้อมูลที่มีการบันทึกในระบบ
+      </div>
+      <div class="info-banner">
+        คอลัมน์ <b>Note</b> ดึงจาก note ของ <b>TX label</b> ·
+        <b>Process on</b> ถ้าไม่กรอกใช้ค่า Created on (ไม่แสดงข้อความกำกับ) ·
+        <b>อายุโดยประมาณ</b> จาก DOB ถึงวันทำรายการ รูปแบบ <code>- ปี 2 เดือน - วัน</code>
+      </div>
+      <div class="table-panel">
+        <div class="panel-toolbar">
+          <div class="panel-title">ประวัติวัคซีน &amp; ถ่ายพยาธิ</div>
+          <div class="panel-actions">
+            <button class="btn-tool copy" type="button" onclick="copyTable('vaccine')">Copy</button>
+            <button class="btn-tool pdf" type="button" onclick="mockPdf('vaccine')" title="mock">PDF</button>
+          </div>
+        </div>
+        <div class="data-table-wrap">
+          <table class="data-table tbl-items" data-table="vaccine">
+            <colgroup>
+              <col class="c-proc"><col class="c-age"><col class="c-title"><col class="c-tag"><col class="c-note">
+              <col class="c-user"><col class="c-dept"><col class="c-created"><col class="c-upd"><col class="c-upby">
+            </colgroup>
+            <thead>
+              <tr>
+                <th class="sortable cell-dt" data-key="processOn" onclick="sortTable('vaccine','processOn')">Process on <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="age" onclick="sortTable('vaccine','age')">อายุโดยประมาณ <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="title" onclick="sortTable('vaccine','title')">รายการ <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="tag" onclick="sortTable('vaccine','tag')">Tag <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="note" onclick="sortTable('vaccine','note')">Note <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="user" onclick="sortTable('vaccine','user')">DVM/User <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="department" onclick="sortTable('vaccine','department')">Department <span class="sort-ind"></span></th>
+                <th class="sortable cell-dt" data-key="createdOn" onclick="sortTable('vaccine','createdOn')">Created on <span class="sort-ind"></span></th>
+                <th class="sortable cell-dt" data-key="lastUpdate" onclick="sortTable('vaccine','lastUpdate')">Last Update <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="updateBy" onclick="sortTable('vaccine','updateBy')">User Update <span class="sort-ind"></span></th>
+              </tr>
+            </thead>
+            <tbody id="vaccine-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SURGERY -->
+    <div class="tab-content" id="sec-surgery">
+      <div class="sample-banner">
+        <b>ข้อมูลเป็นเพียงตัวอย่าง (seed)</b> — เมื่อระบบ items สมบูรณ์ สามารถสร้าง Tag ของ item ต่างๆได้
+        โดยส่วน “ประวัติผ่าตัด” จะนำ items ที่มี tag คือ <code>surgery</code> มาแสดงผล ตามข้อมูลที่มีการบันทึกในระบบ
+      </div>
+      <div class="info-banner">
+        คอลัมน์ <b>Note</b> ดึงจาก note ของ <b>TX label</b> ·
+        <b>Process on</b> ถ้าไม่กรอกใช้ค่า Created on (ไม่แสดงข้อความกำกับ) ·
+        <b>อายุโดยประมาณ</b> จาก DOB ถึงวันทำรายการ รูปแบบ <code>- ปี 2 เดือน - วัน</code>
+      </div>
+      <div class="table-panel">
+        <div class="panel-toolbar">
+          <div class="panel-title">ประวัติผ่าตัด</div>
+          <div class="panel-actions">
+            <button class="btn-tool copy" type="button" onclick="copyTable('surgery')">Copy</button>
+            <button class="btn-tool pdf" type="button" onclick="mockPdf('surgery')" title="mock">PDF</button>
+          </div>
+        </div>
+        <div class="data-table-wrap">
+          <table class="data-table tbl-items" data-table="surgery">
+            <colgroup>
+              <col class="c-proc"><col class="c-age"><col class="c-title"><col class="c-tag"><col class="c-note">
+              <col class="c-user"><col class="c-dept"><col class="c-created"><col class="c-upd"><col class="c-upby">
+            </colgroup>
+            <thead>
+              <tr>
+                <th class="sortable cell-dt" data-key="processOn" onclick="sortTable('surgery','processOn')">Process on <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="age" onclick="sortTable('surgery','age')">อายุโดยประมาณ <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="title" onclick="sortTable('surgery','title')">รายการ <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="tag" onclick="sortTable('surgery','tag')">Tag <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="note" onclick="sortTable('surgery','note')">Note <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="user" onclick="sortTable('surgery','user')">DVM/User <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="department" onclick="sortTable('surgery','department')">Department <span class="sort-ind"></span></th>
+                <th class="sortable cell-dt" data-key="createdOn" onclick="sortTable('surgery','createdOn')">Created on <span class="sort-ind"></span></th>
+                <th class="sortable cell-dt" data-key="lastUpdate" onclick="sortTable('surgery','lastUpdate')">Last Update <span class="sort-ind"></span></th>
+                <th class="sortable" data-key="updateBy" onclick="sortTable('surgery','updateBy')">User Update <span class="sort-ind"></span></th>
+              </tr>
+            </thead>
+            <tbody id="surgery-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<div class="note-form-overlay" id="note-form-modal">
+  <div class="note-form-box">
+    <div class="note-form-head">
+      <div>
+        <div class="note-form-title" id="note-form-title">Add note</div>
+        <div class="note-form-sub" id="note-form-sub"></div>
+      </div>
+      <button class="modal-close" type="button" onclick="closeNoteForm()">&#10005;</button>
+    </div>
+    <div class="note-form-body">
+      <input type="hidden" id="note-form-kind" value="">
+      <div class="form-row align-top">
+        <label for="note-form-text">ข้อความ</label>
+        <textarea class="ctrl" id="note-form-text" rows="4" placeholder="ข้อความ…"></textarea>
+      </div>
+      <div class="form-row align-top">
+        <label>Level Symbol</label>
+        <div class="level-tags" id="note-form-levels">
+          <button type="button" class="level-tag green active" data-level="green" onclick="selectLevel('note-form-levels', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          </button>
+          <button type="button" class="level-tag yellow" data-level="yellow" onclick="selectLevel('note-form-levels', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          </button>
+          <button type="button" class="level-tag red" data-level="red" onclick="selectLevel('note-form-levels', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="note-form-foot">
+      <button class="btn-cancel" type="button" onclick="closeNoteForm()">ยกเลิก</button>
+      <button class="btn-disable" type="button" id="note-form-disable" style="display:none;" onclick="toggleDisableNoteFromModal()">Disable</button>
+      <button class="btn-apply" type="button" onclick="saveNoteFromModal()">✓ Apply</button>
+    </div>
+  </div>
+</div>
+
+<div class="confirm-overlay" id="close-confirm">
+  <div class="confirm-box">
+    <div class="confirm-icon">⚠️</div>
+    <div class="confirm-title">ปิด Pet Note?</div>
+    <div class="confirm-msg">การเปลี่ยนแปลงที่ยังไม่ได้บันทึกในฟอร์มอาจหายไป (mock เก็บในหน่วยความจำหน้านี้)</div>
+    <div class="confirm-actions">
+      <button class="confirm-back" type="button" onclick="document.getElementById('close-confirm').classList.remove('show')">กลับไปแก้ไข</button>
+      <button class="confirm-close-danger" type="button" onclick="closePetNote()">ปิดเลย</button>
+    </div>
+  </div>
+</div>
+
+<div class="logic-overlay" id="logic-modal">
+  <div class="logic-box">
+    <div class="logic-box-head">
+      <h3>Pet Note — Logic / Rule (ย่อ)</h3>
+      <button class="modal-close" type="button" onclick="document.getElementById('logic-modal').classList.remove('show')">&#10005;</button>
+    </div>
+    <div class="logic-box-body">
+      <p><b>Pet Note</b> = โมดูลระดับ <b>HN</b> (ไม่ผูก visit เดียว) · เปิดเมื่อเข้า HN</p>
+
+      <p style="margin-top:12px;font-weight:700;color:#3d4e1a;">แท็บ &amp; แหล่งข้อมูล</p>
+      <ul>
+        <li><b>น้ำหนัก</b> — อ่านอย่างเดียวจาก VPE · คอลัมน์ Process on · Wt (kg) · Note · DVM/User · Department · Created on · Last Update · User Update · เรียงตาม Process on (ว่าง = Created on) · <b>บันทึกเพิ่มที่ VPE เท่านั้น</b></li>
+        <li><b>Vet Note / ประวัติแพ้ยา / Staff Note</b> — เขียนใน Pet Note · Add/Edit ผ่าน <b>modal</b> · Level Symbol 3 สี · ตาราง: Record on · ข้อความ · Level · User · Department · Status · Update · Update by · Action</li>
+        <li><b>ประวัติวัคซีน</b> — อ่านจาก Items tag <code>vaccine</code>, <code>deworm</code> · Note จาก TX label · คอลัมน์เหมือนผ่าตัด (ไม่มีแหล่ง) · Process on ว่างแสดง Created on โดยไม่ใส่ข้อความกำกับ</li>
+        <li><b>ประวัติผ่าตัด</b> — อ่านจาก Items tag <code>surgery</code> · โครงคอลัมเท่าวัคซีน</li>
+      </ul>
+
+      <p style="margin-top:12px;font-weight:700;color:#3d4e1a;">สิทธิ์ Edit / Disable (โน้ต)</p>
+      <ul>
+        <li>แก้หรือ Disable ได้เฉพาะ <b>เจ้าของรายการ</b> (User ที่บันทึก) หรือ <b>Admin</b></li>
+        <li>Disable / Apply ตอนแก้ → stamp Last Update (= Update) และ User Update (= Update by)</li>
+        <li>ไม่เปลี่ยน User / Department เจ้าของเดิมตอนแก้</li>
+      </ul>
+
+      <p style="margin-top:12px;font-weight:700;color:#3d4e1a;">เครื่องมือตาราง</p>
+      <ul>
+        <li>คลิกหัวคอลัมน์ = sort</li>
+        <li><b>Copy</b> = plain text แต่ละแถว คอลัมน์คั่นด้วย <code>|</code></li>
+        <li><b>PDF</b> = mock (ยังไม่สร้างไฟล์จริง)</li>
+      </ul>
+
+      <p style="margin-top:12px;">รายละเอียดเต็ม · naming · data contract → <code>petnote.md</code></p>
+    </div>
+  </div>
+</div>
+
+<div class="md-overlay" id="md-overlay">
+  <div class="md-box">
+    <div class="md-box-head">
+      <div>
+        <div class="md-box-title" id="md-title">Pet Note</div>
+        <div class="md-box-sub">petnote.md</div>
+      </div>
+      <button class="modal-close" type="button" onclick="document.getElementById('md-overlay').classList.remove('show')">&#10005;</button>
+    </div>
+    <div class="md-box-body" id="md-body">กำลังโหลด…</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ========== Patient / auth mock ========== */
+var PATIENT = {
+  hn: '69001234',
+  name: 'บอส',
+  species: 'สุนัข',
+  sex: 'ผู้',
+  ageYears: 5,
+  dob: '2021-08-25'
+};
+
+var USERS = {
+  dvm:   { name: 'นิพนธ์ วงศ์ประเสริฐ', role: 'dvm',   dept: 'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)' },
+  dvm2:  { name: 'วิชัย ใจดี',           role: 'dvm',   dept: 'อายุรกรรมทั่วไป (ในเวลา)' },
+  staff: { name: 'สุดา เจ้าหน้าที่หน้าห้อง', role: 'staff', dept: 'แผนกต้อนรับ' },
+  admin: { name: 'System Admin',         role: 'admin', dept: 'IT / Admin' }
+};
+var CURRENT = USERS.dvm;
+
+var TAG_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>';
+
+var editState = { vet: null, allergy: null, staff: null };
+var seq = 100;
+
+var DEPT_CARDIO = 'คลินิกพิเศษ โรคหัวใจ (นอกเวลา)';
+var DEPT_MED = 'อายุรกรรมทั่วไป (ในเวลา)';
+var DEPT_FRONT = 'แผนกต้อนรับ';
+var DEPT_SURG = 'ศัลยกรรม (ในเวลา)';
+
+var sortState = {
+  weight:  { key: 'processOn', dir: 'desc' },
+  vet:     { key: 'recordOn',  dir: 'desc' },
+  allergy: { key: 'recordOn',  dir: 'desc' },
+  staff:   { key: 'recordOn',  dir: 'desc' },
+  vaccine: { key: 'processOn', dir: 'desc' },
+  surgery: { key: 'processOn', dir: 'desc' }
+};
+
+/* ========== Weight from VPE (read-only) ========== */
+var weights = [
+  { id: 'VPE-W01', processOn: '2026-08-25T09:15', createdOn: '2026-08-25T09:30', kg: 14.2, note: 'ชั่งตอนเช้า · หลังอดอาหาร 8 ชม. · Form Note จาก VPE', user: 'นิพนธ์ วงศ์ประเสริฐ', department: DEPT_CARDIO, lastUpdate: null, updateBy: null },
+  { id: 'VPE-W02', processOn: null, createdOn: '2026-05-12T14:10', kg: 14.8, note: 'น้ำหนักขึ้นจากครั้งก่อน · แนะนำควบคุมอาหารและออกกำลังเบา ๆ', user: 'นิพนธ์ วงศ์ประเสริฐ', department: DEPT_CARDIO, lastUpdate: '2026-05-12T14:40', updateBy: 'นิพนธ์ วงศ์ประเสริฐ' },
+  { id: 'VPE-W03', processOn: '2026-02-10T10:00', createdOn: '2026-02-10T10:20', kg: 14.5, note: 'ตรวจสุขภาพครึ่งปี', user: 'วิชัย ใจดี', department: DEPT_MED, lastUpdate: null, updateBy: null },
+  { id: 'VPE-W04', processOn: '2025-11-03T09:40', createdOn: '2025-11-03T10:00', kg: 13.9, note: '', user: 'วิชัย ใจดี', department: DEPT_MED, lastUpdate: null, updateBy: null },
+  { id: 'VPE-W05', processOn: '2025-08-18T08:30', createdOn: '2025-08-18T09:00', kg: 13.7, note: 'วันทำหมัน · pre-op weight', user: 'นิพนธ์ วงศ์ประเสริฐ', department: DEPT_SURG, lastUpdate: '2025-08-18T09:10', updateBy: 'นิพนธ์ วงศ์ประเสริฐ' },
+  { id: 'VPE-W06', processOn: '2025-02-15T11:10', createdOn: '2025-02-15T11:25', kg: 13.6, note: 'ถ่ายพยาธิ + ชั่งน้ำหนัก', user: 'วิชัย ใจดี', department: DEPT_MED, lastUpdate: null, updateBy: null },
+  { id: 'VPE-W07', processOn: '2024-08-20T11:00', createdOn: '2024-08-20T11:20', kg: 13.5, note: 'ตรวจสุขภาพประจำปี · อายุ 3 ปี', user: 'นิพนธ์ วงศ์ประเสริฐ', department: DEPT_CARDIO, lastUpdate: null, updateBy: null },
+  { id: 'VPE-W08', processOn: null, createdOn: '2024-02-18T15:00', kg: 13.2, note: 'ชั่งหลังกลับจากเดินเล่น', user: 'วิชัย ใจดี', department: DEPT_MED, lastUpdate: null, updateBy: null },
+  { id: 'VPE-W09', processOn: '2023-08-22T09:00', createdOn: '2023-08-22T09:15', kg: 12.8, note: 'อายุ 2 ปี', user: 'นิพนธ์ วงศ์ประเสริฐ', department: DEPT_CARDIO, lastUpdate: null, updateBy: null },
+  { id: 'VPE-W10', processOn: '2023-02-20T10:30', createdOn: '2023-02-20T10:45', kg: 12.4, note: '', user: 'วิชัย ใจดี', department: DEPT_MED, lastUpdate: null, updateBy: null },
+  { id: 'VPE-W11', processOn: '2022-08-25T10:00', createdOn: '2022-08-25T10:20', kg: 11.2, note: 'อายุ 1 ปี · ตรวจสุขภาพ', user: 'วิชัย ใจดี', department: DEPT_MED, lastUpdate: null, updateBy: null },
+  { id: 'VPE-W12', processOn: null, createdOn: '2021-12-15T11:00', kg: 6.8, note: 'ชุดลูกสุนัข 16 สัปดาห์', user: 'นิพนธ์ วงศ์ประเสริฐ', department: DEPT_MED, lastUpdate: null, updateBy: null }
+];
+
+function sortKeyProcess(row) {
+  return row.processOn || row.createdOn || row.recordOn || '';
+}
+function displayProcessOn(row) {
+  return fmtDateTime(row.processOn || row.createdOn || row.recordOn);
+}
+
+function N(id, recordOn, text, level, user, department, status, updateOn, updateBy) {
+  return {
+    id: id, recordOn: recordOn, text: text, level: level,
+    user: user, department: department,
+    status: status || 'active', updateOn: updateOn || null, updateBy: updateBy || null
+  };
+}
+
+/* ========== Notes — seed มากขึ้นเพื่อให้มี scrollbar ========== */
+var notes = {
+  vet: [
+    N('VN01', '2026-08-25T10:15', 'เจ้าของสังเกตไอแห้งเป็นพัก ๆ หลังออกกำลัง — แนะนำ monitor + กลับมาถ้ามีเสมหะหรือหายใจหอบ', 'yellow', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_CARDIO),
+    N('VN02', '2026-06-05T14:00', 'หลังผ่าตัดติ่งเนื้อขาหลังซ้าย 10 วัน — แผลแห้งดี ไม่บวม ไม่มี discharge · ถอดไหมได้ตามนัด', 'green', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_SURG, 'active', '2026-06-05T14:30', 'นิพนธ์ วงศ์ประเสริฐ'),
+    N('VN03', '2026-05-12T14:30', 'ผิวหนังดี · ไม่พบ ectoparasite · แนะนำดูแลช่องปากต่อเนื่องหลังขูดหินปูนครั้งก่อน', 'green', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_CARDIO, 'active', '2026-05-12T15:00', 'นิพนธ์ วงศ์ประเสริฐ'),
+    N('VN04', '2026-02-10T11:20', 'ฟังหัวใจปกติ · ไม่มี murmur · เจ้าของรายงานออกกำลังได้ตามปกติ', 'green', 'วิชัย ใจดี', DEPT_MED),
+    N('VN05', '2025-11-03T10:30', 'น้ำหนักคงที่ · แนะนำตรวจฟันซ้ำปีหน้า · ไม่พบปัญหาทางเดินหายใจ', 'green', 'วิชัย ใจดี', DEPT_MED),
+    N('VN06', '2025-08-18T16:00', 'หลังทำหมันวันเดียวกัน — ตื่นจาก GA ดี · แนะนำจำกัดกิจกรรม 7–10 วัน และสังเกตแผล', 'yellow', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_SURG),
+    N('VN07', '2025-02-15T12:00', 'ถ่ายพยาธิแล้ว · อุจจาระปกติตามประวัติเจ้าของ · นัด booster ตามแผน', 'green', 'วิชัย ใจดี', DEPT_MED),
+    N('VN08', '2024-08-21T13:40', 'หลังขูดหินปูนอายุ 3 ปี — ถอนฟันกรามเล็ก 1 ซี่ · ให้ยาแก้ปวดและยาปฏิชีวนะตามแผน', 'yellow', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_SURG, 'active', '2024-08-21T15:00', 'นิพนธ์ วงศ์ประเสริฐ'),
+    N('VN09', '2024-02-18T16:10', 'ตรวจช่องปากพบหินปูนปานกลาง — แนะนำขูดหินปูนภายใน 6 เดือน', 'yellow', 'วิชัย ใจดี', DEPT_MED),
+    N('VN10', '2023-08-22T10:45', 'วัคซีน annual ครบ · สภาพทั่วไปดี · แนะนำดูแลน้ำหนักไม่ให้ขึ้นเร็ว', 'green', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_CARDIO),
+    N('VN11', '2023-03-10T11:30', 'หลังเกิดผื่นจาก penicillin — บันทึก allergy แล้ว · หลีกเลี่ยง beta-lactam', 'red', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_CARDIO, 'active', '2023-03-10T12:00', 'นิพนธ์ วงศ์ประเสริฐ'),
+    N('VN12', '2022-08-26T15:20', 'หลังขูดหินปูนอายุ 1 ปี — ไม่พบฟันผุ · แนะนำแปรงฟันสัปดาห์ละ 2–3 ครั้ง', 'green', 'วิชัย ใจดี', DEPT_MED),
+    N('VN13', '2022-08-25T11:00', 'ตรวจสุขภาพอายุ 1 ปี ครบ · พร้อมฉีด booster ตาม AAHA', 'green', 'วิชัย ใจดี', DEPT_MED),
+    N('VN14', '2021-12-15T12:30', 'จบชุดลูกสุนัข · แนะนำเริ่มป้องกันเห็บหมัดและถ่ายพยาธิต่อเนื่อง', 'green', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_MED),
+    N('VN15', '2024-02-01T11:00', '(ตัวอย่าง disable) โน้ตเก่าที่ไม่ใช้แล้ว — ย้ายเนื้อหาไป allergy แล้ว', 'green', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_CARDIO, 'disable', '2024-03-01T09:00', 'นิพนธ์ วงศ์ประเสริฐ')
+  ],
+  allergy: [
+    N('AL01', '2023-03-10T11:00', 'แพ้ Penicillin — มีผื่นลมพิษหลังฉีดปี 2023 · หลีกเลี่ยง beta-lactam ทั้งหมดจนกว่าจะมีผลทดสอบยืนยัน', 'red', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_CARDIO),
+    N('AL02', '2024-01-22T16:20', 'สงสัยแพ้ NSAID (carprofen) — อาเจียนหลังให้ยา · หลีกเลี่ยงจนกว่าจะยืนยันด้วย challenge ภายใต้ supervision', 'yellow', 'วิชัย ใจดี', DEPT_MED, 'active', '2024-01-23T08:10', 'วิชัย ใจดี'),
+    N('AL03', '2024-06-05T09:30', 'แพ้อาหารกลุ่มไก่ (สงสัย) — เจ้าของรายงานคันและหูอักเสบเรื้อรังเมื่อกินอาหารไก่ · แนะนำ elimination diet', 'yellow', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_CARDIO),
+    N('AL04', '2025-01-08T14:00', 'ปฏิกิริยาเล็กน้อยต่อวัคซีน Lepto (บวมบริเวณฉีด 24 ชม.) — ครั้งถัดไป premed ตาม protocol', 'yellow', 'วิชัย ใจดี', DEPT_MED),
+    N('AL05', '2022-11-02T10:15', 'เคยมีอาการคันรุนแรงหลังใช้แชมพู medicated ที่มี chlorhexidine ความเข้มสูง — เปลี่ยนเป็นสูตรอ่อนลง', 'green', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_MED),
+    N('AL06', '2025-09-12T11:40', 'บันทึกเพิ่ม: หลีกเลี่ยงยาในกลุ่ม cephalosporin ที่ cross-react กับ penicillin จนกว่าจะมีคำแนะนำจาก dermatology', 'red', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_CARDIO, 'active', '2025-09-12T12:00', 'นิพนธ์ วงศ์ประเสริฐ'),
+    N('AL07', '2021-11-20T09:00', '(ตัวอย่างเก่า) สงสัยแพ้ขนมขนมปังจากร้าน — ไม่ยืนยัน · disable แล้ว', 'green', 'วิชัย ใจดี', DEPT_MED, 'disable', '2022-01-05T10:00', 'วิชัย ใจดี'),
+    N('AL08', '2026-03-01T15:20', 'เจ้าของแจ้งว่ากินโยเกิร์ตแล้วท้องเสีย — สงสัย lactose intolerance ไม่ใช่ยา · เก็บเป็นประวัติประกอบ', 'green', 'สุดา เจ้าหน้าที่หน้าห้อง', DEPT_FRONT)
+  ],
+  staff: [
+    N('OF01', '2026-08-25T08:50', 'เจ้าของขอใบรับรองสุขภาพสำหรับเดินทาง · รอผลตรวจเลือดและนัดรับเอกสารช่วงบ่าย', 'green', 'สุดา เจ้าหน้าที่หน้าห้อง', DEPT_FRONT),
+    N('OF02', '2026-06-01T09:10', 'นัดถอดไหมหลังผ่าตัดติ่งเนื้อ · ยืนยันทางโทรศัพท์แล้ว · เจ้าของมาตามนัด', 'green', 'สุดา เจ้าหน้าที่หน้าห้อง', DEPT_FRONT),
+    N('OF03', '2026-05-12T13:40', 'นัดวัคซีน booster + ถ่ายพยาธิ — โทรยืนยันแล้ว · แจ้งอดอาหารถ้าต้องทำหัตถการ', 'green', 'สุดา เจ้าหน้าที่หน้าห้อง', DEPT_FRONT),
+    N('OF04', '2026-02-08T16:30', 'เจ้าของสอบถามค่าใช้จ่ายตรวจสุขภาพครึ่งปี · ส่งใบประมาณการทาง LINE แล้ว', 'green', 'สุดา เจ้าหน้าที่หน้าห้อง', DEPT_FRONT),
+    N('OF05', '2025-08-10T09:00', 'เตรียม admit สำหรับทำหมัน · อดอาหารตามคำแนะนำแล้ว · รับเข้า ward เช้า', 'yellow', 'สุดา เจ้าหน้าที่หน้าห้อง', DEPT_FRONT, 'disable', '2025-08-18T18:00', 'สุดา เจ้าหน้าที่หน้าห้อง'),
+    N('OF06', '2025-08-17T17:20', 'แจ้งเจ้าของมารับสัตว์หลังทำหมันวันรุ่งขึ้น · ชำระค่าใช้จ่ายครบ', 'green', 'สุดา เจ้าหน้าที่หน้าห้อง', DEPT_FRONT),
+    N('OF07', '2024-08-19T11:00', 'นัดขูดหินปูนอายุ 3 ปี · ส่ง checklist ก่อนดมยาสลบให้เจ้าของ', 'yellow', 'สุดา เจ้าหน้าที่หน้าห้อง', DEPT_FRONT),
+    N('OF08', '2024-01-20T14:45', 'เจ้าของขอประวัติการฉีดวัคซีนฉบับภาษาอังกฤษ · รอ DVM ลงนาม', 'green', 'สุดา เจ้าหน้าที่หน้าห้อง', DEPT_FRONT, 'active', '2024-01-21T09:00', 'สุดา เจ้าหน้าที่หน้าห้อง'),
+    N('OF09', '2023-08-20T10:00', 'นัด annual vaccine · ยืนยันแล้ว · แจ้งนำสมุดวัคซีนมาด้วย', 'green', 'สุดา เจ้าหน้าที่หน้าห้อง', DEPT_FRONT),
+    N('OF10', '2022-08-20T09:30', 'นัดตรวจสุขภาพอายุ 1 ปี + ขูดหินปูน · จองคิว OR แล้ว', 'yellow', 'สุดา เจ้าหน้าที่หน้าห้อง', DEPT_FRONT),
+    N('OF11', '2021-10-18T15:00', 'ลงทะเบียนลูกสุนัขครั้งแรก · อธิบายชุดวัคซีนและถ่ายพยาธิตามแผน AAHA', 'green', 'สุดา เจ้าหน้าที่หน้าห้อง', DEPT_FRONT),
+    N('OF12', '2026-04-02T12:15', 'เจ้าของแจ้งเลื่อนนัดเพราะติดธุระ · นัดใหม่เป็น 12 พ.ค. 2026 แล้ว', 'green', 'สุดา เจ้าหน้าที่หน้าห้อง', DEPT_FRONT)
+  ]
+};
+
+/* Vaccine / deworm / surgery — note = TX label note */
+function VI(processOn, createdOn, title, tag, note, user, department, lastUpdate, updateBy) {
+  return {
+    processOn: processOn,
+    createdOn: createdOn || processOn,
+    title: title, tag: tag, note: note || '',
+    user: user || 'นิพนธ์ วงศ์ประเสริฐ',
+    department: department || DEPT_MED,
+    lastUpdate: lastUpdate || null,
+    updateBy: updateBy || null
+  };
+}
+var vaccineItems = [
+  VI('2021-10-20T10:00', '2021-10-20T10:20', 'DA2PP #1 (Core)', 'vaccine', 'TX label: ชุดลูกสุนัขเข็ม 1 · ฉีด SC บริเวณไหล่ขวา', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_MED),
+  VI('2021-10-20T10:05', '2021-10-20T10:25', 'ถ่ายพยาธิ (pyrantel)', 'deworm', 'TX label: ตาม AAHA puppy protocol · ให้ทางปาก', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_MED),
+  VI('2021-11-17T09:30', '2021-11-17T09:50', 'DA2PP #2 + Bordetella', 'vaccine', 'TX label: ชุดลูกสุนัขเข็ม 2 · Bordetella IN', 'วิชัย ใจดี', DEPT_MED),
+  VI(null, '2021-11-17T09:55', 'ถ่ายพยาธิ', 'deworm', 'TX label: ต่อเนื่องทุก 2–4 สัปดาห์ช่วงลูกสุนัข', 'วิชัย ใจดี', DEPT_MED),
+  VI('2021-12-15T11:00', '2021-12-15T11:25', 'DA2PP #3 + Rabies (1 yr)', 'vaccine', 'TX label: จบชุดลูกสุนัข · Rabies 1 ปี', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_MED),
+  VI('2021-12-15T11:05', '2021-12-15T11:30', 'ถ่ายพยาธิ', 'deworm', 'TX label: เข็มสุดท้ายชุดลูกสุนัข', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_MED),
+  VI('2022-08-25T10:00', '2022-08-25T10:30', 'DA2PP booster + Rabies (3 yr) + Lepto', 'vaccine', 'TX label: ตรวจสุขภาพอายุ 1 ปี · core + lifestyle', 'วิชัย ใจดี', DEPT_MED, '2022-08-25T11:00', 'วิชัย ใจดี'),
+  VI(null, '2022-08-25T10:35', 'ถ่ายพยาธิ (broad-spectrum)', 'deworm', 'TX label: แนะนำทุก 3–6 เดือนในผู้ใหญ่', 'วิชัย ใจดี', DEPT_MED),
+  VI('2023-02-20T14:00', '2023-02-20T14:15', 'ถ่ายพยาธิ', 'deworm', 'TX label: รอบครึ่งปี', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_CARDIO),
+  VI('2023-08-22T09:00', '2023-08-22T09:20', 'Lepto + Bordetella (annual)', 'vaccine', 'TX label: non-core ตาม lifestyle · annual', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_CARDIO),
+  VI('2023-08-22T09:05', '2023-08-22T09:25', 'ถ่ายพยาธิ', 'deworm', 'TX label: คู่กับ annual vaccine', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_CARDIO),
+  VI(null, '2024-02-18T15:10', 'ถ่ายพยาธิ', 'deworm', 'TX label: รอบครึ่งปี', 'วิชัย ใจดี', DEPT_MED),
+  VI('2024-08-20T10:00', '2024-08-20T10:25', 'DA2PP (ทุก 3 ปี) + Lepto + Bordetella', 'vaccine', 'TX label: core booster 3 ปี + lifestyle annual', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_CARDIO, '2024-08-20T10:50', 'นิพนธ์ วงศ์ประเสริฐ'),
+  VI('2024-08-20T10:05', '2024-08-20T10:30', 'ถ่ายพยาธิ', 'deworm', 'TX label: คู่กับ annual visit', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_CARDIO),
+  VI('2025-02-15T11:00', '2025-02-15T11:20', 'ถ่ายพยาธิ', 'deworm', 'TX label: รอบครึ่งปี', 'วิชัย ใจดี', DEPT_MED),
+  VI('2025-08-18T09:00', '2025-08-18T09:20', 'Lepto + Bordetella (annual)', 'vaccine', 'TX label: วันเดียวกับทำหมัน · pre-op vaccine ok', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_SURG),
+  VI(null, '2025-08-18T09:25', 'ถ่ายพยาธิ', 'deworm', 'TX label: คู่กับ annual + surgery day', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_SURG),
+  VI('2026-02-10T10:00', '2026-02-10T10:15', 'ถ่ายพยาธิ', 'deworm', 'TX label: รอบครึ่งปี', 'วิชัย ใจดี', DEPT_MED),
+  VI('2026-08-25T09:40', '2026-08-25T10:00', 'Rabies (3 yr due) + Lepto + Bordetella', 'vaccine', 'TX label: ตรวจสุขภาพอายุ 5 ปี · Rabies due', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_CARDIO, '2026-08-25T10:20', 'นิพนธ์ วงศ์ประเสริฐ'),
+  VI('2026-08-25T09:45', '2026-08-25T10:05', 'ถ่ายพยาธิ', 'deworm', 'TX label: คู่กับ annual visit อายุ 5 ปี', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_CARDIO)
+];
+
+var surgeryItems = [
+  VI('2022-08-26T13:00', '2022-08-26T15:30', 'ขูดหินปูน (Dental scaling)', 'surgery', 'TX label: GA · ไม่พบฟันผุ · แนะนำแปรงฟันที่บ้าน', 'วิชัย ใจดี', DEPT_SURG),
+  VI('2024-08-21T12:30', '2024-08-21T16:00', 'ขูดหินปูน (Dental scaling)', 'surgery', 'TX label: GA · ถอนฟันกรามซี่เล็ก 1 ซี่ · ให้ยาแก้ปวด', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_SURG, '2024-08-21T16:30', 'นิพนธ์ วงศ์ประเสริฐ'),
+  VI('2025-08-18T10:00', '2025-08-18T14:20', 'ทำหมัน (Orchiectomy / Neutering)', 'surgery', 'TX label: GA · ฟื้นตัวดี · จำกัดกิจกรรม 7–10 วัน', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_SURG),
+  VI('2026-06-05T11:00', '2026-06-05T15:40', 'ผ่าตัดติ่งเนื้อ ขาหลังซ้าย (Mass removal)', 'surgery', 'TX label: Histopath: benign sebaceous adenoma · ถอดไหม 10 วัน', 'นิพนธ์ วงศ์ประเสริฐ', DEPT_SURG, '2026-06-06T09:00', 'นิพนธ์ วงศ์ประเสริฐ')
+];
+
+/* ========== Helpers ========== */
+function pad(n) { return n < 10 ? '0' + n : '' + n; }
+function fmtDateTime(iso) {
+  if (!iso) return '—';
+  var d = new Date(iso);
+  if (isNaN(d.getTime())) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})T?(\d{2})?:?(\d{2})?/.exec(iso);
+    if (!m) return iso;
+    return m[3] + '/' + m[2] + '/' + m[1] + (m[4] ? ' ' + m[4] + ':' + (m[5] || '00') : '');
+  }
+  return pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear() +
+    ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+}
+function parseYMD(iso) {
+  var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso || '');
+  if (!m) return null;
+  return new Date(+m[1], +m[2] - 1, +m[3]);
+}
+/** อายุ ณ วันทำรายการ → "- ปี 2 เดือน - วัน" (0 แสดงเป็น -) */
+function fmtAgeAt(iso) {
+  var dob = parseYMD(PATIENT.dob);
+  var at = parseYMD(iso);
+  if (!dob || !at || at < dob) return '—';
+  var y = at.getFullYear() - dob.getFullYear();
+  var m = at.getMonth() - dob.getMonth();
+  var d = at.getDate() - dob.getDate();
+  if (d < 0) {
+    m -= 1;
+    var prev = new Date(at.getFullYear(), at.getMonth(), 0);
+    d += prev.getDate();
+  }
+  if (m < 0) { y -= 1; m += 12; }
+  return (y > 0 ? y : '-') + ' ปี ' + (m > 0 ? m : '-') + ' เดือน ' + (d > 0 ? d : '-') + ' วัน';
+}
+function ageSortKey(iso) {
+  var dob = parseYMD(PATIENT.dob);
+  var at = parseYMD(iso);
+  if (!dob || !at) return 0;
+  return Math.floor((at - dob) / 86400000);
+}
+function nowLocalInput() {
+  var d = new Date();
+  return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) +
+    'T' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+}
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showToast._tm);
+  showToast._tm = setTimeout(function () { t.classList.remove('show'); }, 2400);
+}
+function levelPill(lv) {
+  return '<span class="lv-pill ' + lv + '">' + TAG_SVG + '</span>';
+}
+function statusPill(st) {
+  var s = st === 'disable' ? 'disable' : 'active';
+  var label = s === 'disable' ? 'Disable' : 'Active';
+  return '<span class="status-pill ' + s + '">' + label + '</span>';
+}
+function getActiveLevel(id) {
+  var el = document.querySelector('#' + id + ' .level-tag.active');
+  return el ? el.getAttribute('data-level') : 'green';
+}
+function selectLevel(groupId, btn) {
+  document.querySelectorAll('#' + groupId + ' .level-tag').forEach(function (t) { t.classList.remove('active'); });
+  btn.classList.add('active');
+}
+function setLevel(groupId, lv) {
+  document.querySelectorAll('#' + groupId + ' .level-tag').forEach(function (t) {
+    t.classList.toggle('active', t.getAttribute('data-level') === lv);
+  });
+}
+function escapeHtml(s) {
+  return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function canEditRow(row) {
+  return CURRENT.role === 'admin' || row.user === CURRENT.name;
+}
+function onMockLoginChange() {
+  var key = document.getElementById('mock-login').value;
+  CURRENT = USERS[key] || USERS.dvm;
+  ['vet', 'allergy', 'staff'].forEach(function (k) {
+    if (editState[k]) cancelEdit(k);
+    else renderNotes(k);
+  });
+  showToast('Login as: ' + CURRENT.name + ' (' + CURRENT.role + ')');
+  updateTopbarUser();
+}
+function updateTopbarUser() {
+  /* Meta bar เอาออกแล้ว — login แสดงที่ select มุมขวาบน */
+}
+
+/* ========== Sort ========== */
+function sortTable(tableId, key) {
+  var st = sortState[tableId];
+  if (!st) return;
+  if (st.key === key) st.dir = st.dir === 'asc' ? 'desc' : 'asc';
+  else { st.key = key; st.dir = (key === 'processOn' || key === 'recordOn' || key === 'createdOn' || key === 'lastUpdate' || key === 'updateOn' || key === 'kg') ? 'desc' : 'asc'; }
+  updateSortHeaders(tableId);
+  if (tableId === 'weight') renderWeights();
+  else if (tableId === 'vet' || tableId === 'allergy' || tableId === 'staff') renderNotes(tableId);
+  else if (tableId === 'vaccine') renderItems('vaccine', vaccineItems);
+  else if (tableId === 'surgery') renderItems('surgery', surgeryItems);
+}
+function updateSortHeaders(tableId) {
+  var table = document.querySelector('table[data-table="' + tableId + '"]');
+  if (!table) return;
+  var st = sortState[tableId];
+  table.querySelectorAll('thead th.sortable').forEach(function (th) {
+    th.classList.remove('sort-asc', 'sort-desc');
+    if (th.getAttribute('data-key') === st.key) {
+      th.classList.add(st.dir === 'asc' ? 'sort-asc' : 'sort-desc');
+    }
+  });
+}
+function cmpVal(a, b, dir) {
+  var mul = dir === 'asc' ? 1 : -1;
+  if (a == null || a === '') a = '';
+  if (b == null || b === '') b = '';
+  if (typeof a === 'number' && typeof b === 'number') return (a - b) * mul;
+  return String(a).localeCompare(String(b), 'th', { numeric: true, sensitivity: 'base' }) * mul;
+}
+function sortedRows(list, tableId, getVal) {
+  var st = sortState[tableId];
+  return list.slice().sort(function (a, b) {
+    return cmpVal(getVal(a, st.key), getVal(b, st.key), st.dir);
+  });
+}
+
+/* ========== Tabs ========== */
+document.querySelectorAll('#section-tabs .vtab').forEach(function (tab) {
+  tab.addEventListener('click', function () {
+    document.querySelectorAll('#section-tabs .vtab').forEach(function (t) { t.classList.remove('active'); });
+    tab.classList.add('active');
+    var sec = tab.getAttribute('data-sec');
+    document.querySelectorAll('.tab-content').forEach(function (c) { c.classList.remove('active'); });
+    document.getElementById('sec-' + sec).classList.add('active');
+  });
+});
+
+function openPetNote() {
+  document.getElementById('petnote-modal').classList.add('show');
+}
+function closePetNote() {
+  document.getElementById('close-confirm').classList.remove('show');
+  document.getElementById('petnote-modal').classList.remove('show');
+}
+
+/* ========== Render ========== */
+function renderWeights() {
+  var tb = document.getElementById('weight-tbody');
+  var rows = sortedRows(weights, 'weight', function (r, key) {
+    if (key === 'processOn') return sortKeyProcess(r);
+    if (key === 'kg') return Number(r.kg);
+    return r[key];
+  });
+  updateSortHeaders('weight');
+  if (!rows.length) {
+    tb.innerHTML = '<tr class="empty-row"><td colspan="8">ยังไม่มีข้อมูลน้ำหนักจาก VPE</td></tr>';
+    return;
+  }
+  tb.innerHTML = rows.map(function (r) {
+    return '<tr>' +
+      '<td class="cell-dt">' + escapeHtml(displayProcessOn(r)) + '</td>' +
+      '<td><b>' + Number(r.kg).toFixed(1) + '</b></td>' +
+      '<td>' + escapeHtml(r.note || '—') + '</td>' +
+      '<td>' + escapeHtml(r.user) + '</td>' +
+      '<td>' + escapeHtml(r.department) + '</td>' +
+      '<td class="cell-dt">' + escapeHtml(fmtDateTime(r.createdOn)) + '</td>' +
+      '<td class="cell-dt">' + escapeHtml(fmtDateTime(r.lastUpdate)) + '</td>' +
+      '<td>' + escapeHtml(r.updateBy || '—') + '</td>' +
+      '</tr>';
+  }).join('');
+}
+
+function renderNotes(kind) {
+  var tb = document.getElementById(kind + '-tbody');
+  var rows = sortedRows(notes[kind], kind, function (r, key) { return r[key]; });
+  updateSortHeaders(kind);
+  if (!rows.length) {
+    tb.innerHTML = '<tr class="empty-row"><td colspan="9">ยังไม่มีรายการ</td></tr>';
+    return;
+  }
+  tb.innerHTML = rows.map(function (r) {
+    var editing = editState[kind] === r.id ? ' editing' : '';
+    var dis = r.status === 'disable' ? ' is-disable' : '';
+    var allowed = canEditRow(r);
+    var editBtn = allowed
+      ? '<button class="btn-edit" type="button" onclick="startEditNote(\'' + kind + '\',\'' + r.id + '\')">Edit</button>'
+      : '<button class="btn-edit is-locked" type="button" onclick="showToast(\'แก้/Disable ได้เฉพาะเจ้าของรายการหรือ Admin\')" title="ไม่มีสิทธิ์">Edit</button>';
+    return '<tr class="' + editing + dis + '">' +
+      '<td class="cell-dt">' + escapeHtml(fmtDateTime(r.recordOn)) + '</td>' +
+      '<td>' + escapeHtml(r.text) + '</td>' +
+      '<td>' + levelPill(r.level) + '</td>' +
+      '<td>' + escapeHtml(r.user) + '</td>' +
+      '<td>' + escapeHtml(r.department) + '</td>' +
+      '<td>' + statusPill(r.status) + '</td>' +
+      '<td class="cell-dt">' + escapeHtml(fmtDateTime(r.updateOn)) + '</td>' +
+      '<td>' + escapeHtml(r.updateBy || '—') + '</td>' +
+      '<td>' + editBtn + '</td>' +
+      '</tr>';
+  }).join('');
+}
+
+function renderItems(kind, list) {
+  var tb = document.getElementById(kind + '-tbody');
+  var rows = sortedRows(list, kind, function (r, key) {
+    if (key === 'processOn') return sortKeyProcess(r);
+    if (key === 'age') return ageSortKey(sortKeyProcess(r));
+    return r[key];
+  });
+  updateSortHeaders(kind);
+  if (!rows.length) {
+    tb.innerHTML = '<tr class="empty-row"><td colspan="10">ยังไม่มีรายการ</td></tr>';
+    return;
+  }
+  tb.innerHTML = rows.map(function (r) {
+    var cls = r.tag === 'surgery' ? 'surgery' : (r.tag === 'deworm' ? 'deworm' : '');
+    var when = sortKeyProcess(r);
+    return '<tr>' +
+      '<td class="cell-dt">' + escapeHtml(displayProcessOn(r)) + '</td>' +
+      '<td>' + escapeHtml(fmtAgeAt(when)) + '</td>' +
+      '<td>' + escapeHtml(r.title) + '</td>' +
+      '<td><span class="tag-chip ' + cls + '">' + escapeHtml(r.tag) + '</span></td>' +
+      '<td>' + escapeHtml(r.note || '—') + '</td>' +
+      '<td>' + escapeHtml(r.user) + '</td>' +
+      '<td>' + escapeHtml(r.department) + '</td>' +
+      '<td class="cell-dt">' + escapeHtml(fmtDateTime(r.createdOn)) + '</td>' +
+      '<td class="cell-dt">' + escapeHtml(fmtDateTime(r.lastUpdate)) + '</td>' +
+      '<td>' + escapeHtml(r.updateBy || '—') + '</td>' +
+      '</tr>';
+  }).join('');
+}
+
+function syncDisableBtn(row) {
+  var btn = document.getElementById('note-form-disable');
+  if (!row) {
+    btn.style.display = 'none';
+    return;
+  }
+  btn.style.display = '';
+  if (row.status === 'disable') {
+    btn.textContent = 'Enable';
+    btn.className = 'btn-enable';
+  } else {
+    btn.textContent = 'Disable';
+    btn.className = 'btn-disable';
+  }
+}
+
+var NOTE_LABELS = {
+  vet: { titleAdd: 'Add Vet Note', titleEdit: 'Edit Vet Note', sub: 'สัตวแพทย์ · Text + Level Symbol' },
+  allergy: { titleAdd: 'Add ประวัติแพ้ยา', titleEdit: 'Edit ประวัติแพ้ยา', sub: 'Drug allergy · Text + Level Symbol' },
+  staff: { titleAdd: 'Add Staff Note', titleEdit: 'Edit Staff Note', sub: 'บันทึกเจ้าหน้าที่ · Text + Level Symbol' }
+};
+
+function openAddNote(kind) {
+  editState[kind] = null;
+  document.getElementById('note-form-kind').value = kind;
+  var meta = NOTE_LABELS[kind];
+  document.getElementById('note-form-title').textContent = meta.titleAdd;
+  document.getElementById('note-form-sub').textContent = meta.sub;
+  document.getElementById('note-form-text').value = '';
+  setLevel('note-form-levels', kind === 'allergy' ? 'red' : 'green');
+  syncDisableBtn(null);
+  document.getElementById('note-form-modal').classList.add('show');
+  setTimeout(function () { document.getElementById('note-form-text').focus(); }, 50);
+}
+
+function closeNoteForm() {
+  var kind = document.getElementById('note-form-kind').value;
+  if (kind) editState[kind] = null;
+  document.getElementById('note-form-modal').classList.remove('show');
+  if (kind) renderNotes(kind);
+}
+
+function saveNoteFromModal() {
+  var kind = document.getElementById('note-form-kind').value;
+  if (!kind) return;
+  var textEl = document.getElementById('note-form-text');
+  var text = textEl.value.trim();
+  if (!text) { showToast('กรุณาใส่ข้อความ'); return; }
+  var level = getActiveLevel('note-form-levels');
+
+  if (editState[kind]) {
+    var row = notes[kind].find(function (n) { return n.id === editState[kind]; });
+    if (!row) return;
+    if (!canEditRow(row)) { showToast('ไม่มีสิทธิ์แก้ไขรายการนี้'); return; }
+    row.text = text;
+    row.level = level;
+    row.updateOn = nowLocalInput();
+    row.updateBy = CURRENT.name;
+    showToast('อัปเดตรายการแล้ว');
+  } else {
+    seq++;
+    notes[kind].push({
+      id: kind.toUpperCase().slice(0, 2) + seq,
+      recordOn: nowLocalInput(),
+      text: text,
+      level: level,
+      user: CURRENT.name,
+      department: CURRENT.dept,
+      status: 'active',
+      updateOn: null,
+      updateBy: null
+    });
+    showToast('เพิ่มรายการแล้ว');
+  }
+  document.getElementById('note-form-modal').classList.remove('show');
+  editState[kind] = null;
+  renderNotes(kind);
+}
+
+function startEditNote(kind, id) {
+  var row = notes[kind].find(function (n) { return n.id === id; });
+  if (!row) return;
+  if (!canEditRow(row)) {
+    showToast('แก้/Disable ได้เฉพาะเจ้าของรายการหรือ Admin');
+    return;
+  }
+  editState[kind] = id;
+  document.getElementById('note-form-kind').value = kind;
+  var meta = NOTE_LABELS[kind];
+  document.getElementById('note-form-title').textContent = meta.titleEdit;
+  document.getElementById('note-form-sub').textContent = meta.sub + ' · ' + row.id;
+  document.getElementById('note-form-text').value = row.text;
+  setLevel('note-form-levels', row.level);
+  syncDisableBtn(row);
+  document.getElementById('note-form-modal').classList.add('show');
+  renderNotes(kind);
+}
+
+function toggleDisableNoteFromModal() {
+  var kind = document.getElementById('note-form-kind').value;
+  if (!kind || !editState[kind]) return;
+  var row = notes[kind].find(function (n) { return n.id === editState[kind]; });
+  if (!row) return;
+  if (!canEditRow(row)) { showToast('ไม่มีสิทธิ์'); return; }
+  row.status = row.status === 'disable' ? 'active' : 'disable';
+  row.updateOn = nowLocalInput();
+  row.updateBy = CURRENT.name;
+  showToast(row.status === 'disable' ? 'Disable แล้ว' : 'Enable แล้ว');
+  syncDisableBtn(row);
+  renderNotes(kind);
+}
+
+function cancelEdit(kind) {
+  editState[kind] = null;
+  if (document.getElementById('note-form-kind').value === kind) {
+    document.getElementById('note-form-modal').classList.remove('show');
+  }
+  renderNotes(kind);
+}
+
+/* ========== Copy / PDF ========== */
+function getTableEl(tableId) {
+  return document.querySelector('table[data-table="' + tableId + '"]');
+}
+
+function tableToPlainText(tableId) {
+  var table = getTableEl(tableId);
+  if (!table) return '';
+  var lines = [];
+  var headCells = table.querySelectorAll('thead th');
+  var headers = [];
+  headCells.forEach(function (th) {
+    headers.push(th.textContent.replace(/[▲▼⇅]/g, '').trim());
+  });
+  // drop Action column if present
+  var dropLast = headers[headers.length - 1] === 'Action';
+  if (dropLast) headers = headers.slice(0, -1);
+  lines.push(headers.join(' | '));
+
+  table.querySelectorAll('tbody tr').forEach(function (tr) {
+    if (tr.classList.contains('empty-row')) return;
+    var cells = tr.querySelectorAll('td');
+    var vals = [];
+    var limit = dropLast ? cells.length - 1 : cells.length;
+    for (var i = 0; i < limit; i++) {
+      vals.push((cells[i].innerText || '').replace(/\s+/g, ' ').trim());
+    }
+    if (vals.length) lines.push(vals.join(' | '));
+  });
+  return lines.join('\n');
+}
+
+function copyTable(tableId) {
+  var text = tableToPlainText(tableId);
+  if (!text) { showToast('ไม่มีข้อมูลให้คัดลอก'); return; }
+  function ok() { showToast('คัดลอกตารางแล้ว (plain text)'); }
+  function fail() {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); ok(); }
+    catch (e) { showToast('คัดลอกไม่สำเร็จ'); }
+    document.body.removeChild(ta);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(ok).catch(fail);
+  } else fail();
+}
+
+function mockPdf(tableId) {
+  showToast('PDF (mock) — ยังไม่สร้างไฟล์จริง · ตาราง: ' + tableId);
+}
+
+/* ========== Markdown viewer ========== */
+function escapeMd(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function inlineFmt(s) {
+  return escapeMd(s)
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
+    .replace(/\*([^*]+)\*/g, '<i>$1</i>');
+}
+function renderMarkdown(md) {
+  var lines = md.replace(/\r\n/g, '\n').split('\n');
+  var html = [];
+  var i = 0, inList = false, listTag = '', inCode = false, codeBuf = [];
+  function closeList() {
+    if (inList) { html.push('</' + listTag + '>'); inList = false; listTag = ''; }
+  }
+  function isTableSep(line) {
+    return /^\s*\|?[\s-:|]+\|?\s*$/.test(line) && /---/.test(line);
+  }
+  while (i < lines.length) {
+    var line = lines[i];
+    if (/^```/.test(line)) {
+      if (!inCode) { closeList(); inCode = true; codeBuf = []; }
+      else { html.push('<pre><code>' + escapeMd(codeBuf.join('\n')) + '</code></pre>'); inCode = false; }
+      i++; continue;
+    }
+    if (inCode) { codeBuf.push(line); i++; continue; }
+    if (/^\s*\|/.test(line)) {
+      closeList();
+      var rows = [];
+      while (i < lines.length && /^\s*\|/.test(lines[i])) {
+        if (isTableSep(lines[i])) { i++; continue; }
+        rows.push(lines[i].replace(/^\s*\|/, '').replace(/\|\s*$/, '').split('|').map(function (c) { return c.trim(); }));
+        i++;
+      }
+      if (rows.length) {
+        html.push('<table><thead><tr>' + rows[0].map(function (c) { return '<th>' + inlineFmt(c) + '</th>'; }).join('') + '</tr></thead><tbody>');
+        for (var r = 1; r < rows.length; r++) {
+          html.push('<tr>' + rows[r].map(function (c) { return '<td>' + inlineFmt(c) + '</td>'; }).join('') + '</tr>');
+        }
+        html.push('</tbody></table>');
+      }
+      continue;
+    }
+    if (/^---+\s*$/.test(line)) { closeList(); html.push('<hr>'); i++; continue; }
+    var hm = /^(#{1,3})\s+(.+)$/.exec(line);
+    if (hm) {
+      closeList();
+      html.push('<h' + hm[1].length + '>' + inlineFmt(hm[2]) + '</h' + hm[1].length + '>');
+      i++; continue;
+    }
+    if (/^>\s?/.test(line)) {
+      closeList();
+      html.push('<blockquote>' + inlineFmt(line.replace(/^>\s?/, '')) + '</blockquote>');
+      i++; continue;
+    }
+    var ul = /^\s*[-*]\s+(.+)$/.exec(line);
+    var ol = /^\s*\d+\.\s+(.+)$/.exec(line);
+    if (ul || ol) {
+      var tag = ul ? 'ul' : 'ol';
+      var item = ul ? ul[1] : ol[1];
+      if (!inList || listTag !== tag) { closeList(); listTag = tag; html.push('<' + tag + '>'); inList = true; }
+      html.push('<li>' + inlineFmt(item) + '</li>');
+      i++; continue;
+    }
+    if (/^\s*$/.test(line)) { closeList(); i++; continue; }
+    closeList();
+    html.push('<p>' + inlineFmt(line) + '</p>');
+    i++;
+  }
+  closeList();
+  if (inCode) html.push('<pre><code>' + escapeMd(codeBuf.join('\n')) + '</code></pre>');
+  return html.join('\n');
+}
+
+function openPetnoteMd() {
+  var overlay = document.getElementById('md-overlay');
+  var body = document.getElementById('md-body');
+  overlay.classList.add('show');
+  body.innerHTML = 'กำลังโหลด…';
+  fetch('petnote.md').then(function (r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.text();
+  }).then(function (md) {
+    body.innerHTML = renderMarkdown(md);
+  }).catch(function () {
+    body.innerHTML = '<p>โหลด <code>petnote.md</code> ไม่ได้ — เปิดผ่าน local server หรือดูไฟล์ในโฟลเดอร์ <code>NP/petnote/</code></p>';
+  });
+}
+
+/* ========== Init ========== */
+updateTopbarUser();
+renderWeights();
+renderNotes('vet');
+renderNotes('allergy');
+renderNotes('staff');
+renderItems('vaccine', vaccineItems);
+renderItems('surgery', surgeryItems);
+</script>
+</body>
+</html>
