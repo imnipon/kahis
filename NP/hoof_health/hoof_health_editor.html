@@ -42,11 +42,11 @@
     background: #fff; border: 1px solid #fca5a5; border-radius: 8px; padding: 6px 12px;
     font-size: 13px; cursor: pointer; color: #dc2626; font-family: inherit; font-weight: 500;
   }
-  .confirm-overlay, .logic-overlay, .log-overlay, .zone-help-overlay, .manual-overlay {
+  .confirm-overlay, .logic-overlay, .log-overlay, .zone-help-overlay {
     display: none; position: fixed; inset: 0; z-index: 3000;
     background: rgba(0,0,0,.4); align-items: center; justify-content: center; padding: 16px;
   }
-  .confirm-overlay.show, .logic-overlay.show, .log-overlay.show, .zone-help-overlay.show, .manual-overlay.show { display: flex; }
+  .confirm-overlay.show, .logic-overlay.show, .log-overlay.show, .zone-help-overlay.show { display: flex; }
   .confirm-box {
     background: #fff; border-radius: 12px; box-shadow: var(--qb-shadow);
     padding: 24px 28px; max-width: 420px; width: 100%; text-align: center;
@@ -79,6 +79,49 @@
   .logic-badge { border: 1px solid #a0b070; background: #f5f7f0; color: #556b2f; }
   .doc-badge { border: 1px solid #cbd5e1; color: #475569; }
   .doc-badge .md-tag { font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px; background: #e2e8f0; color: #64748b; }
+
+  .md-overlay {
+    display: none; position: fixed; inset: 0; z-index: 12000;
+    background: rgba(15, 23, 42, .45); align-items: center; justify-content: center; padding: 24px;
+  }
+  .md-overlay.show { display: flex; }
+  .md-box {
+    width: min(920px, 100%); max-height: min(86vh, 900px);
+    background: #fff; border-radius: 14px; box-shadow: 0 20px 50px rgba(0,0,0,.2);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .md-box-head {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+    padding: 16px 18px 12px; border-bottom: 1px solid #eef2f4; flex-shrink: 0;
+  }
+  .md-box-title { font-size: 16px; font-weight: 700; color: #3d4e1a; }
+  .md-box-sub { font-size: 11px; color: #94a3b8; margin-top: 2px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .md-box-body {
+    flex: 1; min-height: 0; overflow: auto; padding: 18px 22px 28px;
+    font-size: 13.5px; line-height: 1.65; color: #334155;
+  }
+  .md-box-body h1 { font-size: 1.45rem; color: #1e293b; margin: 0 0 12px; }
+  .md-box-body h2 { font-size: 1.15rem; color: #3d4e1a; margin: 22px 0 10px; padding-bottom: 4px; border-bottom: 1px solid #e8ecd8; }
+  .md-box-body h3 { font-size: 1rem; color: #556b2f; margin: 16px 0 8px; }
+  .md-box-body p { margin: 0 0 10px; }
+  .md-box-body ul, .md-box-body ol { margin: 0 0 12px; padding-left: 1.35em; }
+  .md-box-body li { margin: 3px 0; }
+  .md-box-body code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px;
+    background: #f1f5f9; padding: 1px 5px; border-radius: 4px;
+  }
+  .md-box-body pre {
+    background: #0f172a; color: #e2e8f0; border-radius: 8px; padding: 12px 14px;
+    overflow-x: auto; font-size: 12px; line-height: 1.45; margin: 0 0 14px;
+  }
+  .md-box-body pre code { background: none; color: inherit; padding: 0; border-radius: 0; }
+  .md-box-body table { width: 100%; border-collapse: collapse; margin: 0 0 14px; font-size: 12.5px; }
+  .md-box-body th, .md-box-body td { border: 1px solid #e2e8f0; padding: 6px 8px; text-align: left; }
+  .md-box-body th { background: #f8fafc; }
+  .md-box-body blockquote {
+    margin: 0 0 12px; padding: 8px 12px; border-left: 3px solid #a0b070; background: #f5f7f0; color: #475569;
+  }
+  .md-box-body hr { border: none; border-top: 1px solid #e5e7eb; margin: 16px 0; }
 
   .mock-banner {
     flex-shrink: 0; display: flex; gap: 12px; align-items: flex-start;
@@ -519,8 +562,10 @@
         <div class="obj-brand-sub">Hoof Health</div>
       </div>
       <div class="examcard-bar">
-        <button class="doc-badge" type="button" onclick="openUserManual()"><span class="md-tag">TH</span> คู่มือ</button>
         <button class="logic-badge" type="button" onclick="document.getElementById('logic-modal').classList.add('show')">View Logic/Rule</button>
+        <button class="doc-badge" type="button" onclick="openUserManual()" title="hoof_health_manual_th.md">
+          <span class="md-tag">.md</span> คู่มือผู้ใช้
+        </button>
         <button class="doc-badge" type="button" onclick="openZoneHelp()"><span class="md-tag">FIG.1</span> Claw zones</button>
         <button class="doc-badge" type="button" onclick="openChangeLog()"><span class="md-tag">LOG</span> Change Log</button>
         <button class="doc-badge" type="button"><span class="md-tag">LA</span> หน่วยสัตว์ใหญ่</button>
@@ -742,85 +787,16 @@
   </div>
 </div>
 
-<div class="manual-overlay" id="manual-modal">
-  <div class="help-box logic-wide">
-    <div class="help-head">
-      <div class="help-title">คู่มือผู้ใช้ — Hoof Health (ใบบันทึกปาดกีบ)</div>
-      <button class="modal-close" type="button" onclick="document.getElementById('manual-modal').classList.remove('show')">&#10005;</button>
-    </div>
-    <div class="help-body">
-      <div class="logic-ok">
-        คู่มือฉบับเต็ม (ไฟล์): <a href="hoof_health_manual_th.md" target="_blank" rel="noopener">hoof_health_manual_th.md</a>
-        · เอกสารเทคนิค: ปุ่ม <b>View Logic/Rule</b>
+<div class="md-overlay" id="md-overlay" onclick="if(event.target===this)closeUserManual()">
+  <div class="md-box">
+    <div class="md-box-head">
+      <div>
+        <div class="md-box-title" id="md-title">คู่มือผู้ใช้ — Hoof Health</div>
+        <div class="md-box-sub">hoof_health_manual_th.md</div>
       </div>
-
-      <div class="logic-h">1. โมดูลนี้ทำอะไร</div>
-      <ul>
-        <li>บันทึกการตรวจ / ปาดกีบสัตว์ใหญ่ (โค · กระบือ)</li>
-        <li>ระบุขา · พื้นที่ (Lateral / Medial / Interdigital) · โซน 0–12 · รอยโรค · หัตถการ</li>
-        <li>วงแดงบนภาพ = มี lesion ที่โซน · วงน้ำเงิน = มี treatment ที่พื้นที่นั้น</li>
-      </ul>
-
-      <div class="logic-h">2. เริ่มใช้งาน</div>
-      <ol class="manual-ol">
-        <li>เลือก <b>Owner No.</b></li>
-        <li>กดปุ่มเขียว <b>แสดง</b></li>
-        <li>ใช้แท็บ <b>ตารางรวม</b> หรือเปิดแท็บสัตว์</li>
-      </ol>
-
-      <div class="logic-h">3. ปุ่มด้านบน</div>
-      <table class="manual-table">
-        <tr><th>ปุ่ม</th><th>ความหมาย</th></tr>
-        <tr><td><b>คู่มือ</b></td><td>คู่มือผู้ใช้ภาษาไทย</td></tr>
-        <tr><td><b>View Logic/Rule</b></td><td>กติกา / โครงสร้างข้อมูล (ทีมพัฒนา)</td></tr>
-        <tr><td><b>FIG.1</b></td><td>แผนภาพโซนกีบ</td></tr>
-        <tr><td><b>Change Log</b></td><td>ประวัติ Confirm / Apply ทั้งฟาร์ม</td></tr>
-        <tr><td><b>✕</b></td><td>ปิดหน้าทำงาน กลับเลือก Owner</td></tr>
-      </table>
-
-      <div class="logic-h">4. หน้าจอบันทึก (3 คอลัมน์)</div>
-      <ul>
-        <li><b>ซ้าย — ผังกีบ</b>: ดูอย่างเดียว · เลือกโซนบนภาพไม่ได้ · ใต้ภาพมีสรุป 3 บล็อก</li>
-        <li><b>กลาง — ลงข้อมูล</b>: ขา → พื้นที่ → โซน → Lesion → Treatment → Normal / รูป</li>
-        <li><b>ขวา — Meta</b>: ชื่อสัตว์ · Process on · DVM · แผนก · Note · Confirm/Apply</li>
-      </ul>
-
-      <div class="logic-h">5. Clear</div>
-      <ul>
-        <li><b>Clear ข้อมูลขาที่เลือก</b> — ล้างทั้งขาที่กำลังเลือก</li>
-        <li><b>Clear ข้อมูลพื้นที่ที่เลือก</b> — ล้างเฉพาะ Lateral / Medial / Interdigital ที่เลือก</li>
-      </ul>
-
-      <div class="logic-h">6. Confirm และ Apply</div>
-      <ul>
-        <li><b>Confirm</b> — บันทึก / ยืนยันครั้งแรก → สถานะ done</li>
-        <li><b>Apply</b> — แก้ record ที่ Confirm แล้ว แล้วบันทึกใหม่ (มี log แยก)</li>
-        <li>สัตว์หนึ่งตัวมีได้หลายรอบ — เลือกจากเมนู Process on หรือกด <b>+ Add new</b></li>
-      </ul>
-
-      <div class="logic-h">7. ประวัติ</div>
-      <ul>
-        <li><b>History</b> ในแท็บสัตว์ = ของสัตว์ตัวนั้น</li>
-        <li><b>Change Log</b> ด้านบน = ทั้ง Owner</li>
-      </ul>
-
-      <div class="logic-h">8. สีพื้นที่</div>
-      <ul>
-        <li>Lateral = น้ำเงิน · Medial = ส้ม · Interdigital = ม่วง</li>
-      </ul>
-
-      <div class="logic-h">9. ลำดับงานแนะนำ</div>
-      <ol class="manual-ol">
-        <li>Owner → แสดง → เปิดแท็บสัตว์</li>
-        <li>เลือกขา → พื้นที่ → โซน → lesion → treatment</li>
-        <li>ทำครบทุกขาที่ตรวจ → ตั้ง Process on → Confirm</li>
-        <li>กลับมาแก้รอบเดิมภายหลัง → Apply</li>
-      </ol>
-
-      <div class="logic-note">
-        หน้านี้เป็น mockup · ข้อมูลเก็บในเบราว์เซอร์เครื่องคุณ · ถ้าต้องการชุดตัวอย่างใหม่ให้ Hard reset ใน View Logic/Rule
-      </div>
+      <button class="modal-close" type="button" onclick="closeUserManual()">&#10005;</button>
     </div>
+    <div class="md-box-body" id="md-body">กำลังโหลด…</div>
   </div>
 </div>
 
@@ -2157,7 +2133,95 @@ function applyLbTransform() {
 })();
 
 function openZoneHelp() { document.getElementById('zone-help').classList.add('show'); }
-function openUserManual() { document.getElementById('manual-modal').classList.add('show'); }
+function closeUserManual() { document.getElementById('md-overlay').classList.remove('show'); }
+function escapeMd(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function inlineFmt(s) {
+  return escapeMd(s)
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
+    .replace(/\*([^*]+)\*/g, '<i>$1</i>');
+}
+function renderMarkdown(md) {
+  var lines = md.replace(/\r\n/g, '\n').split('\n');
+  var html = [];
+  var i = 0, inList = false, listTag = '', inCode = false, codeBuf = [];
+  function closeList() {
+    if (inList) { html.push('</' + listTag + '>'); inList = false; listTag = ''; }
+  }
+  function isTableSep(line) {
+    return /^\s*\|?[\s-:|]+\|?\s*$/.test(line) && /---/.test(line);
+  }
+  while (i < lines.length) {
+    var line = lines[i];
+    if (/^```/.test(line)) {
+      if (!inCode) { closeList(); inCode = true; codeBuf = []; }
+      else { html.push('<pre><code>' + escapeMd(codeBuf.join('\n')) + '</code></pre>'); inCode = false; }
+      i++; continue;
+    }
+    if (inCode) { codeBuf.push(line); i++; continue; }
+    if (/^\s*\|/.test(line)) {
+      closeList();
+      var rows = [];
+      while (i < lines.length && /^\s*\|/.test(lines[i])) {
+        if (isTableSep(lines[i])) { i++; continue; }
+        rows.push(lines[i].replace(/^\s*\|/, '').replace(/\|\s*$/, '').split('|').map(function (c) { return c.trim(); }));
+        i++;
+      }
+      if (rows.length) {
+        html.push('<table><thead><tr>' + rows[0].map(function (c) { return '<th>' + inlineFmt(c) + '</th>'; }).join('') + '</tr></thead><tbody>');
+        for (var r = 1; r < rows.length; r++) {
+          html.push('<tr>' + rows[r].map(function (c) { return '<td>' + inlineFmt(c) + '</td>'; }).join('') + '</tr>');
+        }
+        html.push('</tbody></table>');
+      }
+      continue;
+    }
+    if (/^---+\s*$/.test(line)) { closeList(); html.push('<hr>'); i++; continue; }
+    var hm = /^(#{1,3})\s+(.+)$/.exec(line);
+    if (hm) {
+      closeList();
+      html.push('<h' + hm[1].length + '>' + inlineFmt(hm[2]) + '</h' + hm[1].length + '>');
+      i++; continue;
+    }
+    if (/^>\s?/.test(line)) {
+      closeList();
+      html.push('<blockquote>' + inlineFmt(line.replace(/^>\s?/, '')) + '</blockquote>');
+      i++; continue;
+    }
+    var ul = /^\s*[-*]\s+(.+)$/.exec(line);
+    var ol = /^\s*\d+\.\s+(.+)$/.exec(line);
+    if (ul || ol) {
+      var tag = ul ? 'ul' : 'ol';
+      var item = ul ? ul[1] : ol[1];
+      if (!inList || listTag !== tag) { closeList(); listTag = tag; html.push('<' + tag + '>'); inList = true; }
+      html.push('<li>' + inlineFmt(item) + '</li>');
+      i++; continue;
+    }
+    if (/^\s*$/.test(line)) { closeList(); i++; continue; }
+    closeList();
+    html.push('<p>' + inlineFmt(line) + '</p>');
+    i++;
+  }
+  closeList();
+  if (inCode) html.push('<pre><code>' + escapeMd(codeBuf.join('\n')) + '</code></pre>');
+  return html.join('\n');
+}
+function openUserManual() {
+  var overlay = document.getElementById('md-overlay');
+  var body = document.getElementById('md-body');
+  overlay.classList.add('show');
+  body.innerHTML = 'กำลังโหลด…';
+  fetch('hoof_health_manual_th.md').then(function (r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.text();
+  }).then(function (md) {
+    body.innerHTML = renderMarkdown(md);
+  }).catch(function () {
+    body.innerHTML = '<p>โหลด <code>hoof_health_manual_th.md</code> ไม่ได้ — เปิดผ่าน GitHub Pages / local server หรือดูไฟล์ในโฟลเดอร์ <code>NP/hoof_health/</code></p>';
+  });
+}
 function openChangeLog(animalOnly) {
   const body = document.getElementById('log-body');
   const title = document.getElementById('log-title');
