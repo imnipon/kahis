@@ -544,6 +544,9 @@
         <span class="owner-info" id="owner-info">—</span>
         <span class="pill pill-muted" id="owner-count">0 ตัว</span>
         <button type="button" class="btn-view" onclick="openWorkspace()">แสดง</button>
+        <button type="button" class="chip-btn clear-sm" onclick="forceReloadSeed(); showToast('โหลดชุดตัวอย่างแล้ว · ' + document.getElementById('owner-count').textContent);" title="ล้าง localStorage แล้วโหลด seed จากไฟล์">
+          โหลดชุดตัวอย่างใหม่
+        </button>
       </div>
     </div>
 
@@ -835,8 +838,8 @@
         · <b>Refresh ธรรมดา</b> → คงข้อมูลที่แก้ในเบราว์เซอร์นี้ (localStorage)<br>
         · <b>Hard reset</b> → ล้าง localStorage แล้วโหลดชุดตัวอย่างจากไฟล์ที่เสิร์ฟอยู่ตอนนั้นใหม่<br>
         · อัปเดต seed บน GitHub <b>ไม่ทับของในเครื่องอัตโนมัติ</b> — ถ้าต้องการชุดใหม่ให้ Hard reset / ล้าง site data<br>
-        คีย์: <code>kahis.hoofHealth</code> · <b>ไม่ใช่ DB production</b>
-        <div style="margin-top:8px">
+        คีย์: <code>kahis.hoofHealth.data</code> · <b>ไม่ใช่ DB production</b>
+        <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
           <button type="button" class="chip-btn clear-sm" onclick="resetLocalStore()" style="color:#e57373;border-color:#fecaca">
             Hard reset · โหลดชุดตัวอย่างจากไฟล์ใหม่
           </button>
@@ -1274,7 +1277,7 @@ let activeSide = 'lateral'; // medial | lateral | interdigital
 let activeZone = 4;
 let dirty = false;
 let draft = null;
-const LS_KEY = 'kahis.hoofHealth';
+const LS_KEY = 'kahis.hoofHealth.data';
 const SEED_CHANGE_LOGS = [
   { ts: '2026-08-26T16:40:00', ownerNo: 'OWN-10021', hn: 'HN 69001102', recordId: 'HH-102-C', action: 'apply',
     message: 'Apply HH-102-C · เพิ่ม [WRP] ที่ LH Lateral + พบ Medial Z6 [HHE][TRIM]', by: DVM },
@@ -1328,6 +1331,22 @@ let lbZoomLevel = 1, lbPan = { x: 0, y: 0 }, lbDragging = false, lbLast = { x: 0
 function cloneAnimalsMap(src) {
   return JSON.parse(JSON.stringify(src));
 }
+function seedCount(own) {
+  return (ANIMALS_BY_OWNER[own] || []).length;
+}
+/** คืน true ถ้าเติม/แทนที่จาก seed */
+function ensureOwnerSeeded(own) {
+  const seed = ANIMALS_BY_OWNER[own] || [];
+  const cur = animalsByOwner[own];
+  if (!Array.isArray(cur) || cur.length < seed.length) {
+    animalsByOwner[own] = cloneAnimalsMap(seed);
+    return true;
+  }
+  return false;
+}
+function ensureAllOwnersSeeded() {
+  Object.keys(ANIMALS_BY_OWNER).forEach(ensureOwnerSeeded);
+}
 function applySeedData() {
   storeReady = false;
   animals = [];
@@ -1335,23 +1354,37 @@ function applySeedData() {
   changeLogs = cloneAnimalsMap(SEED_CHANGE_LOGS);
   currentOwnerNo = 'OWN-10021';
 }
+function writeLocalStorage() {
+  localStorage.setItem(LS_KEY, JSON.stringify({
+    savedAt: new Date().toISOString(),
+    currentOwnerNo,
+    animalsByOwner,
+    changeLogs
+  }));
+}
 function persistStore() {
   try {
     if (storeReady) {
-      animalsByOwner[currentOwnerNo] = cloneAnimalsMap(animals);
+      // ห้ามเขียน [] ทับข้อมูลที่มีอยู่ / seed
+      if (!animals.length && seedCount(currentOwnerNo) > 0) {
+        console.warn('[Hoof Health] skip persist empty animals for', currentOwnerNo);
+      } else {
+        animalsByOwner[currentOwnerNo] = cloneAnimalsMap(animals);
+      }
     }
-    localStorage.setItem(LS_KEY, JSON.stringify({
-      savedAt: new Date().toISOString(),
-      currentOwnerNo,
-      animalsByOwner,
-      changeLogs
-    }));
+    writeLocalStorage();
   } catch (err) {
     console.warn('localStorage save failed', err);
     showToast('บันทึก localStorage ไม่สำเร็จ (อาจเต็มจากรูป)');
   }
 }
+function clearLegacyKeys() {
+  ['kahis.hoofHealth', 'kahis.hoofHealth.v1', 'kahis.hoofHealth.v2'].forEach(k => {
+    try { localStorage.removeItem(k); } catch (e) {}
+  });
+}
 function loadStore() {
+  clearLegacyKeys();
   try {
     const raw = localStorage.getItem(LS_KEY);
     if (raw) {
@@ -1360,40 +1393,31 @@ function loadStore() {
         animalsByOwner = data.animalsByOwner;
         changeLogs = Array.isArray(data.changeLogs) ? data.changeLogs : cloneAnimalsMap(SEED_CHANGE_LOGS);
         if (data.currentOwnerNo) currentOwnerNo = data.currentOwnerNo;
-        // ซ่อมเคสที่ LS ค้างจำนวนน้อยกว่า seed (เช่น เคยบัค / seed เก่า)
-        Object.keys(ANIMALS_BY_OWNER).forEach(own => {
-          const cur = animalsByOwner[own];
-          const seed = ANIMALS_BY_OWNER[own] || [];
-          if (!Array.isArray(cur) || cur.length < seed.length) {
-            animalsByOwner[own] = cloneAnimalsMap(seed);
-          }
-        });
-        persistStore();
+        ensureAllOwnersSeeded();
+        writeLocalStorage();
         return true;
       }
     }
   } catch (err) {
     console.warn('localStorage load failed', err);
   }
-  try {
-    localStorage.removeItem('kahis.hoofHealth.v1');
-    localStorage.removeItem('kahis.hoofHealth.v2');
-  } catch (e) {}
   applySeedData();
-  persistStore();
+  writeLocalStorage();
   return false;
 }
 function resetLocalStore() {
   if (!confirm('ล้างข้อมูลในเบราว์เซอร์นี้ แล้วโหลดชุดตัวอย่างจากไฟล์ปัจจุบันใหม่?')) return;
-  localStorage.removeItem(LS_KEY);
-  try {
-    localStorage.removeItem('kahis.hoofHealth.v1');
-    localStorage.removeItem('kahis.hoofHealth.v2');
-  } catch (e) {}
+  forceReloadSeed();
+  document.getElementById('logic-modal').classList.remove('show');
+  showToast('โหลดชุดตัวอย่างใหม่แล้ว · OWN-10021 ควรมี ' + seedCount('OWN-10021') + ' ตัว');
+}
+function forceReloadSeed() {
+  clearLegacyKeys();
+  try { localStorage.removeItem(LS_KEY); } catch (e) {}
   applySeedData();
   dirty = false;
   draft = null;
-  persistStore();
+  writeLocalStorage();
   initOwnerSelect();
   loadOwnerAnimals();
   if (document.getElementById('work-section').classList.contains('show')) {
@@ -1401,8 +1425,7 @@ function resetLocalStore() {
     renderTabs();
     showListTab();
   }
-  document.getElementById('logic-modal').classList.remove('show');
-  showToast('ล้างแล้ว · โหลดชุดตัวอย่างจากไฟล์ใหม่');
+  syncOwnerUI();
 }
 
 function openWorkspace() {
@@ -1497,12 +1520,32 @@ function onOwnerChange() {
   persistStore();
 }
 function loadOwnerAnimals() {
-  animals = (animalsByOwner[currentOwnerNo] || []).map(a => ({
-    ...a, records: a.records.map(cloneRecord)
-  }));
+  ensureOwnerSeeded(currentOwnerNo);
+  try {
+    animals = (animalsByOwner[currentOwnerNo] || []).map(a => ({
+      ...a, records: (a.records || []).map(cloneRecord)
+    }));
+  } catch (err) {
+    console.warn('[Hoof Health] clone records failed · re-seed owner', currentOwnerNo, err);
+    animalsByOwner[currentOwnerNo] = cloneAnimalsMap(ANIMALS_BY_OWNER[currentOwnerNo] || []);
+    animals = (animalsByOwner[currentOwnerNo] || []).map(a => ({
+      ...a, records: (a.records || []).map(r => {
+        try { return cloneRecord(r); }
+        catch (e) { return rec(r.id || 'X', r.processOn || new Date().toISOString(), 'done', emptyChart(), r.note || ''); }
+      })
+    }));
+  }
+  // ถ้ายังว่างทั้งที่ seed มีข้อมูล → บังคับโหลด seed
+  if (!animals.length && seedCount(currentOwnerNo) > 0) {
+    animalsByOwner[currentOwnerNo] = cloneAnimalsMap(ANIMALS_BY_OWNER[currentOwnerNo]);
+    animals = animalsByOwner[currentOwnerNo].map(a => ({
+      ...a, records: (a.records || []).map(cloneRecord)
+    }));
+  }
   storeReady = true;
   syncOwnerUI();
   fillSummaryDates();
+  writeLocalStorage();
   if (document.getElementById('work-section').classList.contains('show')) {
     renderSummaryTable();
   }
@@ -2153,6 +2196,7 @@ function init() {
   }
 }
 window.resetLocalStore = resetLocalStore;
+window.forceReloadSeed = forceReloadSeed;
 window.openAnimalTab = openAnimalTab;
 window.onload = init;
 </script>
