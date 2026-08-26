@@ -1,0 +1,2057 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>KAHIS - Hoof Health Module</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --qb-bg: #F0F2F5; --qb-surface: #FFFFFF; --qb-text: #252525; --qb-muted: #676D75;
+    --qb-border: #E5E7EB; --qb-shadow: 0 4px 24px rgba(0,0,0,.08);
+    --brand: #22c55e; --brand-text: #1f2937; --accent: #2563eb;
+    --font: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: var(--font); background: var(--qb-bg); color: var(--qb-text);
+    min-height: 100%; display: flex; align-items: center; justify-content: center;
+    touch-action: manipulation;
+  }
+  .hoof-launch {
+    display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px;
+    border: 1px solid #86efac; border-radius: 999px; font-size: 14px;
+    background: #f0fdf4; color: #166534; font-family: inherit; cursor: pointer; font-weight: 500;
+  }
+  .hoof-launch .dot { width: 8px; height: 8px; border-radius: 50%; background: #16a34a; }
+
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 1000;
+    align-items: center; justify-content: center; padding: 12px;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal-box {
+    background: var(--qb-bg); border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,.28);
+    width: min(1480px, 100%); height: min(95vh, 960px);
+    overflow: hidden; padding: 12px 14px 14px; display: flex; flex-direction: column; min-height: 0;
+  }
+  .modal-close {
+    background: #fff; border: 1px solid #fca5a5; border-radius: 8px; padding: 6px 12px;
+    font-size: 13px; cursor: pointer; color: #dc2626; font-family: inherit; font-weight: 500;
+  }
+  .confirm-overlay, .logic-overlay, .log-overlay, .zone-help-overlay {
+    display: none; position: fixed; inset: 0; z-index: 3000;
+    background: rgba(0,0,0,.4); align-items: center; justify-content: center; padding: 16px;
+  }
+  .confirm-overlay.show, .logic-overlay.show, .log-overlay.show, .zone-help-overlay.show { display: flex; }
+  .confirm-box {
+    background: #fff; border-radius: 12px; box-shadow: var(--qb-shadow);
+    padding: 24px 28px; max-width: 420px; width: 100%; text-align: center;
+  }
+  .confirm-title { font-size: 16px; font-weight: 600; color: #374151; margin: 8px 0; }
+  .confirm-msg { font-size: 13px; color: #6b7280; line-height: 1.6; margin-bottom: 20px; }
+  .confirm-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .confirm-back {
+    padding: 8px 18px; border: 1px solid #86efac; border-radius: 8px; font-size: 13px;
+    background: #f0fdf4; color: #16a34a; font-family: inherit; cursor: pointer; font-weight: 500;
+  }
+  .confirm-close-danger {
+    padding: 8px 18px; border: 1px solid #fca5a5; border-radius: 8px; font-size: 13px;
+    background: #fef2f2; color: #dc2626; font-family: inherit; cursor: pointer; font-weight: 500;
+  }
+
+  .assess-editor-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 8px; flex-shrink: 0; gap: 10px;
+  }
+  .obj-brand { display: flex; align-items: center; gap: 12px; }
+  .obj-brand-logo, .obj-brand-sub { font-weight: 700; font-size: 22px; letter-spacing: -0.02em; line-height: 1.1; }
+  .obj-brand-logo { color: var(--brand); }
+  .obj-brand-sub { color: var(--brand-text); }
+  .examcard-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .logic-badge, .doc-badge {
+    display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 999px;
+    font-size: 12px; font-family: inherit; cursor: pointer; font-weight: 500; background: #fff;
+  }
+  .logic-badge { border: 1px solid #a0b070; background: #f5f7f0; color: #556b2f; }
+  .doc-badge { border: 1px solid #cbd5e1; color: #475569; }
+  .doc-badge .md-tag { font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px; background: #e2e8f0; color: #64748b; }
+
+  .mock-banner {
+    flex-shrink: 0; display: flex; gap: 12px; align-items: flex-start;
+    padding: 10px 12px; margin-bottom: 8px; border-radius: 10px;
+    background: linear-gradient(90deg, #fffbeb 0%, #f0fdf4 55%, #eff6ff 100%);
+    border: 1px solid #fde68a; font-size: 12px; line-height: 1.5; color: #44403c;
+  }
+  .mock-banner .tag {
+    flex-shrink: 0; font-size: 10px; font-weight: 800; letter-spacing: .04em;
+    padding: 3px 8px; border-radius: 6px; background: #f59e0b; color: #fff;
+  }
+  .mock-banner button {
+    border: 1px solid #d1d5db; background: #fff; border-radius: 6px; padding: 4px 8px;
+    font-size: 11px; font-weight: 600; font-family: inherit; cursor: pointer; color: #374151;
+  }
+
+  .owner-bar {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    background: #fff; border: 1px solid var(--qb-border); border-radius: 10px;
+    padding: 7px 12px; margin-bottom: 8px; flex-shrink: 0;
+  }
+  .owner-bar label { font-size: 12px; font-weight: 600; color: #64748b; }
+  .owner-bar select {
+    font-size: 13px; font-family: inherit; padding: 5px 10px;
+    border: 1px solid #d1d5db; border-radius: 8px; background: #fff;
+  }
+  .owner-info { font-size: 12px; color: #475569; padding: 4px 8px; border: 1px dashed #e5e7eb; border-radius: 8px; background: #f8fafc; }
+  .pill {
+    display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 999px;
+    font-size: 11px; font-weight: 600; border: 1px solid transparent;
+  }
+  .pill-green { background: #f0fdf4; color: #166534; border-color: #86efac; }
+  .pill-muted { background: #f1f5f9; color: #64748b; border-color: #e2e8f0; }
+
+  .visit-tabs {
+    display: flex; gap: 2px; overflow-x: auto; flex-shrink: 0;
+    border-bottom: 2px solid var(--accent); background: var(--qb-bg);
+  }
+  .vtab {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 5px 12px; border-radius: 8px 8px 0 0; cursor: pointer; font-size: 11px; color: #6b7280;
+    background: #f9fafb; border: 1px solid #e5e7eb; border-bottom: none; border-top: 3px solid transparent;
+    min-width: 118px; max-width: 168px; line-height: 1.25; flex-shrink: 0;
+  }
+  .vtab.active .line1 { font-weight: 700; }
+  .vtab.active .line1::before { content: '●'; margin-right: 4px; }
+  .vtab:hover { background: #eff6ff; }
+  .vtab.active { background: #fff; color: var(--accent); border-bottom: 2px solid #fff; border-top-color: var(--accent); }
+  .vtab.active .line2 { color: #60a5fa; }
+  .vtab.list-tab { background: #f0fdf4; color: #16a34a; border-color: #86efac; }
+  .vtab.list-tab.active { color: #16a34a; border-top-color: #16a34a; border-bottom: 2px solid #fff; }
+  .vtab .line1, .vtab .line2 { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .vtab .line2 { color: #9ca3af; margin-top: 1px; font-size: 10px; }
+
+  .tab-content {
+    flex: 1; min-height: 0; overflow: hidden; display: none; flex-direction: column;
+    background: #fff; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 12px 12px;
+  }
+  .tab-content.active { display: flex; }
+
+  .list-toolbar {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    padding: 8px 12px; border-bottom: 1px solid #eee; background: #fafafa; flex-shrink: 0;
+  }
+  .list-toolbar .title { font-size: 13px; font-weight: 700; color: #374151; }
+  .list-toolbar .sub { font-size: 11px; color: #94a3b8; }
+  .list-toolbar label { font-size: 11px; font-weight: 600; color: #64748b; }
+  .list-toolbar select {
+    font-size: 12px; font-family: inherit; padding: 6px 10px;
+    border: 1px solid #d1d5db; border-radius: 8px; background: #fff;
+  }
+  .data-table-wrap { flex: 1; min-height: 0; overflow: auto; }
+  .data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .data-table th {
+    text-align: left; padding: 8px 10px; background: #f8fafc; color: #64748b;
+    font-weight: 600; border-bottom: 1px solid #e5e7eb; position: sticky; top: 0; z-index: 1; white-space: nowrap;
+  }
+  .data-table td { padding: 8px 10px; border-bottom: 1px solid #f1f5f9; color: #374151; vertical-align: top; }
+  .data-table tr { cursor: pointer; }
+  .data-table tr:hover td { background: #f0fdf4; }
+  .hn-link { color: #1d4ed8; font-weight: 700; }
+  .narr { font-size: 11px; line-height: 1.5; color: #475569; max-width: 420px; }
+
+  /* code term typography */
+  .term { white-space: nowrap; }
+  .term .abbr { font-weight: 700; color: inherit; }
+  .term .full { font-weight: 400; font-style: italic; margin-left: 2px; }
+  .code-chip {
+    display: inline-flex; align-items: baseline; gap: 2px;
+    font-size: 10px; padding: 2px 6px; border-radius: 5px; margin: 1px 2px 1px 0;
+    background: #ffe4e6; color: #9f1239; border: 1px solid #fecdd3; line-height: 1.3;
+  }
+  .code-chip.tx { background: #e0f2fe; color: #075985; border-color: #7dd3fc; }
+  .code-chip.ok { background: #dcfce7; color: #166534; border-color: #86efac; }
+
+  .record-toolbar {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+    padding: 8px 12px; border-bottom: 1px solid #eee; background: #fafbfc; flex-shrink: 0;
+  }
+  .rt-left { display: flex; flex-direction: column; gap: 2px; font-size: 12px; color: #64748b; }
+  .rt-left b { color: #1f2937; font-weight: 700; }
+  .rt-left .meta-line { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; }
+  .rt-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .rt-right label { font-size: 11px; font-weight: 600; color: #64748b; }
+  .rt-right select {
+    font-size: 12px; font-family: inherit; padding: 6px 10px; min-width: 200px;
+    border: 1px solid #d1d5db; border-radius: 8px; background: #fff;
+  }
+  .btn-tool {
+    display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 8px;
+    border: 1px solid #d1d5db; background: #fff; color: #374151; font-size: 12px; font-weight: 600;
+    font-family: inherit; cursor: pointer;
+  }
+  .btn-tool.primary { background: #22c55e; color: #fff; border-color: #16a34a; }
+  .btn-tool.ghost { color: #64748b; }
+  .btn-link {
+    font-size: 11px; font-weight: 600; color: #16a34a; background: #f0fdf4;
+    border: 1px solid #86efac; border-radius: 6px; padding: 3px 8px; font-family: inherit; cursor: pointer;
+  }
+
+  .record-body {
+    flex: 1; min-height: 0;
+    display: grid; grid-template-columns: minmax(340px, 1.25fr) minmax(280px, 1.1fr) 250px;
+  }
+  @media (max-width: 1100px) { .record-body { grid-template-columns: 1fr; overflow: auto; } }
+  .map-pane, .action-pane, .meta-pane {
+    display: flex; flex-direction: column; min-height: 0; min-width: 0; background: #fff;
+  }
+  .map-pane, .action-pane { border-right: 1px dashed #e5e7eb; }
+  .pane-head {
+    padding: 7px 12px; font-size: 11px; font-weight: 700; color: var(--qb-muted);
+    text-transform: uppercase; letter-spacing: .04em; border-bottom: 1px solid #f0f2f4;
+    flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+  .pane-head .link-hint { font-size: 10px; font-weight: 500; text-transform: none; letter-spacing: 0; color: #94a3b8; }
+  .pane-body { flex: 1; min-height: 0; overflow-y: auto; padding: 10px 12px; }
+
+  /* Left map — display only */
+  .map-legend {
+    display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 10px; color: #64748b; margin-bottom: 8px;
+    align-items: center;
+  }
+  .map-legend .lg {
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .legend-target {
+    width: 24px; height: 24px; border-radius: 50%; position: relative;
+    border: 3px solid #7dd3fc; box-sizing: border-box;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .legend-target::before {
+    content: ''; width: 16px; height: 16px; border-radius: 50%;
+    border: 3px solid #fb7185; box-sizing: border-box;
+    display: block;
+  }
+  .map-foot-bar {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    margin-bottom: 8px; font-size: 12px; color: #64748b;
+  }
+  .map-foot-bar b { color: #166534; font-size: 13px; }
+  .chart-stage {
+    position: relative; width: 100%; border: 1px solid #e5e7eb; border-radius: 12px;
+    background: #fff; overflow: hidden; line-height: 0; user-select: none;
+  }
+  .chart-bg { width: 100%; height: auto; display: block; vertical-align: top; }
+  .chart-overlay { position: absolute; inset: 0; pointer-events: none; }
+  /* เป้าธนู: วงในแดง=Lesion · วงนอกฟ้า=Treatment */
+  .zone-target {
+    position: absolute; transform: translate(-50%, -50%);
+    width: 6.0%; aspect-ratio: 1 / 1; height: auto;
+    min-width: 32px; min-height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    box-sizing: border-box;
+    background: transparent;
+    border: 3px solid transparent;
+  }
+  .zone-target .ring-lesion {
+    width: 74%; aspect-ratio: 1; border-radius: 50%;
+    box-sizing: border-box;
+    border: 3px solid transparent;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .zone-target .ring-core {
+    width: 36%; aspect-ratio: 1; border-radius: 50%;
+    box-sizing: border-box; background: transparent;
+  }
+  .zone-target.has-tx { border-color: #0ea5e9; box-shadow: 0 0 0 1px rgba(14,165,233,.35); }
+  .zone-target.has-lesion .ring-lesion { border-color: #e11d48; }
+  .zone-target.has-lesion:not(.has-tx) {
+    width: 6.0%; min-width: 32px; min-height: 32px;
+    border-color: transparent; box-shadow: none;
+  }
+  .zone-target.has-lesion:not(.has-tx) .ring-lesion {
+    width: 74%; border-color: #e11d48;
+  }
+
+  /* สรุปใต้ภาพ · 3 บล็อกตาม Lateral / Medial / Interdigital */
+  .leg-readout {
+    margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
+  }
+  @media (max-width: 900px) { .leg-readout { grid-template-columns: 1fr; } }
+  .leg-block {
+    border: 1px solid #e5e7eb; border-radius: 10px; background: #fafbfc;
+    min-height: 72px; display: flex; flex-direction: column; overflow: hidden;
+  }
+  .leg-block-h {
+    padding: 5px 8px; font-size: 10px; font-weight: 700; letter-spacing: .03em;
+    text-transform: uppercase; color: #475569; background: #f1f5f9;
+    border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: space-between;
+  }
+  .leg-block-h .side-tag { font-size: 9px; font-weight: 600; color: #94a3b8; text-transform: none; letter-spacing: 0; }
+  .leg-block.lateral .leg-block-h { border-left: 3px solid #2563eb; }
+  .leg-block.medial .leg-block-h { border-left: 3px solid #ea580c; }
+  .leg-block.interdigital .leg-block-h { border-left: 3px solid #7c3aed; }
+  .leg-block-b { padding: 6px 8px; flex: 1; font-size: 11px; line-height: 1.45; color: #334155; }
+  .leg-block-b .empty { color: #94a3b8; font-style: italic; }
+  .leg-block-b .row { display: flex; flex-wrap: wrap; gap: 3px 6px; align-items: baseline; margin-bottom: 3px; }
+  .leg-block-b .z { font-weight: 700; color: #0f172a; min-width: 22px; }
+  .leg-block-b .tx-row { margin-top: 4px; padding-top: 4px; border-top: 1px dashed #e2e8f0; }
+  .leg-block-b .ok-row { color: #166534; }
+  .leg-block.active-side { background: #fff; }
+  .leg-block.lateral.active-side { box-shadow: 0 0 0 2px rgba(37,99,235,.35); }
+  .leg-block.medial.active-side { box-shadow: 0 0 0 2px rgba(234,88,12,.35); }
+  .leg-block.interdigital.active-side { box-shadow: 0 0 0 2px rgba(124,58,237,.35); }
+
+  /* Entry vs work */
+  .entry-section { flex-shrink: 0; }
+  .entry-section.hidden { display: none !important; }
+  .btn-view {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border-radius: 8px; border: 1px solid #86efac;
+    background: #22c55e; color: #fff; font-size: 12px; font-weight: 700;
+    font-family: inherit; cursor: pointer; margin-left: 4px;
+  }
+  .btn-view:hover { background: #16a34a; }
+  .work-section { display: none; flex: 1; min-height: 0; flex-direction: column; }
+  .work-section.show { display: flex; }
+  .rt-left { font-size: 12px; color: #64748b; line-height: 1.45; }
+  .rt-left .meta-line { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+  .rt-left .sep { color: #cbd5e1; }
+  .rt-owner { color: #475569; }
+  .rt-animal { color: #334155; }
+  .rt-animal b { color: #1f2937; font-weight: 600; }
+
+  /* Fullscreen workspace always on */
+  .workspace-fs {
+    display: flex; position: fixed; inset: 0; z-index: 1000;
+    background: var(--qb-bg); padding: 10px 12px 12px;
+    flex-direction: column; min-height: 0;
+  }
+  .workspace-fs .modal-box-fs {
+    flex: 1; min-height: 0; display: flex; flex-direction: column;
+    background: var(--qb-bg); overflow: hidden;
+  }
+  .workspace-fs .visit-tabs { flex-shrink: 0; }
+  .workspace-fs .tab-content.active { flex: 1; min-height: 0; }
+
+  .seg-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .seg-btn {
+    padding: 6px 10px; border-radius: 8px; border: 1px solid #e5e7eb; background: #f9fafb;
+    font-size: 12px; font-weight: 700; font-family: inherit; cursor: pointer; color: #475569;
+  }
+  .seg-btn.on { background: #16a34a; color: #fff; border-color: #15803d; }
+  .seg-btn.lat.on { background: #2563eb; border-color: #1d4ed8; color: #fff; }
+  .seg-btn.med.on { background: #ea580c; border-color: #c2410c; color: #fff; }
+  .seg-btn.inter.on { background: #7c3aed; border-color: #6d28d9; color: #fff; }
+  .chip-label {
+    font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase;
+    letter-spacing: .05em; margin-bottom: 6px;
+  }
+  .chip-label-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    margin-bottom: 6px;
+  }
+  .chip-label-row .chip-label { margin-bottom: 0; }
+  .chip-btn.clear-sm {
+    padding: 3px 7px; font-size: 10px; flex-shrink: 0;
+    background: #fffafa; color: #f0a0a0; border: 1px solid #f5d0d0; border-radius: 6px;
+    font-family: inherit; cursor: pointer; font-weight: 500; line-height: 1.2;
+  }
+  .chip-btn.clear-sm:hover {
+    background: #fef2f2; color: #e57373; border-color: #fecaca;
+  }
+  .zone-pick { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+  .zbtn {
+    min-width: 34px; height: 32px; padding: 0 8px; border-radius: 8px; border: 1px solid #cbd5e1;
+    background: #fff; font-size: 12px; font-weight: 800; font-family: inherit; cursor: pointer; color: #475569;
+  }
+  .zbtn.on { background: #2563eb; color: #fff; border-color: #1d4ed8; }
+  .zbtn.marked { box-shadow: inset 0 0 0 2px #e11d48; }
+  .zbtn:disabled { opacity: .35; cursor: not-allowed; }
+  .ctx-line {
+    font-size: 12px; color: #334155; margin-bottom: 10px; padding: 8px 10px;
+    background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 8px;
+  }
+  .ctx-line b { color: #166534; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .chip-btn {
+    display: inline-flex; align-items: baseline; gap: 3px;
+    padding: 7px 10px; border-radius: 8px; border: 1px solid #e5e7eb; background: #f9fafb;
+    color: #374151; font-size: 11px; font-family: inherit; cursor: pointer; line-height: 1.25;
+  }
+  .chip-btn .abbr { font-weight: 700; }
+  .chip-btn .full { font-weight: 400; font-style: italic; }
+  .chip-btn.on.lesion { background: #e11d48; color: #fff; border-color: #be123c; }
+  .chip-btn.on.tx { background: #0284c7; color: #fff; border-color: #0369a1; }
+  .chip-btn.on.ok { background: #16a34a; color: #fff; border-color: #15803d; }
+  .chip-btn.clear {
+    background: #fff; color: #b91c1c; border-color: #fca5a5;
+  }
+  .chip-btn.clear:hover { background: #fef2f2; }
+  .chip-btn.dim { opacity: .45; }
+
+  .photo-section { margin-top: 4px; padding-top: 10px; border-top: 1px solid #f1f5f9; }
+  .photo-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+  .photo-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .photo-thumb {
+    position: relative; width: 64px; height: 64px; border-radius: 8px; overflow: hidden;
+    border: 1px solid #e5e7eb; cursor: zoom-in;
+  }
+  .photo-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .photo-thumb .rm {
+    position: absolute; top: 2px; right: 2px; width: 18px; height: 18px; border: none;
+    border-radius: 50%; background: rgba(220,38,38,.9); color: #fff; font-size: 11px; cursor: pointer;
+  }
+  .photo-empty { font-size: 11px; color: #94a3b8; }
+
+  .form-group { margin-bottom: 10px; }
+  .form-group > label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px; color: #444; }
+  .ctrl {
+    width: 100%; height: 36px; border: 1px solid #d9dee7; border-radius: 8px;
+    background: #fff; padding: 0 10px; font-size: 12px; font-family: inherit; color: #1f2937;
+  }
+  textarea.ctrl { height: auto; min-height: 64px; padding: 8px 10px; resize: vertical; }
+  .meta-readonly {
+    padding: 8px 10px; border: 1px solid #e5e7eb; border-radius: 8px;
+    font-size: 12px; background: #f3f4f6; color: #6b7280;
+  }
+  .meta-divider { border: none; border-top: 1px solid #eee; margin: 10px 0; }
+  .meta-section-label {
+    font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase;
+    letter-spacing: .5px; margin-bottom: 8px;
+  }
+  .req-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; align-items: center; }
+  .tag { font-size: 10px; padding: 2px 7px; border-radius: 6px; }
+  .tag.ok { background: #e6f7ee; color: #16a34a; }
+  .tag.visit { background: #f3e8ff; color: #7c3aed; }
+  .schedule-row { display: flex; gap: 6px; }
+  .schedule-row .ctrl { flex: 1; min-width: 0; }
+  .btn-schedule-today {
+    flex-shrink: 0; padding: 0 10px; border: 1px solid #a0b070; border-radius: 8px;
+    font-size: 11px; background: #f5f7f0; color: #556b2f; font-family: inherit; cursor: pointer; font-weight: 500;
+  }
+  .btn-confirm {
+    background: #22c55e; color: #fff; border: none; padding: 6px 12px; border-radius: 8px;
+    font-size: 12px; cursor: pointer; font-family: inherit; font-weight: 600;
+  }
+  .btn-confirm.is-apply { background: #2563eb; }
+
+  .lightbox {
+    display: none; position: fixed; inset: 0; z-index: 8000; background: rgba(15,23,42,.88);
+    align-items: center; justify-content: center; flex-direction: column; gap: 12px; padding: 24px;
+  }
+  .lightbox.show { display: flex; }
+  .lb-stage {
+    max-width: min(92vw, 1100px); max-height: 78vh; overflow: hidden; border-radius: 12px;
+    background: #0f172a; cursor: grab; touch-action: none;
+  }
+  .lb-stage img { display: block; max-width: 100%; max-height: 78vh; transform-origin: center center; user-select: none; }
+  .lb-toolbar { display: flex; gap: 8px; align-items: center; }
+  .lb-btn {
+    padding: 8px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,.25);
+    background: rgba(255,255,255,.1); color: #fff; font-size: 13px; font-weight: 600;
+    font-family: inherit; cursor: pointer;
+  }
+  .lb-zoom { color: #cbd5e1; font-size: 12px; min-width: 48px; text-align: center; }
+
+  .log-box, .help-box {
+    background: #fff; border-radius: 14px; box-shadow: 0 20px 50px rgba(0,0,0,.2);
+    width: min(820px, 100%); max-height: min(82vh, 760px); display: flex; flex-direction: column; overflow: hidden;
+  }
+  .help-box.logic-wide { width: min(960px, 100%); max-height: min(90vh, 880px); }
+  .log-box-head, .help-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 14px; border-bottom: 1px solid #eef2f4; flex-shrink: 0;
+  }
+  .log-box-title, .help-title { font-size: 15px; font-weight: 700; color: #3d4e1a; }
+  .log-box-body, .help-body { padding: 12px 16px 20px; overflow: auto; flex: 1; min-height: 0; font-size: 13px; line-height: 1.6; color: #475569; }
+  .log-item { padding: 10px 12px; border: 1px solid #eef2f4; border-radius: 10px; margin-bottom: 8px; background: #fafbfc; }
+  .log-item .t { font-size: 11px; color: #94a3b8; margin-bottom: 4px; }
+  .help-body img { max-width: 100%; border-radius: 8px; border: 1px solid #e5e7eb; margin: 8px 0; }
+  .help-body ul { padding-left: 1.2em; margin: 0 0 8px; }
+  .help-body li { margin-bottom: 4px; }
+  .logic-h {
+    font-size: 12px; font-weight: 800; color: #166534; letter-spacing: .04em;
+    text-transform: uppercase; margin: 16px 0 6px; padding-bottom: 4px; border-bottom: 1px solid #e5e7eb;
+  }
+  .logic-h:first-child { margin-top: 0; }
+  .logic-pre {
+    background: #0f172a; color: #e2e8f0; border-radius: 8px; padding: 10px 12px;
+    font-size: 11px; line-height: 1.45; overflow-x: auto; white-space: pre; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    margin: 6px 0 10px;
+  }
+  .logic-note {
+    background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px;
+    padding: 10px 12px; margin: 8px 0 12px; font-size: 12px; color: #78350f;
+  }
+  .logic-ok {
+    background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px;
+    padding: 10px 12px; margin: 8px 0 12px; font-size: 12px; color: #14532d;
+  }
+
+  .toast {
+    position: fixed; top: 20px; right: 20px; z-index: 9000; background: #f0fdf4;
+    border: 1px solid #86efac; border-radius: 10px; padding: 12px 18px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.12); display: none; font-size: 13px; color: #166534; font-weight: 600;
+  }
+  .toast.show { display: block; }
+  .toast.apply { background: #eff6ff; border-color: #93c5fd; color: #1d4ed8; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="workspace-fs" id="workspace">
+  <div class="modal-box-fs">
+
+    <div class="assess-editor-header">
+      <div class="obj-brand">
+        <div class="obj-brand-logo">KAHIS</div>
+        <div class="obj-brand-sub">Hoof Health</div>
+      </div>
+      <div class="examcard-bar">
+        <button class="logic-badge" type="button" onclick="document.getElementById('logic-modal').classList.add('show')">View Logic/Rule</button>
+        <button class="doc-badge" type="button" onclick="openZoneHelp()"><span class="md-tag">FIG.1</span> Claw zones</button>
+        <button class="doc-badge" type="button" onclick="openChangeLog()"><span class="md-tag">LOG</span> Change Log</button>
+        <button class="doc-badge" type="button"><span class="md-tag">LA</span> หน่วยสัตว์ใหญ่</button>
+        <button class="modal-close" type="button" onclick="requestCloseWorkspace()">&#10005;</button>
+      </div>
+    </div>
+
+    <!-- หน้าแรก: ถึงแถว Owner + ปุ่มแสดง -->
+    <div class="entry-section" id="entry-section">
+      <div class="mock-banner">
+        <span class="tag">MOCKUP</span>
+        <div>
+          <b>ใบบันทึกปาดกีบ</b> — ภาพซ้ายใช้ claw zone chart เป็นพื้นหลัง
+          · มี lesion/treatment จะซ้อน<b>วงกลมเป้าธนู</b>บนเลขโซน · เลือกขา/โซนที่บล็อกกลางเท่านั้น
+        </div>
+        <button type="button" onclick="openZoneHelp()">ดู FIGURE 1</button>
+      </div>
+      <div class="owner-bar">
+        <label>Owner No.</label>
+        <select id="owner-select" onchange="onOwnerChange()"></select>
+        <span class="owner-info" id="owner-info">—</span>
+        <span class="pill pill-muted" id="owner-count">0 ตัว</span>
+        <button type="button" class="btn-view" onclick="openWorkspace()">แสดง</button>
+      </div>
+    </div>
+
+    <!-- หลังกดแสดง: แท็บ + เนื้อหา (ซ่อน Owner bar / MOCKUP) -->
+    <div class="work-section" id="work-section">
+    <div class="visit-tabs" id="main-tabs"></div>
+
+    <div class="tab-content active" id="tab-list">
+      <div class="list-toolbar">
+        <div>
+          <div class="title">ตารางรวมข้อมูลปาดกีบ</div>
+          <div class="sub">เรียงตาม HN · Process on ล่าสุดก่อนเมื่อ HN ซ้ำ · คลิกแถวเปิดแท็บสัตว์</div>
+        </div>
+        <label style="margin-left:auto">Last Process On</label>
+        <select id="summary-date" onchange="renderSummaryTable()"></select>
+      </div>
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>HN</th><th>ชื่อ</th><th>ชนิด</th><th>เพศ</th><th>เบอร์หู</th>
+              <th>Process on</th><th>Last update</th><th>DVM / Dept</th>
+              <th>สรุปการบันทึก</th>
+            </tr>
+          </thead>
+          <tbody id="summary-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-animal">
+      <div class="record-toolbar">
+        <div class="rt-left">
+          <div class="meta-line">
+            <span>Last Process On <b id="rt-process">—</b></span>
+            <span>Last Update <b id="rt-update">—</b></span>
+            <span class="sep">·</span>
+            <span class="rt-owner" id="rt-owner">—</span>
+          </div>
+          <div class="meta-line">
+            <span>by <b id="rt-dvm">—</b></span>
+            <span>· <b id="rt-dept">—</b></span>
+            <span class="pill pill-muted" id="rt-status">—</span>
+          </div>
+        </div>
+        <div class="rt-right">
+          <label>Process on</label>
+          <select id="rec-select" onchange="onRecordSelect()"></select>
+          <button type="button" class="btn-tool primary" onclick="addNewRecord()">+ Add new</button>
+          <button type="button" class="btn-tool ghost" onclick="openChangeLog(true)">History</button>
+        </div>
+      </div>
+
+      <div class="record-body">
+        <!-- LEFT: color map only -->
+        <div class="map-pane">
+          <div class="pane-head">
+            <span>ผังกีบ · สีบอกตำแหน่งปัญหา</span>
+            <span class="link-hint">แสดงผลอย่างเดียว · เลือกโซนที่บล็อกกลาง</span>
+          </div>
+          <div class="pane-body">
+            <div class="map-legend">
+              <span class="lg"><span class="legend-target" aria-hidden="true"></span>เป้าธนู</span>
+              <span>วงกลาง = <b style="color:#e11d48">Lesion</b></span>
+              <span>วงนอก = <b style="color:#0ea5e9">Treatment</b></span>
+              <span>(ขึ้นวงเฉพาะโซนที่มีข้อมูล · ไม่โชว์ตอนกดเลือกเลข)</span>
+            </div>
+            <div class="map-foot-bar">
+              <span>ขาที่แสดง: <b id="map-leg-title">LH · หลังซ้าย</b></span>
+              <span style="font-size:10px">BG: claw zone chart · overlay layer</span>
+            </div>
+            <div class="chart-stage" id="chart-stage" aria-hidden="true">
+              <img class="chart-bg" src="claw_zones_chart.png" alt="Claw zones chart" width="1024" height="480" draggable="false">
+              <div class="chart-overlay" id="chart-overlay"></div>
+            </div>
+            <div class="leg-readout" id="leg-readout" aria-live="polite"></div>
+          </div>
+        </div>
+
+        <!-- MIDDLE: only selection UI -->
+        <div class="action-pane">
+          <div class="pane-head">
+            <span>ระบุตำแหน่ง · รอยโรค / หัตถการ</span>
+            <span class="link-hint">UI เดียวสำหรับเลือกโซน</span>
+          </div>
+          <div class="pane-body">
+            <div class="chip-label-row">
+              <div class="chip-label">1. ขา (Limb)</div>
+              <button type="button" class="chip-btn clear-sm" onclick="clearActiveLeg()">Clear ข้อมูลขาที่เลือก</button>
+            </div>
+            <div class="seg-row" id="leg-switch"></div>
+
+            <div class="chip-label-row">
+              <div class="chip-label">2. กีบ / พื้นที่ — Lateral · Medial · Interdigital</div>
+              <button type="button" class="chip-btn clear-sm" onclick="clearActiveScope()">Clear ข้อมูลพื้นที่ที่เลือก</button>
+            </div>
+            <div class="seg-row">
+              <button type="button" class="seg-btn lat" data-side="lateral" onclick="selectSide('lateral')">Lateral (นอก)</button>
+              <button type="button" class="seg-btn med" data-side="medial" onclick="selectSide('medial')">Medial (ใน)</button>
+              <button type="button" class="seg-btn inter" data-side="interdigital" onclick="selectSide('interdigital')">Interdigital</button>
+            </div>
+
+            <div class="chip-label">3. โซน (Zone 0–12)</div>
+            <div class="zone-pick" id="zone-pick"></div>
+
+            <div class="ctx-line" id="ctx-line">—</div>
+
+            <div class="chip-label">4. Lesion codes</div>
+            <div class="chips" id="lesion-chips"></div>
+
+            <div class="chip-label">5. Treatment</div>
+            <div class="chips" id="tx-chips"></div>
+
+            <div class="chip-label">ทางลัด</div>
+            <div class="chips" id="normal-chips">
+              <button type="button" class="chip-btn ok" id="btn-normal-claw" data-scope="claw" onclick="markNormalScope('claw')">
+                <span class="abbr">[N]</span><span class="full">Normal trim (ขอบเขตที่เลือก)</span>
+              </button>
+              <button type="button" class="chip-btn ok" id="btn-normal-leg" data-scope="leg" onclick="markNormalScope('leg')">
+                <span class="abbr">[N]</span><span class="full">Normal trim ทั้งขา</span>
+              </button>
+            </div>
+
+            <div class="photo-section">
+              <div class="chip-label">หลักฐานรูป</div>
+              <div class="photo-actions">
+                <button type="button" class="btn-tool" onclick="document.getElementById('file-browse').click()">Browse…</button>
+                <button type="button" class="btn-tool" onclick="document.getElementById('file-camera').click()">เปิดกล้อง</button>
+                <input type="file" id="file-browse" class="hidden" accept="image/*" multiple onchange="onFilesSelected(event)">
+                <input type="file" id="file-camera" class="hidden" accept="image/*" capture="environment" onchange="onFilesSelected(event)">
+              </div>
+              <div class="photo-grid" id="photo-grid"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: meta -->
+        <div class="meta-pane">
+          <div class="pane-head">
+            <span>Record Meta</span>
+            <button class="btn-confirm" type="button" id="btnConfirm" onclick="confirmOrApply()">&#10003; Confirm</button>
+          </div>
+          <div class="pane-body">
+            <div class="req-tags">
+              <span style="font-size:11px;color:#6b7280;">Required</span>
+              <span class="tag ok">✓ Process on</span>
+              <span class="tag ok">✓ DVM</span>
+              <span class="tag ok">✓ Dept</span>
+              <span class="tag visit" id="meta-exam-card">exam-card-—</span>
+            </div>
+            <div class="form-group">
+              <label>Animal</label>
+              <div class="meta-readonly" id="meta-animal">—</div>
+            </div>
+            <div class="form-group">
+              <label>Process on</label>
+              <div class="schedule-row">
+                <input class="ctrl" id="meta-process-on" type="datetime-local" oninput="markDirty()">
+                <button class="btn-schedule-today" type="button" onclick="setProcessNow()">Now</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>DVM / User</label>
+              <div class="meta-readonly" id="meta-dvm">นิพนธ์ วงศ์ประเสริฐ</div>
+            </div>
+            <div class="form-group">
+              <label>Department</label>
+              <div class="meta-readonly" id="meta-dept">หน่วยสัตว์ใหญ่</div>
+            </div>
+            <hr class="meta-divider">
+            <div class="meta-section-label">Note</div>
+            <div class="form-group">
+              <textarea class="ctrl" id="meta-note" rows="3" placeholder="บันทึกช่วยจำของ record…" oninput="markDirty()"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </div><!-- /work-section -->
+  </div>
+</div>
+
+<div class="confirm-overlay" id="close-confirm">
+  <div class="confirm-box">
+    <div style="font-size:28px">🚪</div>
+    <div class="confirm-title">ปิดหน้าทำงาน?</div>
+    <div class="confirm-msg">จะกลับไปแถวเลือก Owner No. · รายการที่ยังไม่ Confirm/Apply อาจหายไป</div>
+    <div class="confirm-actions">
+      <button class="confirm-back" type="button" onclick="document.getElementById('close-confirm').classList.remove('show')">กลับไปทำต่อ</button>
+      <button class="confirm-close-danger" type="button" onclick="closeWorkspace()">ปิด · กลับเลือก Owner</button>
+    </div>
+  </div>
+</div>
+
+<div class="logic-overlay" id="logic-modal">
+  <div class="help-box logic-wide">
+    <div class="help-head">
+      <div class="help-title">Hoof Health — Logic / Rule (Spec for Dev)</div>
+      <button class="modal-close" type="button" onclick="document.getElementById('logic-modal').classList.remove('show')">&#10005;</button>
+    </div>
+    <div class="help-body">
+
+      <div class="logic-ok">
+        <b>Persistence (mockup)</b><br>
+        · <b>เครื่องใหม่ / เข้าครั้งแรก</b> → โหลดชุดตัวอย่างจากไฟล์ใน GitHub<br>
+        · <b>Refresh ธรรมดา</b> → คงข้อมูลที่แก้ในเบราว์เซอร์นี้ (localStorage)<br>
+        · <b>Hard reset</b> → ล้าง localStorage แล้วโหลดชุดตัวอย่างจากไฟล์ที่เสิร์ฟอยู่ตอนนั้นใหม่<br>
+        · อัปเดต seed บน GitHub <b>ไม่ทับของในเครื่องอัตโนมัติ</b> — ถ้าต้องการชุดใหม่ให้ Hard reset / ล้าง site data<br>
+        คีย์: <code>kahis.hoofHealth</code> · <b>ไม่ใช่ DB production</b>
+        <div style="margin-top:8px">
+          <button type="button" class="chip-btn clear-sm" onclick="resetLocalStore()" style="color:#e57373;border-color:#fecaca">
+            Hard reset · โหลดชุดตัวอย่างจากไฟล์ใหม่
+          </button>
+        </div>
+      </div>
+
+      <div class="logic-h">1. Clinical model</div>
+      <ul>
+        <li>ขา (Limb): <b>LF · RF · LH · RH</b></li>
+        <li>พื้นที่ (Side): <b>Lateral · Medial · Interdigital</b> — เรียงนี้ทั้งปุ่มเลือกและบล็อกสรุปใต้ภาพ</li>
+        <li>ต่อขา: (Zone 1–12 × Medial + Lateral) + Interdigital Zone <b>0, 10</b> = <b>26 terms</b></li>
+        <li><b>Lesion</b> เก็บ <b>ต่อโซน</b> · แสดงโค้ดแบบ <b>[SU]</b> <i>Sole Ulcer</i></li>
+        <li><b>Treatment</b> (รอบนี้) เก็บ <b>ต่อพื้นที่</b> (Lateral / Medial / Interdigital ของขานั้น) ไม่แยกต่อโซน
+          — เพราะ wrap/trim/block มักทำระดับกีบ/ซอกกีบ · ถ้า product ต้องการ per-zone ต้องขยาย schema</li>
+        <li><b>Normal trim</b> เป็น flag ระดับพื้นที่ (หรือทั้งขา) · ไม่วาดวงบนภาพ</li>
+      </ul>
+
+      <div class="logic-h">2. Data shape (แนะนำ API / DB)</div>
+<pre class="logic-pre">HoofRecord {
+  id, animalHn, ownerNo, processOn, updatedAt, status: draft|done,
+  dvm, dept, note,
+  chart: {
+    LF|RF|LH|RH: {
+      lateral|medial: { normal: bool, zones: { "1"…"12": [lesionCode…] }, tx: [txCode…] },
+      interdigital:   { normal: bool, zones: { "0":[], "10":[] }, tx: [txCode…] }
+    }
+  },
+  photos: [{ id, url, leg, side, zone, uploadedAt }]
+}
+ChangeLogEntry { ts, ownerNo, hn, recordId, action, message, by }
+// action ตัวอย่าง: view | new-record | confirm | apply | clear-leg | clear-side</pre>
+
+      <div class="logic-h">3. UI flow</div>
+      <ul>
+        <li><b>Entry</b>: KAHIS shell + MOCKUP banner + Owner No. + ปุ่มแสดง · ยังไม่โชว์ตาราง</li>
+        <li><b>หลังแสดง</b>: ซ่อน MOCKUP/Owner bar · แท็บตารางรวม + แท็บสัตว์</li>
+        <li>แท็บสัตว์: toolbar (Last Process / Update / Owner meta) · 3 คอลัมน์ Map | Select | Meta</li>
+        <li>ภาพซ้าย = <b>display only</b> · เลือกขา/พื้นที่/โซน/โค้ดได้เฉพาะบล็อกกลาง</li>
+        <li>ใต้ภาพ: 3 บล็อกสรุป Lateral / Medial / Interdigital ของขาที่เลือก</li>
+        <li>Record ที่ <b>done</b> แล้วถ้าแก้ → ปุ่มกลายเป็น <b>Apply</b> และเขียน Change Log</li>
+        <li><b>Change Log</b> (หัวข้อบน) = ทั้ง Owner · <b>History</b> (ในแท็บสัตว์) = เฉพาะ HN นั้น</li>
+      </ul>
+
+      <div class="logic-h">4. ผังภาพ · วง overlay · จุดแม่นยำ (สำคัญต่อ Dev)</div>
+      <ul>
+        <li>พื้นหลังคงที่: <code>NP/hoof_health/claw_zones_chart.png</code> (อ้างอิง FIGURE 1) · วางเต็มความกว้างคอลัมน์ · <b>ห้าม object-fit: cover</b> ที่จะครอปภาพ</li>
+        <li>Overlay เป็น absolute layer ทับภาพ · พิกัดเป็น <b>เปอร์เซ็นต์ของกรอบภาพ</b> <code>[x%, y%]</code> จากมุมซ้ายบน → ขยายจอแล้วจุดไม่เพี้ยนถ้าอัตราส่วนภาพเดิม</li>
+        <li>ตารางจุดอยู่ใน JS คงที่ <code>ZONE_HOTSPOTS</code> คีย์รูปแบบ <code>'lateral:4'</code>, <code>'medial:7'</code>, <code>'interdigital:0'</code></li>
+        <li>วงแดง (ใน) = มี lesion ที่โซนนั้น · วงน้ำเงิน (นอก) = มี treatment ที่ <b>พื้นที่นั้น</b> และโซนนั้นมี lesion
+          — ไม่โชว์วงตอนกดเลือกเลขอย่างเดียว · ไม่โชว์ Normal</li>
+        <li><b>Calibrate</b>: ที่ภาพกด <b>⌥ Option + คลิก</b> (Mac) → console แสดง <code>hotspot: [x, y]</code> → ใส่ใน <code>ZONE_HOTSPOTS</code> → refresh ตรวจซ้ำ</li>
+        <li>ถ้าเปลี่ยนไฟล์ภาพ / crop / สัดส่วน → ต้อง calibrate จุดใหม่ทั้งชุด</li>
+      </ul>
+<pre class="logic-pre">// ตัวอย่างคีย์ที่ต้องมีครบ
+lateral:1-9,11,12 · medial:1-9,11,12 · interdigital:0,10
+paint: for each hotspot → if lesionCodes[z].length → red
+                         if lesion && side.tx.length → blue outer</pre>
+
+      <div class="logic-h">5. Confirm / Apply / History / Change Log</div>
+      <ul>
+        <li><b>Confirm</b>: draft → done · ตั้ง updatedAt / confirmedAt</li>
+        <li><b>Apply</b>: แก้ record ที่ done แล้ว · เก็บ audit ใน Change Log (ใคร แก้เมื่อไร อะไร)</li>
+        <li>สัตว์หนึ่งตัวมีได้หลาย Process on (ประวัติรอบปาดกีบ) เลือกจาก dropdown · นี่คือ <b>record history</b></li>
+        <li>ปุ่ม History ในแท็บสัตว์ = filter Change Log ตาม HN · ปุ่ม Change Log บนหัว = ทั้ง Owner</li>
+      </ul>
+      <div class="logic-ok">
+        ตัวอย่าง seed: Owner 3 ฟาร์ม · สัตว์หลายตัว · บางตัวมี 3–4 records (confirm → apply → follow-up)
+        เช่น <b>สายฝน</b> HH-102-A/B/C · <b>ดาวเรือง</b> HH-301-A→D · เปิด Change Log / History ได้เลย
+      </div>
+
+      <div class="logic-h">6. Persistence</div>
+      <ul>
+        <li><b>เครื่องใหม่</b>: ไม่มี localStorage → ใช้ seed ในไฟล์</li>
+        <li><b>Hard reset</b>: ล้าง LS แล้วโหลด seed จากไฟล์ที่เสิร์ฟอยู่ (หลัง pull GitHub = ชุดล่าสุด)</li>
+        <li>อัปเดต GitHub <b>ไม่</b> re-seed อัตโนมัติ — กันการทับงานที่ลองแก้ไว้ · ล้างเองเมื่อต้องการ</li>
+        <li>Draft ที่ยังไม่ Confirm ยังไม่เขียนลง record จนกว่าจะ Confirm/Apply</li>
+        <li>Production → API + DB</li>
+      </ul>
+
+      <div class="logic-h">7. สี UI พื้นที่</div>
+      <ul>
+        <li>Lateral = น้ำเงิน · Medial = ส้ม · Interdigital = ม่วง (ปุ่ม + บล็อกสรุปใต้ภาพใช้ชุดเดียวกัน)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="zone-help-overlay" id="zone-help">
+  <div class="help-box">
+    <div class="help-head">
+      <div class="help-title">FIGURE 1 · Claw zones (อ้างอิง)</div>
+      <button class="modal-close" type="button" onclick="document.getElementById('zone-help').classList.remove('show')">&#10005;</button>
+    </div>
+    <div class="help-body">
+      <img src="claw_zones_chart.png" alt="Claw zones chart">
+      <ul>
+        <li>ภาพพื้นหลังใช้ chart นี้ · มี lesion/treatment จะซ้อนวงกลมที่เลขโซน</li>
+        <li>Solar: Zone 1–6 ต่อกีบ · Zone 0 / 10 คั่นกลาง · ข้าง: 7–9 / 11–12</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="log-overlay" id="log-modal">
+  <div class="log-box">
+    <div class="log-box-head">
+      <div class="log-box-title" id="log-title">Change Log</div>
+      <button class="modal-close" type="button" onclick="document.getElementById('log-modal').classList.remove('show')">&#10005;</button>
+    </div>
+    <div class="log-box-body" id="log-body"></div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <div class="lb-stage" id="lb-stage"><img id="lb-img" alt="preview" draggable="false"></div>
+  <div class="lb-toolbar">
+    <button type="button" class="lb-btn" onclick="lbZoom(-0.25)">−</button>
+    <span class="lb-zoom" id="lb-zoom-label">100%</span>
+    <button type="button" class="lb-btn" onclick="lbZoom(0.25)">+</button>
+    <button type="button" class="lb-btn" onclick="lbReset()">Reset</button>
+    <button type="button" class="lb-btn" onclick="closeLightbox()">ปิด</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const OWNERS = [
+  { no: 'OWN-10021', name: 'สมหมาย ใจดี', farm: 'ฟาร์มลุงสมหมาย · มวกเหล็ก สระบุรี' },
+  { no: 'OWN-10088', name: 'วิไล บุญมี', farm: 'ฟาร์มบ้านทุ่ง · ปากช่อง นครราชสีมา' },
+  { no: 'OWN-10110', name: 'ประเสริฐ คงดี', farm: 'ฟาร์มเขาใหญ่ · ปากช่อง นครราชสีมา' }
+];
+const DVM = 'นิพนธ์ วงศ์ประเสริฐ';
+const DEPT = 'หน่วยสัตว์ใหญ่';
+const LEGS = ['LF', 'RF', 'LH', 'RH'];
+const LEG_LABEL = { LF: 'หน้าซ้าย', RF: 'หน้าขวา', LH: 'หลังซ้าย', RH: 'หลังขวา' };
+const CLAW_ZONES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12];
+const INTER_ZONES = [0, 10];
+const ZONE_NAME = {
+  0: 'Interdigital space', 1: 'Toe / White line Z1', 2: 'Abaxial white line',
+  3: 'Abaxial WL / Heel junction', 4: 'Sole / Ulcer site', 5: 'Sole apex',
+  6: 'Heel bulb', 7: 'Dorsal wall', 8: 'Abaxial wall', 9: 'Coronary band / Skin',
+  10: 'Interdigital cleft', 11: 'Axial wall (cranial)', 12: 'Axial groove / fissure'
+};
+
+const LESIONS = [
+  { code: 'TU', full: 'Toe Ulcer', zones: [1], kind: 'lesion' },
+  { code: 'TN', full: 'Toe Necrosis', zones: [1], kind: 'lesion' },
+  { code: 'WLD', full: 'White Line Disease', zones: [1, 2, 3], kind: 'lesion' },
+  { code: 'WLA', full: 'White Line Abscess', zones: [2, 3], kind: 'lesion' },
+  { code: 'SB', full: 'Sole Bruise / Hemorrhage', zones: [4, 5], kind: 'lesion' },
+  { code: 'SA', full: 'Sole Abscess', zones: [4, 5], kind: 'lesion' },
+  { code: 'SU', full: 'Sole Ulcer', zones: [4], kind: 'lesion' },
+  { code: 'HHE', full: 'Heel Horn Erosion', zones: [6], kind: 'lesion' },
+  { code: 'FR', full: 'Foot Rot / Interdigital Phlegmon', zones: [0], kind: 'lesion' },
+  { code: 'DD', full: 'Digital Dermatitis', zones: [10], kind: 'lesion' },
+  { code: 'WALL', full: 'Wall lesion', zones: [7, 8, 11, 12], kind: 'lesion' },
+  { code: 'COR', full: 'Coronary / Skin lesion', zones: [9], kind: 'lesion' }
+];
+const TREATMENTS = [
+  { code: 'BLK', full: 'Wood block', kind: 'tx' },
+  { code: 'WRP', full: 'Wrap / spray', kind: 'tx' },
+  { code: 'TRIM', full: 'Therapeutic trim', kind: 'tx' }
+];
+
+function emptyClaw() {
+  const zones = {};
+  CLAW_ZONES.forEach(z => { zones[z] = []; });
+  return { normal: false, zones, tx: [] };
+}
+function emptyInter() {
+  return { normal: false, zones: { 0: [], 10: [] }, tx: [] };
+}
+function emptyLeg() {
+  return { medial: emptyClaw(), lateral: emptyClaw(), interdigital: emptyInter() };
+}
+function emptyChart() {
+  const ch = {};
+  LEGS.forEach(l => { ch[l] = emptyLeg(); });
+  return ch;
+}
+function cloneClaw(c) {
+  const zones = {};
+  CLAW_ZONES.forEach(z => { zones[z] = [...(c.zones[z] || [])]; });
+  return { normal: !!c.normal, zones, tx: [...(c.tx || [])] };
+}
+function cloneInter(i) {
+  return {
+    normal: !!i.normal,
+    zones: { 0: [...(i.zones[0] || [])], 10: [...(i.zones[10] || [])] },
+    tx: [...(i.tx || [])]
+  };
+}
+function cloneChart(ch) {
+  const out = emptyChart();
+  LEGS.forEach(leg => {
+    out[leg].medial = cloneClaw(ch[leg].medial);
+    out[leg].lateral = cloneClaw(ch[leg].lateral);
+    out[leg].interdigital = cloneInter(ch[leg].interdigital);
+  });
+  return out;
+}
+function cloneRecord(r) {
+  return {
+    id: r.id, processOn: r.processOn, updatedAt: r.updatedAt, status: r.status,
+    chart: cloneChart(r.chart), note: r.note, dvm: r.dvm, dept: r.dept,
+    photos: (r.photos || []).map(p => ({ ...p })), confirmedAt: r.confirmedAt
+  };
+}
+function rec(id, processOn, status, chart, note, updatedAt) {
+  return {
+    id, processOn, updatedAt: updatedAt || processOn, status: status || 'draft',
+    chart: chart || emptyChart(), note: note || '', dvm: DVM, dept: DEPT,
+    photos: [], confirmedAt: status === 'done' ? (updatedAt || processOn) : null
+  };
+}
+function allNormalLeg() {
+  const leg = emptyLeg();
+  leg.medial.normal = true;
+  leg.lateral.normal = true;
+  leg.interdigital.normal = true;
+  return leg;
+}
+function chartAllNormal() {
+  const ch = emptyChart();
+  LEGS.forEach(l => { ch[l] = allNormalLeg(); });
+  return ch;
+}
+/** helper สร้าง chart จาก baseline normal แล้ว mutate */
+function buildChart(fn) {
+  const ch = chartAllNormal();
+  fn(ch);
+  return ch;
+}
+function markSide(ch, leg, side, patch) {
+  const node = ch[leg][side];
+  node.normal = false;
+  if (patch.zones) Object.keys(patch.zones).forEach(z => { node.zones[+z] = patch.zones[z]; });
+  if (patch.tx) node.tx = patch.tx;
+}
+function markInter(ch, leg, patch) {
+  const node = ch[leg].interdigital;
+  node.normal = false;
+  if (patch.zones) Object.keys(patch.zones).forEach(z => { node.zones[+z] = patch.zones[z]; });
+  if (patch.tx) node.tx = patch.tx;
+}
+
+function termHTML(code, full, kind) {
+  const k = kind === 'tx' ? 'tx' : (kind === 'ok' ? 'ok' : '');
+  return `<span class="code-chip ${k} term"><span class="abbr">[${code}]</span><span class="full">${full}</span></span>`;
+}
+function codeLabel(code) {
+  const L = LESIONS.find(x => x.code === code);
+  if (L) return { code: L.code, full: L.full, kind: 'lesion' };
+  const T = TREATMENTS.find(x => x.code === code);
+  if (T) return { code: T.code, full: T.full, kind: 'tx' };
+  if (code === 'N') return { code: 'N', full: 'Normal trim', kind: 'ok' };
+  return { code, full: code, kind: 'lesion' };
+}
+
+/* ===== SEED DATA (ชุดตัวอย่างในไฟล์ · โหลดเมื่อเข้าครั้งแรก หรือ Hard reset) ===== */
+const ANIMALS_BY_OWNER = {
+  'OWN-10021': [
+    { hn: 'HN 69001101', name: 'มะลิ', species: 'โคนม', breed: 'Holstein Friesian', sex: 'เมีย', age: '4 ปี 2 ด.', chip: 'TH-101',
+      records: [
+        rec('HH-101-A', '2026-08-18T08:00:00', 'done', chartAllNormal(), 'รอบตรวจประจำ · ปกติทั้ง 4', '2026-08-18T08:12:00'),
+        rec('HH-101-B', '2026-08-25T08:30:00', 'done', chartAllNormal(), 'Follow-up 1 สัปดาห์ · ยังปกติ', '2026-08-25T08:35:00'),
+        rec('HH-101-C', '2026-08-26T09:15:00', 'done', chartAllNormal(), 'รอบเช้าวันนี้ · Normal trim', '2026-08-26T09:20:00')
+      ]},
+    { hn: 'HN 69001102', name: 'สายฝน', species: 'โคนม', breed: 'Holstein Friesian', sex: 'เมีย', age: '5 ปี', chip: 'TH-102',
+      records: [
+        rec('HH-102-A', '2026-08-20T09:00:00', 'done', buildChart(ch => {
+          markSide(ch, 'LH', 'lateral', { zones: { 4: ['SB'] }, tx: ['TRIM'] });
+        }), 'พบ bruise Z4 · trim', '2026-08-20T09:25:00'),
+        rec('HH-102-B', '2026-08-26T07:40:00', 'done', buildChart(ch => {
+          markSide(ch, 'LH', 'lateral', { zones: { 4: ['SU'] }, tx: ['BLK'] });
+        }), 'พัฒนาเป็น SU · ใส่ block', '2026-08-26T07:55:00'),
+        rec('HH-102-C', '2026-08-26T16:20:00', 'done', buildChart(ch => {
+          markSide(ch, 'LH', 'lateral', { zones: { 4: ['SU'] }, tx: ['BLK', 'WRP'] });
+          markSide(ch, 'LH', 'medial', { zones: { 6: ['HHE'] }, tx: ['TRIM'] });
+        }), 'เย็น · Apply เพิ่ม wrap + พบ HHE medial', '2026-08-26T16:40:00')
+      ]},
+    { hn: 'HN 69001103', name: 'ดอกแก้ว', species: 'กระบือ', breed: 'กระบือปลัก', sex: 'เมีย', age: '6 ปี', chip: 'BF-103',
+      records: [
+        rec('HH-103-A', '2026-08-22T10:00:00', 'done', buildChart(ch => {
+          markSide(ch, 'RF', 'lateral', { zones: { 2: ['WLD'] }, tx: ['TRIM'] });
+        }), 'RF WLD Z2', '2026-08-22T10:30:00'),
+        rec('HH-103-B', '2026-08-24T10:00:00', 'done', buildChart(ch => {
+          markSide(ch, 'RF', 'lateral', { zones: { 2: ['WLD'], 3: ['WLA'] }, tx: ['TRIM', 'WRP'] });
+          markInter(ch, 'RH', { zones: { 0: ['FR'] }, tx: ['WRP'] });
+        }), 'Apply ขยาย WLA + RH foot rot', '2026-08-24T10:45:00'),
+        rec('HH-103-C', '2026-08-26T13:00:00', 'done', buildChart(ch => {
+          markSide(ch, 'RF', 'lateral', { zones: { 2: ['WLD'] }, tx: ['TRIM'] });
+          markInter(ch, 'RH', { zones: { 0: ['FR'] }, tx: ['WRP'] });
+        }), 'follow-up · ดีขึ้นเล็กน้อย', '2026-08-26T13:20:00')
+      ]},
+    { hn: 'HN 69001104', name: 'ทองกวาว', species: 'โคนม', breed: 'Holstein Friesian', sex: 'เมีย', age: '3 ปี 8 ด.', chip: 'TH-104',
+      records: [
+        rec('HH-104-A', '2026-08-26T11:05:00', 'done', (() => {
+          const ch = emptyChart();
+          ch.LF = allNormalLeg(); ch.RF = allNormalLeg();
+          return ch;
+        })(), 'หน้าเสร็จ · หลังยังไม่ทำ', '2026-08-26T11:10:00'),
+        rec('HH-104-B', '2026-08-26T14:30:00', 'done', buildChart(ch => {
+          markSide(ch, 'LH', 'lateral', { zones: { 5: ['SA'] }, tx: ['TRIM', 'WRP'] });
+          markSide(ch, 'RH', 'medial', { zones: { 4: ['SU'] }, tx: ['BLK'] });
+        }), 'ทำขาหลังครบ · LH SA + RH SU', '2026-08-26T15:05:00')
+      ]},
+    { hn: 'HN 69001105', name: 'ใบเงิน', species: 'โคนม', breed: 'Jersey cross', sex: 'เมีย', age: '2 ปี 1 ด.', chip: 'TH-105',
+      records: [
+        rec('HH-105-A', '2026-08-15T09:00:00', 'done', chartAllNormal(), 'รอบแรกเข้าฝูง', '2026-08-15T09:10:00'),
+        rec('HH-105-B', '2026-08-20T09:00:00', 'done', buildChart(ch => {
+          markSide(ch, 'LF', 'medial', { zones: { 1: ['TU'] }, tx: ['TRIM'] });
+        }), 'พบ toe ulcer LF medial', '2026-08-20T09:22:00'),
+        rec('HH-105-C', '2026-08-26T08:40:00', 'done', buildChart(ch => {
+          markSide(ch, 'LF', 'medial', { zones: { 1: ['TN'] }, tx: ['TRIM', 'WRP'] });
+        }), 'Apply · กลายเป็น toe necrosis', '2026-08-26T09:00:00')
+      ]},
+    { hn: 'HN 69001106', name: 'สมศรี', species: 'โคเนื้อ', breed: 'Brahman', sex: 'เมีย', age: '4 ปี', chip: 'BF-106',
+      records: [
+        rec('HH-106-A', '2026-08-19T08:00:00', 'done', buildChart(ch => {
+          markInter(ch, 'LF', { zones: { 10: ['DD'] }, tx: ['WRP'] });
+        }), 'LF DD Z10', '2026-08-19T08:20:00'),
+        rec('HH-106-B', '2026-08-26T08:00:00', 'done', buildChart(ch => {
+          markInter(ch, 'LF', { zones: { 10: ['DD'], 0: ['FR'] }, tx: ['WRP'] });
+          markSide(ch, 'LF', 'lateral', { zones: { 9: ['COR'] }, tx: ['WRP'] });
+        }), 'Apply · ลาม Z0 + coronary', '2026-08-26T08:35:00')
+      ]},
+    { hn: 'HN 69001107', name: 'สร้อยฟ้า', species: 'กระบือ', breed: 'กระบือปลัก', sex: 'ผู้', age: '7 ปี', chip: 'BF-107',
+      records: [] },
+    { hn: 'HN 69001108', name: 'ขวัญใจ', species: 'โคนม', breed: 'Holstein Friesian', sex: 'เมีย', age: '6 ปี 2 ด.', chip: 'TH-108',
+      records: [
+        rec('HH-108-A', '2026-08-21T07:30:00', 'done', buildChart(ch => {
+          markSide(ch, 'LH', 'lateral', { zones: { 4: ['SU'], 8: ['WALL'] }, tx: ['BLK', 'TRIM'] });
+          markSide(ch, 'RH', 'lateral', { zones: { 4: ['SU'] }, tx: ['BLK'] });
+          markInter(ch, 'LH', { zones: { 10: ['DD'] }, tx: ['WRP'] });
+        }), 'เคสหนัก · SU สองขา + DD', '2026-08-21T08:40:00'),
+        rec('HH-108-B', '2026-08-26T07:00:00', 'done', buildChart(ch => {
+          markSide(ch, 'LH', 'lateral', { zones: { 4: ['SU'] }, tx: ['BLK', 'WRP'] });
+          markSide(ch, 'RH', 'lateral', { zones: { 4: ['SB'] }, tx: ['TRIM'] });
+          markInter(ch, 'LH', { zones: { 10: ['DD'] }, tx: ['WRP'] });
+        }), 'Apply follow-up · RH ดีขึ้นเป็น bruise', '2026-08-26T07:50:00')
+      ]},
+    { hn: 'HN 69001109', name: 'พราว', species: 'โคนม', breed: 'Holstein Friesian', sex: 'เมีย', age: '3 ปี', chip: 'TH-109',
+      records: [
+        rec('HH-109-A', '2026-08-26T10:00:00', 'done', buildChart(ch => {
+          markSide(ch, 'RF', 'medial', { zones: { 7: ['WALL'], 11: ['WALL'] }, tx: ['TRIM'] });
+        }), 'ผนังกีบ RF medial', '2026-08-26T10:25:00')
+      ]},
+    { hn: 'HN 69001110', name: 'นภา', species: 'กระบือ', breed: 'กระบือปลัก', sex: 'เมีย', age: '5 ปี', chip: 'BF-110',
+      records: [
+        rec('HH-110-A', '2026-08-23T15:00:00', 'done', chartAllNormal(), 'ตรวจคัด · ปกติ', '2026-08-23T15:08:00'),
+        rec('HH-110-B', '2026-08-26T15:10:00', 'done', buildChart(ch => {
+          markSide(ch, 'LF', 'lateral', { zones: { 6: ['HHE'] }, tx: ['TRIM'] });
+          markSide(ch, 'RF', 'lateral', { zones: { 6: ['HHE'] }, tx: ['TRIM'] });
+        }), 'heel erosion ทั้งสองขาหน้า', '2026-08-26T15:35:00')
+      ]}
+  ],
+  'OWN-10088': [
+    { hn: 'HN 69002201', name: 'ขวัญข้าว', species: 'โคนม', breed: 'Holstein Friesian', sex: 'เมีย', age: '3 ปี', chip: 'TH-201',
+      records: [
+        rec('HH-201-A', '2026-08-24T10:30:00', 'done', chartAllNormal(), 'ปกติ', '2026-08-24T10:35:00'),
+        rec('HH-201-B', '2026-08-26T10:30:00', 'done', chartAllNormal(), 'ตรวจซ้ำ · ยังปกติ', '2026-08-26T10:38:00')
+      ]},
+    { hn: 'HN 69002202', name: 'นุ่น', species: 'กระบือ', breed: 'กระบือปลัก', sex: 'เมีย', age: '5 ปี 6 ด.', chip: 'BF-202',
+      records: [
+        rec('HH-202-A', '2026-08-22T15:00:00', 'done', buildChart(ch => {
+          markInter(ch, 'RF', { zones: { 0: ['FR'] }, tx: ['WRP'] });
+        }), 'RF interdigital FR', '2026-08-22T15:20:00'),
+        rec('HH-202-B', '2026-08-25T15:00:00', 'done', buildChart(ch => {
+          markSide(ch, 'RF', 'medial', { zones: { 4: ['SB'] }, tx: ['TRIM'] });
+          markInter(ch, 'RF', { zones: { 0: ['FR'] }, tx: ['WRP'] });
+        }), 'Apply · เพิ่ม sole bruise medial', '2026-08-25T15:30:00'),
+        rec('HH-202-C', '2026-08-26T11:00:00', 'done', buildChart(ch => {
+          markInter(ch, 'RF', { zones: { 0: ['FR'] }, tx: ['WRP'] });
+        }), 'follow-up · bruise หาย · เหลือ FR', '2026-08-26T11:15:00')
+      ]},
+    { hn: 'HN 69002203', name: 'ขวัญเรือน', species: 'โคนม', breed: 'Jersey cross', sex: 'เมีย', age: '4 ปี', chip: 'TH-203',
+      records: [
+        rec('HH-203-A', '2026-08-26T09:00:00', 'done', buildChart(ch => {
+          markSide(ch, 'LH', 'lateral', { zones: { 3: ['WLD'], 4: ['SU'] }, tx: ['BLK', 'TRIM', 'WRP'] });
+          markSide(ch, 'LH', 'medial', { zones: { 12: ['WALL'] }, tx: ['TRIM'] });
+        }), 'หลายจุดขาหลังซ้าย', '2026-08-26T09:55:00')
+      ]},
+    { hn: 'HN 69002204', name: 'สายใจ', species: 'โคเนื้อ', breed: 'Brahman', sex: 'เมีย', age: '2 ปี 8 ด.', chip: 'BF-204',
+      records: [
+        rec('HH-204-A', '2026-08-26T12:00:00', 'done', chartAllNormal(), 'คัดเข้า · ปกติ', '2026-08-26T12:08:00')
+      ]}
+  ],
+  'OWN-10110': [
+    { hn: 'HN 69003301', name: 'ดาวเรือง', species: 'โคนม', breed: 'Holstein Friesian', sex: 'เมีย', age: '5 ปี 1 ด.', chip: 'TH-301',
+      records: [
+        rec('HH-301-A', '2026-08-17T08:00:00', 'done', buildChart(ch => {
+          markSide(ch, 'LH', 'lateral', { zones: { 4: ['SU'] }, tx: ['BLK'] });
+        }), 'SU แรกพบ', '2026-08-17T08:30:00'),
+        rec('HH-301-B', '2026-08-20T08:00:00', 'done', buildChart(ch => {
+          markSide(ch, 'LH', 'lateral', { zones: { 4: ['SU'] }, tx: ['BLK', 'WRP'] });
+        }), 'Apply เพิ่ม wrap', '2026-08-20T08:20:00'),
+        rec('HH-301-C', '2026-08-23T08:00:00', 'done', buildChart(ch => {
+          markSide(ch, 'LH', 'lateral', { zones: { 4: ['SB'] }, tx: ['TRIM'] });
+        }), 'ดีขึ้น · เหลือ bruise', '2026-08-23T08:15:00'),
+        rec('HH-301-D', '2026-08-26T08:00:00', 'done', chartAllNormal(), 'หายแล้ว · Normal', '2026-08-26T08:10:00')
+      ]},
+    { hn: 'HN 69003302', name: 'กานดา', species: 'โคนม', breed: 'Holstein Friesian', sex: 'เมีย', age: '4 ปี', chip: 'TH-302',
+      records: [
+        rec('HH-302-A', '2026-08-26T09:30:00', 'done', buildChart(ch => {
+          markSide(ch, 'RF', 'lateral', { zones: { 2: ['WLD'], 5: ['SA'] }, tx: ['TRIM', 'WRP'] });
+          markSide(ch, 'LF', 'medial', { zones: { 8: ['WALL'] }, tx: ['TRIM'] });
+          markInter(ch, 'RF', { zones: { 10: ['DD'] }, tx: ['WRP'] });
+        }), 'หลายขา · WLD+SA+DD', '2026-08-26T10:20:00')
+      ]},
+    { hn: 'HN 69003303', name: 'มณี', species: 'กระบือ', breed: 'กระบือปลัก', sex: 'เมีย', age: '8 ปี', chip: 'BF-303',
+      records: [
+        rec('HH-303-A', '2026-08-25T14:00:00', 'done', buildChart(ch => {
+          markSide(ch, 'LH', 'lateral', { zones: { 1: ['TU'] }, tx: ['TRIM'] });
+          markSide(ch, 'RH', 'lateral', { zones: { 1: ['TU'] }, tx: ['TRIM'] });
+        }), 'toe ulcer สองขาหลัง', '2026-08-25T14:40:00'),
+        rec('HH-303-B', '2026-08-26T14:00:00', 'done', buildChart(ch => {
+          markSide(ch, 'LH', 'lateral', { zones: { 1: ['TN'] }, tx: ['TRIM', 'WRP'] });
+          markSide(ch, 'RH', 'lateral', { zones: { 1: ['TU'] }, tx: ['TRIM'] });
+        }), 'Apply · LH กลายเป็น necrosis', '2026-08-26T14:35:00')
+      ]},
+    { hn: 'HN 69003304', name: 'บุษบา', species: 'โคนม', breed: 'Jersey cross', sex: 'เมีย', age: '2 ปี 4 ด.', chip: 'TH-304',
+      records: [] }
+  ]
+};
+
+let currentOwnerNo = 'OWN-10021';
+let animals = [];
+let animalsByOwner = {};
+let activeTab = 'list';
+let currentAnimalIdx = 0;
+let currentRecordId = null;
+let activeLeg = 'LH';
+let activeSide = 'lateral'; // medial | lateral | interdigital
+let activeZone = 4;
+let dirty = false;
+let draft = null;
+const LS_KEY = 'kahis.hoofHealth';
+const SEED_CHANGE_LOGS = [
+  { ts: '2026-08-26T16:40:00', ownerNo: 'OWN-10021', hn: 'HN 69001102', recordId: 'HH-102-C', action: 'apply',
+    message: 'Apply HH-102-C · เพิ่ม [WRP] ที่ LH Lateral + พบ Medial Z6 [HHE][TRIM]', by: DVM },
+  { ts: '2026-08-26T16:20:00', ownerNo: 'OWN-10021', hn: 'HN 69001102', recordId: 'HH-102-C', action: 'new-record',
+    message: 'สร้าง HH-102-C · รอบเย็น follow-up จาก HH-102-B', by: DVM },
+  { ts: '2026-08-26T15:35:00', ownerNo: 'OWN-10021', hn: 'HN 69001110', recordId: 'HH-110-B', action: 'confirm',
+    message: 'Confirm HH-110-B · LF/RF Lateral Z6 [HHE][TRIM]', by: DVM },
+  { ts: '2026-08-26T15:05:00', ownerNo: 'OWN-10021', hn: 'HN 69001104', recordId: 'HH-104-B', action: 'confirm',
+    message: 'Confirm HH-104-B · ทำขาหลังครบ LH SA + RH SU', by: DVM },
+  { ts: '2026-08-26T14:35:00', ownerNo: 'OWN-10110', hn: 'HN 69003303', recordId: 'HH-303-B', action: 'apply',
+    message: 'Apply HH-303-B · LH Z1 TU→TN + เพิ่ม [WRP]', by: DVM },
+  { ts: '2026-08-26T13:20:00', ownerNo: 'OWN-10021', hn: 'HN 69001103', recordId: 'HH-103-C', action: 'confirm',
+    message: 'Confirm HH-103-C · follow-up RF WLD + RH FR', by: DVM },
+  { ts: '2026-08-26T11:15:00', ownerNo: 'OWN-10088', hn: 'HN 69002202', recordId: 'HH-202-C', action: 'confirm',
+    message: 'Confirm HH-202-C · bruise หาย · เหลือ RF Interdigital [FR]', by: DVM },
+  { ts: '2026-08-26T10:20:00', ownerNo: 'OWN-10110', hn: 'HN 69003302', recordId: 'HH-302-A', action: 'confirm',
+    message: 'Confirm HH-302-A · RF WLD+SA · LF WALL · RF DD', by: DVM },
+  { ts: '2026-08-26T09:55:00', ownerNo: 'OWN-10088', hn: 'HN 69002203', recordId: 'HH-203-A', action: 'confirm',
+    message: 'Confirm HH-203-A · LH multi-zone WLD+SU+WALL', by: DVM },
+  { ts: '2026-08-26T09:20:00', ownerNo: 'OWN-10021', hn: 'HN 69001101', recordId: 'HH-101-C', action: 'confirm',
+    message: 'Confirm HH-101-C · Normal trim ทั้ง 4 ขา', by: DVM },
+  { ts: '2026-08-26T09:00:00', ownerNo: 'OWN-10021', hn: 'HN 69001105', recordId: 'HH-105-C', action: 'apply',
+    message: 'Apply HH-105-C · LF Medial Z1 TU→TN + [WRP]', by: DVM },
+  { ts: '2026-08-26T08:35:00', ownerNo: 'OWN-10021', hn: 'HN 69001106', recordId: 'HH-106-B', action: 'apply',
+    message: 'Apply HH-106-B · DD ลาม Z0 + coronary Z9', by: DVM },
+  { ts: '2026-08-26T08:10:00', ownerNo: 'OWN-10110', hn: 'HN 69003301', recordId: 'HH-301-D', action: 'confirm',
+    message: 'Confirm HH-301-D · หายแล้ว · Normal ทั้ง 4', by: DVM },
+  { ts: '2026-08-26T07:55:00', ownerNo: 'OWN-10021', hn: 'HN 69001102', recordId: 'HH-102-B', action: 'confirm',
+    message: 'Confirm HH-102-B · LH Lateral Z4 [SU][BLK]', by: DVM },
+  { ts: '2026-08-26T07:50:00', ownerNo: 'OWN-10021', hn: 'HN 69001108', recordId: 'HH-108-B', action: 'apply',
+    message: 'Apply HH-108-B · RH SU→SB · คง DD + LH SU', by: DVM },
+  { ts: '2026-08-25T15:30:00', ownerNo: 'OWN-10088', hn: 'HN 69002202', recordId: 'HH-202-B', action: 'apply',
+    message: 'Apply HH-202-B · เพิ่ม RF Medial Z4 [SB][TRIM]', by: DVM },
+  { ts: '2026-08-25T08:35:00', ownerNo: 'OWN-10021', hn: 'HN 69001101', recordId: 'HH-101-B', action: 'confirm',
+    message: 'Confirm HH-101-B · Follow-up ยังปกติ', by: DVM },
+  { ts: '2026-08-24T10:45:00', ownerNo: 'OWN-10021', hn: 'HN 69001103', recordId: 'HH-103-B', action: 'apply',
+    message: 'Apply HH-103-B · ขยาย WLA Z3 + RH [FR]', by: DVM },
+  { ts: '2026-08-23T08:15:00', ownerNo: 'OWN-10110', hn: 'HN 69003301', recordId: 'HH-301-C', action: 'apply',
+    message: 'Apply HH-301-C · SU→SB · ถอด block', by: DVM },
+  { ts: '2026-08-21T08:40:00', ownerNo: 'OWN-10021', hn: 'HN 69001108', recordId: 'HH-108-A', action: 'confirm',
+    message: 'Confirm HH-108-A · เคสหนัก SU สองขา + DD', by: DVM },
+  { ts: '2026-08-20T08:20:00', ownerNo: 'OWN-10110', hn: 'HN 69003301', recordId: 'HH-301-B', action: 'apply',
+    message: 'Apply HH-301-B · เพิ่ม [WRP] ที่ LH Lateral', by: DVM },
+  { ts: '2026-08-18T08:12:00', ownerNo: 'OWN-10021', hn: 'HN 69001101', recordId: 'HH-101-A', action: 'confirm',
+    message: 'Confirm HH-101-A · รอบตรวจประจำ · ปกติ', by: DVM }
+];
+let changeLogs = [];
+let lbZoomLevel = 1, lbPan = { x: 0, y: 0 }, lbDragging = false, lbLast = { x: 0, y: 0 };
+
+function cloneAnimalsMap(src) {
+  return JSON.parse(JSON.stringify(src));
+}
+function applySeedData() {
+  animalsByOwner = cloneAnimalsMap(ANIMALS_BY_OWNER);
+  changeLogs = cloneAnimalsMap(SEED_CHANGE_LOGS);
+  currentOwnerNo = 'OWN-10021';
+}
+function persistStore() {
+  try {
+    animalsByOwner[currentOwnerNo] = cloneAnimalsMap(animals);
+    localStorage.setItem(LS_KEY, JSON.stringify({
+      savedAt: new Date().toISOString(),
+      currentOwnerNo,
+      animalsByOwner,
+      changeLogs
+    }));
+  } catch (err) {
+    console.warn('localStorage save failed', err);
+    showToast('บันทึก localStorage ไม่สำเร็จ (อาจเต็มจากรูป)');
+  }
+}
+function loadStore() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (raw) {
+      const data = JSON.parse(raw);
+      if (data && data.animalsByOwner) {
+        animalsByOwner = data.animalsByOwner;
+        changeLogs = Array.isArray(data.changeLogs) ? data.changeLogs : cloneAnimalsMap(SEED_CHANGE_LOGS);
+        if (data.currentOwnerNo) currentOwnerNo = data.currentOwnerNo;
+        return true;
+      }
+    }
+  } catch (err) {
+    console.warn('localStorage load failed', err);
+  }
+  // คีย์เก่าจากช่วงทดลอง — ลบทิ้งเงียบๆ
+  try {
+    localStorage.removeItem('kahis.hoofHealth.v1');
+    localStorage.removeItem('kahis.hoofHealth.v2');
+  } catch (e) {}
+  applySeedData();
+  persistStore();
+  return false;
+}
+function resetLocalStore() {
+  if (!confirm('ล้างข้อมูลในเบราว์เซอร์นี้ แล้วโหลดชุดตัวอย่างจากไฟล์ปัจจุบันใหม่?')) return;
+  localStorage.removeItem(LS_KEY);
+  try {
+    localStorage.removeItem('kahis.hoofHealth.v1');
+    localStorage.removeItem('kahis.hoofHealth.v2');
+  } catch (e) {}
+  applySeedData();
+  dirty = false;
+  draft = null;
+  persistStore();
+  initOwnerSelect();
+  loadOwnerAnimals();
+  if (document.getElementById('work-section').classList.contains('show')) {
+    activeTab = 'list';
+    renderTabs();
+    showListTab();
+  }
+  document.getElementById('logic-modal').classList.remove('show');
+  showToast('ล้างแล้ว · โหลดชุดตัวอย่างจากไฟล์ใหม่');
+}
+
+function openWorkspace() {
+  syncOwnerUI();
+  document.getElementById('entry-section').classList.add('hidden');
+  document.getElementById('work-section').classList.add('show');
+  activeTab = 'list';
+  buildZonePick();
+  buildCodeChips();
+  renderTabs();
+  showListTab();
+  buildClawMap();
+  pushLog('—', '—', 'view', 'แสดงข้อมูล · Owner ' + currentOwnerNo);
+}
+function requestCloseWorkspace() {
+  if (!document.getElementById('work-section').classList.contains('show')) return;
+  document.getElementById('close-confirm').classList.add('show');
+}
+function closeWorkspace() {
+  document.getElementById('close-confirm').classList.remove('show');
+  document.getElementById('work-section').classList.remove('show');
+  document.getElementById('entry-section').classList.remove('hidden');
+  dirty = false;
+  syncOwnerUI();
+  persistStore();
+}
+function openHoof() { openWorkspace(); }
+function closeHoof() { closeWorkspace(); }
+
+function syncOwnerUI() {
+  const owner = OWNERS.find(o => o.no === currentOwnerNo);
+  const sel = document.getElementById('owner-select');
+  if (sel) sel.value = currentOwnerNo;
+  document.getElementById('owner-info').textContent = owner ? `${owner.name} · ${owner.farm}` : '—';
+  document.getElementById('owner-count').textContent = animals.length + ' ตัว';
+}
+function showToast(msg, apply) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.toggle('apply', !!apply); t.classList.add('show');
+  clearTimeout(showToast._t); showToast._t = setTimeout(() => t.classList.remove('show'), 2400);
+}
+function pushLog(hn, recordId, action, message) {
+  changeLogs.unshift({ ts: new Date().toISOString(), ownerNo: currentOwnerNo, hn, recordId, action, message, by: DVM });
+  persistStore();
+}
+function fmtDT(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso.length === 10 ? iso + 'T12:00:00' : iso);
+  const p = n => String(n).padStart(2, '0');
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${p(d.getDate())} ${months[d.getMonth()]} ${d.getFullYear()} ${p(d.getHours())}.${p(d.getMinutes())}`;
+}
+function toLocalInput(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  const p = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+function dateKey(iso) { return (iso || '').slice(0, 10); }
+function lastRecord(a) {
+  if (!a.records.length) return null;
+  return a.records.slice().sort((x, y) => (x.processOn < y.processOn ? 1 : -1))[0];
+}
+function getAnimal() { return animals[currentAnimalIdx]; }
+function getSavedRecord(id) {
+  const a = getAnimal();
+  return a ? a.records.find(r => r.id === id) : null;
+}
+function zoneListForSide() {
+  return activeSide === 'interdigital' ? INTER_ZONES : CLAW_ZONES;
+}
+function getScopeNode() {
+  if (!draft) return null;
+  const leg = draft.chart[activeLeg];
+  return leg[activeSide];
+}
+
+/* Owner / tabs */
+function initOwnerSelect() {
+  const a = document.getElementById('owner-select');
+  a.innerHTML = OWNERS.map(o => `<option value="${o.no}">${o.no}</option>`).join('');
+  a.value = currentOwnerNo;
+}
+function onOwnerChange() {
+  if (dirty && !confirm('มีข้อมูลที่ยังไม่ Apply — เปลี่ยน Owner?')) {
+    document.getElementById('owner-select').value = currentOwnerNo; return;
+  }
+  persistStore();
+  currentOwnerNo = document.getElementById('owner-select').value;
+  dirty = false; loadOwnerAnimals(); activeTab = 'list'; renderTabs(); showListTab();
+  syncOwnerUI();
+  persistStore();
+}
+function loadOwnerAnimals() {
+  animals = (animalsByOwner[currentOwnerNo] || []).map(a => ({
+    ...a, records: a.records.map(cloneRecord)
+  }));
+  syncOwnerUI();
+  fillSummaryDates();
+  if (document.getElementById('work-section').classList.contains('show')) {
+    renderSummaryTable();
+  }
+}
+function renderTabs() {
+  const tabs = document.getElementById('main-tabs');
+  let html = `<div class="vtab list-tab ${activeTab === 'list' ? 'active' : ''}" data-tab="list">
+    <div class="line1">ตารางรวม</div><div class="line2">${currentOwnerNo}</div></div>`;
+  animals.forEach((a, i) => {
+    html += `<div class="vtab ${activeTab === i ? 'active' : ''}" data-tab="${i}">
+      <div class="line1">${a.hn}</div>
+      <div class="line2">${a.name} · ${a.species} · ${a.sex} · ${a.chip}</div></div>`;
+  });
+  tabs.innerHTML = html;
+  tabs.querySelectorAll('.vtab').forEach(tab => {
+    tab.onclick = () => {
+      const key = tab.getAttribute('data-tab');
+      if (key === 'list') {
+        if (dirty && !confirm('มีข้อมูลที่ยังไม่ Apply — เปลี่ยนแท็บ?')) return;
+        dirty = false; activeTab = 'list'; renderTabs(); showListTab();
+      } else openAnimalTab(+key);
+    };
+  });
+  document.querySelector('.visit-tabs').style.borderBottomColor = activeTab === 'list' ? '#16a34a' : '#2563eb';
+}
+function showListTab() {
+  document.getElementById('tab-list').classList.add('active');
+  document.getElementById('tab-animal').classList.remove('active');
+  fillSummaryDates(); renderSummaryTable();
+}
+
+function allProcessDates() {
+  const set = new Set();
+  animals.forEach(a => a.records.forEach(r => set.add(dateKey(r.processOn))));
+  return [...set].sort().reverse();
+}
+function fillSummaryDates() {
+  const dates = allProcessDates();
+  const sel = document.getElementById('summary-date');
+  const cur = sel.value;
+  const latest = dates[0] || '2026-08-26';
+  sel.innerHTML = dates.map(d => `<option value="${d}">${fmtDT(d + 'T12:00:00').slice(0, 11)}</option>`).join('')
+    || `<option value="${latest}">${latest}</option>`;
+  sel.value = dates.includes(cur) ? cur : latest;
+}
+function narrative(chart) {
+  const parts = [];
+  let allN = true;
+  LEGS.forEach(leg => {
+    ['medial', 'lateral'].forEach(side => {
+      const c = chart[leg][side];
+      if (!c.normal) allN = false;
+      const bits = [];
+      if (c.normal) bits.push(termHTML('N', 'Normal trim', 'ok'));
+      CLAW_ZONES.forEach(z => (c.zones[z] || []).forEach(code => {
+        const m = codeLabel(code);
+        bits.push(`Z${z}:${termHTML(m.code, m.full, m.kind)}`);
+      }));
+      (c.tx || []).forEach(code => {
+        const m = codeLabel(code);
+        bits.push(termHTML(m.code, m.full, 'tx'));
+      });
+      if (bits.length && !(c.normal && bits.length === 1 && !CLAW_ZONES.some(z => (c.zones[z] || []).length))) {
+        if (!c.normal || CLAW_ZONES.some(z => (c.zones[z] || []).length) || (c.tx || []).length)
+          parts.push(`<b>${leg} ${side === 'medial' ? 'Med' : 'Lat'}</b> ${bits.join(' ')}`);
+      }
+    });
+    const idg = chart[leg].interdigital;
+    const ib = [];
+    INTER_ZONES.forEach(z => (idg.zones[z] || []).forEach(code => {
+      allN = false;
+      const m = codeLabel(code);
+      ib.push(`Z${z}:${termHTML(m.code, m.full, m.kind)}`);
+    }));
+    (idg.tx || []).forEach(code => {
+      allN = false;
+      const m = codeLabel(code);
+      ib.push(termHTML(m.code, m.full, 'tx'));
+    });
+    if (ib.length) parts.push(`<b>${leg} Interdigital</b> ${ib.join(' ')}`);
+  });
+  if (allN && !parts.length) return termHTML('N', 'Normal trim ทั้ง 4 ขา', 'ok');
+  if (allN) return termHTML('N', 'Normal trim ทั้ง 4 ขา', 'ok');
+  return parts.length ? parts.join('<br>') : '<span style="color:#94a3b8">ยังไม่บันทึก</span>';
+}
+function renderSummaryTable() {
+  const day = document.getElementById('summary-date').value;
+  const rows = [];
+  animals.forEach((a, ai) => {
+    a.records.filter(r => dateKey(r.processOn) === day)
+      .sort((x, y) => (x.processOn < y.processOn ? 1 : -1))
+      .forEach(r => rows.push({ a, ai, r }));
+  });
+  rows.sort((x, y) => {
+    const hn = x.a.hn.localeCompare(y.a.hn, 'th');
+    if (hn) return hn;
+    return x.r.processOn < y.r.processOn ? 1 : -1;
+  });
+  const tbody = document.getElementById('summary-tbody');
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:#94a3b8;padding:28px">ไม่มี record ในวันที่เลือก</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = rows.map(({ a, ai, r }) => `
+    <tr onclick="openAnimalTab(${ai}, '${r.id}')">
+      <td class="hn-link">${a.hn}</td>
+      <td><b>${a.name}</b></td>
+      <td><span class="pill pill-green">${a.species}</span></td>
+      <td>${a.sex}</td>
+      <td><code style="font-size:11px">${a.chip}</code></td>
+      <td>${fmtDT(r.processOn)}</td>
+      <td>${fmtDT(r.updatedAt || r.confirmedAt || r.processOn)}</td>
+      <td>${r.dvm}<div style="font-size:10px;color:#94a3b8">${r.dept}</div></td>
+      <td class="narr">${narrative(r.chart)}${r.note ? `<div style="margin-top:4px;color:#94a3b8">Note: ${r.note}</div>` : ''}</td>
+    </tr>`).join('');
+}
+
+function openAnimalTab(idx, preferRecordId) {
+  if (dirty && activeTab !== idx && !confirm('มีข้อมูลที่ยังไม่ Apply — เปลี่ยนแท็บ?')) return;
+  dirty = false;
+  currentAnimalIdx = idx; activeTab = idx;
+  renderTabs();
+  document.getElementById('tab-list').classList.remove('active');
+  document.getElementById('tab-animal').classList.add('active');
+  document.getElementById('meta-exam-card').textContent = 'exam-card-' + getAnimal().hn.replace(/\D/g, '');
+  const a = getAnimal();
+  const last = lastRecord(a);
+  fillRecordSelect(preferRecordId || (last && last.id));
+  if (preferRecordId && getSavedRecord(preferRecordId)) loadRecord(preferRecordId);
+  else if (last) loadRecord(last.id);
+  else addNewRecord(true);
+  renderLegSwitch();
+  buildZonePick();
+  buildCodeChips();
+  buildClawMap();
+  refreshSelectionUI();
+}
+
+function fillRecordSelect(selectId) {
+  const a = getAnimal();
+  const list = a.records.slice().sort((x, y) => (x.processOn < y.processOn ? 1 : -1));
+  const sel = document.getElementById('rec-select');
+  if (!list.length) { sel.innerHTML = '<option value="">— ไม่มี record —</option>'; return; }
+  sel.innerHTML = list.map(r => {
+    const sameDay = list.filter(x => dateKey(x.processOn) === dateKey(r.processOn));
+    let tag = '';
+    if (sameDay.length > 1) {
+      const ordered = sameDay.slice().sort((x, y) => (x.processOn > y.processOn ? 1 : -1));
+      const i = ordered.findIndex(x => x.id === r.id);
+      tag = i === 0 ? ' · เช้า' : (i === ordered.length - 1 ? ' · เย็น/ล่าสุด' : '');
+    }
+    return `<option value="${r.id}">${fmtDT(r.processOn)}${tag} · ${r.id}${r.status === 'draft' ? ' (draft)' : ''}</option>`;
+  }).join('');
+  if (selectId && list.some(r => r.id === selectId)) sel.value = selectId;
+  else sel.value = list[0].id;
+}
+function onRecordSelect() {
+  const id = document.getElementById('rec-select').value;
+  if (!id) return;
+  if (dirty && !confirm('มีข้อมูลที่ยังไม่ Apply — เปลี่ยน record?')) {
+    document.getElementById('rec-select').value = currentRecordId; return;
+  }
+  dirty = false; loadRecord(id);
+}
+function addNewRecord(silent) {
+  if (dirty && !silent && !confirm('มีข้อมูลที่ยังไม่ Apply — สร้างใหม่?')) return;
+  const a = getAnimal();
+  const now = new Date();
+  const p = n => String(n).padStart(2, '0');
+  const processOn = `2026-08-26T${p(now.getHours())}:${p(now.getMinutes())}:00`;
+  const id = 'HH-' + a.hn.replace(/\D/g, '').slice(-3) + '-' + String(a.records.length + 1).padStart(2, '0') + 'N';
+  a.records.push(rec(id, processOn, 'draft', emptyChart(), ''));
+  fillRecordSelect(id); loadRecord(id); setDirty(false);
+  if (!silent) { pushLog(a.hn, id, 'new-record', 'สร้าง ' + id); showToast('สร้าง New record · draft'); }
+  else persistStore();
+}
+function loadRecord(id) {
+  const saved = getSavedRecord(id);
+  if (!saved) return;
+  currentRecordId = id;
+  draft = cloneRecord(saved);
+  activeLeg = 'LH'; activeSide = 'lateral'; activeZone = 4;
+  document.getElementById('meta-process-on').value = toLocalInput(draft.processOn);
+  document.getElementById('meta-dvm').textContent = draft.dvm;
+  document.getElementById('meta-dept').textContent = draft.dept;
+  document.getElementById('meta-note').value = draft.note || '';
+  updateRecordToolbar();
+  setDirty(false);
+  refreshSelectionUI();
+  renderPhotos();
+  updateConfirmBtn();
+}
+function updateRecordToolbar() {
+  if (!draft) return;
+  const owner = OWNERS.find(o => o.no === currentOwnerNo);
+  const a = getAnimal();
+  document.getElementById('rt-process').textContent = fmtDT(draft.processOn);
+  document.getElementById('rt-update').textContent = fmtDT(draft.updatedAt || draft.confirmedAt || draft.processOn);
+  document.getElementById('rt-owner').textContent = owner
+    ? `${owner.no}  ${owner.name} · ${owner.farm}  ·  ${animals.length} ตัว`
+    : '—';
+  document.getElementById('rt-dvm').textContent = draft.dvm;
+  document.getElementById('rt-dept').textContent = draft.dept;
+  document.getElementById('rt-status').textContent = draft.status + ' · ' + draft.id;
+  const metaAnimal = document.getElementById('meta-animal');
+  if (metaAnimal) {
+    metaAnimal.textContent = a
+      ? `${a.name} · ${a.species} · ${a.sex} · เลขหู ${a.chip}`
+      : '—';
+  }
+}
+
+function setDirty(v) { dirty = v; updateConfirmBtn(); }
+function markDirty() {
+  if (!draft) return;
+  const v = document.getElementById('meta-process-on').value;
+  if (v) draft.processOn = v.length === 16 ? v + ':00' : v;
+  draft.note = document.getElementById('meta-note').value;
+  setDirty(true);
+}
+function updateConfirmBtn() {
+  const btn = document.getElementById('btnConfirm');
+  if (!draft) return;
+  if (dirty && draft.status === 'done') {
+    btn.classList.add('is-apply'); btn.innerHTML = '&#10003; Apply';
+  } else {
+    btn.classList.remove('is-apply'); btn.innerHTML = '&#10003; Confirm';
+  }
+}
+function setProcessNow() {
+  const now = new Date();
+  const p = n => String(n).padStart(2, '0');
+  document.getElementById('meta-process-on').value = `2026-08-26T${p(now.getHours())}:${p(now.getMinutes())}`;
+  markDirty();
+}
+function confirmOrApply() {
+  if (!draft) return;
+  const a = getAnimal();
+  const saved = getSavedRecord(draft.id);
+  const action = saved && saved.status === 'done' && dirty ? 'apply' : 'confirm';
+  const v = document.getElementById('meta-process-on').value;
+  if (v) draft.processOn = v.length === 16 ? v + ':00' : v;
+  draft.note = document.getElementById('meta-note').value;
+  draft.status = 'done';
+  const n = new Date(); const p = x => String(x).padStart(2, '0');
+  draft.updatedAt = `2026-08-26T${p(n.getHours())}:${p(n.getMinutes())}:00`;
+  draft.confirmedAt = draft.updatedAt; draft.dvm = DVM; draft.dept = DEPT;
+  const idx = a.records.findIndex(r => r.id === draft.id);
+  if (idx >= 0) a.records[idx] = cloneRecord(draft); else a.records.push(cloneRecord(draft));
+  pushLog(a.hn, draft.id, action, `${action} ${draft.id}`);
+  setDirty(false);
+  fillRecordSelect(draft.id); loadRecord(draft.id);
+  fillSummaryDates(); renderSummaryTable(); renderTabs();
+  persistStore();
+  showToast(action === 'apply' ? 'Apply แล้ว · บันทึก localStorage' : 'Confirm แล้ว · บันทึก localStorage', action === 'apply');
+}
+
+/* Selection UI (middle only) */
+function renderLegSwitch() {
+  document.getElementById('leg-switch').innerHTML = LEGS.map(leg =>
+    `<button type="button" class="seg-btn ${activeLeg === leg ? 'on' : ''}" onclick="selectLeg('${leg}')">${leg} <span style="font-weight:500;opacity:.85;font-size:10px">${LEG_LABEL[leg]}</span></button>`
+  ).join('');
+}
+function selectLeg(leg) {
+  activeLeg = leg;
+  if (activeSide === 'interdigital' && !INTER_ZONES.includes(activeZone)) activeZone = 0;
+  if (activeSide !== 'interdigital' && !CLAW_ZONES.includes(activeZone)) activeZone = 4;
+  refreshSelectionUI();
+}
+function selectSide(side) {
+  activeSide = side;
+  const list = zoneListForSide();
+  if (!list.includes(activeZone)) activeZone = list[0];
+  refreshSelectionUI();
+}
+function selectZone(z) {
+  activeZone = z;
+  refreshSelectionUI();
+}
+function buildZonePick() {
+  const all = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  document.getElementById('zone-pick').innerHTML = all.map(z =>
+    `<button type="button" class="zbtn" data-z="${z}" onclick="selectZone(${z})">${z}</button>`
+  ).join('');
+}
+function buildCodeChips() {
+  document.getElementById('lesion-chips').innerHTML = LESIONS.map(l =>
+    `<button type="button" class="chip-btn lesion" data-code="${l.code}" onclick="toggleLesion('${l.code}')">
+      <span class="abbr">[${l.code}]</span><span class="full">${l.full}</span>
+    </button>`
+  ).join('');
+  document.getElementById('tx-chips').innerHTML = TREATMENTS.map(t =>
+    `<button type="button" class="chip-btn tx" data-code="${t.code}" onclick="toggleTx('${t.code}')">
+      <span class="abbr">[${t.code}]</span><span class="full">${t.full}</span>
+    </button>`
+  ).join('');
+}
+function refreshSelectionUI() {
+  renderLegSwitch();
+  document.querySelectorAll('.seg-btn.lat, .seg-btn.med, .seg-btn.inter').forEach(b => {
+    b.classList.toggle('on', b.getAttribute('data-side') === activeSide);
+  });
+  const allowed = zoneListForSide();
+  document.querySelectorAll('.zbtn').forEach(b => {
+    const z = +b.getAttribute('data-z');
+    b.disabled = !allowed.includes(z);
+    b.classList.toggle('on', z === activeZone);
+    const node = getScopeNode();
+    const marked = node && ((node.zones[z] || []).length > 0);
+    b.classList.toggle('marked', !!marked && allowed.includes(z));
+  });
+  const sideLabel = activeSide === 'interdigital' ? 'Interdigital' : (activeSide === 'medial' ? 'Medial' : 'Lateral');
+  document.getElementById('ctx-line').innerHTML =
+    `<b>${activeLeg}</b> (${LEG_LABEL[activeLeg]}) · <b>${sideLabel}</b> · <b>Zone ${activeZone}</b> — <i>${ZONE_NAME[activeZone] || ''}</i>`;
+  updateChipsOn();
+  paintClawMap();
+  renderLegReadout();
+}
+function updateChipsOn() {
+  const node = getScopeNode();
+  if (!node) return;
+  const zoneCodes = node.zones[activeZone] || [];
+  document.querySelectorAll('#lesion-chips .chip-btn').forEach(b => {
+    const code = b.getAttribute('data-code');
+    const meta = LESIONS.find(l => l.code === code);
+    b.classList.toggle('on', zoneCodes.includes(code));
+    b.classList.toggle('dim', meta && meta.zones.length && !meta.zones.includes(activeZone));
+  });
+  document.querySelectorAll('#tx-chips .chip-btn').forEach(b => {
+    b.classList.toggle('on', (node.tx || []).includes(b.getAttribute('data-code')));
+  });
+  const clawBtn = document.getElementById('btn-normal-claw');
+  const legBtn = document.getElementById('btn-normal-leg');
+  if (clawBtn) clawBtn.classList.toggle('on', isScopeNormal());
+  if (legBtn) legBtn.classList.toggle('on', isLegAllNormal());
+}
+function clawHasFindings(c) {
+  if (!c) return false;
+  if ((c.tx || []).length) return true;
+  return CLAW_ZONES.some(z => ((c.zones || {})[z] || []).length);
+}
+function interHasFindings(i) {
+  if (!i) return false;
+  if ((i.tx || []).length) return true;
+  return INTER_ZONES.some(z => ((i.zones || {})[z] || []).length);
+}
+function isScopeNormal() {
+  if (!draft) return false;
+  const n = getScopeNode();
+  if (!n) return false;
+  if (activeSide === 'interdigital') return !!n.normal && !interHasFindings(n);
+  return !!n.normal && !clawHasFindings(n);
+}
+function isLegAllNormal() {
+  if (!draft) return false;
+  const leg = draft.chart[activeLeg];
+  return !!leg.medial.normal && !clawHasFindings(leg.medial)
+    && !!leg.lateral.normal && !clawHasFindings(leg.lateral)
+    && !!leg.interdigital.normal && !interHasFindings(leg.interdigital);
+}
+function toggleLesion(code) {
+  if (!draft) return;
+  const node = getScopeNode();
+  node.normal = false;
+  const arr = node.zones[activeZone] || (node.zones[activeZone] = []);
+  const i = arr.indexOf(code);
+  if (i >= 0) arr.splice(i, 1); else arr.push(code);
+  setDirty(true); refreshSelectionUI();
+}
+function toggleTx(code) {
+  if (!draft) return;
+  const node = getScopeNode();
+  node.normal = false;
+  const arr = node.tx || (node.tx = []);
+  const i = arr.indexOf(code);
+  if (i >= 0) arr.splice(i, 1); else arr.push(code);
+  setDirty(true); refreshSelectionUI();
+}
+function markNormalScope(scope) {
+  if (!draft) return;
+  if (scope === 'leg') {
+    if (isLegAllNormal()) {
+      draft.chart[activeLeg] = emptyLeg();
+      showToast('ยกเลิก Normal ทั้งขา');
+    } else {
+      draft.chart[activeLeg] = allNormalLeg();
+      showToast(`${activeLeg} = Normal ทั้งขา`);
+    }
+  } else if (isScopeNormal()) {
+    if (activeSide === 'interdigital') {
+      draft.chart[activeLeg].interdigital = emptyInter();
+    } else {
+      draft.chart[activeLeg][activeSide] = emptyClaw();
+    }
+    showToast('ยกเลิก Normal trim');
+  } else if (activeSide === 'interdigital') {
+    const i = emptyInter(); i.normal = true;
+    draft.chart[activeLeg].interdigital = i;
+    showToast('Normal trim ขอบเขตที่เลือก');
+  } else {
+    const c = emptyClaw(); c.normal = true;
+    draft.chart[activeLeg][activeSide] = c;
+    showToast('Normal trim ขอบเขตที่เลือก');
+  }
+  setDirty(true); refreshSelectionUI();
+}
+function clearActiveLeg() {
+  if (!draft) return;
+  draft.chart[activeLeg] = emptyLeg();
+  setDirty(true); refreshSelectionUI();
+  showToast(`Clear ข้อมูลขา ${activeLeg} · ${LEG_LABEL[activeLeg]}`);
+}
+function clearActiveScope() {
+  if (!draft) return;
+  if (activeSide === 'interdigital') {
+    draft.chart[activeLeg].interdigital = emptyInter();
+  } else {
+    draft.chart[activeLeg][activeSide] = emptyClaw();
+  }
+  setDirty(true); refreshSelectionUI();
+  const sideLabel = activeSide === 'interdigital' ? 'Interdigital' : (activeSide === 'medial' ? 'Medial' : 'Lateral');
+  showToast(`Clear ข้อมูลพื้นที่ ${activeLeg} · ${sideLabel}`);
+}
+
+/* LEFT MAP — chart BG + circle overlay on zone numbers */
+/* พิกัดเป็น % ของภาพ claw_zones_chart.png (1024×480) · heels อยู่บน ปลายกีบล่าง */
+const ZONE_HOTSPOTS = {
+  // Interdigital
+  'interdigital:0':  [51.0, 56.0],
+  'interdigital:10': [51.2, 23.7],
+  // Plantar LATERAL (ซ้าย)
+  'lateral:1':  [48.2, 86.8],
+  'lateral:2':  [35.4, 67.0],
+  'lateral:3':  [31.0, 44.4],
+  'lateral:4':  [40.8, 46.3],
+  'lateral:5':  [44.5, 69.8],
+  'lateral:6':  [40.2, 25.5],
+  // Lat Abaxial / Axial
+  'lateral:7':  [10.6, 38.4],
+  'lateral:8':  [17.8, 40.3],
+  'lateral:9':  [18.7, 26.9],
+  'lateral:11': [8.7, 82.7],
+  'lateral:12': [16.9, 81.8],
+  // Plantar MEDIAL (ขวา)
+  'medial:1':   [53.6, 86.4],
+  'medial:2':   [66.4, 67.0],
+  'medial:3':   [70.8, 43.5],
+  'medial:4':   [61.0, 46.3],
+  'medial:5':   [56.7, 69.3],
+  'medial:6':   [61.9, 25.5],
+  // Med Abaxial / Axial
+  'medial:7':   [85.1, 37.5],
+  'medial:8':   [91.8, 39.4],
+  'medial:9':   [92.7, 26.5],
+  'medial:11':  [85.1, 81.3],
+  'medial:12':  [92.5, 84.1]
+};
+
+function buildClawMap() {
+  paintClawMap();
+}
+
+function zoneMarkState(side, z) {
+  if (!draft) return { lesion: false, tx: false };
+  const node = side === 'interdigital'
+    ? draft.chart[activeLeg].interdigital
+    : draft.chart[activeLeg][side];
+  const codes = (node.zones && node.zones[z]) || [];
+  const hasLesion = codes.length > 0;
+  // Treatment อยู่ระดับ side — แสดงวง tx เฉพาะโซนที่มี lesion จริง
+  // (เดิม z===0||z===10 ทำให้โซนคู่ interdigital ติดวงไปด้วย)
+  const hasTx = hasLesion && (node.tx || []).length > 0;
+  return { lesion: hasLesion, tx: hasTx };
+}
+
+function paintClawMap() {
+  const title = document.getElementById('map-leg-title');
+  if (title) title.textContent = `${activeLeg} · ${LEG_LABEL[activeLeg]}`;
+  const overlay = document.getElementById('chart-overlay');
+  if (!overlay) return;
+
+  const marks = [];
+  Object.keys(ZONE_HOTSPOTS).forEach(key => {
+    const [side, zStr] = key.split(':');
+    const z = +zStr;
+    const [x, y] = ZONE_HOTSPOTS[key];
+    const st = zoneMarkState(side, z);
+    // ขึ้นวงเฉพาะเมื่อมี lesion และ/หรือ treatment — ไม่โชว์ตอนกดเลือกเลขอย่างเดียว
+    if (!st.lesion && !st.tx) return;
+
+    const cls = [
+      'zone-target',
+      st.lesion ? 'has-lesion' : '',
+      st.tx ? 'has-tx' : ''
+    ].filter(Boolean).join(' ');
+
+    const tip = [
+      side === 'interdigital' ? 'Interdigital' : (side === 'medial' ? 'Medial' : 'Lateral'),
+      'Z' + z,
+      st.lesion ? 'Lesion' : '',
+      st.tx ? 'Treatment' : ''
+    ].filter(Boolean).join(' · ');
+
+    marks.push(
+      `<div class="${cls}" style="left:${x}%;top:${y}%" title="${tip}">` +
+        `<div class="ring-lesion"><div class="ring-core"></div></div>` +
+      `</div>`
+    );
+  });
+  overlay.innerHTML = marks.join('');
+}
+
+function sideBlockHTML(sideKey, label, short) {
+  if (!draft) {
+    return `<div class="leg-block ${sideKey}"><div class="leg-block-h">${label}<span class="side-tag">${short}</span></div>` +
+      `<div class="leg-block-b"><span class="empty">—</span></div></div>`;
+  }
+  const node = draft.chart[activeLeg][sideKey];
+  const zones = sideKey === 'interdigital' ? INTER_ZONES : CLAW_ZONES;
+  const rows = [];
+  zones.forEach(z => {
+    const codes = (node.zones && node.zones[z]) || [];
+    if (!codes.length) return;
+    rows.push(`<div class="row"><span class="z">Z${z}</span>${codes.map(c => {
+      const m = codeLabel(c); return termHTML(m.code, m.full, m.kind);
+    }).join(' ')}</div>`);
+  });
+  const tx = node.tx || [];
+  if (tx.length) {
+    rows.push(`<div class="row tx-row"><span class="z">Tx</span>${tx.map(c => {
+      const m = codeLabel(c); return termHTML(m.code, m.full, 'tx');
+    }).join(' ')}</div>`);
+  }
+  if (node.normal && !rows.length) {
+    rows.push(`<div class="row ok-row">${termHTML('N', 'Normal trim', 'ok')}</div>`);
+  }
+  const body = rows.length ? rows.join('') : '<span class="empty">ยังไม่บันทึก</span>';
+  const on = activeSide === sideKey ? ' active-side' : '';
+  return `<div class="leg-block ${sideKey}${on}"><div class="leg-block-h">${label}<span class="side-tag">${short}</span></div>` +
+    `<div class="leg-block-b">${body}</div></div>`;
+}
+
+function renderLegReadout() {
+  const el = document.getElementById('leg-readout');
+  if (!el) return;
+  el.innerHTML =
+    sideBlockHTML('lateral', 'Lateral', 'นอก') +
+    sideBlockHTML('medial', 'Medial', 'ใน') +
+    sideBlockHTML('interdigital', 'Interdigital', 'ซอกกีบ');
+}
+
+/* Photos / lightbox / log */
+function onFilesSelected(e) {
+  if (!draft) return;
+  const files = Array.from(e.target.files || []);
+  e.target.value = '';
+  if (!files.length) return;
+  let pending = files.length;
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      draft.photos.push({
+        id: 'P' + Date.now() + Math.random().toString(16).slice(2, 5),
+        name: file.name, url: reader.result,
+        leg: activeLeg, side: activeSide, zone: activeZone
+      });
+      pending -= 1;
+      if (pending <= 0) { setDirty(true); renderPhotos(); }
+    };
+    reader.onerror = () => { pending -= 1; showToast('อ่านไฟล์รูปไม่สำเร็จ'); };
+    reader.readAsDataURL(file);
+  });
+}
+function renderPhotos() {
+  const grid = document.getElementById('photo-grid');
+  if (!draft || !draft.photos.length) {
+    grid.innerHTML = '<div class="photo-empty">ยังไม่มีรูป — Browse หรือเปิดกล้อง</div>'; return;
+  }
+  grid.innerHTML = draft.photos.map((p, i) => `
+    <div class="photo-thumb" title="${p.leg}/${p.side}/Z${p.zone}">
+      <img src="${p.url}" alt="" onclick="openLightbox(${i})">
+      <button type="button" class="rm" onclick="event.stopPropagation();removePhoto(${i})">×</button>
+    </div>`).join('');
+}
+function removePhoto(i) { draft.photos.splice(i, 1); setDirty(true); renderPhotos(); }
+function openLightbox(i) {
+  lbZoomLevel = 1; lbPan = { x: 0, y: 0 };
+  document.getElementById('lb-img').src = draft.photos[i].url;
+  applyLbTransform();
+  document.getElementById('lightbox').classList.add('show');
+}
+function closeLightbox() { document.getElementById('lightbox').classList.remove('show'); }
+function lbZoom(d) { lbZoomLevel = Math.min(5, Math.max(0.5, lbZoomLevel + d)); applyLbTransform(); }
+function lbReset() { lbZoomLevel = 1; lbPan = { x: 0, y: 0 }; applyLbTransform(); }
+function applyLbTransform() {
+  document.getElementById('lb-img').style.transform = `translate(${lbPan.x}px,${lbPan.y}px) scale(${lbZoomLevel})`;
+  document.getElementById('lb-zoom-label').textContent = Math.round(lbZoomLevel * 100) + '%';
+}
+(function bindLb() {
+  const stage = document.getElementById('lb-stage');
+  stage.addEventListener('wheel', e => { e.preventDefault(); lbZoom(e.deltaY < 0 ? 0.15 : -0.15); }, { passive: false });
+  stage.addEventListener('pointerdown', e => { lbDragging = true; lbLast = { x: e.clientX, y: e.clientY }; stage.setPointerCapture(e.pointerId); });
+  stage.addEventListener('pointermove', e => {
+    if (!lbDragging) return;
+    lbPan.x += e.clientX - lbLast.x; lbPan.y += e.clientY - lbLast.y;
+    lbLast = { x: e.clientX, y: e.clientY }; applyLbTransform();
+  });
+  stage.addEventListener('pointerup', () => { lbDragging = false; });
+})();
+
+function openZoneHelp() { document.getElementById('zone-help').classList.add('show'); }
+function openChangeLog(animalOnly) {
+  const body = document.getElementById('log-body');
+  const title = document.getElementById('log-title');
+  let rows = changeLogs.filter(l => l.ownerNo === currentOwnerNo);
+  if (animalOnly && getAnimal()) {
+    rows = rows.filter(l => l.hn === getAnimal().hn);
+    title.textContent = 'History · ' + getAnimal().hn;
+  } else title.textContent = 'Change Log · ' + currentOwnerNo;
+  body.innerHTML = rows.length ? rows.map(l => `
+    <div class="log-item"><div class="t">${l.ts.replace('T',' ').slice(0,19)} · ${l.by} · <b>${l.action}</b></div>
+    <div class="m"><b>${l.hn}</b> · ${l.recordId}<br>${l.message}</div></div>`).join('')
+    : '<div style="text-align:center;color:#94a3b8;padding:28px">ยังไม่มีประวัติ</div>';
+  document.getElementById('log-modal').classList.add('show');
+}
+
+function init() {
+  const fromLs = loadStore();
+  initOwnerSelect();
+  loadOwnerAnimals();
+  document.getElementById('entry-section').classList.remove('hidden');
+  document.getElementById('work-section').classList.remove('show');
+  syncOwnerUI();
+  if (fromLs) console.info('[Hoof Health] loaded from localStorage', LS_KEY);
+
+  const stage = document.getElementById('chart-stage');
+  if (stage) {
+    stage.style.pointerEvents = 'auto';
+    stage.addEventListener('click', e => {
+      if (!e.altKey) return;
+      const rect = stage.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
+      const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
+      console.log(`hotspot: [${x}, ${y}]`);
+      showToast(`พิกัดโซน ≈ [${x}, ${y}]%  (ดู console)`);
+    });
+  }
+}
+window.resetLocalStore = resetLocalStore;
+window.openAnimalTab = openAnimalTab;
+window.onload = init;
+</script>
+</body>
+</html>

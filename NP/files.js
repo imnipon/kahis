@@ -222,6 +222,20 @@ const filesTree = [
         ]
       },
       {
+        "name": "hoof_health",
+        "label": "Hoof Health Module",
+        "type": "folder",
+        "path": "NP/hoof_health",
+        "children": [
+          {
+            "name": "hoof_health_editor.html",
+            "type": "file",
+            "path": "NP/hoof_health/hoof_health_editor.html",
+            "lastUpdate": "2026-08-26T20:15:00.000000"
+          }
+        ]
+      },
+      {
         "name": "items",
         "label": "Items Manager",
         "type": "folder",
