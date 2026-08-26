@@ -1234,19 +1234,24 @@ const SEED_CHANGE_LOGS = [
     message: 'Confirm HH-101-A · รอบตรวจประจำ · ปกติ', by: DVM }
 ];
 let changeLogs = [];
+let storeReady = false; // กัน persist ทับ seed ด้วย animals=[] ก่อน loadOwnerAnimals
 let lbZoomLevel = 1, lbPan = { x: 0, y: 0 }, lbDragging = false, lbLast = { x: 0, y: 0 };
 
 function cloneAnimalsMap(src) {
   return JSON.parse(JSON.stringify(src));
 }
 function applySeedData() {
+  storeReady = false;
+  animals = [];
   animalsByOwner = cloneAnimalsMap(ANIMALS_BY_OWNER);
   changeLogs = cloneAnimalsMap(SEED_CHANGE_LOGS);
   currentOwnerNo = 'OWN-10021';
 }
 function persistStore() {
   try {
-    animalsByOwner[currentOwnerNo] = cloneAnimalsMap(animals);
+    if (storeReady) {
+      animalsByOwner[currentOwnerNo] = cloneAnimalsMap(animals);
+    }
     localStorage.setItem(LS_KEY, JSON.stringify({
       savedAt: new Date().toISOString(),
       currentOwnerNo,
@@ -1267,13 +1272,20 @@ function loadStore() {
         animalsByOwner = data.animalsByOwner;
         changeLogs = Array.isArray(data.changeLogs) ? data.changeLogs : cloneAnimalsMap(SEED_CHANGE_LOGS);
         if (data.currentOwnerNo) currentOwnerNo = data.currentOwnerNo;
+        // ซ่อมเคสที่เคยบัค: OWN ถูก persist เป็น [] ทั้งที่ seed มีข้อมูล
+        Object.keys(ANIMALS_BY_OWNER).forEach(own => {
+          const cur = animalsByOwner[own];
+          const seed = ANIMALS_BY_OWNER[own] || [];
+          if ((!cur || !cur.length) && seed.length) {
+            animalsByOwner[own] = cloneAnimalsMap(seed);
+          }
+        });
         return true;
       }
     }
   } catch (err) {
     console.warn('localStorage load failed', err);
   }
-  // คีย์เก่าจากช่วงทดลอง — ลบทิ้งเงียบๆ
   try {
     localStorage.removeItem('kahis.hoofHealth.v1');
     localStorage.removeItem('kahis.hoofHealth.v2');
@@ -1399,6 +1411,7 @@ function loadOwnerAnimals() {
   animals = (animalsByOwner[currentOwnerNo] || []).map(a => ({
     ...a, records: a.records.map(cloneRecord)
   }));
+  storeReady = true;
   syncOwnerUI();
   fillSummaryDates();
   if (document.getElementById('work-section').classList.contains('show')) {
