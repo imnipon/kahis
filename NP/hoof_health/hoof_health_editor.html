@@ -1272,14 +1272,15 @@ function loadStore() {
         animalsByOwner = data.animalsByOwner;
         changeLogs = Array.isArray(data.changeLogs) ? data.changeLogs : cloneAnimalsMap(SEED_CHANGE_LOGS);
         if (data.currentOwnerNo) currentOwnerNo = data.currentOwnerNo;
-        // ซ่อมเคสที่เคยบัค: OWN ถูก persist เป็น [] ทั้งที่ seed มีข้อมูล
+        // ซ่อมเคสที่ LS ค้างจำนวนน้อยกว่า seed (เช่น เคยบัค / seed เก่า)
         Object.keys(ANIMALS_BY_OWNER).forEach(own => {
           const cur = animalsByOwner[own];
           const seed = ANIMALS_BY_OWNER[own] || [];
-          if ((!cur || !cur.length) && seed.length) {
+          if (!Array.isArray(cur) || cur.length < seed.length) {
             animalsByOwner[own] = cloneAnimalsMap(seed);
           }
         });
+        persistStore();
         return true;
       }
     }
