@@ -42,11 +42,11 @@
     background: #fff; border: 1px solid #fca5a5; border-radius: 8px; padding: 6px 12px;
     font-size: 13px; cursor: pointer; color: #dc2626; font-family: inherit; font-weight: 500;
   }
-  .confirm-overlay, .logic-overlay, .log-overlay, .zone-help-overlay {
+  .confirm-overlay, .logic-overlay, .log-overlay, .zone-help-overlay, .manual-overlay {
     display: none; position: fixed; inset: 0; z-index: 3000;
     background: rgba(0,0,0,.4); align-items: center; justify-content: center; padding: 16px;
   }
-  .confirm-overlay.show, .logic-overlay.show, .log-overlay.show, .zone-help-overlay.show { display: flex; }
+  .confirm-overlay.show, .logic-overlay.show, .log-overlay.show, .zone-help-overlay.show, .manual-overlay.show { display: flex; }
   .confirm-box {
     background: #fff; border-radius: 12px; box-shadow: var(--qb-shadow);
     padding: 24px 28px; max-width: 420px; width: 100%; text-align: center;
@@ -488,10 +488,15 @@
     background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px;
     padding: 10px 12px; margin: 8px 0 12px; font-size: 12px; color: #78350f;
   }
-  .logic-ok {
-    background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px;
-    padding: 10px 12px; margin: 8px 0 12px; font-size: 12px; color: #14532d;
+  .help-body table.manual-table {
+    width: 100%; border-collapse: collapse; font-size: 12px; margin: 8px 0 12px;
   }
+  .help-body table.manual-table th, .help-body table.manual-table td {
+    border: 1px solid #e5e7eb; padding: 6px 8px; text-align: left; vertical-align: top;
+  }
+  .help-body table.manual-table th { background: #f8fafc; color: #334155; font-weight: 700; }
+  .help-body .manual-ol { padding-left: 1.3em; margin: 0 0 10px; }
+  .help-body .manual-ol li { margin-bottom: 4px; }
 
   .toast {
     position: fixed; top: 20px; right: 20px; z-index: 9000; background: #f0fdf4;
@@ -514,6 +519,7 @@
         <div class="obj-brand-sub">Hoof Health</div>
       </div>
       <div class="examcard-bar">
+        <button class="doc-badge" type="button" onclick="openUserManual()"><span class="md-tag">TH</span> คู่มือ</button>
         <button class="logic-badge" type="button" onclick="document.getElementById('logic-modal').classList.add('show')">View Logic/Rule</button>
         <button class="doc-badge" type="button" onclick="openZoneHelp()"><span class="md-tag">FIG.1</span> Claw zones</button>
         <button class="doc-badge" type="button" onclick="openChangeLog()"><span class="md-tag">LOG</span> Change Log</button>
@@ -729,6 +735,88 @@
     <div class="confirm-actions">
       <button class="confirm-back" type="button" onclick="document.getElementById('close-confirm').classList.remove('show')">กลับไปทำต่อ</button>
       <button class="confirm-close-danger" type="button" onclick="closeWorkspace()">ปิด · กลับเลือก Owner</button>
+    </div>
+  </div>
+</div>
+
+<div class="manual-overlay" id="manual-modal">
+  <div class="help-box logic-wide">
+    <div class="help-head">
+      <div class="help-title">คู่มือผู้ใช้ — Hoof Health (ใบบันทึกปาดกีบ)</div>
+      <button class="modal-close" type="button" onclick="document.getElementById('manual-modal').classList.remove('show')">&#10005;</button>
+    </div>
+    <div class="help-body">
+      <div class="logic-ok">
+        คู่มือฉบับเต็ม (ไฟล์): <a href="hoof_health_manual_th.md" target="_blank" rel="noopener">hoof_health_manual_th.md</a>
+        · เอกสารเทคนิค: ปุ่ม <b>View Logic/Rule</b>
+      </div>
+
+      <div class="logic-h">1. โมดูลนี้ทำอะไร</div>
+      <ul>
+        <li>บันทึกการตรวจ / ปาดกีบสัตว์ใหญ่ (โค · กระบือ)</li>
+        <li>ระบุขา · พื้นที่ (Lateral / Medial / Interdigital) · โซน 0–12 · รอยโรค · หัตถการ</li>
+        <li>วงแดงบนภาพ = มี lesion ที่โซน · วงน้ำเงิน = มี treatment ที่พื้นที่นั้น</li>
+      </ul>
+
+      <div class="logic-h">2. เริ่มใช้งาน</div>
+      <ol class="manual-ol">
+        <li>เลือก <b>Owner No.</b></li>
+        <li>กดปุ่มเขียว <b>แสดง</b></li>
+        <li>ใช้แท็บ <b>ตารางรวม</b> หรือเปิดแท็บสัตว์</li>
+      </ol>
+
+      <div class="logic-h">3. ปุ่มด้านบน</div>
+      <table class="manual-table">
+        <tr><th>ปุ่ม</th><th>ความหมาย</th></tr>
+        <tr><td><b>คู่มือ</b></td><td>คู่มือผู้ใช้ภาษาไทย</td></tr>
+        <tr><td><b>View Logic/Rule</b></td><td>กติกา / โครงสร้างข้อมูล (ทีมพัฒนา)</td></tr>
+        <tr><td><b>FIG.1</b></td><td>แผนภาพโซนกีบ</td></tr>
+        <tr><td><b>Change Log</b></td><td>ประวัติ Confirm / Apply ทั้งฟาร์ม</td></tr>
+        <tr><td><b>✕</b></td><td>ปิดหน้าทำงาน กลับเลือก Owner</td></tr>
+      </table>
+
+      <div class="logic-h">4. หน้าจอบันทึก (3 คอลัมน์)</div>
+      <ul>
+        <li><b>ซ้าย — ผังกีบ</b>: ดูอย่างเดียว · เลือกโซนบนภาพไม่ได้ · ใต้ภาพมีสรุป 3 บล็อก</li>
+        <li><b>กลาง — ลงข้อมูล</b>: ขา → พื้นที่ → โซน → Lesion → Treatment → Normal / รูป</li>
+        <li><b>ขวา — Meta</b>: ชื่อสัตว์ · Process on · DVM · แผนก · Note · Confirm/Apply</li>
+      </ul>
+
+      <div class="logic-h">5. Clear</div>
+      <ul>
+        <li><b>Clear ข้อมูลขาที่เลือก</b> — ล้างทั้งขาที่กำลังเลือก</li>
+        <li><b>Clear ข้อมูลพื้นที่ที่เลือก</b> — ล้างเฉพาะ Lateral / Medial / Interdigital ที่เลือก</li>
+      </ul>
+
+      <div class="logic-h">6. Confirm และ Apply</div>
+      <ul>
+        <li><b>Confirm</b> — บันทึก / ยืนยันครั้งแรก → สถานะ done</li>
+        <li><b>Apply</b> — แก้ record ที่ Confirm แล้ว แล้วบันทึกใหม่ (มี log แยก)</li>
+        <li>สัตว์หนึ่งตัวมีได้หลายรอบ — เลือกจากเมนู Process on หรือกด <b>+ Add new</b></li>
+      </ul>
+
+      <div class="logic-h">7. ประวัติ</div>
+      <ul>
+        <li><b>History</b> ในแท็บสัตว์ = ของสัตว์ตัวนั้น</li>
+        <li><b>Change Log</b> ด้านบน = ทั้ง Owner</li>
+      </ul>
+
+      <div class="logic-h">8. สีพื้นที่</div>
+      <ul>
+        <li>Lateral = น้ำเงิน · Medial = ส้ม · Interdigital = ม่วง</li>
+      </ul>
+
+      <div class="logic-h">9. ลำดับงานแนะนำ</div>
+      <ol class="manual-ol">
+        <li>Owner → แสดง → เปิดแท็บสัตว์</li>
+        <li>เลือกขา → พื้นที่ → โซน → lesion → treatment</li>
+        <li>ทำครบทุกขาที่ตรวจ → ตั้ง Process on → Confirm</li>
+        <li>กลับมาแก้รอบเดิมภายหลัง → Apply</li>
+      </ol>
+
+      <div class="logic-note">
+        หน้านี้เป็น mockup · ข้อมูลเก็บในเบราว์เซอร์เครื่องคุณ · ถ้าต้องการชุดตัวอย่างใหม่ให้ Hard reset ใน View Logic/Rule
+      </div>
     </div>
   </div>
 </div>
@@ -2026,6 +2114,7 @@ function applyLbTransform() {
 })();
 
 function openZoneHelp() { document.getElementById('zone-help').classList.add('show'); }
+function openUserManual() { document.getElementById('manual-modal').classList.add('show'); }
 function openChangeLog(animalOnly) {
   const body = document.getElementById('log-body');
   const title = document.getElementById('log-title');

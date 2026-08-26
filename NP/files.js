@@ -231,7 +231,13 @@ const filesTree = [
             "name": "hoof_health_editor.html",
             "type": "file",
             "path": "NP/hoof_health/hoof_health_editor.html",
-            "lastUpdate": "2026-08-26T20:15:00.000000"
+            "lastUpdate": "2026-08-26T21:55:00.000000"
+          },
+          {
+            "name": "hoof_health_manual_th.md",
+            "type": "file",
+            "path": "NP/hoof_health/hoof_health_manual_th.md",
+            "lastUpdate": "2026-08-26T21:55:00.000000"
           }
         ]
       },

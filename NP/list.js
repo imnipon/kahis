@@ -29,5 +29,6 @@ const assessmentFiles = [
   { title: "Board — For Dev / Logic", file: "NP/qmanage/docs/for_dev_qmanage.md", lastUpdate: "2026-08-22T19:34:03.000000" },
   { title: "Pet Note", file: "NP/petnote/petnote.html", lastUpdate: "2026-08-25T15:50:00.000000" },
   { title: "Pet Note Manual / For Dev", file: "NP/petnote/petnote.md", lastUpdate: "2026-08-25T15:50:00.000000" },
-  { title: "Hoof Health Module", file: "NP/hoof_health/hoof_health_editor.html", lastUpdate: "2026-08-26T21:45:00.000000" },
+  { title: "Hoof Health Module", file: "NP/hoof_health/hoof_health_editor.html", lastUpdate: "2026-08-26T21:55:00.000000" },
+  { title: "Hoof Health — คู่มือผู้ใช้", file: "NP/hoof_health/hoof_health_manual_th.md", lastUpdate: "2026-08-26T21:55:00.000000" },
 ];
