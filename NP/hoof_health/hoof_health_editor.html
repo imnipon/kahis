@@ -285,39 +285,62 @@
   .chart-stage {
     position: relative; width: 100%; border: 1px solid #e5e7eb; border-radius: 12px;
     background: #fff; overflow: hidden; line-height: 0; user-select: none;
+    container-type: inline-size; container-name: clawchart;
   }
   .chart-bg { width: 100%; height: auto; display: block; vertical-align: top; }
   .chart-overlay { position: absolute; inset: 0; pointer-events: none; }
-  /* เป้าธนู: วงในแดง=Lesion · วงนอกฟ้า=Treatment */
-  .zone-target {
-    position: absolute; transform: translate(-50%, -50%);
-    width: 6.0%; aspect-ratio: 1 / 1; height: auto;
-    min-width: 32px; min-height: 32px;
+  /* วง = โค้ด lesion · เลขโซนใต้่วง · สีตัวอักษรตาม Lat/Med/Inter */
+  .zone-marker {
+    position: absolute; transform: translate(-50%, -58%);
+    display: flex; flex-direction: column; align-items: center; gap: 1px;
+    pointer-events: auto; cursor: grab; touch-action: none;
+    z-index: 2; user-select: none; line-height: 1;
+  }
+  .zone-marker:active, .zone-marker.dragging { cursor: grabbing; z-index: 5; }
+  .zone-disk {
+    width: clamp(20px, 4.2cqw, 28px);
+    aspect-ratio: 1 / 1;
     border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
     box-sizing: border-box;
-    background: transparent;
-    border: 3px solid transparent;
-  }
-  .zone-target .ring-lesion {
-    width: 74%; aspect-ratio: 1; border-radius: 50%;
-    box-sizing: border-box;
-    border: 3px solid transparent;
+    border: 1.5px solid #e11d48;
+    background: rgba(255, 255, 255, .94);
     display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, .12);
   }
-  .zone-target .ring-core {
-    width: 36%; aspect-ratio: 1; border-radius: 50%;
-    box-sizing: border-box; background: transparent;
+  .zone-marker.has-tx .zone-disk {
+    box-shadow:
+      0 0 0 2px #0ea5e9,
+      0 1px 2px rgba(15, 23, 42, .12);
   }
-  .zone-target.has-tx { border-color: #0ea5e9; box-shadow: 0 0 0 1px rgba(14,165,233,.35); }
-  .zone-target.has-lesion .ring-lesion { border-color: #e11d48; }
-  .zone-target.has-lesion:not(.has-tx) {
-    width: 6.0%; min-width: 32px; min-height: 32px;
-    border-color: transparent; box-shadow: none;
+  .zone-code {
+    font-size: clamp(6px, 1.35cqw, 8px);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    max-width: 92%;
+    overflow: hidden;
+    text-align: center;
+    pointer-events: none;
   }
-  .zone-target.has-lesion:not(.has-tx) .ring-lesion {
-    width: 74%; border-color: #e11d48;
+  .zone-code.long {
+    font-size: clamp(5px, 1.15cqw, 7px);
+    letter-spacing: -0.06em;
   }
+  .zone-num {
+    font-size: clamp(8px, 1.85cqw, 11px);
+    font-weight: 800;
+    line-height: 1;
+    pointer-events: none;
+    text-shadow:
+      0 0 3px #fff, 0 0 4px #fff, 1px 0 0 #fff, -1px 0 0 #fff,
+      0 1px 0 #fff, 0 -1px 0 #fff;
+  }
+  .zone-marker.side-lateral .zone-code,
+  .zone-marker.side-lateral .zone-num { color: #2563eb; }
+  .zone-marker.side-medial .zone-code,
+  .zone-marker.side-medial .zone-num { color: #ea580c; }
+  .zone-marker.side-interdigital .zone-code,
+  .zone-marker.side-interdigital .zone-num { color: #0d9488; }
 
   /* สรุปใต้ภาพ · 3 บล็อกตาม Lateral / Medial / Interdigital */
   .leg-readout {
@@ -336,7 +359,7 @@
   .leg-block-h .side-tag { font-size: 9px; font-weight: 600; color: #94a3b8; text-transform: none; letter-spacing: 0; }
   .leg-block.lateral .leg-block-h { border-left: 3px solid #2563eb; }
   .leg-block.medial .leg-block-h { border-left: 3px solid #ea580c; }
-  .leg-block.interdigital .leg-block-h { border-left: 3px solid #7c3aed; }
+  .leg-block.interdigital .leg-block-h { border-left: 3px solid #0d9488; }
   .leg-block-b { padding: 6px 8px; flex: 1; font-size: 11px; line-height: 1.45; color: #334155; }
   .leg-block-b .empty { color: #94a3b8; font-style: italic; }
   .leg-block-b .row { display: flex; flex-wrap: wrap; gap: 3px 6px; align-items: baseline; margin-bottom: 3px; }
@@ -346,7 +369,7 @@
   .leg-block.active-side { background: #fff; }
   .leg-block.lateral.active-side { box-shadow: 0 0 0 2px rgba(37,99,235,.35); }
   .leg-block.medial.active-side { box-shadow: 0 0 0 2px rgba(234,88,12,.35); }
-  .leg-block.interdigital.active-side { box-shadow: 0 0 0 2px rgba(124,58,237,.35); }
+  .leg-block.interdigital.active-side { box-shadow: 0 0 0 2px rgba(13,148,136,.35); }
 
   /* Entry vs work */
   .entry-section { flex-shrink: 0; }
@@ -388,7 +411,7 @@
   .seg-btn.on { background: #16a34a; color: #fff; border-color: #15803d; }
   .seg-btn.lat.on { background: #2563eb; border-color: #1d4ed8; color: #fff; }
   .seg-btn.med.on { background: #ea580c; border-color: #c2410c; color: #fff; }
-  .seg-btn.inter.on { background: #7c3aed; border-color: #6d28d9; color: #fff; }
+  .seg-btn.inter.on { background: #0d9488; border-color: #0f766e; color: #fff; }
   .chip-label {
     font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase;
     letter-spacing: .05em; margin-bottom: 6px;
@@ -411,7 +434,7 @@
     min-width: 34px; height: 32px; padding: 0 8px; border-radius: 8px; border: 1px solid #cbd5e1;
     background: #fff; font-size: 12px; font-weight: 800; font-family: inherit; cursor: pointer; color: #475569;
   }
-  .zbtn.on { background: #2563eb; color: #fff; border-color: #1d4ed8; }
+  .zbtn.on { background: #e0f2fe; color: #0369a1; border-color: #7dd3fc; }
   .zbtn.marked { box-shadow: inset 0 0 0 2px #e11d48; }
   .zbtn:disabled { opacity: .35; cursor: not-allowed; }
   .ctx-line {
@@ -436,6 +459,8 @@
   }
   .chip-btn.clear:hover { background: #fef2f2; }
   .chip-btn.dim { opacity: .45; }
+  .chip-btn.dim::after { content: none; }
+  .photo-hint { font-size: 10px; color: #94a3b8; margin: 0 0 8px; line-height: 1.35; }
 
   .photo-section { margin-top: 4px; padding-top: 10px; border-top: 1px solid #f1f5f9; }
   .photo-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
@@ -650,21 +675,22 @@
         <div class="map-pane">
           <div class="pane-head">
             <span>ผังกีบ · สีบอกตำแหน่งปัญหา</span>
-            <span class="link-hint">แสดงผลอย่างเดียว · เลือกโซนที่บล็อกกลาง</span>
+            <span class="link-hint">เลือกโซนที่บล็อกกลาง · ลากวงบนภาพได้</span>
           </div>
           <div class="pane-body">
             <div class="map-legend">
-              <span class="lg"><span class="legend-target" aria-hidden="true"></span>เป้าธนู</span>
-              <span>วงกลาง = <b style="color:#e11d48">Lesion</b></span>
-              <span>วงนอก = <b style="color:#0ea5e9">Treatment</b></span>
-              <span>(ขึ้นวงเฉพาะโซนที่มีข้อมูล · ไม่โชว์ตอนกดเลือกเลข)</span>
+              <span class="lg"><span class="legend-target" aria-hidden="true"></span>1 วง / lesion</span>
+              <span>ในวง = <b>โค้ด</b> · ใต้วง = <b>เลขโซน</b></span>
+              <span>สีตัวอักษร: <b style="color:#2563eb">Lat</b> · <b style="color:#ea580c">Med</b> · <b style="color:#0d9488">Inter</b></span>
+              <span>ขอบนอกฟ้า = มี <b style="color:#0ea5e9">Treatment</b></span>
+              <span>ลากวงเพื่อขยับ</span>
             </div>
             <div class="map-foot-bar">
               <span>ขาที่แสดง: <b id="map-leg-title">LH · หลังซ้าย</b></span>
               <span style="font-size:10px">BG: claw zone chart · overlay layer</span>
             </div>
             <div class="chart-stage" id="chart-stage" aria-hidden="true">
-              <img class="chart-bg" src="claw_zones_chart.png" alt="Claw zones chart" width="1024" height="480" draggable="false">
+              <img class="chart-bg" src="claw_zones_chart.png" alt="Claw zones chart" width="1024" height="681" draggable="false">
               <div class="chart-overlay" id="chart-overlay"></div>
             </div>
             <div class="leg-readout" id="leg-readout" aria-live="polite"></div>
@@ -699,13 +725,13 @@
 
             <div class="ctx-line" id="ctx-line">—</div>
 
-            <div class="chip-label">4. Lesion codes</div>
+            <div class="chip-label">4. Lesion codes <span style="font-weight:500;color:#94a3b8;text-transform:none;letter-spacing:0">(เลือกได้อิสระ · จาง = ไม่พบบ่อยที่โซนนี้)</span></div>
             <div class="chips" id="lesion-chips"></div>
 
             <div class="chip-label">5. Treatment</div>
             <div class="chips" id="tx-chips"></div>
 
-            <div class="chip-label">ทางลัด</div>
+            <div class="chip-label">ระบุ ตำแหน่งว่าปกติ (Normal Trim)</div>
             <div class="chips" id="normal-chips">
               <button type="button" class="chip-btn ok" id="btn-normal-claw" data-scope="claw" onclick="markNormalScope('claw')">
                 <span class="abbr">[N]</span><span class="full">Normal trim (ขอบเขตที่เลือก)</span>
@@ -717,6 +743,7 @@
 
             <div class="photo-section">
               <div class="chip-label">หลักฐานรูป</div>
+              <p class="photo-hint">มือถือ: ปุ่มเปิดกล้องมักได้กล้องหลัง · โน้ตบุ๊ก: เลือกไฟล์หรือ webcam ตามเบราว์เซอร์ · Browse… ใช้ได้ทุกเครื่อง</p>
               <div class="photo-actions">
                 <button type="button" class="btn-tool" onclick="document.getElementById('file-browse').click()">Browse…</button>
                 <button type="button" class="btn-tool" onclick="document.getElementById('file-camera').click()">เปิดกล้อง</button>
@@ -825,79 +852,126 @@
       <div class="logic-h">1. Clinical model</div>
       <ul>
         <li>ขา (Limb): <b>LF · RF · LH · RH</b></li>
-        <li>พื้นที่ (Side): <b>Lateral · Medial · Interdigital</b> — เรียงนี้ทั้งปุ่มเลือกและบล็อกสรุปใต้ภาพ</li>
+        <li>พื้นที่ (Side): <b>Lateral · Medial · Interdigital</b> — เรียงนี้ทั้งปุ่มเลือก · บล็อกสรุปใต้ภาพ · และลำดับวาด overlay</li>
         <li>ต่อขา: (Zone 1–12 × Medial + Lateral) + Interdigital Zone <b>0, 10</b> = <b>26 terms</b></li>
-        <li><b>Lesion</b> เก็บ <b>ต่อโซน</b> · แสดงโค้ดแบบ <b>[SU]</b> <i>Sole Ulcer</i></li>
-        <li><b>Treatment</b> (รอบนี้) เก็บ <b>ต่อพื้นที่</b> (Lateral / Medial / Interdigital ของขานั้น) ไม่แยกต่อโซน
-          — เพราะ wrap/trim/block มักทำระดับกีบ/ซอกกีบ · ถ้า product ต้องการ per-zone ต้องขยาย schema</li>
-        <li><b>Normal trim</b> เป็น flag ระดับพื้นที่ (หรือทั้งขา) · ไม่วาดวงบนภาพ</li>
+        <li>โซนที่ใช้ได้ตาม side: claw = 1–9,11,12 · interdigital = 0,10 · ปุ่มโซนนอกชุด = disabled</li>
+        <li><b>Lesion</b> เก็บ <b>ต่อโซน</b> เป็นอาร์เรย์โค้ด · UI แสดง <b>[SU]</b> <i>Sole Ulcer</i>
+          — <b>เลือกได้อิสระ</b>ทุกโซนที่ active · ฟิลด์ <code>zones</code> ใน <code>LESIONS</code> = typical sites เท่านั้น
+          (ปุ่มจาง + title = คำแนะนำ ไม่ hard-block · <code>toggleLesion</code> ไม่เช็ค zones)</li>
+        <li>ตัวอย่าง atypical ที่อนุญาต: Zone 11 + <code>DD</code> (primary DD มักอยู่ 0/10 แต่ลามได้)</li>
+        <li><b>Treatment</b> เก็บ <b>ต่อพื้นที่</b> (ไม่ per-zone) — wrap/trim/block มักระดับกีบ/ซอก · ขยาย schema ถ้าต้องการ per-zone</li>
+        <li><b>Normal trim</b>: flag <code>normal:true</code> ระดับ side หรือทั้งขา · ล้าง zones/tx ของขอบเขตนั้น · <b>ไม่วาดวง</b></li>
+        <li><b>hotspotOffsets</b>: ตำแหน่งวงที่ผู้ใช้ลาก คีย์ <code>leg:side:zone:code</code>
+          เช่น <code>LH:lateral:4:SU</code> → <code>[x%, y%]</code> · แยกตามขาเสมอ</li>
       </ul>
 
       <div class="logic-h">2. Data shape (แนะนำ API / DB)</div>
 <pre class="logic-pre">HoofRecord {
   id, animalHn, ownerNo, processOn, updatedAt, status: draft|done,
-  dvm, dept, note,
+  dvm, dept, note, confirmedAt,
   chart: {
     LF|RF|LH|RH: {
       lateral|medial: { normal: bool, zones: { "1"…"12": [lesionCode…] }, tx: [txCode…] },
       interdigital:   { normal: bool, zones: { "0":[], "10":[] }, tx: [txCode…] }
     }
   },
-  photos: [{ id, url, leg, side, zone, uploadedAt }]
+  hotspotOffsets: { "LH:lateral:4:SU": [x%, y%], … },
+  photos: [{ id, url /* dataURL mock */, leg?, side?, zone?, uploadedAt }]
 }
 ChangeLogEntry { ts, ownerNo, hn, recordId, action, message, by }
-// action ตัวอย่าง: view | new-record | confirm | apply | clear-leg | clear-side</pre>
+// action: view | new-record | confirm | apply | clear-leg | clear-side | …
+
+LESIONS[].zones = typical only (soft hint)
+TREATMENTS = BLK | WRP | TRIM
+localStorage key = kahis.hoofHealth.data
+  { animalsByOwner, changeLogs, … }</pre>
 
       <div class="logic-h">3. UI flow</div>
       <ul>
         <li><b>Entry</b>: KAHIS shell + MOCKUP banner + Owner No. + ปุ่มแสดง · ยังไม่โชว์ตาราง</li>
-        <li><b>หลังแสดง</b>: ซ่อน MOCKUP/Owner bar · แท็บตารางรวม + แท็บสัตว์</li>
-        <li>แท็บสัตว์: toolbar (Last Process / Update / Owner meta) · 3 คอลัมน์ Map | Select | Meta</li>
-        <li>ภาพซ้าย = <b>display only</b> · เลือกขา/พื้นที่/โซน/โค้ดได้เฉพาะบล็อกกลาง</li>
-        <li>ใต้ภาพ: 3 บล็อกสรุป Lateral / Medial / Interdigital ของขาที่เลือก</li>
-        <li>Record ที่ <b>done</b> แล้วถ้าแก้ → ปุ่มกลายเป็น <b>Apply</b> และเขียน Change Log</li>
-        <li><b>Change Log</b> (หัวข้อบน) = ทั้ง Owner · <b>History</b> (ในแท็บสัตว์) = เฉพาะ HN นั้น</li>
+        <li><b>หลังแสดง</b>: ซ่อน MOCKUP/Owner bar · แท็บตารางรวม + แท็บสัตว์ · owner meta ย้ายขึ้น record toolbar</li>
+        <li>แท็บสัตว์: toolbar (Last Process / Update / Owner) · 3 คอลัมน์ <b>Map | Select | Meta</b></li>
+        <li><b>บล็อกกลาง = แหล่งสร้างข้อมูลเดียว</b> (ขา → พื้นที่ → โซน → lesion/tx/normal/รูป)</li>
+        <li>ภาพซ้าย = แสดงผล + ลากวง · <b>ไม่</b>ใช้คลิกภาพเพื่อเลือกโซน (ยกเว้น ⌥+คลิก calibrate)</li>
+        <li>ใต้ภาพ: 3 บล็อกสรุป Lateral / Medial / Interdigital ของขาที่เลือก (sync จาก draft.chart)</li>
+        <li>ปุ่มโซน <code>.zbtn.on</code> = ฟ้าอ่อน · มี lesion = <code>.marked</code> กรอบแดง</li>
+        <li>Record <b>done</b> แล้วถ้าแก้ → ปุ่มเป็น <b>Apply</b> + Change Log</li>
+        <li><b>Change Log</b> (หัว) = ทั้ง Owner · <b>History</b> (แท็บสัตว์) = filter ตาม HN</li>
+        <li>คู่มือ: ปุ่ม <b>.md คู่มือผู้ใช้</b> → fetch <code>hoof_health_manual_th.md</code> + render ใน modal</li>
       </ul>
 
-      <div class="logic-h">4. ผังภาพ · วง overlay · จุดแม่นยำ (สำคัญต่อ Dev)</div>
+      <div class="logic-h">4. ผังภาพ · วง overlay · ลาก · calibrate</div>
       <ul>
-        <li>พื้นหลังคงที่: <code>NP/hoof_health/claw_zones_chart.png</code> (อ้างอิง FIGURE 1) · วางเต็มความกว้างคอลัมน์ · <b>ห้าม object-fit: cover</b> ที่จะครอปภาพ</li>
-        <li>Overlay เป็น absolute layer ทับภาพ · พิกัดเป็น <b>เปอร์เซ็นต์ของกรอบภาพ</b> <code>[x%, y%]</code> จากมุมซ้ายบน → ขยายจอแล้วจุดไม่เพี้ยนถ้าอัตราส่วนภาพเดิม</li>
-        <li>ตารางจุดอยู่ใน JS คงที่ <code>ZONE_HOTSPOTS</code> คีย์รูปแบบ <code>'lateral:4'</code>, <code>'medial:7'</code>, <code>'interdigital:0'</code></li>
-        <li>วงแดง (ใน) = มี lesion ที่โซนนั้น · วงน้ำเงิน (นอก) = มี treatment ที่ <b>พื้นที่นั้น</b> และโซนนั้นมี lesion
-          — ไม่โชว์วงตอนกดเลือกเลขอย่างเดียว · ไม่โชว์ Normal</li>
-        <li><b>Calibrate</b>: ที่ภาพกด <b>⌥ Option + คลิก</b> (Mac) → console แสดง <code>hotspot: [x, y]</code> → ใส่ใน <code>ZONE_HOTSPOTS</code> → refresh ตรวจซ้ำ</li>
-        <li>ถ้าเปลี่ยนไฟล์ภาพ / crop / สัดส่วน → ต้อง calibrate จุดใหม่ทั้งชุด</li>
+        <li>BG: <code>NP/hoof_health/claw_zones_chart.png</code> (1024×681) · กว้างเต็มคอลัมน์ · <b>ห้าม object-fit:cover</b></li>
+        <li>ทิศภาพ: Solar · ปลายกีบ Z1 ล่าง · ส้นบน · <b>LATERAL ซ้าย · MEDIAL ขวา</b></li>
+        <li>พิกัด % จากมุมซ้ายบนของกรอบภาพ · <code>ZONE_HOTSPOTS['lateral:4'] = [x,y]</code></li>
+        <li><b>1 วงต่อ lesion</b> (ไม่ใช่ต่อโซน)
+          · DOM: <code>.zone-marker.side-*</code> → <code>.zone-disk</code> (โค้ด) + <code>.zone-num</code> (เลขโซน)</li>
+        <li>สีตัวอักษร: Lat <code>#2563eb</code> · Med <code>#ea580c</code> · Inter <code>#0d9488</code></li>
+        <li>ขอบแดง disk = lesion · box-shadow ฟ้า = side มี tx · Normal / ว่าง = ไม่มีวง</li>
+        <li>ขนาด disk ประมาณ <code>clamp(20px, 4.2cqw, 28px)</code> (โค้ดในวงสั้น ≤3–4 ตัว)</li>
+        <li>หลาย lesion โซนเดียว: stagger default ±1.6% บนแกน x แล้วให้ผู้ใช้ลาก</li>
+        <li>ตำแหน่งแสดง: <code>hotspotOffsets[leg:side:zone:code] || ZONE_HOTSPOTS[side:zone] + stagger</code></li>
+        <li>ลาก: Pointer Events บน document · จบลาก → เขียน offset + <code>setDirty</code> · ลบ lesion/Clear/Normal → prune คีย์ที่เกี่ยวข้อง</li>
+        <li><b>Calibrate</b>: ⌥ Option + คลิกภาพ → console <code>hotspot: [x, y]</code> + toast → ใส่ใน <code>ZONE_HOTSPOTS</code></li>
+        <li>เปลี่ยนไฟล์ภาพ / crop / สัดส่วน → ต้อง calibrate ใหม่ทั้งชุด</li>
       </ul>
-<pre class="logic-pre">// ตัวอย่างคีย์ที่ต้องมีครบ
-lateral:1-9,11,12 · medial:1-9,11,12 · interdigital:0,10
-paint: for each hotspot → if lesionCodes[z].length → red
-                         if lesion && side.tx.length → blue outer</pre>
+<pre class="logic-pre">// paintClawMap
+for side in [lateral, medial, interdigital]:
+  for z in zones(side):
+    for (code, idx) in chart[leg][side].zones[z]:
+      key = `${leg}:${side}:${z}:${code}`
+      pos = offsets[key] || defaultXY(side,z,idx,n)
+      render marker(code, z, sideColor, hasTx)
+
+// ZONE_HOTSPOTS keys ที่ต้องครบ
+lateral:1-9,11,12 · medial:1-9,11,12 · interdigital:0,10</pre>
 
       <div class="logic-h">5. Confirm / Apply / History / Change Log</div>
       <ul>
-        <li><b>Confirm</b>: draft → done · ตั้ง updatedAt / confirmedAt</li>
-        <li><b>Apply</b>: แก้ record ที่ done แล้ว · เก็บ audit ใน Change Log (ใคร แก้เมื่อไร อะไร)</li>
-        <li>สัตว์หนึ่งตัวมีได้หลาย Process on (ประวัติรอบปาดกีบ) เลือกจาก dropdown · นี่คือ <b>record history</b></li>
-        <li>ปุ่ม History ในแท็บสัตว์ = filter Change Log ตาม HN · ปุ่ม Change Log บนหัว = ทั้ง Owner</li>
+        <li><b>Confirm</b>: draft → done · ตั้ง updatedAt / confirmedAt · clone ทั้ง chart + hotspotOffsets + photos</li>
+        <li><b>Apply</b>: แก้ record ที่ done แล้ว · audit ใน Change Log</li>
+        <li>สัตว์หนึ่งตัวมีได้หลาย Process on (record history) เลือกจาก dropdown</li>
+        <li>History ในแท็บสัตว์ = filter Change Log ตาม HN · Change Log บนหัว = ทั้ง Owner</li>
       </ul>
       <div class="logic-ok">
-        ตัวอย่าง seed: Owner 3 ฟาร์ม · สัตว์หลายตัว · บางตัวมี 3–4 records (confirm → apply → follow-up)
-        เช่น <b>สายฝน</b> HH-102-A/B/C · <b>ดาวเรือง</b> HH-301-A→D · เปิด Change Log / History ได้เลย
+        Seed: Owner 3 ฟาร์ม (OWN-10021 / 10088 / 10110) · บางตัวมีหลาย records
+        เช่น <b>สายฝน</b> HH-102-A/B/C · <b>ดาวเรือง</b> HH-301-A→D
       </div>
 
       <div class="logic-h">6. Persistence</div>
       <ul>
-        <li><b>เครื่องใหม่</b>: ไม่มี localStorage → ใช้ seed ในไฟล์</li>
-        <li><b>Hard reset</b>: ล้าง LS แล้วโหลด seed จากไฟล์ที่เสิร์ฟอยู่ (หลัง pull GitHub = ชุดล่าสุด)</li>
-        <li>อัปเดต GitHub <b>ไม่</b> re-seed อัตโนมัติ — กันการทับงานที่ลองแก้ไว้ · ล้างเองเมื่อต้องการ</li>
-        <li>Draft ที่ยังไม่ Confirm ยังไม่เขียนลง record จนกว่าจะ Confirm/Apply</li>
-        <li>Production → API + DB</li>
+        <li>คีย์ LS: <code>kahis.hoofHealth.data</code> · เคลียร์คีย์เก่าที่เลิกใช้ตอนโหลดถ้ามี</li>
+        <li><b>เครื่องใหม่</b>: ไม่มี LS → seed จากไฟล์</li>
+        <li><b>Hard reset</b>: ล้าง LS → โหลด seed จากไฟล์ที่เสิร์ฟอยู่ (หลัง pull = ชุดล่าสุด)</li>
+        <li>อัปเดต GitHub <b>ไม่</b> re-seed อัตโนมัติ — กันทับงานทดลองในเครื่อง</li>
+        <li>อย่า persist animals เป็น <code>[]</code> ทับ seed (กันเคสว่าง Owner)</li>
+        <li>ถ้าจำนวนสัตว์ใน LS น้อยกว่า seed → เติม/ซ่อมจาก seed</li>
+        <li>Production ต่อไป → API + DB · offsets/photos ย้ายตามสัญญา API</li>
       </ul>
 
-      <div class="logic-h">7. สี UI พื้นที่</div>
+      <div class="logic-h">7. สี UI พื้นที่ + องค์ประกอบแผนที่</div>
       <ul>
-        <li>Lateral = น้ำเงิน · Medial = ส้ม · Interdigital = ม่วง (ปุ่ม + บล็อกสรุปใต้ภาพใช้ชุดเดียวกัน)</li>
+        <li>Lateral = น้ำเงิน <code>#2563eb</code> · Medial = ส้ม <code>#ea580c</code> · Interdigital = เขียวน้ำทะเล <code>#0d9488</code></li>
+        <li>ใช้ชุดเดียวกัน: ปุ่ม side · ขอบกล่องสรุป · สีตัวอักษรบนวง</li>
+        <li>Treatment ring / เงา = <code>#0ea5e9</code> (คนละความหมายกับสี Inter — อย่าสับสน)</li>
+        <li>Lesion disk border = <code>#e11d48</code></li>
+        <li>โซนที่เลือก <code>.zbtn.on</code> = พื้น <code>#e0f2fe</code> ขอบ <code>#7dd3fc</code> ตัวอักษร <code>#0369a1</code></li>
+      </ul>
+
+      <div class="logic-h">8. รูปหลักฐาน (photos)</div>
+      <ul>
+        <li><b>Browse…</b>: <code>input[type=file] accept=image/* multiple</code> — ใช้ได้ทุกเครื่อง</li>
+        <li><b>เปิดกล้อง</b>: <code>capture="environment"</code> — มือถือมักได้กล้องหลัง · โน้ตบุ๊กขึ้นกับเบราว์เซอร์ (ไฟล์/webcam)</li>
+        <li>Mockup อ่านเป็น dataURL เก็บใน record · ระวังขนาด LS ถ้ารูปเยอะ</li>
+      </ul>
+
+      <div class="logic-h">9. ไฟล์ที่เกี่ยวข้อง</div>
+      <ul>
+        <li><code>NP/hoof_health/hoof_health_editor.html</code> — UI + logic + seed + Logic modal</li>
+        <li><code>NP/hoof_health/hoof_health_manual_th.md</code> — คู่มือผู้ใช้ (โหลดในแอป)</li>
+        <li><code>NP/hoof_health/claw_zones_chart.png</code> — พื้นผัง · คู่กับ <code>ZONE_HOTSPOTS</code></li>
+        <li>ลงทะเบียน Explorer: <code>NP/files.js</code> · <code>NP/list.js</code> · โฟลเดอร์ดาวน์โหลดได้</li>
       </ul>
     </div>
   </div>
@@ -912,8 +986,9 @@ paint: for each hotspot → if lesionCodes[z].length → red
     <div class="help-body">
       <img src="claw_zones_chart.png" alt="Claw zones chart">
       <ul>
-        <li>ภาพพื้นหลังใช้ chart นี้ · มี lesion/treatment จะซ้อนวงกลมที่เลขโซน</li>
-        <li>Solar: Zone 1–6 ต่อกีบ · Zone 0 / 10 คั่นกลาง · ข้าง: 7–9 / 11–12</li>
+        <li>ภาพพื้นหลังผังกีบ · มี lesion จะซ้อนวงที่โซน (ในวง=โค้ด · ใต้วง=เลขโซน · สีตาม Lat/Med/Inter)</li>
+        <li>Solar: Zone 1–6 ต่อกีบ · Zone 0 / 10 คั่นกลาง · ข้าง/ผนัง: 7–9 / 11–12</li>
+        <li>LATERAL ซ้าย · MEDIAL ขวา · Calibrate จุด: ⌥+คลิกบนผังในแท็บสัตว์</li>
       </ul>
     </div>
   </div>
@@ -961,6 +1036,7 @@ const ZONE_NAME = {
 };
 
 const LESIONS = [
+  /* zones = typical sites only (soft hint); any active zone may select any code */
   { code: 'TU', full: 'Toe Ulcer', zones: [1], kind: 'lesion' },
   { code: 'TN', full: 'Toe Necrosis', zones: [1], kind: 'lesion' },
   { code: 'WLD', full: 'White Line Disease', zones: [1, 2, 3], kind: 'lesion' },
@@ -1021,14 +1097,16 @@ function cloneRecord(r) {
   return {
     id: r.id, processOn: r.processOn, updatedAt: r.updatedAt, status: r.status,
     chart: cloneChart(r.chart), note: r.note, dvm: r.dvm, dept: r.dept,
-    photos: (r.photos || []).map(p => ({ ...p })), confirmedAt: r.confirmedAt
+    photos: (r.photos || []).map(p => ({ ...p })), confirmedAt: r.confirmedAt,
+    hotspotOffsets: { ...(r.hotspotOffsets || {}) }
   };
 }
 function rec(id, processOn, status, chart, note, updatedAt) {
   return {
     id, processOn, updatedAt: updatedAt || processOn, status: status || 'draft',
     chart: chart || emptyChart(), note: note || '', dvm: DVM, dept: DEPT,
-    photos: [], confirmedAt: status === 'done' ? (updatedAt || processOn) : null
+    photos: [], confirmedAt: status === 'done' ? (updatedAt || processOn) : null,
+    hotspotOffsets: {}
   };
 }
 function allNormalLeg() {
@@ -1847,8 +1925,12 @@ function updateChipsOn() {
   document.querySelectorAll('#lesion-chips .chip-btn').forEach(b => {
     const code = b.getAttribute('data-code');
     const meta = LESIONS.find(l => l.code === code);
+    const atypical = !!(meta && meta.zones.length && !meta.zones.includes(activeZone));
     b.classList.toggle('on', zoneCodes.includes(code));
-    b.classList.toggle('dim', meta && meta.zones.length && !meta.zones.includes(activeZone));
+    b.classList.toggle('dim', atypical);
+    b.title = atypical
+      ? `เลือกได้ · โซน ${activeZone} ไม่ใช่ตำแหน่งที่พบบ่อยของ ${code}`
+      : (meta ? `พบบ่อยที่โซน ${meta.zones.join(', ')}` : '');
   });
   document.querySelectorAll('#tx-chips .chip-btn').forEach(b => {
     b.classList.toggle('on', (node.tx || []).includes(b.getAttribute('data-code')));
@@ -1882,13 +1964,33 @@ function isLegAllNormal() {
     && !!leg.lateral.normal && !clawHasFindings(leg.lateral)
     && !!leg.interdigital.normal && !interHasFindings(leg.interdigital);
 }
+function ensureOffsets() {
+  if (!draft) return {};
+  if (!draft.hotspotOffsets) draft.hotspotOffsets = {};
+  return draft.hotspotOffsets;
+}
+function pruneOffsetKey(key) {
+  const o = ensureOffsets();
+  if (key in o) delete o[key];
+}
+function pruneOffsetsMatching(prefix) {
+  const o = ensureOffsets();
+  Object.keys(o).forEach(k => {
+    if (k.startsWith(prefix)) delete o[k];
+  });
+}
 function toggleLesion(code) {
   if (!draft) return;
   const node = getScopeNode();
   node.normal = false;
   const arr = node.zones[activeZone] || (node.zones[activeZone] = []);
   const i = arr.indexOf(code);
-  if (i >= 0) arr.splice(i, 1); else arr.push(code);
+  if (i >= 0) {
+    arr.splice(i, 1);
+    pruneOffsetKey(`${activeLeg}:${activeSide}:${activeZone}:${code}`);
+  } else {
+    arr.push(code);
+  }
   setDirty(true); refreshSelectionUI();
 }
 function toggleTx(code) {
@@ -1908,6 +2010,7 @@ function markNormalScope(scope) {
       showToast('ยกเลิก Normal ทั้งขา');
     } else {
       draft.chart[activeLeg] = allNormalLeg();
+      pruneOffsetsMatching(`${activeLeg}:`);
       showToast(`${activeLeg} = Normal ทั้งขา`);
     }
   } else if (isScopeNormal()) {
@@ -1920,10 +2023,12 @@ function markNormalScope(scope) {
   } else if (activeSide === 'interdigital') {
     const i = emptyInter(); i.normal = true;
     draft.chart[activeLeg].interdigital = i;
+    pruneOffsetsMatching(`${activeLeg}:interdigital:`);
     showToast('Normal trim ขอบเขตที่เลือก');
   } else {
     const c = emptyClaw(); c.normal = true;
     draft.chart[activeLeg][activeSide] = c;
+    pruneOffsetsMatching(`${activeLeg}:${activeSide}:`);
     showToast('Normal trim ขอบเขตที่เลือก');
   }
   setDirty(true); refreshSelectionUI();
@@ -1931,6 +2036,7 @@ function markNormalScope(scope) {
 function clearActiveLeg() {
   if (!draft) return;
   draft.chart[activeLeg] = emptyLeg();
+  pruneOffsetsMatching(`${activeLeg}:`);
   setDirty(true); refreshSelectionUI();
   showToast(`Clear ข้อมูลขา ${activeLeg} · ${LEG_LABEL[activeLeg]}`);
 }
@@ -1941,60 +2047,83 @@ function clearActiveScope() {
   } else {
     draft.chart[activeLeg][activeSide] = emptyClaw();
   }
+  pruneOffsetsMatching(`${activeLeg}:${activeSide}:`);
   setDirty(true); refreshSelectionUI();
   const sideLabel = activeSide === 'interdigital' ? 'Interdigital' : (activeSide === 'medial' ? 'Medial' : 'Lateral');
   showToast(`Clear ข้อมูลพื้นที่ ${activeLeg} · ${sideLabel}`);
 }
 
 /* LEFT MAP — chart BG + circle overlay on zone numbers */
-/* พิกัดเป็น % ของภาพ claw_zones_chart.png (1024×480) · heels อยู่บน ปลายกีบล่าง */
+/* พิกัดเป็น % ของภาพ claw_zones_chart.png (1024×681)
+   Solar: ปลายกีบ (Z1) อยู่ล่าง · ส้น (Z6) อยู่บน · LATERAL ซ้าย · MEDIAN ขวา
+   Calibrate: ⌥+คลิก · อัปเดตจากคลิกผู้ใช้ (ผนัง 7–12 จัดตามซ้าย=Lat / ขวา=Med) */
 const ZONE_HOTSPOTS = {
   // Interdigital
-  'interdigital:0':  [51.0, 56.0],
-  'interdigital:10': [51.2, 23.7],
+  'interdigital:0':  [50.4, 47.7],
+  'interdigital:10': [49.9, 23.3],
   // Plantar LATERAL (ซ้าย)
-  'lateral:1':  [48.2, 86.8],
-  'lateral:2':  [35.4, 67.0],
-  'lateral:3':  [31.0, 44.4],
-  'lateral:4':  [40.8, 46.3],
-  'lateral:5':  [44.5, 69.8],
-  'lateral:6':  [40.2, 25.5],
-  // Lat Abaxial / Axial
-  'lateral:7':  [10.6, 38.4],
-  'lateral:8':  [17.8, 40.3],
-  'lateral:9':  [18.7, 26.9],
-  'lateral:11': [8.7, 82.7],
-  'lateral:12': [16.9, 81.8],
+  'lateral:1':  [46.5, 71.8],
+  'lateral:2':  [35.2, 56.2],
+  'lateral:3':  [31.5, 39.9],
+  'lateral:4':  [40.2, 40.2],
+  'lateral:5':  [43.4, 58.4],
+  'lateral:6':  [39.1, 26.5],
+  // Lat Abaxial (ซ้าย)
+  'lateral:7':  [10.2, 37.9],
+  'lateral:8':  [16.9, 38.9],
+  'lateral:9':  [16.7, 27.8],
+  // Lat Axial (ล่างซ้าย) — จุดที่คลิกติดป้าย 7/8 MED
+  'lateral:11': [14.1, 74.4],
+  'lateral:12': [23.2, 74.7],
   // Plantar MEDIAL (ขวา)
-  'medial:1':   [53.6, 86.4],
-  'medial:2':   [66.4, 67.0],
-  'medial:3':   [70.8, 43.5],
-  'medial:4':   [61.0, 46.3],
-  'medial:5':   [56.7, 69.3],
-  'medial:6':   [61.9, 25.5],
-  // Med Abaxial / Axial
-  'medial:7':   [85.1, 37.5],
-  'medial:8':   [91.8, 39.4],
-  'medial:9':   [92.7, 26.5],
-  'medial:11':  [85.1, 81.3],
-  'medial:12':  [92.5, 84.1]
+  'medial:1':   [53.4, 71.1],
+  'medial:2':   [64.9, 55.8],
+  'medial:3':   [68.4, 39.2],
+  'medial:4':   [59.5, 40.8],
+  'medial:5':   [56.7, 59.4],
+  'medial:6':   [60.8, 26.2],
+  // Med Abaxial (ขวา) — จุดที่คลิกติดป้าย 9 MED / 11 LAT / 12 LAT
+  'medial:7':   [90.3, 37.6],
+  'medial:8':   [84.0, 37.6],
+  'medial:9':   [83.8, 27.5],
+  // Med Axial (ล่างขวา)
+  'medial:11':  [88.1, 74.1],
+  'medial:12':  [78.8, 75.4]
 };
 
 function buildClawMap() {
   paintClawMap();
 }
 
+function sideClass(side) {
+  if (side === 'interdigital') return 'side-interdigital';
+  if (side === 'medial') return 'side-medial';
+  return 'side-lateral';
+}
+
 function zoneMarkState(side, z) {
-  if (!draft) return { lesion: false, tx: false };
+  if (!draft) return { lesion: false, tx: false, codes: [] };
   const node = side === 'interdigital'
     ? draft.chart[activeLeg].interdigital
     : draft.chart[activeLeg][side];
   const codes = (node.zones && node.zones[z]) || [];
   const hasLesion = codes.length > 0;
-  // Treatment อยู่ระดับ side — แสดงวง tx เฉพาะโซนที่มี lesion จริง
-  // (เดิม z===0||z===10 ทำให้โซนคู่ interdigital ติดวงไปด้วย)
   const hasTx = hasLesion && (node.tx || []).length > 0;
-  return { lesion: hasLesion, tx: hasTx };
+  return { lesion: hasLesion, tx: hasTx, codes };
+}
+
+function defaultMarkerXY(side, z, index, total) {
+  const base = ZONE_HOTSPOTS[`${side}:${z}`] || [50, 50];
+  if (total <= 1) return [base[0], base[1]];
+  const stagger = (index - (total - 1) / 2) * 1.6;
+  return [base[0] + stagger, base[1]];
+}
+
+function markerPos(side, z, code, index, total) {
+  const key = `${activeLeg}:${side}:${z}:${code}`;
+  const saved = draft && draft.hotspotOffsets && draft.hotspotOffsets[key];
+  if (saved && saved.length === 2) return [saved[0], saved[1]];
+  return defaultMarkerXY(side, z, index, total);
 }
 
 function paintClawMap() {
@@ -2004,34 +2133,101 @@ function paintClawMap() {
   if (!overlay) return;
 
   const marks = [];
-  Object.keys(ZONE_HOTSPOTS).forEach(key => {
-    const [side, zStr] = key.split(':');
-    const z = +zStr;
-    const [x, y] = ZONE_HOTSPOTS[key];
-    const st = zoneMarkState(side, z);
-    // ขึ้นวงเฉพาะเมื่อมี lesion และ/หรือ treatment — ไม่โชว์ตอนกดเลือกเลขอย่างเดียว
-    if (!st.lesion && !st.tx) return;
-
-    const cls = [
-      'zone-target',
-      st.lesion ? 'has-lesion' : '',
-      st.tx ? 'has-tx' : ''
-    ].filter(Boolean).join(' ');
-
-    const tip = [
-      side === 'interdigital' ? 'Interdigital' : (side === 'medial' ? 'Medial' : 'Lateral'),
-      'Z' + z,
-      st.lesion ? 'Lesion' : '',
-      st.tx ? 'Treatment' : ''
-    ].filter(Boolean).join(' · ');
-
-    marks.push(
-      `<div class="${cls}" style="left:${x}%;top:${y}%" title="${tip}">` +
-        `<div class="ring-lesion"><div class="ring-core"></div></div>` +
-      `</div>`
-    );
+  const sides = ['lateral', 'medial', 'interdigital'];
+  sides.forEach(side => {
+    const zones = side === 'interdigital' ? INTER_ZONES : CLAW_ZONES;
+    zones.forEach(z => {
+      const st = zoneMarkState(side, z);
+      if (!st.codes.length) return;
+      const total = st.codes.length;
+      st.codes.forEach((code, idx) => {
+        const [x, y] = markerPos(side, z, code, idx, total);
+        const key = `${activeLeg}:${side}:${z}:${code}`;
+        const long = code.length >= 4 ? ' long' : '';
+        const cls = [
+          'zone-marker',
+          sideClass(side),
+          'has-lesion',
+          st.tx ? 'has-tx' : ''
+        ].filter(Boolean).join(' ');
+        const tip = [
+          side === 'interdigital' ? 'Interdigital' : (side === 'medial' ? 'Medial' : 'Lateral'),
+          'Z' + z,
+          code,
+          st.tx ? 'Treatment' : '',
+          'ลากเพื่อขยับ'
+        ].filter(Boolean).join(' · ');
+        marks.push(
+          `<div class="${cls}" style="left:${x}%;top:${y}%" title="${tip}" ` +
+            `data-key="${key}" data-side="${side}" data-z="${z}" data-code="${code}">` +
+            `<div class="zone-disk"><span class="zone-code${long}">${code}</span></div>` +
+            `<span class="zone-num">${z}</span>` +
+          `</div>`
+        );
+      });
+    });
   });
   overlay.innerHTML = marks.join('');
+}
+
+let markerDrag = null;
+
+function bindMarkerDrag() {
+  if (window._hoofMarkerDragBound) return;
+  window._hoofMarkerDragBound = true;
+
+  document.addEventListener('pointerdown', e => {
+    const el = e.target.closest?.('.zone-marker');
+    if (!el || !draft || e.altKey) return;
+    if (!document.getElementById('chart-overlay')?.contains(el)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const stage = document.getElementById('chart-stage');
+    if (!stage) return;
+    const key = el.getAttribute('data-key');
+    const rect = stage.getBoundingClientRect();
+    const x = parseFloat(el.style.left) || 0;
+    const y = parseFloat(el.style.top) || 0;
+    markerDrag = {
+      key, el, pointerId: e.pointerId,
+      startClientX: e.clientX, startClientY: e.clientY,
+      origX: x, origY: y,
+      rectW: rect.width, rectH: rect.height
+    };
+    el.classList.add('dragging');
+    try { el.setPointerCapture(e.pointerId); } catch (_) {}
+  });
+
+  document.addEventListener('pointermove', e => {
+    if (!markerDrag || e.pointerId !== markerDrag.pointerId) return;
+    e.preventDefault();
+    const dx = (e.clientX - markerDrag.startClientX) / markerDrag.rectW * 100;
+    const dy = (e.clientY - markerDrag.startClientY) / markerDrag.rectH * 100;
+    let nx = markerDrag.origX + dx;
+    let ny = markerDrag.origY + dy;
+    nx = Math.max(2, Math.min(98, nx));
+    ny = Math.max(2, Math.min(98, ny));
+    markerDrag.el.style.left = nx.toFixed(2) + '%';
+    markerDrag.el.style.top = ny.toFixed(2) + '%';
+    markerDrag.curX = nx;
+    markerDrag.curY = ny;
+  });
+
+  function endDrag(e) {
+    if (!markerDrag || (e.pointerId != null && e.pointerId !== markerDrag.pointerId)) return;
+    const { key, el, curX, curY, origX, origY, pointerId } = markerDrag;
+    el.classList.remove('dragging');
+    try { el.releasePointerCapture(pointerId); } catch (_) {}
+    if (curX != null || curY != null) {
+      const x = curX != null ? curX : origX;
+      const y = curY != null ? curY : origY;
+      ensureOffsets()[key] = [+Number(x).toFixed(2), +Number(y).toFixed(2)];
+      setDirty(true);
+    }
+    markerDrag = null;
+  }
+  document.addEventListener('pointerup', endDrag);
+  document.addEventListener('pointercancel', endDrag);
 }
 
 function sideBlockHTML(sideKey, label, short) {
@@ -2258,6 +2454,7 @@ function init() {
       showToast(`พิกัดโซน ≈ [${x}, ${y}]%  (ดู console)`);
     });
   }
+  bindMarkerDrag();
 }
 window.resetLocalStore = resetLocalStore;
 window.forceReloadSeed = forceReloadSeed;
