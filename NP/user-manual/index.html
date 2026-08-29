@@ -82,10 +82,14 @@
 
     .hero p {
       margin: .65rem auto 0;
-      max-width: 34rem;
+      max-width: 38rem;
       font-size: .95rem;
       color: var(--muted);
-      line-height: 1.6;
+      line-height: 1.65;
+    }
+
+    .hero p + p {
+      margin-top: .25rem;
     }
 
     .portal-grid {
@@ -145,20 +149,21 @@
     }
 
     .portal-ring svg.icon-line {
-      width: 2.55rem;
-      height: 2.55rem;
+      width: 3.35rem;
+      height: 3.35rem;
       stroke: #111;
       fill: none;
-      stroke-width: 1.7;
+      stroke-width: 1.65;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
 
     .portal-ring img.icon-poodle {
-      width: 3.1rem;
-      height: 3.1rem;
+      width: 5.35rem;
+      height: 5.35rem;
       object-fit: contain;
       display: block;
+      transform: scale(1.08);
     }
 
     .portal-label {
@@ -215,7 +220,8 @@
 
   <header class="hero">
     <h1>คู่มือการใช้งาน KAHIS</h1>
-    <p>ระบบเวชระเบียนอิเล็กทรอนิกโรงพยาบาลสัตว์ มหาวิทยาลัยเกษตรศาสตร์ — เลือกบทเพื่อเปิดคู่มือและส่งออก PDF</p>
+    <p>ระบบเวชระเบียนอิเล็กทรอนิกโรงพยาบาลสัตว์ มหาวิทยาลัยเกษตรศาสตร์</p>
+    <p>เลือกบทเพื่อเปิดคู่มือและส่งออก PDF</p>
   </header>
 
   <nav class="portal-grid" id="portalGrid" aria-label="รายการบทคู่มือ"></nav>
