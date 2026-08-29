@@ -242,6 +242,26 @@ const filesTree = [
         ]
       },
       {
+        "name": "user-manual",
+        "label": "User Manual (PDF)",
+        "type": "folder",
+        "path": "NP/user-manual",
+        "children": [
+          {
+            "name": "chapter-01-ui-components.html",
+            "type": "file",
+            "path": "NP/user-manual/manual-ui/chapter-01-ui-components.html",
+            "lastUpdate": "2026-08-29T13:44:00.000000"
+          },
+          {
+            "name": "README.md",
+            "type": "file",
+            "path": "NP/user-manual/README.md",
+            "lastUpdate": "2026-08-29T13:44:00.000000"
+          }
+        ]
+      },
+      {
         "name": "items",
         "label": "Items Manager",
         "type": "folder",
