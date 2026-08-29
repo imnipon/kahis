@@ -1,11 +1,10 @@
-/* KAHIS Manual — Legacy print (Chrome window.print + position:fixed footer)
- * ขอบ: top 14mm | left 14mm | right 14mm | bottom 26mm
- * เปิดใช้: KahisExport.setMode('legacy') หรือ ?export=legacy
+/* KAHIS Manual — โหมดขอบมาตรฐาน (window.print + position:fixed footer)
+ * ขอบ: top 26mm | left 14mm | right 14mm | bottom 14mm
  */
 
 @page {
   size: A4 portrait;
-  margin: var(--print-margin) var(--print-margin) 26mm;
+  margin: 26mm var(--print-margin) var(--print-margin) var(--print-margin);
 }
 
 @media print {

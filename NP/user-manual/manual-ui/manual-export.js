@@ -9,13 +9,15 @@
   const MODES = {
     paged: {
       css: 'manual-print-paged.css',
-      label: 'Paged.js (14mm)',
-      hint: 'Print: ระยะขอบ=ไม่มี, เปิดกราฟิกพื้นหลัง'
+      label: 'ขอบเท่ากัน (14 มม. ทุกด้าน)',
+      shortLabel: 'ขอบเท่ากัน',
+      hint: 'ตั้งค่าพิมพ์: ระยะขอบ = ไม่มี · เปิดกราฟิกพื้นหลัง'
     },
     legacy: {
       css: 'manual-print-legacy.css',
-      label: 'Legacy (14/26mm)',
-      hint: 'เปิด file:// ได้ — Print dialog: ระยะขอบ = ค่าเริ่มต้น'
+      label: 'ขอบมาตรฐาน (บน 26 มม. · ล่าง 14 มม.)',
+      shortLabel: 'ขอบมาตรฐาน',
+      hint: 'ตั้งค่าพิมพ์: ระยะขอบ = ค่าเริ่มต้น'
     }
   };
 
@@ -49,12 +51,16 @@
     const notice = document.getElementById('file-protocol-notice');
 
     if (indicator) {
-      indicator.textContent = 'โหมด: ' + meta.label;
+      indicator.textContent = 'การสั่งพิมพ์: โหมด ' + meta.label;
       indicator.title = meta.hint;
     }
-    if (legacyBtn) legacyBtn.classList.toggle('is-active', mode === 'legacy');
+    if (legacyBtn) {
+      legacyBtn.classList.toggle('is-active', mode === 'legacy');
+      legacyBtn.textContent = MODES.legacy.shortLabel;
+    }
     if (pagedBtn) {
       pagedBtn.classList.toggle('is-active', mode === 'paged');
+      pagedBtn.textContent = MODES.paged.shortLabel;
       pagedBtn.disabled = isFileProtocol();
       pagedBtn.title = isFileProtocol()
         ? 'ต้องรัน start-server.bat ก่อน'
@@ -79,10 +85,11 @@
   function setMode(mode) {
     if (mode === 'paged' && isFileProtocol()) {
       alert(
-        'โหมด Paged.js ใช้กับ file:// ไม่ได้\n\n' +
+        'โหมดขอบเท่ากัน ใช้กับการเปิดไฟล์จากเครื่องโดยตรงไม่ได้\n\n' +
         '1. ดับเบิลคลิก start-server.bat\n' +
         '2. เปิด http://localhost:8080/chapter-01-ui-components.html\n' +
-        '3. กด Export PDF อีกครั้ง'
+        '3. กด Export PDF อีกครั้ง\n\n' +
+        'หรือใช้โหมดขอบมาตรฐานได้ทันที'
       );
       return;
     }
@@ -156,11 +163,10 @@
       const msg = String(err.message || err);
       if (msg.includes('file:') || msg.includes('file://') || isFileProtocol()) {
         alert(
-          'Export ไม่สำเร็จ (เปิดไฟล์ตรงๆ ไม่รองรับ Paged.js)\n\n' +
-          'วิธีแก้:\n' +
+          'Export ไม่สำเร็จ (เปิดไฟล์จากเครื่องโดยตรง)\n\n' +
           '• ดับเบิลคลิก start-server.bat\n' +
           '• เปิด http://localhost:8080/chapter-01-ui-components.html\n\n' +
-          'หรือกด Legacy แล้ว Export แบบเดิม (14/26mm)'
+          'หรือใช้โหมดขอบมาตรฐานแล้ว Export อีกครั้ง'
         );
         applyMode('legacy', { silent: true });
       } else {
@@ -170,7 +176,7 @@
       exporting = false;
       if (btn) {
         btn.disabled = false;
-        btn.textContent = prevText || 'Export PDF (A4)';
+        btn.textContent = prevText || 'ส่งออก PDF (A4)';
       }
     }
   }
