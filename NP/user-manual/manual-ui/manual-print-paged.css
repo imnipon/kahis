@@ -1,34 +1,51 @@
-/* KAHIS Manual — Paged.js print (margin box footer, 14mm ทุกด้าน)
- * เปิดใช้: ค่าเริ่มต้น หรือ KahisExport.setMode('paged')
- * ตอน Export: ตั้งระยะขอบ Print dialog = ไม่มี (None)
+/* KAHIS Manual — Paged.js print (14mm ทุกด้าน)
+ * Footer ฝังในแต่ละหน้าหลัง Paged.js render (manual-export.js)
+ * ตอน Export: ระยะขอบ = ไม่มี, เปิด กราฟิกพื้นหลัง
  */
 
 .paged-footer-source {
-  position: running(pagedRunningFooter);
-  width: 100%;
-}
-
-.paged-footer-inner {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  width: 100%;
-  border-top: 2px solid var(--kahis-green);
-  padding-top: 1.5mm;
-  font-family: "Sarabun", "Noto Sans Thai", "Segoe UI", sans-serif;
-  font-size: 6.5pt;
-  line-height: 1.35;
-  box-sizing: border-box;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
 }
 
 @page {
   size: A4 portrait;
   margin: var(--print-margin);
+}
 
-  @bottom-center {
-    content: element(pagedRunningFooter);
-    vertical-align: top;
-  }
+.pagedjs_page {
+  position: relative;
+}
+
+.pagedjs-page-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  height: 10mm;
+  padding: 1.5mm var(--print-margin) 0;
+  border-top: 2px solid var(--kahis-green);
+  background: #fff;
+  font-family: "Sarabun", "Noto Sans Thai", "Segoe UI", sans-serif;
+  font-size: 6.5pt;
+  line-height: 1.35;
+  box-sizing: border-box;
+  z-index: 2;
+}
+
+.pagedjs-page-footer .print-footer-brand {
+  font-weight: 700;
+  color: var(--kahis-green);
+}
+
+.pagedjs-page-footer .print-footer-meta {
+  color: var(--text-muted);
 }
 
 @media print {
