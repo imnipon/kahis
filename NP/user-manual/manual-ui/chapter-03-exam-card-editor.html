@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAHIS คู่มือการใช้งาน — การลงข้อมูลในใบบันทึกการตรวจ (VR005)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="manual-base.css">
+  <link rel="stylesheet" href="manual-print-paged.css" id="print-mode-css">
+</head>
+<body>
+
+<div class="toolbar">
+  <h1>KAHIS คู่มือการใช้งาน — บทที่ 3</h1>
+  <div class="toolbar-actions">
+    <span class="print-mode-indicator" id="print-mode-indicator" title=""></span>
+    <button type="button" class="btn btn-mode is-active" id="btn-mode-paged" onclick="KahisExport.setMode('paged')">ขอบเท่ากัน</button>
+    <button type="button" class="btn btn-mode" id="btn-mode-legacy" onclick="KahisExport.setMode('legacy')">ขอบมาตรฐาน</button>
+    <button type="button" class="btn btn-print" id="btn-export-pdf" onclick="KahisExport.exportPdf()">ส่งออก PDF (A4)</button>
+  </div>
+  <p class="file-protocol-notice" id="file-protocol-notice" hidden>
+    เปิดไฟล์จากเครื่อง — ใช้โหมด <strong>ขอบมาตรฐาน</strong> ได้เลย หรือรัน <code>start-server.bat</code>
+    แล้วเปิด <code>http://localhost:8080/chapter-03-exam-card-editor.html</code> เพื่อใช้โหมด <strong>ขอบเท่ากัน</strong>
+  </p>
+</div>
+
+<div class="manual-root">
+  <div class="manual-body">
+
+    <header class="doc-header">
+      <div class="brand">
+        <div class="logo">KAHIS</div>
+        <div class="brand-text">
+          <h2>ระบบเวชระเบียนอิเล็กทรอนิกโรงพยาบาลสัตว์ ม.เกษตร</h2>
+          <div class="brand-en">KAHIS Kasetsart Animal Hospital Information System</div>
+          <p>คู่มือการใช้งานสำหรับสัตวแพทย์ และบุคคลากรโรงพยาบาลสัตว์</p>
+        </div>
+      </div>
+      <div class="doc-meta">
+        <div><strong>บทที่ 3</strong></div>
+        <div>การลงข้อมูลในใบบันทึกการตรวจ</div>
+        <div>Version 2026.08.14.01</div>
+        <div>อัปเดต: 29 ส.ค. 2026</div>
+      </div>
+    </header>
+
+    <div class="chapter-badge">Chapter 03 — Subjective &amp; Systematic Examination, Data Entry</div>
+    <h1 class="chapter-title">Subjective &amp; Systematic Exam Card Editor — การลงข้อมูลและโหมดการแสดงผล</h1>
+    <p class="chapter-desc">
+      บทนี้อธิบายโหมดการแสดงผลของ Exam Card Editor (Full Screen / Floating / ปิดโหมด)
+      และส่วนประกอบหลักที่ใช้ลงข้อมูลในใบบันทึกการตรวจ คลิกที่ภาพเพื่อดูขนาดจริง
+    </p>
+
+    <!-- ── ส่วนที่ 1: โหมดการแสดงผล ── -->
+    <h3 class="section-title">ส่วนที่ 1 — โหมดการแสดงผล Editor</h3>
+    <p class="chapter-desc" style="margin-top:-.5rem">
+      ปุ่มเปลี่ยนโหมดอยู่ที่มุมขวาบนของแถบ Exam Card Editor โดยวนไอคอนเพื่อสลับระหว่าง
+      <strong>Full Screen</strong>, <strong>Floating</strong> และการปิดโหมดกลับหน้าเดียวตามความยาวเพจ
+    </p>
+
+    <figure class="figure-block">
+      <button class="figure-trigger" onclick="openLightbox('../Label/03_VR005%20Fullscreen%20mode.png', 'รูปที่ 3ก — Full Screen Mode (VR005)')" aria-label="ดูภาพขนาดจริง">
+        <img src="../Label/03_VR005 Fullscreen mode.png" alt="ภาพ Full Screen Mode ของ Exam Card Editor">
+      </button>
+      <figcaption class="figure-caption">
+        <span><span class="fig-num">รูปที่ 3ก</span> — Full Screen Mode</span>
+      </figcaption>
+    </figure>
+
+    <article class="label-item" id="label-mode-1">
+      <div class="label-bar">
+        <span class="label-bar-num">1</span>
+        <span class="label-bar-title">ปุ่มเปลี่ยนโหมดการแสดงผล — Full Screen</span>
+        <span class="label-bar-tag">Full Screen</span>
+      </div>
+      <div class="label-body">
+        <p>ใช้สลับโหมดการแสดงผลของ Exam Card Editor โดยวนไอคอนตามลำดับ เช่น Full Screen → Floating → ปิดโหมด (กลับหน้าเดียวตามความยาวเพจ)</p>
+        <p>ในโหมด <strong>Full Screen</strong> Editor จะขยายเต็มพื้นที่ทำงาน เพื่อให้มีพื้นที่ลงข้อมูลมากขึ้น และยังเห็นแถบเมนูระบบด้านบน</p>
+      </div>
+    </article>
+
+    <figure class="figure-block">
+      <button class="figure-trigger" onclick="openLightbox('../Label/03_VR005%20Floating%20mode.png', 'รูปที่ 3ข — Floating Mode (VR005)')" aria-label="ดูภาพขนาดจริง">
+        <img src="../Label/03_VR005 Floating mode.png" alt="ภาพ Floating Mode ของ Exam Card Editor">
+      </button>
+      <figcaption class="figure-caption">
+        <span><span class="fig-num">รูปที่ 3ข</span> — Floating Mode</span>
+      </figcaption>
+    </figure>
+
+    <article class="label-item" id="label-mode-2">
+      <div class="label-bar">
+        <span class="label-bar-num">2</span>
+        <span class="label-bar-title">ปุ่มเปลี่ยนโหมดการแสดงผล — Floating</span>
+        <span class="label-bar-tag">Floating</span>
+      </div>
+      <div class="label-body">
+        <p>ในโหมด <strong>Floating</strong> Editor จะลอยทับหน้า Viewer / History ทำให้ยังเห็นประวัติ Exam card และรายละเอียดด้านหลังได้ขณะกรอกข้อมูล</p>
+        <p>เหมาะเมื่อต้องการอ้างอิงข้อมูลที่บันทึกไว้แล้วควบคู่กับการแก้ไข</p>
+      </div>
+    </article>
+
+    <figure class="figure-block">
+      <button class="figure-trigger" onclick="openLightbox('../Label/03_VR005%20Closed%20Card%20Editor%20for%20unsaved.png', 'รูปที่ 3ค — ปิดโหมด / Close Editor (VR005)')" aria-label="ดูภาพขนาดจริง">
+        <img src="../Label/03_VR005 Closed Card Editor for unsaved.png" alt="ภาพปิดโหมด Exam Card Editor">
+      </button>
+      <figcaption class="figure-caption">
+        <span><span class="fig-num">รูปที่ 3ค</span> — ปิดโหมด / กลับหน้าเดียว</span>
+      </figcaption>
+    </figure>
+
+    <article class="label-item" id="label-mode-3">
+      <div class="label-bar">
+        <span class="label-bar-num">3</span>
+        <span class="label-bar-title">ปุ่มเปลี่ยนโหมด / ปิด Editor</span>
+        <span class="label-bar-tag">Close</span>
+      </div>
+      <div class="label-body">
+        <p>เมื่อปิดโหมดขยายหรือปิด Editor ระบบจะกลับไปแสดงผลแบบหน้าเดียวตามความยาวของหน้าเพจ</p>
+        <p>หากมีการแก้ไขที่ยังไม่บันทึก อาจมีสถานะหรือการแจ้งเตือนที่เกี่ยวข้องกับการปิด Editor (รายละเอียดตามพฤติกรรมจริงในระบบ)</p>
+      </div>
+    </article>
+
+    <!-- ── ส่วนที่ 2: ส่วนประกอบ Editor ── -->
+    <h3 class="section-title">ส่วนที่ 2 — ส่วนประกอบของ Exam Card Editor</h3>
+    <p class="chapter-desc" style="margin-top:-.5rem">
+      ใช้ภาพ Full Screen เพื่ออธิบายส่วนประกอบหลักที่ใช้ลงข้อมูลในใบบันทึกการตรวจ
+    </p>
+
+    <figure class="figure-block">
+      <button class="figure-trigger" onclick="openLightbox('../Label/03_VR005%20Fullscreen%20mode%202.png', 'รูปที่ 3ง — ส่วนประกอบ Exam Card Editor (VR005)')" aria-label="ดูภาพขนาดจริง">
+        <img src="../Label/03_VR005 Fullscreen mode 2.png" alt="ภาพส่วนประกอบของ Exam Card Editor">
+      </button>
+      <figcaption class="figure-caption">
+        <span><span class="fig-num">รูปที่ 3ง</span> — ส่วนประกอบ Exam Card Editor</span>
+      </figcaption>
+    </figure>
+
+    <section class="labels-section">
+      <h3 class="section-title">คำอธิบายแต่ละ Label</h3>
+
+      <article class="label-item" id="label-a">
+        <div class="label-bar">
+          <span class="label-bar-num">A</span>
+          <span class="label-bar-title">แถบข้อมูลผู้บันทึกและวันที่ของ Exam card</span>
+          <span class="label-bar-tag">Header</span>
+        </div>
+        <div class="label-body">
+          <p>แสดงชื่อสัตวแพทย์ แผนก และวันที่ของ Exam card ที่กำลังแก้ไข (เช่น <strong>For 28 Aug 2026</strong>) รวมถึงสถานะ เช่น <strong>NEW</strong> เมื่อเป็นใบใหม่</p>
+        </div>
+      </article>
+
+      <article class="label-item" id="label-b">
+        <div class="label-bar">
+          <span class="label-bar-num">B</span>
+          <span class="label-bar-title">แผนกและการเพิ่มรายการที่เกี่ยวข้อง</span>
+          <span class="label-bar-tag">Department</span>
+        </div>
+        <div class="label-body">
+          <p>เลือกแผนกที่ใช้กำกับการบันทึก และปุ่ม <strong>Add New</strong> (รวมถึงเมนูเพิ่มเติมถ้ามี) สำหรับงานเสริมที่เกี่ยวกับ Exam card</p>
+        </div>
+      </article>
+
+      <article class="label-item" id="label-c">
+        <div class="label-bar">
+          <span class="label-bar-num">C</span>
+          <span class="label-bar-title">รายการ Topics (แถบซ้าย)</span>
+          <span class="label-bar-tag">Topics</span>
+        </div>
+        <div class="label-body">
+          <p>รายการหัวข้อเนื้อหาของใบบันทึก เช่น History Taking, Appearance, Heart ฯลฯ</p>
+          <ul>
+            <li>คลิกหัวข้อเพื่อเลื่อนไปยังบล็อกกรอกข้อมูลของหัวข้อนั้น</li>
+            <li>มีส่วน <strong>Assessment</strong> แยกท้ายรายการ</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="label-item" id="label-d">
+        <div class="label-bar">
+          <span class="label-bar-num">D</span>
+          <span class="label-bar-title">พื้นที่กรอกเนื้อหา (Plain text)</span>
+          <span class="label-bar-tag">Content</span>
+        </div>
+        <div class="label-body">
+          <p>กล่องข้อความสำหรับบันทึกเนื้อหาของแต่ละหัวข้อแบบ <strong>Plain text</strong> เป็นพื้นที่หลักของการลงข้อมูลตรวจ</p>
+        </div>
+      </article>
+
+      <article class="label-item" id="label-e">
+        <div class="label-bar">
+          <span class="label-bar-num">E</span>
+          <span class="label-bar-title">ช่อง Remarkable</span>
+          <span class="label-bar-tag">Remarkable</span>
+        </div>
+        <div class="label-body">
+          <p>ทำเครื่องหมายหัวข้อที่สำคัญ เมื่อระบุ <span class="remarkable-tag">Remarkable</span> เนื้อหานั้นจะถูกจัดให้อยู่ด้านบนใน Viewer และแสดงพื้นหลังสีม่วง <code>#F0E4FF</code></p>
+        </div>
+      </article>
+
+      <article class="label-item" id="label-f">
+        <div class="label-bar">
+          <span class="label-bar-num">F</span>
+          <span class="label-bar-title">ตัวช่วยกรอกข้อมูล</span>
+          <span class="label-bar-tag">Helpers</span>
+        </div>
+        <div class="label-body">
+          <p>เมนูช่วยกรอกในแต่ละหัวข้อ ประกอบด้วย:</p>
+          <ul>
+            <li><strong>My exam template</strong> — ใช้เทมเพลตที่บันทึกไว้เอง</li>
+            <li><strong>Guideline</strong> — ใช้แนวทาง/ตัวอย่างการบันทึก</li>
+            <li><strong>Order</strong> — ทางลัดการสั่งรายการที่เกี่ยวข้องกับหัวข้อ</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="label-item" id="label-g">
+        <div class="label-bar">
+          <span class="label-bar-num">G</span>
+          <span class="label-bar-title">แถบเครื่องมือ Editor Block</span>
+          <span class="label-bar-tag">Editor Tools</span>
+        </div>
+        <div class="label-body">
+          <p>ปุ่มทางลัดงานร่วมกับการบันทึก Exam card เช่น <strong>Vital Sign</strong>, <strong>Create Assessment</strong>, <strong>Add Plan</strong> และเครื่องมือจัดการอื่นในแถบเดียวกัน</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="manual-closing">
+    <section class="summary-section">
+      <div class="label-bar label-bar--summary">
+        <span class="label-bar-title">แผนที่ส่วนประกอบ — สรุปบทที่ 3</span>
+        <span class="label-bar-tag">สรุป</span>
+      </div>
+      <div class="summary-list">
+        <p class="summary-row"><span class="summary-num">1–3</span><span class="summary-text"><strong>ปุ่มเปลี่ยนโหมด</strong> — Full Screen / Floating / ปิดโหมดกลับหน้าเดียว</span></p>
+        <p class="summary-row"><span class="summary-num">A</span><span class="summary-text"><strong>แถบผู้บันทึกและวันที่</strong> — สัตวแพทย์, แผนก, วันที่ Exam card</span></p>
+        <p class="summary-row"><span class="summary-num">B</span><span class="summary-text"><strong>แผนก / Add New</strong> — กำหนดแผนกและงานเสริม</span></p>
+        <p class="summary-row"><span class="summary-num">C</span><span class="summary-text"><strong>Topics</strong> — เลือกหัวข้อเพื่อลงข้อมูล</span></p>
+        <p class="summary-row"><span class="summary-num">D</span><span class="summary-text"><strong>Plain text</strong> — พื้นที่กรอกเนื้อหาหลัก</span></p>
+        <p class="summary-row"><span class="summary-num">E</span><span class="summary-text"><strong><span class="remarkable-tag">Remarkable</span></strong> — เน้นหัวข้อสำคัญใน Viewer</span></p>
+        <p class="summary-row"><span class="summary-num">F</span><span class="summary-text"><strong>ตัวช่วยกรอก</strong> — Template / Guideline / Order</span></p>
+        <p class="summary-row"><span class="summary-num">G</span><span class="summary-text"><strong>Editor Block</strong> — Vital Sign / Assessment / Plan</span></p>
+      </div>
+    </section>
+
+    <div class="checklist-box">
+      <div class="checklist-head">Checklist การลงข้อมูลในใบบันทึกการตรวจ</div>
+      <ol>
+        <li>เปิด Editor และเลือกโหมดที่เหมาะสม (Full Screen หรือ Floating)</li>
+        <li>เลือกวันที่ Exam card ให้ถูกต้องก่อนลงข้อมูล</li>
+        <li>กรอกทีละหัวข้อจาก Topics และใช้ตัวช่วยกรอกเมื่อจำเป็น</li>
+        <li>ทำเครื่องหมาย <span class="remarkable-tag">Remarkable</span> เฉพาะหัวข้อที่ต้องการเน้นใน Viewer</li>
+        <li>บันทึกก่อนปิด Editor หรือเปลี่ยนโหมดเมื่อมีข้อมูลสำคัญ</li>
+      </ol>
+    </div>
+    </section>
+
+  </div><!-- .manual-body -->
+</div><!-- .manual-root -->
+
+<div class="print-footer-config" hidden
+  data-brand="KAHIS (Kasetsart Animal Hospital Information System)"
+  data-chapter="บทที่ 3 : การลงข้อมูลในใบบันทึกการตรวจ"
+  data-version="Version 2026.08.14.01">
+</div>
+
+<div class="print-running-footer" aria-hidden="true">
+  <span class="print-footer-brand">KAHIS (Kasetsart Animal Hospital Information System)</span>
+  <div class="print-footer-meta">
+    <div class="print-footer-line1">บทที่ 3 : การลงข้อมูลในใบบันทึกการตรวจ หน้าที่ <span class="print-footer-page-num"></span></div>
+    <div class="print-footer-line2">Version 2026.08.14.01 พิมพ์เมื่อ <span class="print-footer-printed-at"></span></div>
+  </div>
+</div>
+
+<div class="paged-footer-source" aria-hidden="true">
+  <div class="paged-footer-inner">
+    <span class="print-footer-brand">KAHIS (Kasetsart Animal Hospital Information System)</span>
+    <div class="print-footer-meta">
+      <div class="print-footer-line1">บทที่ 3 : การลงข้อมูลในใบบันทึกการตรวจ หน้าที่ <span class="print-footer-page-num"></span></div>
+      <div class="print-footer-line2">Version 2026.08.14.01 พิมพ์เมื่อ <span class="print-footer-printed-at"></span></div>
+    </div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <button class="lightbox-close" onclick="closeLightbox(event)" aria-label="ปิด">✕</button>
+  <img id="lightbox-img" src="" alt="">
+  <div class="lightbox-caption" id="lightbox-caption"></div>
+</div>
+
+<script>window.PagedConfig = { auto: false };</script>
+<script src="https://unpkg.com/pagedjs@0.4.3/dist/paged.polyfill.js"></script>
+<script src="manual-export.js"></script>
+<script>
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const lightboxCaption = document.getElementById('lightbox-caption');
+
+  function openLightbox(src, caption) {
+    lightboxImg.src = src;
+    lightboxCaption.textContent = caption || '';
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox(e) {
+    if (e.target === lightbox || e.target.classList.contains('lightbox-close')) {
+      lightbox.classList.remove('open');
+      lightboxImg.src = '';
+      document.body.style.overflow = '';
+    }
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      lightbox.classList.remove('open');
+      lightboxImg.src = '';
+      document.body.style.overflow = '';
+    }
+  });
+</script>
+
+</body>
+</html>

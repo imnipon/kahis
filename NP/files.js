@@ -257,13 +257,19 @@ const filesTree = [
             "name": "chapter-02-exam-card-viewer.html",
             "type": "file",
             "path": "NP/user-manual/manual-ui/chapter-02-exam-card-viewer.html",
-            "lastUpdate": "2026-08-29T15:43:00.000000"
+            "lastUpdate": "2026-08-29T15:56:00.000000"
+          },
+          {
+            "name": "chapter-03-exam-card-editor.html",
+            "type": "file",
+            "path": "NP/user-manual/manual-ui/chapter-03-exam-card-editor.html",
+            "lastUpdate": "2026-08-29T16:35:00.000000"
           },
           {
             "name": "README.md",
             "type": "file",
             "path": "NP/user-manual/README.md",
-            "lastUpdate": "2026-08-29T15:43:00.000000"
+            "lastUpdate": "2026-08-29T16:35:00.000000"
           }
         ]
       },
