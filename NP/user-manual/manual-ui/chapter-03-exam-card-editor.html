@@ -55,8 +55,10 @@
     <!-- ── ส่วนที่ 1: โหมดการแสดงผล ── -->
     <h3 class="section-title">ส่วนที่ 1 — โหมดการแสดงผล Editor</h3>
     <p class="chapter-desc" style="margin-top:-.5rem">
-      ปุ่มเปลี่ยนโหมดอยู่ที่มุมขวาบนของแถบ Exam Card Editor โดยวนไอคอนเพื่อสลับระหว่าง
-      <strong>Full Screen</strong>, <strong>Floating</strong> และการปิดโหมดกลับหน้าเดียวตามความยาวเพจ
+      ปุ่มที่ใช้เปลี่ยนโหมดอยู่ที่<strong>มุมขวาบน</strong>ของแถบ Exam Card Editor
+      เลือก <strong>Full Screen Mode</strong> หรือ <strong>Floating Mode</strong> ได้
+      ส่วนปุ่ม <strong>X</strong> (ปิด) คือการกลับมาแสดงผลตามความยาวของหน้าเพจ
+      ภาพด้านล่างแสดงตัวอย่างการแสดงผลในแต่ละโหมด
     </p>
 
     <figure class="figure-block">
@@ -64,19 +66,18 @@
         <img src="../Label/03_VR005 Fullscreen mode.png" alt="ภาพ Full Screen Mode ของ Exam Card Editor">
       </button>
       <figcaption class="figure-caption">
-        <span><span class="fig-num">รูปที่ 3ก</span> — Full Screen Mode</span>
+        <span><span class="fig-num">รูปที่ 3ก</span> — ตัวอย่างโหมด Full Screen</span>
       </figcaption>
     </figure>
 
     <article class="label-item" id="label-mode-1">
       <div class="label-bar">
         <span class="label-bar-num">1</span>
-        <span class="label-bar-title">ปุ่มเปลี่ยนโหมดการแสดงผล — Full Screen</span>
-        <span class="label-bar-tag">Full Screen</span>
+        <span class="label-bar-title">Full Screen Mode</span>
+        <span class="label-bar-tag">โหมดแสดงผล</span>
       </div>
       <div class="label-body">
-        <p>ใช้สลับโหมดการแสดงผลของ Exam Card Editor โดยวนไอคอนตามลำดับ เช่น Full Screen → Floating → ปิดโหมด (กลับหน้าเดียวตามความยาวเพจ)</p>
-        <p>ในโหมด <strong>Full Screen</strong> Editor จะขยายเต็มพื้นที่ทำงาน เพื่อให้มีพื้นที่ลงข้อมูลมากขึ้น และยังเห็นแถบเมนูระบบด้านบน</p>
+        <p>ภาพแสดง Editor ในโหมด <strong>Full Screen</strong> — Editor ขยายเต็มพื้นที่ทำงาน เพื่อให้มีพื้นที่ลงข้อมูลมากขึ้น และยังเห็นแถบเมนูระบบด้านบน</p>
       </div>
     </article>
 
@@ -85,39 +86,38 @@
         <img src="../Label/03_VR005 Floating mode.png" alt="ภาพ Floating Mode ของ Exam Card Editor">
       </button>
       <figcaption class="figure-caption">
-        <span><span class="fig-num">รูปที่ 3ข</span> — Floating Mode</span>
+        <span><span class="fig-num">รูปที่ 3ข</span> — ตัวอย่างโหมด Floating</span>
       </figcaption>
     </figure>
 
     <article class="label-item" id="label-mode-2">
       <div class="label-bar">
         <span class="label-bar-num">2</span>
-        <span class="label-bar-title">ปุ่มเปลี่ยนโหมดการแสดงผล — Floating</span>
-        <span class="label-bar-tag">Floating</span>
+        <span class="label-bar-title">Floating Mode</span>
+        <span class="label-bar-tag">โหมดแสดงผล</span>
       </div>
       <div class="label-body">
-        <p>ในโหมด <strong>Floating</strong> Editor จะลอยทับหน้า Viewer / History ทำให้ยังเห็นประวัติ Exam card และรายละเอียดด้านหลังได้ขณะกรอกข้อมูล</p>
-        <p>เหมาะเมื่อต้องการอ้างอิงข้อมูลที่บันทึกไว้แล้วควบคู่กับการแก้ไข</p>
+        <p>ภาพแสดง Editor ในโหมด <strong>Floating</strong> — Editor ลอยทับหน้า Viewer / History ทำให้ยังเห็นประวัติ Exam card และรายละเอียดด้านหลังได้ขณะกรอกข้อมูล เหมาะเมื่อต้องการอ้างอิงข้อมูลที่บันทึกไว้แล้วควบคู่กับการแก้ไข</p>
       </div>
     </article>
 
     <figure class="figure-block">
-      <button class="figure-trigger" onclick="openLightbox('../Label/03_VR005%20Closed%20Card%20Editor%20for%20unsaved.png', 'รูปที่ 3ค — ปิดโหมด / Close Editor (VR005)')" aria-label="ดูภาพขนาดจริง">
-        <img src="../Label/03_VR005 Closed Card Editor for unsaved.png" alt="ภาพปิดโหมด Exam Card Editor">
+      <button class="figure-trigger" onclick="openLightbox('../Label/03_VR005%20Closed%20Card%20Editor%20for%20unsaved.png', 'รูปที่ 3ค — ปิดโหมด / กลับหน้าเดียว (VR005)')" aria-label="ดูภาพขนาดจริง">
+        <img src="../Label/03_VR005 Closed Card Editor for unsaved.png" alt="ภาพปิดโหมด Exam Card Editor กลับหน้าเดียว">
       </button>
       <figcaption class="figure-caption">
-        <span><span class="fig-num">รูปที่ 3ค</span> — ปิดโหมด / กลับหน้าเดียว</span>
+        <span><span class="fig-num">รูปที่ 3ค</span> — ตัวอย่างเมื่อปิดโหมด (กลับหน้าเดียว)</span>
       </figcaption>
     </figure>
 
     <article class="label-item" id="label-mode-3">
       <div class="label-bar">
         <span class="label-bar-num">3</span>
-        <span class="label-bar-title">ปุ่มเปลี่ยนโหมด / ปิด Editor</span>
+        <span class="label-bar-title">ปิดโหมดด้วยปุ่ม X — กลับแสดงผลตามความยาวหน้า</span>
         <span class="label-bar-tag">Close</span>
       </div>
       <div class="label-body">
-        <p>เมื่อปิดโหมดขยายหรือปิด Editor ระบบจะกลับไปแสดงผลแบบหน้าเดียวตามความยาวของหน้าเพจ</p>
+        <p>ภาพแสดงผลเมื่อกดปุ่ม <strong>X</strong> ปิดโหมดขยาย — ระบบกลับมาแสดงผลตามความยาวของหน้าเพจ (หน้าเดียว)</p>
         <p>หากมีการแก้ไขที่ยังไม่บันทึก อาจมีสถานะหรือการแจ้งเตือนที่เกี่ยวข้องกับการปิด Editor (รายละเอียดตามพฤติกรรมจริงในระบบ)</p>
       </div>
     </article>
@@ -144,21 +144,31 @@
         <div class="label-bar">
           <span class="label-bar-num">A</span>
           <span class="label-bar-title">แถบข้อมูลผู้บันทึกและวันที่ของ Exam card</span>
-          <span class="label-bar-tag">Header</span>
+          <span class="label-bar-tag">Header / TAB</span>
         </div>
         <div class="label-body">
           <p>แสดงชื่อสัตวแพทย์ แผนก และวันที่ของ Exam card ที่กำลังแก้ไข (เช่น <strong>For 28 Aug 2026</strong>) รวมถึงสถานะ เช่น <strong>NEW</strong> เมื่อเป็นใบใหม่</p>
+          <p>มีได้หลาย <strong>TAB</strong> ตามข้อกำหนดดังนี้:</p>
+          <ul>
+            <li>สัตวแพทย์หนึ่ง user สามารถมี <strong>Exam card id เดียวต่อหนึ่งแผนก</strong> ในวันที่เลือกแสดงผล — แต่เพิ่มได้ถ้าต่างแผนก</li>
+            <li>แสดง TAB ของ Exam card ทุก id ที่เป็นของวันที่เลือก จากทุก user สัตวแพทย์</li>
+            <li><strong>การแก้ไข</strong> ต้องเป็น user สัตวแพทย์ของ Exam card นั้นเท่านั้น — ถ้าไม่ใช่จะสามารถดูเนื้อหาได้เท่านั้น</li>
+          </ul>
         </div>
       </article>
 
       <article class="label-item" id="label-b">
         <div class="label-bar">
           <span class="label-bar-num">B</span>
-          <span class="label-bar-title">แผนกและการเพิ่มรายการที่เกี่ยวข้อง</span>
-          <span class="label-bar-tag">Department</span>
+          <span class="label-bar-title">การเลือกเปลี่ยนแผนกกำกับ Exam card และปุ่มบันทึก</span>
+          <span class="label-bar-tag">Department / Save</span>
         </div>
         <div class="label-body">
-          <p>เลือกแผนกที่ใช้กำกับการบันทึก และปุ่ม <strong>Add New</strong> (รวมถึงเมนูเพิ่มเติมถ้ามี) สำหรับงานเสริมที่เกี่ยวกับ Exam card</p>
+          <p>ใช้เลือกหรือเปลี่ยนแผนกที่กำกับ Exam card และปุ่มบันทึกข้อมูล:</p>
+          <ul>
+            <li><strong>Add New</strong> — เมื่อเป็น Exam card ใหม่ที่ยังไม่เคยบันทึก จะสร้าง Exam card id ให้</li>
+            <li><strong>Apply</strong> — เมื่อเป็นการแก้ไขข้อมูลที่เคยบันทึกแล้ว</li>
+          </ul>
         </div>
       </article>
 
@@ -172,7 +182,7 @@
           <p>รายการหัวข้อเนื้อหาของใบบันทึก เช่น History Taking, Appearance, Heart ฯลฯ</p>
           <ul>
             <li>คลิกหัวข้อเพื่อเลื่อนไปยังบล็อกกรอกข้อมูลของหัวข้อนั้น</li>
-            <li>มีส่วน <strong>Assessment</strong> แยกท้ายรายการ</li>
+            <li>มีส่วน <strong>Assessment</strong> แยกท้ายรายการ ที่เป็นการแสดงผลเท่านั้น</li>
           </ul>
         </div>
       </article>
@@ -210,7 +220,7 @@
           <ul>
             <li><strong>My exam template</strong> — ใช้เทมเพลตที่บันทึกไว้เอง</li>
             <li><strong>Guideline</strong> — ใช้แนวทาง/ตัวอย่างการบันทึก</li>
-            <li><strong>Order</strong> — ทางลัดการสั่งรายการที่เกี่ยวข้องกับหัวข้อ</li>
+            <li><strong>Order</strong> — ทางลัดการสั่งรายการที่เกี่ยวข้องกับหัวข้อ <strong>Tx, Rx, Lab, Path</strong> โดยการสั่งจากเมนูนี้จะเป็นการสั่งและกำกับการสั่งด้วย Exam card id ที่ทำงานอยู่ด้วย จะมีผลในการแสดงผล Exam card นี้ใน View เมนูต่าง ๆ ด้วย</li>
           </ul>
         </div>
       </article>
@@ -218,11 +228,17 @@
       <article class="label-item" id="label-g">
         <div class="label-bar">
           <span class="label-bar-num">G</span>
-          <span class="label-bar-title">แถบเครื่องมือ Editor Block</span>
-          <span class="label-bar-tag">Editor Tools</span>
+          <span class="label-bar-title">ปุ่มทางลัดเข้าหน้าการบันทึกข้อมูลโมดูลอื่น</span>
+          <span class="label-bar-tag">Shortcuts</span>
         </div>
         <div class="label-body">
-          <p>ปุ่มทางลัดงานร่วมกับการบันทึก Exam card เช่น <strong>Vital Sign</strong>, <strong>Create Assessment</strong>, <strong>Add Plan</strong> และเครื่องมือจัดการอื่นในแถบเดียวกัน</p>
+          <p>ปุ่มทางลัดงานร่วมกับการบันทึก Exam card ได้แก่:</p>
+          <ul>
+            <li><strong>Vital Sign &amp; PE (VPE)</strong></li>
+            <li><strong>Assessment</strong></li>
+            <li><strong>Plan</strong></li>
+            <li><strong>ปุ่มลบ Exam card id นี้</strong> — โดยแอดมิน</li>
+          </ul>
         </div>
       </article>
     </section>
@@ -234,25 +250,26 @@
         <span class="label-bar-tag">สรุป</span>
       </div>
       <div class="summary-list">
-        <p class="summary-row"><span class="summary-num">1–3</span><span class="summary-text"><strong>ปุ่มเปลี่ยนโหมด</strong> — Full Screen / Floating / ปิดโหมดกลับหน้าเดียว</span></p>
-        <p class="summary-row"><span class="summary-num">A</span><span class="summary-text"><strong>แถบผู้บันทึกและวันที่</strong> — สัตวแพทย์, แผนก, วันที่ Exam card</span></p>
-        <p class="summary-row"><span class="summary-num">B</span><span class="summary-text"><strong>แผนก / Add New</strong> — กำหนดแผนกและงานเสริม</span></p>
-        <p class="summary-row"><span class="summary-num">C</span><span class="summary-text"><strong>Topics</strong> — เลือกหัวข้อเพื่อลงข้อมูล</span></p>
+        <p class="summary-row"><span class="summary-num">1–3</span><span class="summary-text"><strong>ตัวอย่างโหมดแสดงผล</strong> — Full Screen / Floating / ปิดด้วย X กลับหน้าเดียว (ปุ่มมุมขวาบน)</span></p>
+        <p class="summary-row"><span class="summary-num">A</span><span class="summary-text"><strong>ผู้บันทึก / วันที่ / TAB</strong> — 1 id ต่อแผนกต่อ user; TAB รวมทุก id ของวัน; แก้ได้เฉพาะเจ้าของ</span></p>
+        <p class="summary-row"><span class="summary-num">B</span><span class="summary-text"><strong>แผนก + บันทึก</strong> — Add New (สร้าง id) / Apply (แก้ไขที่บันทึกแล้ว)</span></p>
+        <p class="summary-row"><span class="summary-num">C</span><span class="summary-text"><strong>Topics</strong> — เลือกหัวข้อลงข้อมูล; Assessment ท้ายรายการเป็นแสดงผลอย่างเดียว</span></p>
         <p class="summary-row"><span class="summary-num">D</span><span class="summary-text"><strong>Plain text</strong> — พื้นที่กรอกเนื้อหาหลัก</span></p>
         <p class="summary-row"><span class="summary-num">E</span><span class="summary-text"><strong><span class="remarkable-tag">Remarkable</span></strong> — เน้นหัวข้อสำคัญใน Viewer</span></p>
-        <p class="summary-row"><span class="summary-num">F</span><span class="summary-text"><strong>ตัวช่วยกรอก</strong> — Template / Guideline / Order</span></p>
-        <p class="summary-row"><span class="summary-num">G</span><span class="summary-text"><strong>Editor Block</strong> — Vital Sign / Assessment / Plan</span></p>
+        <p class="summary-row"><span class="summary-num">F</span><span class="summary-text"><strong>ตัวช่วยกรอก</strong> — Template / Guideline / Order (Tx, Rx, Lab, Path กำกับด้วย Exam card id)</span></p>
+        <p class="summary-row"><span class="summary-num">G</span><span class="summary-text"><strong>ทางลัดโมดูลอื่น</strong> — VPE / Assessment / Plan / ลบ Exam card (แอดมิน)</span></p>
       </div>
     </section>
 
     <div class="checklist-box">
       <div class="checklist-head">Checklist การลงข้อมูลในใบบันทึกการตรวจ</div>
       <ol>
-        <li>เปิด Editor และเลือกโหมดที่เหมาะสม (Full Screen หรือ Floating)</li>
-        <li>เลือกวันที่ Exam card ให้ถูกต้องก่อนลงข้อมูล</li>
-        <li>กรอกทีละหัวข้อจาก Topics และใช้ตัวช่วยกรอกเมื่อจำเป็น</li>
+        <li>เลือกโหมดแสดงผลที่มุมขวาบน (Full Screen หรือ Floating) หรือกด X เพื่อกลับหน้าเดียว</li>
+        <li>ตรวจวันที่ Exam card และ TAB ให้ตรงกับแผนก/user ที่ต้องการ — แก้ไขได้เฉพาะ Exam card ของตนเอง</li>
+        <li>ถ้าเป็นใบใหม่: เลือกแผนกแล้วกด <strong>Add New</strong>; ถ้าเคยบันทึกแล้วใช้ <strong>Apply</strong></li>
+        <li>กรอกทีละหัวข้อจาก Topics และใช้ตัวช่วยกรอก (Template / Guideline / Order) เมื่อจำเป็น</li>
         <li>ทำเครื่องหมาย <span class="remarkable-tag">Remarkable</span> เฉพาะหัวข้อที่ต้องการเน้นใน Viewer</li>
-        <li>บันทึกก่อนปิด Editor หรือเปลี่ยนโหมดเมื่อมีข้อมูลสำคัญ</li>
+        <li>ใช้ทางลัด VPE / Assessment / Plan ตามงาน และบันทึกก่อนปิด Editor เมื่อมีข้อมูลสำคัญ</li>
       </ol>
     </div>
     </section>
