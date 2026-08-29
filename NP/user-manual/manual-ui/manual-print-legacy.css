@@ -43,13 +43,15 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    gap: 4mm;
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    height: var(--print-footer-zone);
-    padding: 3mm var(--print-margin) 0;
-    font-size: 6.5pt;
+    height: auto;
+    min-height: var(--print-footer-zone);
+    padding: 1.2mm var(--print-margin) 1.5mm;
+    font-size: 6pt;
     line-height: 1.35;
     border-top: 2px solid var(--kahis-green);
     background: #fff;

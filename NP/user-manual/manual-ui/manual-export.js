@@ -6,6 +6,10 @@
  */
 (function () {
   const STORAGE_KEY = 'kahis-print-mode';
+  const THAI_MONTHS = [
+    'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+    'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+  ];
   const MODES = {
     paged: {
       css: 'manual-print-paged.css',
@@ -40,6 +44,68 @@
 
   function getStylesheetLink() {
     return document.getElementById('print-mode-css');
+  }
+
+  function getFooterConfig() {
+    const cfg = document.querySelector('.print-footer-config');
+    return {
+      brand: (cfg && cfg.getAttribute('data-brand')) || 'KAHIS (Kasetsart Animal Hospital Information System)',
+      chapter: (cfg && cfg.getAttribute('data-chapter')) || 'บทที่ 1 : ส่วนประกอบหลักของ UI',
+      version: (cfg && cfg.getAttribute('data-version')) || 'Version 2026.08.14.01'
+    };
+  }
+
+  function formatPrintDateTime(date) {
+    const d = date.getDate();
+    const month = THAI_MONTHS[date.getMonth()];
+    const year = date.getFullYear() + 543;
+    const hh = String(date.getHours()).padStart(2, '0');
+    const mm = String(date.getMinutes()).padStart(2, '0');
+    return d + ' ' + month + ' ' + year + ' เวลา ' + hh + ':' + mm + ' น.';
+  }
+
+  function buildFooterMetaHtml(cfg, pageLabel, printedAt) {
+    return (
+      '<div class="print-footer-line1">' + cfg.chapter + ' หน้าที่ ' + pageLabel + '</div>' +
+      '<div class="print-footer-line2">' + cfg.version + ' พิมพ์เมื่อ ' + printedAt + '</div>'
+    );
+  }
+
+  function updateLegacyFooter(printedAt) {
+    const cfg = getFooterConfig();
+    const foot = document.querySelector('.print-running-footer');
+    if (!foot) return;
+    const brand = foot.querySelector('.print-footer-brand');
+    const meta = foot.querySelector('.print-footer-meta');
+    if (brand) brand.textContent = cfg.brand;
+    if (meta) {
+      meta.innerHTML =
+        '<div class="print-footer-line1">' + cfg.chapter +
+        ' หน้าที่ <span class="print-footer-page-num"></span></div>' +
+        '<div class="print-footer-line2">' + cfg.version +
+        ' พิมพ์เมื่อ <span class="print-footer-printed-at">' + printedAt + '</span></div>';
+    }
+  }
+
+  function injectPagedFooters(printedAt) {
+    const cfg = getFooterConfig();
+    const pages = document.querySelectorAll('.pagedjs_page');
+    const total = pages.length;
+
+    pages.forEach(function (pageEl, index) {
+      let foot = pageEl.querySelector('.pagedjs-page-footer');
+      if (!foot) {
+        foot = document.createElement('div');
+        foot.className = 'pagedjs-page-footer';
+        foot.setAttribute('aria-hidden', 'true');
+        pageEl.appendChild(foot);
+      }
+
+      const pageLabel = (index + 1) + '/' + total;
+      foot.innerHTML =
+        '<span class="print-footer-brand">' + cfg.brand + '</span>' +
+        '<div class="print-footer-meta">' + buildFooterMetaHtml(cfg, pageLabel, printedAt) + '</div>';
+    });
   }
 
   function updateUI(mode) {
@@ -96,32 +162,6 @@
     applyMode(mode);
   }
 
-  function injectPagedFooters() {
-    const brandEl = document.querySelector('.paged-footer-source .print-footer-brand');
-    const metaEl = document.querySelector('.paged-footer-source .print-footer-meta');
-    const brand = (brandEl && brandEl.textContent) || 'KAHIS';
-    const meta = (metaEl && metaEl.textContent) || '';
-
-    document.querySelectorAll('.pagedjs_page').forEach(function (pageEl) {
-      if (pageEl.querySelector('.pagedjs-page-footer')) return;
-      const foot = document.createElement('div');
-      foot.className = 'pagedjs-page-footer';
-      foot.setAttribute('aria-hidden', 'true');
-
-      const brandSpan = document.createElement('span');
-      brandSpan.className = 'print-footer-brand';
-      brandSpan.textContent = brand;
-
-      const metaSpan = document.createElement('span');
-      metaSpan.className = 'print-footer-meta';
-      metaSpan.textContent = meta;
-
-      foot.appendChild(brandSpan);
-      foot.appendChild(metaSpan);
-      pageEl.appendChild(foot);
-    });
-  }
-
   async function renderPaged() {
     if (isFileProtocol()) {
       throw new Error('Paged.js ใช้กับ file:// ไม่ได้ — รัน start-server.bat');
@@ -132,7 +172,6 @@
     if (pagedRendered) return;
     document.body.classList.add('pagedjs-busy');
     await window.PagedPolyfill.preview();
-    injectPagedFooters();
     pagedRendered = true;
     document.body.classList.add('pagedjs-active');
     document.body.classList.remove('pagedjs-busy');
@@ -154,8 +193,14 @@
         mode = 'legacy';
         applyMode('legacy', { silent: true });
       }
+
+      const printedAt = formatPrintDateTime(new Date());
+
       if (mode === 'paged') {
         await renderPaged();
+        injectPagedFooters(printedAt);
+      } else {
+        updateLegacyFooter(printedAt);
       }
       window.print();
     } catch (err) {
@@ -206,4 +251,3 @@
     init();
   }
 })();
-

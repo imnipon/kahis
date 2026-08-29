@@ -28,12 +28,14 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  height: 10mm;
-  padding: 1.5mm var(--print-margin) 0;
+  gap: 4mm;
+  height: auto;
+  min-height: 11mm;
+  padding: 1.2mm var(--print-margin) 1.5mm;
   border-top: 2px solid var(--kahis-green);
   background: #fff;
   font-family: "Sarabun", "Noto Sans Thai", "Segoe UI", sans-serif;
-  font-size: 6.5pt;
+  font-size: 6pt;
   line-height: 1.35;
   box-sizing: border-box;
   z-index: 2;
@@ -42,10 +44,13 @@
 .pagedjs-page-footer .print-footer-brand {
   font-weight: 700;
   color: var(--kahis-green);
+  max-width: 42%;
 }
 
 .pagedjs-page-footer .print-footer-meta {
   color: var(--text-muted);
+  text-align: right;
+  max-width: 56%;
 }
 
 @media print {
