@@ -248,6 +248,12 @@ const filesTree = [
         "path": "NP/user-manual",
         "children": [
           {
+            "name": "index.html",
+            "type": "file",
+            "path": "NP/user-manual/index.html",
+            "lastUpdate": "2026-08-29T20:35:00.000000"
+          },
+          {
             "name": "chapter-01-ui-components.html",
             "type": "file",
             "path": "NP/user-manual/manual-ui/chapter-01-ui-components.html",
@@ -269,7 +275,7 @@ const filesTree = [
             "name": "README.md",
             "type": "file",
             "path": "NP/user-manual/README.md",
-            "lastUpdate": "2026-08-29T16:35:00.000000"
+            "lastUpdate": "2026-08-29T20:35:00.000000"
           }
         ]
       },

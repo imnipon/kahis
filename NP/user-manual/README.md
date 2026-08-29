@@ -2,42 +2,38 @@
 
 คู่มือการใช้งาน KAHIS แบบ HTML สำหรับส่งออกเป็น PDF A4
 
+## ทางเข้าหลัก (Portal)
+
+https://imnipon.github.io/kahis/NP/user-manual/
+
+หรือเปิดไฟล์ `index.html` ในโฟลเดอร์นี้ — มีสารบัญด้านซ้ายแบบ Explorer และลิงก์ไปแต่ละบท
+
 ## โครงสร้าง
 
 ```
 user-manual/
-├── manual-ui/          # HTML, CSS, JS
-│   └── chapter-01-ui-components.html
-└── Label/              # ภาพ Label ประกอบแต่ละบท (NN_VR00N.png)
+├── index.html          # Portal / สารบัญ
+├── README.md
+├── manual-ui/          # HTML รายบท + CSS/JS พิมพ์
+│   ├── chapter-01-….html
+│   ├── chapter-02-….html
+│   └── chapter-03-….html
+└── Label/              # ภาพ Label ประกอบแต่ละบท
 ```
 
-## การสั่งพิมพ์ — เลือกโหมด
+## เพิ่มบทใหม่
+
+1. สร้างไฟล์ HTML ใน `manual-ui/`
+2. วางภาพ Label ใน `Label/`
+3. เพิ่มรายการในอาร์เรย์ `CHAPTERS` ภายใน `index.html`
+4. (ถ้าต้องการ) เพิ่มใน `NP/files.js` / `NP/list.js` ของ kahis Explorer
+
+## การสั่งพิมพ์ในแต่ละบท
 
 | โหมด | เหมาะกับ | ตั้งค่าพิมพ์ |
 |------|----------|-------------|
 | **ขอบเท่ากัน** | เปิดจากเว็บ GitHub | ระยะขอบ = ไม่มี · เปิดกราฟิกพื้นหลัง |
 | **ขอบมาตรฐาน** | เปิดไฟล์จากเครื่อง | ระยะขอบ = ค่าเริ่มต้น |
-
-### เปิดจาก GitHub Pages (แนะนำ)
-
-https://imnipon.github.io/kahis/NP/user-manual/manual-ui/chapter-01-ui-components.html  
-https://imnipon.github.io/kahis/NP/user-manual/manual-ui/chapter-02-exam-card-viewer.html  
-https://imnipon.github.io/kahis/NP/user-manual/manual-ui/chapter-03-exam-card-editor.html
-
-เลือกโหมด **ขอบเท่ากัน** → ส่งออก PDF
-
-### เปิดไฟล์จากเครื่อง (file://)
-
-เลือกโหมด **ขอบมาตรฐาน** → ส่งออก PDF (ขอบบน 26 มม. · ล่าง 14 มม.)
-
-### Local server
-
-```bat
-cd manual-ui
-start-server.bat
-```
-
-แล้วเปิด http://localhost:8080/chapter-01-ui-components.html หรือ chapter-02-… / chapter-03-…
 
 ## บทที่ทำแล้ว
 
@@ -46,8 +42,3 @@ start-server.bat
 | 1 — ส่วนประกอบหลัก UI (VR001) | `chapter-01-ui-components.html` | `Label/01_VR001.png` |
 | 2 — ใบบันทึกการตรวจ (VR004) | `chapter-02-exam-card-viewer.html` | `Label/02_VR004.png` |
 | 3 — การลงข้อมูลใบบันทึกการตรวจ (VR005) | `chapter-03-exam-card-editor.html` | `Label/03_VR005 …` |
-
-## การตั้งชื่อภาพ
-
-- Label: `NN_VR00N.png` (เช่น `01_VR001.png`)
-- Manual ต้นฉบับ: เก็บใน `Manual/` (เพิ่มภายหลังเมื่อมีบทใหม่)
