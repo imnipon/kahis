@@ -1,0 +1,485 @@
+/* KAHIS Manual — shared UI pattern */
+:root {
+  --kahis-green: #006633;
+  --kahis-green-dark: #004d26;
+  --kahis-green-light: #e8f5ee;
+  --accent: #1a6fb5;
+  --accent-light: #e8f2fa;
+  --summary-bar: #2d4a6f;
+  --summary-bar-end: #3d6b9e;
+  --summary-light: #eef4fa;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --border: #d1d9e0;
+  --bg: #eef1f4;
+  --card: #ffffff;
+  --label-red: #b91c1c;
+  --radius: 6px;
+  --page-pad-x: 5.3%;
+  --page-pad-y: 4.5%;
+  --print-margin: 14mm;
+  --print-footer-zone: 14mm;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Sarabun", "Noto Sans Thai", "Segoe UI", sans-serif;
+  font-size: 11pt;
+  line-height: 1.65;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ── Toolbar ── */
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .7rem 1.5rem;
+  background: var(--kahis-green);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.toolbar h1 { font-size: .95rem; font-weight: 600; }
+.toolbar-actions { display: flex; gap: .5rem; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .45rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: .85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn:hover { opacity: .9; }
+.btn-print { background: #fff; color: var(--kahis-green); }
+.btn-mode {
+  background: rgba(255,255,255,.15);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.35);
+  font-size: .78rem;
+  padding: .4rem .75rem;
+}
+.btn-mode:hover { background: rgba(255,255,255,.25); }
+.btn-mode.is-active {
+  background: #fff;
+  color: var(--kahis-green);
+  border-color: #fff;
+}
+  .print-mode-indicator {
+  font-size: .72rem;
+  opacity: .85;
+  max-width: 14rem;
+  text-align: right;
+  line-height: 1.35;
+}
+.file-protocol-notice {
+  width: 100%;
+  flex-basis: 100%;
+  order: 10;
+  margin-top: .35rem;
+  padding: .45rem .65rem;
+  background: rgba(255, 255, 255, .15);
+  border: 1px solid rgba(255, 255, 255, .3);
+  border-radius: 4px;
+  font-size: .75rem;
+  line-height: 1.45;
+}
+.file-protocol-notice code {
+  background: rgba(0, 0, 0, .2);
+  padding: .1rem .35rem;
+  border-radius: 3px;
+  font-size: .72rem;
+}
+.toolbar { flex-wrap: wrap; }
+body.pagedjs-busy { cursor: wait; }
+body.pagedjs-busy .btn { pointer-events: none; opacity: .7; }
+
+/* ── Page: full width, A4 margin ratio ── */
+.manual-root { width: 100%; }
+.page,
+.manual-body {
+  width: 100%;
+  margin: 0;
+  padding: var(--page-pad-y) var(--page-pad-x);
+  background: var(--card);
+  border-bottom: 6px solid var(--bg);
+}
+
+/* ── Document header ── */
+.doc-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 3px solid var(--kahis-green);
+}
+.doc-header .brand { display: flex; align-items: flex-start; gap: .85rem; }
+.doc-header .logo {
+  width: 48px; height: 48px;
+  background: var(--kahis-green);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 800; font-size: .7rem;
+  letter-spacing: .02em;
+  flex-shrink: 0;
+}
+.doc-header .brand-text h2 {
+  font-size: 1.05rem;
+  color: var(--kahis-green);
+  font-weight: 700;
+  line-height: 1.35;
+}
+.doc-header .brand-text .brand-en {
+  font-size: .82rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.doc-header .brand-text p {
+  font-size: .8rem;
+  color: var(--text-muted);
+  margin-top: .15rem;
+}
+.doc-meta {
+  text-align: right;
+  font-size: .78rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  flex-shrink: 0;
+}
+.doc-meta strong { color: var(--text); }
+
+/* ── Chapter ── */
+.chapter-badge {
+  display: inline-block;
+  background: var(--kahis-green-light);
+  color: var(--kahis-green);
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  padding: .2rem .65rem;
+  border-radius: 4px;
+  margin-bottom: .4rem;
+}
+.chapter-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: .35rem;
+  line-height: 1.3;
+}
+.chapter-desc {
+  font-size: .9rem;
+  color: var(--text-muted);
+  margin-bottom: 1.25rem;
+}
+
+/* ── Figure ── */
+.figure-block {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 1.5rem;
+}
+.figure-trigger {
+  display: block;
+  position: relative;
+  cursor: zoom-in;
+  border: none;
+  padding: 0;
+  background: none;
+  width: 100%;
+}
+.figure-trigger img { display: block; width: 100%; height: auto; }
+.figure-trigger::after {
+  content: "คลิกเพื่อดูขนาดจริง";
+  position: absolute;
+  bottom: .6rem;
+  right: .6rem;
+  background: rgba(0,0,0,.7);
+  color: #fff;
+  font-size: .72rem;
+  padding: .3rem .6rem;
+  border-radius: 4px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .2s;
+}
+.figure-trigger:hover::after { opacity: 1; }
+.figure-caption {
+  padding: .55rem 1rem;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  font-size: .8rem;
+  color: var(--text-muted);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.figure-caption .fig-num { font-weight: 700; color: var(--accent); }
+
+/* ── Lightbox ── */
+.lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0,0,0,.88);
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  cursor: zoom-out;
+}
+.lightbox.open { display: flex; }
+.lightbox img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 8px 40px rgba(0,0,0,.5);
+  cursor: default;
+}
+.lightbox-close {
+  position: fixed;
+  top: 1rem;
+  right: 1.2rem;
+  background: rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.3);
+  color: #fff;
+  font-size: 1.4rem;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.lightbox-close:hover { background: rgba(255,255,255,.3); }
+.lightbox-caption {
+  position: fixed;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,.85);
+  font-size: .82rem;
+}
+
+/* ── Section title ── */
+.section-title {
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--kahis-green);
+  margin-bottom: .75rem;
+  padding-bottom: .4rem;
+  border-bottom: 2px solid var(--kahis-green-light);
+}
+
+/* ── Label items (flow text, no border) ── */
+.label-item {
+  margin-bottom: 1.25rem;
+}
+
+.label-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .5rem .65rem;
+  background: var(--kahis-green);
+  color: #fff;
+  padding: .5rem .85rem;
+  margin-bottom: .55rem;
+  break-after: avoid;
+  page-break-after: avoid;
+}
+
+.label-bar-num {
+  font-weight: 800;
+  font-size: 1rem;
+  min-width: 1.25rem;
+  flex-shrink: 0;
+}
+
+.label-bar-title {
+  font-weight: 700;
+  font-size: .9rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.label-bar-tag {
+  font-size: .68rem;
+  font-weight: 600;
+  background: rgba(255,255,255,.2);
+  padding: .12rem .5rem;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+/* Summary section bar — distinct from green topic bars */
+.label-bar--summary {
+  background: linear-gradient(135deg, var(--summary-bar) 0%, var(--summary-bar-end) 100%);
+  box-shadow: 0 1px 3px rgba(45, 74, 111, .15);
+}
+.label-bar--summary .label-bar-title {
+  font-size: .92rem;
+  letter-spacing: .01em;
+}
+.label-bar--summary .label-bar-tag {
+  background: rgba(255, 255, 255, .25);
+  border: 1px solid rgba(255, 255, 255, .35);
+}
+
+.label-body {
+  padding: 0 .15rem;
+  font-size: .88rem;
+  line-height: 1.7;
+}
+
+.label-body p { margin-bottom: .4rem; }
+.label-body p:last-child { margin-bottom: 0; }
+.label-body ul { margin: .25rem 0 .25rem 1.2rem; }
+.label-body li {
+  margin-bottom: .3rem;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+.label-body li:last-child { margin-bottom: 0; }
+.label-body strong { color: var(--text); }
+
+.label-subtitle {
+  background: var(--kahis-green-light);
+  color: var(--kahis-green-dark);
+  padding: .35rem .65rem;
+  margin: .65rem 0 .35rem;
+  font-weight: 700;
+  font-size: .84rem;
+  break-after: avoid;
+  page-break-after: avoid;
+}
+.label-subtitle:first-child { margin-top: 0; }
+
+/* ── Closing block (summary + checklist) ── */
+.manual-closing {
+  margin-top: 1.5rem;
+}
+
+.summary-section {
+  margin-top: 1.5rem;
+  margin-bottom: 1.25rem;
+  padding: .85rem .9rem .75rem;
+  background: var(--summary-light);
+  border-radius: var(--radius);
+  border-left: 4px solid var(--summary-bar-end);
+}
+.manual-closing .summary-section {
+  margin-top: 0;
+}
+.summary-list {
+  padding: .25rem .15rem 0;
+}
+.summary-row {
+  display: flex;
+  align-items: baseline;
+  gap: .55rem;
+  margin: 0 0 .45rem;
+  font-size: .86rem;
+  line-height: 1.65;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+.summary-row:last-child { margin-bottom: 0; }
+.summary-num {
+  flex-shrink: 0;
+  font-weight: 800;
+  color: var(--label-red);
+  min-width: 1.1rem;
+}
+.summary-text { color: var(--text); }
+.summary-text strong { font-weight: 600; }
+
+/* ── Checklist (blue highlight block) ── */
+.checklist-box {
+  background: var(--accent-light);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: .85rem 1.1rem;
+  margin-bottom: 1rem;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+.checklist-box .checklist-head {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: .88rem;
+  margin-bottom: .5rem;
+  background: none;
+  padding: 0;
+}
+.checklist-box ol {
+  padding: 0 0 0 1.2rem;
+  margin: 0;
+  font-size: .86rem;
+  line-height: 1.7;
+  background: transparent;
+}
+.checklist-box li { margin-bottom: .25rem; }
+.checklist-box li:last-child { margin-bottom: 0; }
+
+/* ── Footer ── */
+.page-footer {
+  margin-top: 1.5rem;
+  padding-top: .75rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  font-size: .72rem;
+  color: var(--text-muted);
+}
+
+/* Continuation divider (screen) */
+.section-divider {
+  margin: 2rem 0 1rem;
+  padding-top: 1.5rem;
+  border-top: 2px dashed var(--border);
+}
+
+/* Print footer sources — ซ่อนบนจอ (อย่าใช้ display:none กับ paged-footer เพราะ Paged.js ต้องอ่าน DOM) */
+.print-running-footer {
+  display: none;
+}
+
+.paged-footer-source {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+.print-footer-brand {
+  font-weight: 700;
+  color: var(--kahis-green);
+  letter-spacing: .02em;
+}
+.print-footer-meta {
+  color: var(--text-muted);
+}
+
+@media screen and (max-width: 640px) {
+  .doc-header { flex-direction: column; }
+  .doc-meta { text-align: left; }
+  .toolbar { flex-wrap: wrap; }
+}

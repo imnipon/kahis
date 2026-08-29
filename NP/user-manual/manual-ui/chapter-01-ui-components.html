@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAHIS คู่มือการใช้งาน — ส่วนประกอบหลักของ UI (VR001)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="manual-base.css">
+  <link rel="stylesheet" href="manual-print-paged.css" id="print-mode-css">
+</head>
+<body>
+
+<div class="toolbar">
+  <h1>KAHIS คู่มือการใช้งาน — บทที่ 1</h1>
+  <div class="toolbar-actions">
+    <span class="print-mode-indicator" id="print-mode-indicator" title=""></span>
+    <button type="button" class="btn btn-mode is-active" id="btn-mode-paged" onclick="KahisExport.setMode('paged')">Paged</button>
+    <button type="button" class="btn btn-mode" id="btn-mode-legacy" onclick="KahisExport.setMode('legacy')">Legacy</button>
+    <button type="button" class="btn btn-print" id="btn-export-pdf" onclick="KahisExport.exportPdf()">Export PDF (A4)</button>
+  </div>
+  <p class="file-protocol-notice" id="file-protocol-notice" hidden>
+    เปิดไฟล์ตรงๆ (file://) — ใช้โหมด <strong>Legacy</strong> ได้เลย หรือรัน <code>start-server.bat</code>
+    แล้วเปิด <code>http://localhost:8080/chapter-01-ui-components.html</code> เพื่อใช้ Paged.js
+  </p>
+</div>
+
+<div class="manual-root">
+  <div class="manual-body">
+
+    <header class="doc-header">
+      <div class="brand">
+        <div class="logo">KAHIS</div>
+        <div class="brand-text">
+          <h2>ระบบเวชระเบียนอิเล็กทรอนิกโรงพยาบาลสัตว์ ม.เกษตร</h2>
+          <div class="brand-en">KAHIS Kasetsart Animal Hospital Information System</div>
+          <p>คู่มือการใช้งานสำหรับสัตวแพทย์ และบุคคลากรโรงพยาบาลสัตว์</p>
+        </div>
+      </div>
+      <div class="doc-meta">
+        <div><strong>บทที่ 1</strong></div>
+        <div>ส่วนประกอบหลักของ UI</div>
+        <div>Version 2026.08.14.01</div>
+        <div>อัปเดต: 29 ส.ค. 2026</div>
+      </div>
+    </header>
+
+    <div class="chapter-badge">Chapter 01 — UI Overview · VR001</div>
+    <h1 class="chapter-title">ส่วนประกอบหลักของหน้าจอ Vetroom</h1>
+    <p class="chapter-desc">
+      ภาพนี้แสดงหน้าจอหลักของระบบ Vetroom ในขั้นตอน <strong>S — Subjective + Systematic Exam</strong>
+      โดยมี Label หมายเลข 1–7 ชี้ไปยังส่วนประกอบสำคัญของ UI แต่ละส่วน คลิกที่ภาพเพื่อดูขนาดจริง
+    </p>
+
+    <figure class="figure-block">
+      <button class="figure-trigger" onclick="openLightbox('../Label/01_VR001.png', 'รูปที่ 1 — ส่วนประกอบหลักของหน้าจอ Vetroom (VR001)')" aria-label="ดูภาพขนาดจริง">
+        <img src="../Label/01_VR001.png" alt="ภาพ Label ส่วนประกอบหลักของ UI Vetroom (VR001)">
+      </button>
+      <figcaption class="figure-caption">
+        <span><span class="fig-num">รูปที่ 1</span> — ส่วนประกอบหลักของหน้าจอ Vetroom (VR001)</span>
+      </figcaption>
+    </figure>
+
+    <section class="labels-section">
+      <h3 class="section-title">คำอธิบายแต่ละ Label</h3>
+
+      <article class="label-item" id="label-1">
+        <div class="label-bar">
+          <span class="label-bar-num">1</span>
+          <span class="label-bar-title">แถบเมนูนำทางหลัก (Main Navigation Bar)</span>
+          <span class="label-bar-tag">เมนูระบบ</span>
+        </div>
+        <div class="label-body">
+          <p>แถบเมนูนำทางหลักสำหรับสลับไปยังโมดูลต่าง ๆ ของระบบ ประกอบด้วย:</p>
+          <ul>
+            <li><strong>ค้นหา HN</strong> — สำหรับค้นหาแฟ้มสัตว์เลี้ยงที่ต้องการในการทำงาน</li>
+            <li><strong>ลงทะเบียน</strong> — เมนูสำหรับแผนกเวชระเบียน สำหรับการทำประวัติสัตว์เลี้ยงและเจ้าของสัตว์ การลงทะเบียนเข้ารับบริการ (Check in) และรายงานประจำวันเบื้องต้น</li>
+            <li><strong>รีเควส</strong> — สำหรับเรียกใช้งานฟังก์ชัน "การส่งตรวจ" สำหรับแผนกเฉพาะ เช่น การส่งเอกซเรย์</li>
+            <li><strong>นัดหมาย</strong> — สำหรับเรียกใช้งานฟังก์ชัน "ลงข้อมูลการนัดหมาย" การทำนัด และการจัดการรายการนัดหมายในระบบ</li>
+            <li><strong>Board</strong> — สำหรับเรียกใช้งานฟังก์ชัน "ตารางรายการลงทะเบียนเพื่อการจัดการการเข้ารับบริการ"</li>
+            <li><strong>Vetroom</strong> — สำหรับเรียกใช้งานฟังก์ชัน "การบันทึกข้อมูลการให้บริการตรวจรักษา"</li>
+            <li><strong>การเงิน</strong> — สำหรับเรียกใช้งานฟังก์ชัน "การชำระค่าบริการ" สำหรับแผนกการเงิน และรายงานประจำวันเบื้องต้น</li>
+            <li><strong>Rx Center</strong> — สำหรับเรียกใช้งานฟังก์ชัน "การดำเนินการจ่ายยานำกลับ" สำหรับแผนกยานำกลับ</li>
+            <li><strong>LAB</strong> — สำหรับเรียกใช้งานฟังก์ชัน "การแสดงผลรายงานผลตรวจห้องปฏิบัติการ" (รอการพัฒนา)</li>
+            <li><strong>My Setting</strong> — สำหรับเรียกใช้งานฟังก์ชัน "การตั้งค่าการทำงานของ User" สำหรับ user account ที่กำลังเข้าใช้งานปัจจุบัน</li>
+            <li><strong>ตั้งค่า</strong> — สำหรับเรียกใช้งานฟังก์ชัน "การตั้งค่าเครื่องปัจจุบัน" สำหรับผู้ดูแลระบบในการ setup ค่าที่เกี่ยวข้องในการบันทึกข้อมูลและการใช้งานของเครื่องปัจจุบันให้ส่งข้อมูลให้เครื่องแม่ข่ายได้ถูกต้อง</li>
+            <li><strong>ผู้ดูแลระบบ</strong> — สำหรับเรียกใช้งานฟังก์ชัน "Backend" สำหรับผู้ดูแลระบบ (admin) เพื่อการสร้าง จัดการ ปรับแต่ง และทำรายงานของระบบ</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="label-item" id="label-2">
+        <div class="label-bar">
+          <span class="label-bar-num">2</span>
+          <span class="label-bar-title">ส่วนการจัดการผู้ใช้งาน</span>
+          <span class="label-bar-tag">มุมขวาบน</span>
+        </div>
+        <div class="label-body">
+          <ul>
+            <li><strong>เมนูสลับภาษา</strong> — สลับภาษาไทยและอังกฤษสำหรับ UI ของระบบ (อยู่ในช่วงกำลังพัฒนา)</li>
+            <li><strong>ภาพอวาตาร์ (Avatar) ผู้ใช้</strong> — สำหรับเรียกใช้งานฟังก์ชัน "กำหนดแผนกเพื่อใช้ในการบันทึกข้อมูล" และ "การออกจากระบบ"</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="label-item" id="label-3">
+        <div class="label-bar">
+          <span class="label-bar-num">3</span>
+          <span class="label-bar-title">แถบข้อมูลสัตว์เลี้ยงที่เลือก</span>
+          <span class="label-bar-tag">ข้อมูล HN</span>
+        </div>
+        <div class="label-body">
+          <p>แสดงข้อมูลสรุปของสัตว์เลี้ยงและเจ้าของที่กำลังทำงานอยู่ ประกอบด้วย:</p>
+          <ul>
+            <li><strong>OPD No.</strong>, <strong>Pet Name</strong>, <strong>Species/Breed</strong>, <strong>Gender</strong>, <strong>Age</strong>, <strong>Blood Type</strong></li>
+            <li><strong>Owner No.</strong>, <strong>Owner Name</strong></li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="label-item" id="label-4">
+        <div class="label-bar">
+          <span class="label-bar-num">4</span>
+          <span class="label-bar-title">ส่วนแสดงรายละเอียดการเข้ารับบริการ และทางลัดฟังก์ชัน</span>
+          <span class="label-bar-tag">Visit / Function</span>
+        </div>
+        <div class="label-body">
+          <ul>
+            <li><strong>Visit</strong> — แสดงหมายเลข Visit No. ปัจจุบันของ HN นี้ หากเป็นสีเขียวและมีหมายเลขกำกับ แสดงว่าเป็นการทำงาน HN ที่อยู่ในระบบ (เข้าสู่ระบบแล้ว) หากเป็นสีเทาและไม่มีหมายเลขกำกับ แสดงว่าเป็นการทำงาน HN ที่ไม่อยู่ในระบบปัจจุบัน (ออกจากระบบ)</li>
+            <li><strong>Visit Charge</strong> — แสดงยอดรวมค่าใช้จ่ายที่เกิดขึ้น (มีการบันทึกแล้ว) ใน Visit No. ปัจจุบัน มีเมนูย่อยเพื่อแสดงรายการในแต่ละรูปแบบย่อยด้วย</li>
+            <li><strong>Function</strong> — ทางลัดเข้าสู่ฟังก์ชันที่เกี่ยวข้องกับ HN และ Visit No. ที่เลือกอยู่ เช่น Request, นัดหมาย</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="label-item" id="label-5">
+        <div class="label-bar">
+          <span class="label-bar-num">5</span>
+          <span class="label-bar-title">TAB Menu</span>
+          <span class="label-bar-tag">แท็บเมนูหลัก</span>
+        </div>
+        <div class="label-body">
+          <p>ประกอบด้วย 3 ส่วนหลัก:</p>
+          <div class="label-subtitle">SOAP — แท็บเมนูส่วนประกอบการบันทึกการตรวจรักษา</div>
+          <ul>
+            <li><strong>S = Subjective + Systematic Exam</strong> — ทำงานภายใต้ Exam card id เป็นส่วนบันทึกข้อมูลการตรวจทั่วไป และการลงข้อมูลเฉพาะ เช่น VPE (Vital Sign &amp; Physical Examination), Assessment, Order Tx, Rx, LAB, Plan โดยทั้งหมดในการสั่งที่นี่จะทำงานแบบกำกับด้วย Exam card id</li>
+            <li><strong>O = Objective</strong> — ส่วนแสดงข้อมูลภาพรวมทั้งหมดในแต่ละ Exam card id</li>
+            <li><strong>A = Assessment</strong> — ส่วนการแสดงผลข้อมูลของ Assessment</li>
+            <li><strong>P = Plan</strong> — ส่วนการแสดงผลข้อมูลของ Plan</li>
+          </ul>
+          <div class="label-subtitle">ORDER — แท็บเมนูส่วนประกอบของการสั่งรายการยา เวชภัณฑ์ หัตถการ และค่าบริการต่าง ๆ</div>
+          <ul>
+            <li><strong>Order Tx</strong> — สำหรับการบันทึกการใช้งานยาและเวชภัณฑ์ และบริการต่าง ๆ ที่เกิดขึ้นในห้องตรวจ (มีการดำเนินการโดยโรงพยาบาลสัตว์)</li>
+            <li><strong>Order Rx</strong> — สำหรับการบันทึกการสั่งจ่ายยาและเวชภัณฑ์ และอื่น ๆ ที่นำกลับ (ยังไม่ดำเนินการในโรงพยาบาลสัตว์)</li>
+            <li><strong>Order Lab</strong> — สำหรับการบันทึกการสั่งตรวจทางห้องปฏิบัติการ ทางโลหิตวิทยาและปัสสาวะ</li>
+            <li><strong>Order Pathology</strong> — สำหรับการบันทึกการสั่งตรวจทางห้องปฏิบัติการพยาธิวิทยา</li>
+          </ul>
+          <div class="label-subtitle">External Documents</div>
+          <p>แท็บเมนูสำหรับการนำเข้าเอกสารประกอบการบริการ (ที่ไม่มีส่วนกรอกข้อมูลและแสดงผลภายในแอปพลิเคชัน) และเอกสารจากภายนอกโรงพยาบาลสัตว์ โดยวิธีการสแกนและนำเข้าภาพ หรือไฟล์เอกสารบางประเภท และการแสดงผลข้อมูลที่บันทึกแล้ว</p>
+        </div>
+      </article>
+
+      <article class="label-item" id="label-6">
+        <div class="label-bar">
+          <span class="label-bar-num">6</span>
+          <span class="label-bar-title">แผง History</span>
+          <span class="label-bar-tag">ด้านซ้าย</span>
+        </div>
+        <div class="label-body">
+          <p>ส่วนแสดงรายการ Exam card id ที่บันทึกแล้วของ HN ที่เลือกนี้ พร้อมตัวกรองช่วยเรียงหรือค้นหารายการที่ต้องการ</p>
+        </div>
+      </article>
+
+      <article class="label-item" id="label-7">
+        <div class="label-bar">
+          <span class="label-bar-num">7</span>
+          <span class="label-bar-title">พื้นที่รายละเอียด</span>
+          <span class="label-bar-tag">ด้านขวา</span>
+        </div>
+        <div class="label-body">
+          <p>ส่วนแสดงเนื้อหาของ Exam card id ที่เลือกจากฝั่ง History ในส่วนของการบันทึกหัวข้อของ Exam card พร้อมภาพประกอบ</p>
+          <ul>
+            <li>มีส่วนแสดงภาพแบบ lightbox (ถ้ามีภาพ) และปุ่ม copy ข้อมูลในรูปแบบ Plain text ของเนื้อหา</li>
+            <li>ในแผนพัฒนาจะมีฟังก์ชันการนำเข้าภาพจาก Mobile Phone โดยผ่านทางอินเทอร์เน็ต</li>
+            <li>ส่วนเฉพาะเจ้าหน้าที่ที่ได้รับมอบหมาย (ปัจจุบันเฉพาะผู้ดูแลระบบ) สามารถตรวจสอบประวัติการบันทึก (History Log) และการ Export to Document</li>
+          </ul>
+        </div>
+      </article>
+    </section>
+    <section class="manual-closing">
+    <section class="summary-section">
+      <div class="label-bar label-bar--summary">
+        <span class="label-bar-title">แผนที่ส่วนประกอบ UI — สรุป Label 1–7</span>
+        <span class="label-bar-tag">สรุปบทที่ 1</span>
+      </div>
+      <div class="summary-list">
+        <p class="summary-row"><span class="summary-num">1</span><span class="summary-text"><strong>แถบเมนูนำทางหลัก</strong> — สลับโมดูลระบบ (ค้นหา HN, ลงทะเบียน, Board, Vetroom, LAB ฯลฯ)</span></p>
+        <p class="summary-row"><span class="summary-num">2</span><span class="summary-text"><strong>ส่วนการจัดการผู้ใช้งาน</strong> — สลับภาษา, กำหนดแผนก, ออกจากระบบ</span></p>
+        <p class="summary-row"><span class="summary-num">3</span><span class="summary-text"><strong>แถบข้อมูลสัตว์เลี้ยงที่เลือก</strong> — แสดง OPD No., Pet Name, Owner, Gender, Age ฯลฯ</span></p>
+        <p class="summary-row"><span class="summary-num">4</span><span class="summary-text"><strong>Visit / Function / Visit Charge</strong> — สถานะ visit, ยอดค่าใช้จ่าย, ทางลัดฟังก์ชัน</span></p>
+        <p class="summary-row"><span class="summary-num">5</span><span class="summary-text"><strong>TAB Menu</strong> — SOAP, ORDER (Tx/Rx/Lab/Pathology), External Documents</span></p>
+        <p class="summary-row"><span class="summary-num">6</span><span class="summary-text"><strong>แผง History</strong> — รายการ Exam card id ที่บันทึกแล้ว</span></p>
+        <p class="summary-row"><span class="summary-num">7</span><span class="summary-text"><strong>พื้นที่รายละเอียด</strong> — แสดง/บันทึกเนื้อหา Exam card, ภาพ, Export</span></p>
+      </div>
+    </section>
+
+    <div class="checklist-box">
+      <div class="checklist-head">Checklist ก่อนเริ่มใช้งาน</div>
+      <ol>
+        <li>ตรวจสอบข้อมูลสัตว์เลี้ยงใน Label 3 ให้ถูกต้อง</li>
+        <li>ยืนยันสถานะ Visit ใน Label 4 (สีเขียว = อยู่ในระบบ)</li>
+        <li>เลือกแท็บที่เหมาะสมใน TAB Menu (Label 5)</li>
+        <li>เลือก Exam card id จากแผง History (Label 6) และ ดูรายละเอียดในพื้นที่รายละเอียด (Label 7)</li>
+      </ol>
+    </div>
+    </section>
+
+  </div><!-- .manual-body -->
+</div><!-- .manual-root -->
+
+<div class="print-running-footer" aria-hidden="true">
+  <span class="print-footer-brand">KAHIS</span>
+  <span class="print-footer-meta">บทที่ 1 · VR001 · Version 2026.08.14.01</span>
+</div>
+
+<div class="paged-footer-source" aria-hidden="true">
+  <div class="paged-footer-inner">
+    <span class="print-footer-brand">KAHIS</span>
+    <span class="print-footer-meta">บทที่ 1 · VR001 · Version 2026.08.14.01</span>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <button class="lightbox-close" onclick="closeLightbox(event)" aria-label="ปิด">✕</button>
+  <img id="lightbox-img" src="" alt="">
+  <div class="lightbox-caption" id="lightbox-caption"></div>
+</div>
+
+<script>window.PagedConfig = { auto: false };</script>
+<script src="https://unpkg.com/pagedjs@0.4.3/dist/paged.polyfill.js"></script>
+<script src="manual-export.js"></script>
+<script>
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const lightboxCaption = document.getElementById('lightbox-caption');
+
+  function openLightbox(src, caption) {
+    lightboxImg.src = src;
+    lightboxCaption.textContent = caption || '';
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox(e) {
+    if (e.target === lightbox || e.target.classList.contains('lightbox-close')) {
+      lightbox.classList.remove('open');
+      lightboxImg.src = '';
+      document.body.style.overflow = '';
+    }
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      lightbox.classList.remove('open');
+      lightboxImg.src = '';
+      document.body.style.overflow = '';
+    }
+  });
+</script>
+
+</body>
+</html>

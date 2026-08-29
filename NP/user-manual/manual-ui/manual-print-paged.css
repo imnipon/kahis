@@ -1,0 +1,141 @@
+/* KAHIS Manual — Paged.js print (margin box footer, 14mm ทุกด้าน)
+ * เปิดใช้: ค่าเริ่มต้น หรือ KahisExport.setMode('paged')
+ * ตอน Export: ตั้งระยะขอบ Print dialog = ไม่มี (None)
+ */
+
+.paged-footer-source {
+  position: running(pagedRunningFooter);
+  width: 100%;
+}
+
+.paged-footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  border-top: 2px solid var(--kahis-green);
+  padding-top: 1.5mm;
+  font-family: "Sarabun", "Noto Sans Thai", "Segoe UI", sans-serif;
+  font-size: 6.5pt;
+  line-height: 1.35;
+  box-sizing: border-box;
+}
+
+@page {
+  size: A4 portrait;
+  margin: var(--print-margin);
+
+  @bottom-center {
+    content: element(pagedRunningFooter);
+    vertical-align: top;
+  }
+}
+
+@media print {
+  body {
+    background: #fff;
+  }
+
+  .toolbar { display: none !important; }
+  .print-mode-indicator { display: none !important; }
+
+  .print-running-footer { display: none !important; }
+
+  .manual-root,
+  .manual-body {
+    width: 100%;
+  }
+
+  .page,
+  .manual-body {
+    border-bottom: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .screen-footer { display: none !important; }
+  .section-divider { border: none; margin: 1rem 0 .5rem; padding-top: 0; }
+
+  .figure-block {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    margin-bottom: 1rem;
+  }
+
+  .figure-block img {
+    max-height: 140mm;
+    width: 100%;
+    object-fit: contain;
+    object-position: top center;
+  }
+
+  .figure-caption .fig-page-hint { display: none; }
+
+  .doc-header {
+    margin-bottom: 1rem;
+    padding-bottom: .75rem;
+  }
+
+  .chapter-desc { margin-bottom: 1rem; }
+
+  .manual-closing {
+    break-before: page;
+    page-break-before: always;
+    margin-top: 0;
+  }
+
+  .summary-section { margin-top: 0; }
+  .summary-section .label-bar { margin-bottom: .45rem; }
+
+  .checklist-box {
+    break-before: auto;
+    page-break-before: auto;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    margin-top: .85rem;
+  }
+
+  .label-bar {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .label-body {
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+
+  .lightbox { display: none !important; }
+  .figure-trigger::after { display: none; }
+  .figure-trigger { cursor: default; }
+
+  h1, h2, h3,
+  .section-title,
+  .chapter-title {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+}
+
+/* Paged.js preview on screen (หลังกด Export) */
+body.pagedjs-active {
+  background: var(--bg);
+}
+
+body.pagedjs-active .toolbar {
+  display: none;
+}
+
+body.pagedjs-active .print-mode-indicator {
+  display: none;
+}
+
+.pagedjs_pages {
+  margin: 0 auto;
+}
+
+.pagedjs_page {
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, .12);
+  margin: 0 auto 1rem;
+}

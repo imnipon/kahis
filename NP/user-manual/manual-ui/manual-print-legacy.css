@@ -1,0 +1,137 @@
+/* KAHIS Manual — Legacy print (Chrome window.print + position:fixed footer)
+ * ขอบ: top 14mm | left 14mm | right 14mm | bottom 26mm
+ * เปิดใช้: KahisExport.setMode('legacy') หรือ ?export=legacy
+ */
+
+@page {
+  size: A4 portrait;
+  margin: var(--print-margin) var(--print-margin) 26mm;
+}
+
+@media print {
+  body {
+    background: #fff;
+    counter-reset: page;
+  }
+
+  .toolbar { display: none !important; }
+  .print-mode-indicator { display: none !important; }
+
+  .manual-root,
+  .manual-body {
+    width: 100%;
+  }
+
+  .page,
+  .manual-body {
+    border-bottom: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .page-break,
+  .page {
+    page-break-before: auto !important;
+    break-before: auto !important;
+  }
+
+  .screen-footer { display: none !important; }
+  .section-divider { border: none; margin: 1rem 0 .5rem; padding-top: 0; }
+
+  .paged-footer-source { display: none !important; }
+
+  .print-running-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--print-footer-zone);
+    padding: 3mm var(--print-margin) 0;
+    font-size: 6.5pt;
+    line-height: 1.35;
+    border-top: 2px solid var(--kahis-green);
+    background: #fff;
+    box-sizing: border-box;
+  }
+
+  .figure-block {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    margin-bottom: 1rem;
+  }
+
+  .figure-block img {
+    max-height: 140mm;
+    width: 100%;
+    object-fit: contain;
+    object-position: top center;
+  }
+
+  .figure-caption .fig-page-hint { display: none; }
+
+  .doc-header {
+    margin-bottom: 1rem;
+    padding-bottom: .75rem;
+  }
+
+  .doc-header--continued {
+    margin-bottom: .75rem;
+    padding-bottom: .5rem;
+    border-bottom-width: 2px;
+  }
+
+  .doc-header--continued .brand-text h2,
+  .doc-header--continued .brand-en,
+  .doc-header--continued .brand-text p {
+    display: none;
+  }
+
+  .doc-header--continued .logo {
+    width: 36px;
+    height: 36px;
+    font-size: .6rem;
+  }
+
+  .chapter-desc { margin-bottom: 1rem; }
+
+  .manual-closing {
+    break-before: page;
+    page-break-before: always;
+    margin-top: 0;
+  }
+
+  .summary-section { margin-top: 0; }
+  .summary-section .label-bar { margin-bottom: .45rem; }
+
+  .checklist-box {
+    break-before: auto;
+    page-break-before: auto;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    margin-top: .85rem;
+  }
+
+  .label-bar {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .label-body {
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+
+  .lightbox { display: none !important; }
+  .figure-trigger::after { display: none; }
+  .figure-trigger { cursor: default; }
+
+  h1, h2, h3,
+  .section-title,
+  .chapter-title {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+}
