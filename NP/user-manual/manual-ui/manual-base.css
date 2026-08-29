@@ -8,6 +8,7 @@
   --summary-bar: #2d4a6f;
   --summary-bar-end: #3d6b9e;
   --summary-light: #eef4fa;
+  --remarkable-bg: #F0E4FF;
   --text: #1e293b;
   --text-muted: #64748b;
   --border: #d1d9e0;
@@ -357,6 +358,17 @@ body.pagedjs-busy .btn { pointer-events: none; opacity: .7; }
 }
 .label-body li:last-child { margin-bottom: 0; }
 .label-body strong { color: var(--text); }
+
+.remarkable-tag {
+  display: inline-block;
+  background: var(--remarkable-bg);
+  color: #5b21b6;
+  font-weight: 700;
+  font-size: .82em;
+  padding: .08rem .4rem;
+  border-radius: 3px;
+  letter-spacing: .01em;
+}
 
 .label-subtitle {
   background: var(--kahis-green-light);

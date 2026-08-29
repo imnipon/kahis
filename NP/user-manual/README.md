@@ -43,7 +43,7 @@ start-server.bat
 | บท | ไฟล์ HTML | ภาพ Label |
 |----|-----------|-----------|
 | 1 — ส่วนประกอบหลัก UI (VR001) | `chapter-01-ui-components.html` | `Label/01_VR001.png` |
-| 2 — ประวัติและ Exam Card Editor (VR004) | `chapter-02-exam-card-viewer.html` | `Label/02_VR004.png` |
+| 2 — ใบบันทึกการตรวจ (VR004) | `chapter-02-exam-card-viewer.html` | `Label/02_VR004.png` |
 
 ## การตั้งชื่อภาพ
 
