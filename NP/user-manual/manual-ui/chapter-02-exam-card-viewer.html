@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAHIS คู่มือการใช้งาน — ประวัติและ Exam Card Editor (VR004)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="manual-base.css">
+  <link rel="stylesheet" href="manual-print-paged.css" id="print-mode-css">
+</head>
+<body>
+
+<div class="toolbar">
+  <h1>KAHIS คู่มือการใช้งาน — บทที่ 2</h1>
+  <div class="toolbar-actions">
+    <span class="print-mode-indicator" id="print-mode-indicator" title=""></span>
+    <button type="button" class="btn btn-mode is-active" id="btn-mode-paged" onclick="KahisExport.setMode('paged')">ขอบเท่ากัน</button>
+    <button type="button" class="btn btn-mode" id="btn-mode-legacy" onclick="KahisExport.setMode('legacy')">ขอบมาตรฐาน</button>
+    <button type="button" class="btn btn-print" id="btn-export-pdf" onclick="KahisExport.exportPdf()">ส่งออก PDF (A4)</button>
+  </div>
+  <p class="file-protocol-notice" id="file-protocol-notice" hidden>
+    เปิดไฟล์จากเครื่อง — ใช้โหมด <strong>ขอบมาตรฐาน</strong> ได้เลย หรือรัน <code>start-server.bat</code>
+    แล้วเปิด <code>http://localhost:8080/chapter-02-exam-card-viewer.html</code> เพื่อใช้โหมด <strong>ขอบเท่ากัน</strong>
+  </p>
+</div>
+
+<div class="manual-root">
+  <div class="manual-body">
+
+    <header class="doc-header">
+      <div class="brand">
+        <div class="logo">KAHIS</div>
+        <div class="brand-text">
+          <h2>ระบบเวชระเบียนอิเล็กทรอนิกโรงพยาบาลสัตว์ ม.เกษตร</h2>
+          <div class="brand-en">KAHIS Kasetsart Animal Hospital Information System</div>
+          <p>คู่มือการใช้งานสำหรับสัตวแพทย์ และบุคคลากรโรงพยาบาลสัตว์</p>
+        </div>
+      </div>
+      <div class="doc-meta">
+        <div><strong>บทที่ 2</strong></div>
+        <div>ประวัติและ Exam Card Editor</div>
+        <div>Version 2026.08.14.01</div>
+        <div>อัปเดต: 29 ส.ค. 2026</div>
+      </div>
+    </header>
+
+    <div class="chapter-badge">Chapter 02 — Exam Card Viewer · VR004</div>
+    <h1 class="chapter-title">Subjective &amp; Systematic Examination — ประวัติและ Exam Card</h1>
+    <p class="chapter-desc">
+      ภาพนี้แสดงหน้าจอ <strong>Subjective &amp; Systematic Examination Card Viewer</strong>
+      โดยมี Label หมายเลข 1–3 ชี้ไปยังประวัติ Exam card, พื้นที่แสดงรายละเอียด และแถบเครื่องมือ Editor
+      คลิกที่ภาพเพื่อดูขนาดจริง
+    </p>
+
+    <figure class="figure-block">
+      <button class="figure-trigger" onclick="openLightbox('../Label/02_VR004.png', 'รูปที่ 2 — ประวัติและ Exam Card Editor (VR004)')" aria-label="ดูภาพขนาดจริง">
+        <img src="../Label/02_VR004.png" alt="ภาพ Label ประวัติและ Exam Card Editor (VR004)">
+      </button>
+      <figcaption class="figure-caption">
+        <span><span class="fig-num">รูปที่ 2</span> — ประวัติและ Exam Card Editor (VR004)</span>
+      </figcaption>
+    </figure>
+
+    <section class="labels-section">
+      <h3 class="section-title">คำอธิบายแต่ละ Label</h3>
+
+      <article class="label-item" id="label-1">
+        <div class="label-bar">
+          <span class="label-bar-num">1</span>
+          <span class="label-bar-title">รายการประวัติการบันทึก Exam card</span>
+          <span class="label-bar-tag">History</span>
+        </div>
+        <div class="label-body">
+          <p>รายการประวัติการบันทึก Exam card จะมีการแสดงรายละเอียดดังนี้:</p>
+          <ul>
+            <li><strong>วันที่ของการตรวจ</strong> — วันที่ที่บันทึก Exam card</li>
+            <li><strong>ชื่อสัตวแพทย์</strong> — ผู้บันทึก/กำกับการตรวจของ Exam card</li>
+            <li><strong>แผนก</strong> — แผนกที่กำกับการตรวจของ Exam card</li>
+            <li><strong>หมายเลข Exam card id</strong> — รหัสอ้างอิงของ Exam card แต่ละรายการ</li>
+          </ul>
+          <p>เลือกแถวในรายการประวัติเพื่อแสดงรายละเอียดทางด้านขวา (Label 2)</p>
+        </div>
+      </article>
+
+      <article class="label-item" id="label-2">
+        <div class="label-bar">
+          <span class="label-bar-num">2</span>
+          <span class="label-bar-title">ส่วนแสดงรายละเอียดของ Exam card ที่เลือก</span>
+          <span class="label-bar-tag">Viewer</span>
+        </div>
+        <div class="label-body">
+          <p>ส่วนแสดงรายละเอียดของ Exam card ที่เลือกจากประวัติด้านซ้าย โดยแสดงเป็น <strong>Plain text</strong></p>
+          <ul>
+            <li>เรียงลำดับตามลำดับหัวข้อของเนื้อหา</li>
+            <li>นำเนื้อหาที่มีการระบุ <strong>Remarkable</strong> มาไว้ด้านบนก่อน และแสดงพื้นหลังด้วยสีม่วง</li>
+            <li>หัวข้อเนื้อหาที่ไม่มีการระบุ Remarkable จะแสดงตามลำดับปกติ</li>
+            <li><strong>ไม่นำหัวข้อที่ไม่มีข้อมูลมาแสดงผล</strong></li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="label-item" id="label-3">
+        <div class="label-bar">
+          <span class="label-bar-num">3</span>
+          <span class="label-bar-title">ส่วนการเรียกหรือสร้าง Exam card ใน Editor</span>
+          <span class="label-bar-tag">Editor</span>
+        </div>
+        <div class="label-body">
+          <p>ส่วนการเรียกหรือสร้าง Exam card มาในส่วน Editor ใช้สำหรับการกรอกข้อมูล Plain text ตามหัวข้อของเนื้อหา พร้อมตัวช่วยกรอกในแต่ละหัวข้อ และใส่ภาพประกอบใน Exam card</p>
+          <p>เครื่องมือส่วนนี้ประกอบด้วย:</p>
+
+          <div class="label-subtitle">เมนู Dropdown วันที่</div>
+          <p>แสดงวันที่ที่เคยมี Exam card บันทึกไว้ ให้เลือกเพื่อแสดงผล / เรียกเข้า Editor</p>
+
+          <div class="label-subtitle">ปุ่ม Add Exam card</div>
+          <p>สร้าง Exam card ใหม่ โดยต้องเลือกวันที่ที่ต้องการกำหนดเป็นวันของ Exam card</p>
+          <ul>
+            <li><strong>การทำงานปกติ</strong> — กดปุ่มเลือก <strong>Today</strong> (Go to Today) ก่อน แล้วกด <strong>Add Exam card</strong></li>
+            <li><strong>การทำงานย้อนหลัง</strong> — เลือกวันที่ผ่านมาแล้วผ่านปุ่ม <strong>Date Picker</strong> หรือเมนู <strong>Dropdown</strong> ก่อน แล้วจึงกด Add Exam card</li>
+          </ul>
+
+          <div class="label-subtitle">ปุ่มเลือกวันที่ (Date Picker)</div>
+          <ul>
+            <li>เลือกวันที่ที่ต้องการให้แสดงผล โดยต้องเป็นวันที่อยู่ในช่วงเวลา<strong>ลงทะเบียนรับบริการ</strong>เท่านั้น</li>
+            <li>ในปฏิทิน วันที่ที่เลือกได้จะถูกแสดงผล และมีสัญลักษณ์กำกับวันที่มีการบันทึก Exam card ไว้แล้ว</li>
+          </ul>
+
+          <div class="label-subtitle">ปุ่ม Full Screen</div>
+          <p>เปิด Editor ในรูปแบบ <strong>Full Screen Mode</strong> เพื่อพื้นที่ทำงานที่กว้างขึ้น</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="manual-closing">
+    <section class="summary-section">
+      <div class="label-bar label-bar--summary">
+        <span class="label-bar-title">แผนที่ส่วนประกอบ — สรุป Label 1–3</span>
+        <span class="label-bar-tag">สรุปบทที่ 2</span>
+      </div>
+      <div class="summary-list">
+        <p class="summary-row"><span class="summary-num">1</span><span class="summary-text"><strong>ประวัติ Exam card</strong> — วันที่ตรวจ, ชื่อสัตวแพทย์, แผนก, Exam card id</span></p>
+        <p class="summary-row"><span class="summary-num">2</span><span class="summary-text"><strong>รายละเอียด Exam card</strong> — Plain text, Remarkable (พื้นม่วง) ขึ้นก่อน, ไม่แสดงหัวข้อว่าง</span></p>
+        <p class="summary-row"><span class="summary-num">3</span><span class="summary-text"><strong>Exam Card Editor</strong> — Dropdown วันที่, Add Exam card, Today, Date Picker, Full Screen</span></p>
+      </div>
+    </section>
+
+    <div class="checklist-box">
+      <div class="checklist-head">Checklist การใช้งาน Exam Card Viewer / Editor</div>
+      <ol>
+        <li>เลือก Exam card จากประวัติ (Label 1) แล้วตรวจรายละเอียดใน Viewer (Label 2)</li>
+        <li>ตรวจว่าหัวข้อ Remarkable อยู่ด้านบนและมีพื้นหลังสีม่วง</li>
+        <li>ก่อนสร้าง Exam card ใหม่: กด Today (กรณีวันปัจจุบัน) หรือเลือกวันที่ผ่าน Date Picker / Dropdown</li>
+        <li>ยืนยันว่าวันที่อยู่ในช่วงลงทะเบียนรับบริการ ก่อนกด Add Exam card</li>
+        <li>ใช้ Full Screen เมื่อต้องการพื้นที่ Editor กว้างขึ้น</li>
+      </ol>
+    </div>
+    </section>
+
+  </div><!-- .manual-body -->
+</div><!-- .manual-root -->
+
+<div class="print-footer-config" hidden
+  data-brand="KAHIS (Kasetsart Animal Hospital Information System)"
+  data-chapter="บทที่ 2 : ประวัติและ Exam Card Editor"
+  data-version="Version 2026.08.14.01">
+</div>
+
+<div class="print-running-footer" aria-hidden="true">
+  <span class="print-footer-brand">KAHIS (Kasetsart Animal Hospital Information System)</span>
+  <div class="print-footer-meta">
+    <div class="print-footer-line1">บทที่ 2 : ประวัติและ Exam Card Editor หน้าที่ <span class="print-footer-page-num"></span></div>
+    <div class="print-footer-line2">Version 2026.08.14.01 พิมพ์เมื่อ <span class="print-footer-printed-at"></span></div>
+  </div>
+</div>
+
+<div class="paged-footer-source" aria-hidden="true">
+  <div class="paged-footer-inner">
+    <span class="print-footer-brand">KAHIS (Kasetsart Animal Hospital Information System)</span>
+    <div class="print-footer-meta">
+      <div class="print-footer-line1">บทที่ 2 : ประวัติและ Exam Card Editor หน้าที่ <span class="print-footer-page-num"></span></div>
+      <div class="print-footer-line2">Version 2026.08.14.01 พิมพ์เมื่อ <span class="print-footer-printed-at"></span></div>
+    </div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <button class="lightbox-close" onclick="closeLightbox(event)" aria-label="ปิด">✕</button>
+  <img id="lightbox-img" src="" alt="">
+  <div class="lightbox-caption" id="lightbox-caption"></div>
+</div>
+
+<script>window.PagedConfig = { auto: false };</script>
+<script src="https://unpkg.com/pagedjs@0.4.3/dist/paged.polyfill.js"></script>
+<script src="manual-export.js"></script>
+<script>
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const lightboxCaption = document.getElementById('lightbox-caption');
+
+  function openLightbox(src, caption) {
+    lightboxImg.src = src;
+    lightboxCaption.textContent = caption || '';
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox(e) {
+    if (e.target === lightbox || e.target.classList.contains('lightbox-close')) {
+      lightbox.classList.remove('open');
+      lightboxImg.src = '';
+      document.body.style.overflow = '';
+    }
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      lightbox.classList.remove('open');
+      lightboxImg.src = '';
+      document.body.style.overflow = '';
+    }
+  });
+</script>
+
+</body>
+</html>

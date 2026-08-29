@@ -32,5 +32,6 @@ const assessmentFiles = [
   { title: "Hoof Health Module", file: "NP/hoof_health/hoof_health_editor.html", lastUpdate: "2026-08-26T21:55:00.000000" },
   { title: "Hoof Health — คู่มือผู้ใช้", file: "NP/hoof_health/hoof_health_manual_th.md", lastUpdate: "2026-08-26T21:55:00.000000" },
   { title: "User Manual — บทที่ 1 ส่วนประกอบ UI (VR001)", file: "NP/user-manual/manual-ui/chapter-01-ui-components.html", lastUpdate: "2026-08-29T13:44:00.000000" },
-  { title: "User Manual — README", file: "NP/user-manual/README.md", lastUpdate: "2026-08-29T13:44:00.000000" },
+  { title: "User Manual — บทที่ 2 ประวัติและ Exam Card Editor (VR004)", file: "NP/user-manual/manual-ui/chapter-02-exam-card-viewer.html", lastUpdate: "2026-08-29T15:43:00.000000" },
+  { title: "User Manual — README", file: "NP/user-manual/README.md", lastUpdate: "2026-08-29T15:43:00.000000" },
 ];
