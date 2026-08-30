@@ -266,6 +266,13 @@
 
   const chapterBase = document.body.getAttribute('data-chapter-base') || '';
   const assetBase = document.body.getAttribute('data-asset-base') || 'assets/';
+  const chapterBark = new Audio(assetBase + 'bark.mp3');
+  chapterBark.preload = 'auto';
+
+  function playChapterBark() {
+    chapterBark.currentTime = 0;
+    chapterBark.play().catch(function () {});
+  }
 
   function chapterHref(ch) {
     return chapterBase + ch.file;
@@ -277,6 +284,7 @@
     a.href = chapterHref(ch);
     a.target = '_blank';
     a.rel = 'noopener';
+    a.addEventListener('click', playChapterBark);
     a.innerHTML =
       '<div class="portal-ring">' +
         '<img class="icon-poodle icon-poodle-chapter" src="' + assetBase + 'poodle-current-clean.svg" alt="">' +
