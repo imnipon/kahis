@@ -16,8 +16,8 @@
   --card: #ffffff;
   --label-red: #b91c1c;
   --radius: 6px;
-  --page-pad-x: 5.3%;
-  --page-pad-y: 4.5%;
+  --page-pad-x: 2.5%;
+  --page-pad-y: 3.5%;
   --print-margin: 14mm;
   --print-footer-zone: 12mm;
 }
@@ -49,6 +49,37 @@ body {
   box-shadow: 0 2px 8px rgba(0,0,0,.15);
 }
 .toolbar h1 { font-size: .95rem; font-weight: 600; }
+.toolbar-title {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  min-width: 0;
+}
+.toolbar-logo-wrap {
+  width: 4.1rem;
+  height: 4.1rem;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 50%;
+  overflow: hidden;
+  padding: .1rem;
+  box-sizing: border-box;
+}
+.toolbar-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center 54%;
+  transform: scale(1.1);
+}
+.toolbar-title h1 {
+  font-size: .95rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
 .toolbar-actions { display: flex; gap: .5rem; }
 .btn {
   display: inline-flex;

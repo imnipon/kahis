@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
@@ -18,6 +18,7 @@
       --teal: #0d9488;
       --teal-deep: #0f766e;
       --ku-green: #006633;
+      --soon-ring: #b5b5b5;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -127,6 +128,8 @@
       background: var(--panel);
       display: grid;
       place-items: center;
+      overflow: hidden;
+      padding: .18rem;
       transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
     }
 
@@ -139,31 +142,35 @@
 
     .portal-item.is-soon {
       cursor: default;
-      opacity: .92;
+    }
+
+    .portal-item.is-soon .portal-ring {
+      border-color: var(--soon-ring);
+      background: #f3f4f6;
     }
 
     .portal-item.is-soon:hover .portal-ring {
       transform: none;
       box-shadow: none;
-      border-color: var(--line-soft);
-    }
-
-    .portal-ring svg.icon-line {
-      width: 3.35rem;
-      height: 3.35rem;
-      stroke: #111;
-      fill: none;
-      stroke-width: 1.65;
-      stroke-linecap: round;
-      stroke-linejoin: round;
+      border-color: #a3a3a3;
     }
 
     .portal-ring img.icon-poodle {
-      width: 5.35rem;
-      height: 5.35rem;
-      object-fit: contain;
       display: block;
-      transform: scale(1.08);
+      object-fit: contain;
+      object-position: center;
+    }
+
+    .portal-ring img.icon-poodle-chapter {
+      width: 6.2rem;
+      height: 6.2rem;
+    }
+
+    .portal-ring img.icon-poodle-soon {
+      width: 6.15rem;
+      height: 6.15rem;
+      transform: scale(1.06);
+      opacity: .5;
     }
 
     .portal-label {
@@ -182,8 +189,9 @@
       color: var(--teal-deep);
     }
 
+    .portal-item.is-soon .portal-label,
     .portal-item.is-soon .portal-sub {
-      color: #9a3412;
+      color: var(--soon-ring);
     }
 
     .footer-note {
@@ -196,6 +204,8 @@
     @media (max-width: 860px) {
       .portal-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.6rem 1rem; }
       .portal-ring { width: 5.8rem; height: 5.8rem; }
+      .portal-ring img.icon-poodle-chapter { width: 5.45rem; height: 5.45rem; }
+      .portal-ring img.icon-poodle-soon { width: 5.4rem; height: 5.4rem; }
     }
 
     @media (max-width: 560px) {
@@ -204,7 +214,7 @@
     }
   </style>
 </head>
-<body data-chapter-base="manual-ui/" data-asset-base="assets/">
+<body data-chapter-base="" data-asset-base="assets/">
 
 <div class="page">
   <div class="topbar">
@@ -235,22 +245,19 @@
       id: '01',
       code: 'VR001',
       title: 'ส่วนประกอบหลักของ UI',
-      file: 'chapter-01-ui-components.html',
-      icon: 'ui'
+      file: 'chapter-01-ui-components.html'
     },
     {
       id: '02',
       code: 'VR004',
       title: 'ใบบันทึกการตรวจ',
-      file: 'chapter-02-exam-card-viewer.html',
-      icon: 'viewer'
+      file: 'chapter-02-exam-card-viewer.html'
     },
     {
       id: '03',
       code: 'VR005',
       title: 'การลงข้อมูลในใบบันทึกการตรวจ',
-      file: 'chapter-03-exam-card-editor.html',
-      icon: 'editor'
+      file: 'chapter-03-exam-card-editor.html'
     }
   ];
 
@@ -259,12 +266,6 @@
 
   const chapterBase = document.body.getAttribute('data-chapter-base') || '';
   const assetBase = document.body.getAttribute('data-asset-base') || 'assets/';
-
-  const ICONS = {
-    ui: '<svg class="icon-line" viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="8" width="36" height="28" rx="2"/><path d="M6 14h36"/><path d="M14 20h8M14 25h12M14 30h10"/><circle cx="34" cy="26" r="3.5"/></svg>',
-    viewer: '<svg class="icon-line" viewBox="0 0 48 48" aria-hidden="true"><path d="M10 8h20l8 8v24H10V8z"/><path d="M30 8v8h8"/><path d="M16 22h16M16 27h16M16 32h10"/></svg>',
-    editor: '<svg class="icon-line" viewBox="0 0 48 48" aria-hidden="true"><rect x="8" y="7" width="32" height="34" rx="2"/><path d="M14 15h14M14 21h20M14 27h18M14 33h12"/><path d="M33 31l4 4-7 2 3-6z"/></svg>'
-  };
 
   function chapterHref(ch) {
     return chapterBase + ch.file;
@@ -277,7 +278,9 @@
     a.target = '_blank';
     a.rel = 'noopener';
     a.innerHTML =
-      '<div class="portal-ring">' + (ICONS[ch.icon] || ICONS.ui) + '</div>' +
+      '<div class="portal-ring">' +
+        '<img class="icon-poodle icon-poodle-chapter" src="' + assetBase + 'poodle-current-clean.svg" alt="">' +
+      '</div>' +
       '<div class="portal-label">บทที่ ' + ch.id + '<br>' + ch.title + '</div>' +
       '<span class="portal-sub">' + ch.code + '</span>';
     return a;
@@ -289,7 +292,7 @@
     el.setAttribute('aria-disabled', 'true');
     el.innerHTML =
       '<div class="portal-ring">' +
-        '<img class="icon-poodle" src="' + assetBase + 'poodle-under-construction.svg" alt="">' +
+        '<img class="icon-poodle icon-poodle-soon" src="' + assetBase + 'poodle-under-construction.png" alt="">' +
       '</div>' +
       '<div class="portal-label">บทถัดไป</div>' +
       '<span class="portal-sub">Under Construction</span>';
@@ -313,4 +316,3 @@
 
 </body>
 </html>
-
