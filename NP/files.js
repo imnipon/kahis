@@ -1,5 +1,59 @@
 const filesTree = [
   {
+    "name": "poodle_marker_studio",
+    "label": "Poodle Marker Studio",
+    "type": "folder",
+    "path": "poodle_marker_studio",
+    "children": [
+      {
+        "name": "app",
+        "label": "App (Ready to use)",
+        "type": "folder",
+        "path": "poodle_marker_studio/app",
+        "children": [
+          {
+            "name": "index.html",
+            "type": "file",
+            "path": "poodle_marker_studio/app/index.html",
+            "lastUpdate": "2026-09-01T16:10:00.000000"
+          }
+        ]
+      },
+      {
+        "name": "src",
+        "label": "Source",
+        "type": "folder",
+        "path": "poodle_marker_studio/src",
+        "children": [
+          {
+            "name": "index.html",
+            "type": "file",
+            "path": "poodle_marker_studio/src/index.html",
+            "lastUpdate": "2026-09-01T16:10:00.000000"
+          },
+          {
+            "name": "app.js",
+            "type": "file",
+            "path": "poodle_marker_studio/src/app.js",
+            "lastUpdate": "2026-09-01T16:10:00.000000"
+          },
+          {
+            "name": "styles.css",
+            "type": "file",
+            "path": "poodle_marker_studio/src/styles.css",
+            "lastUpdate": "2026-09-01T16:10:00.000000"
+          }
+        ]
+      },
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "poodle_marker_studio/README.md",
+        "lastUpdate": "2026-09-01T16:10:00.000000"
+      }
+    ]
+  },
+  {
     "name": "resource",
     "label": "Resource & Tools",
     "type": "folder",

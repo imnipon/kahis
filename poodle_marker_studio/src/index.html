@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Poodle Marker Studio — ระบบมาร์กเกอร์ภาพ (Offline 100%)</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="lib/fabric.min.js"></script>
+</head>
+<body>
+
+<!-- ═══════════════════════ TOP HEADER ═══════════════════════ -->
+<header class="app-header">
+  <div class="brand-section">
+    <img src="logo.png" alt="Poodle Marker Studio" class="brand-logo-img">
+    <div class="brand-info">
+      <h1>
+        Poodle Marker Studio
+        <span class="badge-offline">🐾 100% Local & Offline</span>
+        <button class="btn-manual" onclick="openManual()" title="เปิดคู่มือการใช้งาน">
+          <!-- Lucide book-heart icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+            <path d="M16 8.2C16 7 15 6 13.8 6c-.8 0-1.4.4-1.8 1-.4-.6-1-.9-1.8-.9C9 6.1 8 7 8 8.2c0 .6.3 1.2.7 1.6L12 13l3.3-3.2c.4-.4.7-1 .7-1.6z"/>
+          </svg>
+          คู่มือ
+        </button>
+      </h1>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button id="btn-undo" class="btn btn-secondary btn-sm" disabled>↩️ Undo</button>
+    <button id="btn-redo" class="btn btn-secondary btn-sm" disabled>↪️ Redo</button>
+    <div class="divider-v"></div>
+    <button id="btn-change-image" class="btn btn-secondary btn-sm">🖼️ เปลี่ยนภาพ</button>
+    <button id="btn-export-top"   class="btn btn-bone">🦴 Export ภาพ</button>
+  </div>
+</header>
+
+<!-- ═══════════════════════ 3-BLOCK LAYOUT ═══════════════════════ -->
+<main class="app-container-3block">
+
+  <!-- ── LEFT: Tools & Settings ── -->
+  <aside class="sidebar-left">
+
+    <section class="sidebar-section">
+      <div class="section-title"><span>🛠️ เครื่องมือ (Tools)</span></div>
+      <div class="tool-grid-compact">
+        <button class="tool-btn-compact active" data-tool="marker" title="Num Label — วางตัวเลขรันลำดับ 1,2,3...">
+          <span class="icon-badge">1,2,3</span><span>Num Label</span>
+        </button>
+        <button class="tool-btn-compact" data-tool="alpha" title="Text Label — วางตัวอักษร A,B,C...">
+          <span class="icon-badge">A,B,C</span><span>Text Label</span>
+        </button>
+        <button class="tool-btn-compact" data-tool="textbox" title="Textbox — กล่องข้อความภาษาไทย IBM Plex">
+          <span class="icon-badge" style="font-family:serif;font-size:0.95rem">Tt</span><span>Textbox</span>
+        </button>
+        <button class="tool-btn-compact" data-tool="rect" title="Rectangle — ลากวาดกรอบสี่เหลี่ยม">
+          <span class="icon-badge">🏠</span><span>Rectangle</span>
+        </button>
+        <button class="tool-btn-compact tool-btn-full" data-tool="select" title="Select — เลือก ย้าย หรือปรับขนาดวัตถุ">
+          <span class="icon-badge">👆</span><span>Select (เลือก / ย้าย)</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="sidebar-section" style="flex:1;display:flex;flex-direction:column">
+      <div class="section-title"><span>🦴 ตั้งค่าสำหรับรายการใหม่</span></div>
+      <div class="context-badge" id="prop-active-tool-badge">1,2,3 Num Label (ตัวเลข)</div>
+
+      <!-- Num Label settings -->
+      <div id="prop-seq-number" class="context-property-card-compact">
+        <div class="form-row-compact justify-between">
+          <label class="form-label-compact" style="margin-bottom:0">ลำดับถัดไป:</label>
+          <strong id="prop-next-val-number" style="color:var(--primary-hover);font-size:0.95rem">1</strong>
+        </div>
+        <div class="form-row-compact" style="margin-top:4px">
+          <div class="form-group-compact" style="flex:1">
+            <label class="form-label-compact">เริ่มที่เลข</label>
+            <input type="number" id="prop-start-num" class="input-text-compact" value="1" min="1">
+          </div>
+          <div class="form-group-compact" style="flex:1">
+            <label class="form-label-compact">&nbsp;</label>
+            <button id="btn-reset-num-seq" class="btn btn-secondary btn-sm" style="width:100%;height:26px;padding:2px">🔄 รีเซ็ต</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alpha Label settings -->
+      <div id="prop-seq-alpha" class="context-property-card-compact" style="display:none">
+        <div class="form-row-compact justify-between">
+          <label class="form-label-compact" style="margin-bottom:0">อักษรถัดไป:</label>
+          <strong id="prop-next-val-alpha" style="color:var(--primary-hover);font-size:0.95rem">A</strong>
+        </div>
+        <div class="form-row-compact" style="margin-top:4px">
+          <div class="form-group-compact" style="flex:1">
+            <label class="form-label-compact">เริ่มที่</label>
+            <select id="prop-start-alpha" class="select-input-compact">
+              <option value="1">A</option><option value="2">B</option><option value="3">C</option>
+              <option value="4">D</option><option value="5">E</option><option value="6">F</option>
+              <option value="7">G</option><option value="8">H</option>
+            </select>
+          </div>
+          <div class="form-group-compact" style="flex:1">
+            <label class="form-label-compact">&nbsp;</label>
+            <button id="btn-reset-alpha-seq" class="btn btn-secondary btn-sm" style="width:100%;height:26px;padding:2px">🔄 รีเซ็ต</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Textbox font size + alignment -->
+      <div id="prop-text-controls" class="context-property-card-compact" style="display:none">
+        <label class="form-label-compact">ขนาดตัวอักษร (Font Size)</label>
+        <div class="range-slider-wrap-compact">
+          <input type="range" id="prop-font-size-slider" min="12" max="36" value="18">
+          <span id="prop-font-size-val" class="slider-val-compact">18px</span>
+        </div>
+        <label class="form-label-compact" style="margin-top:6px">การจัดชิด (Text Align)</label>
+        <div class="align-group" id="prop-align-group">
+          <button class="align-btn active" data-align="left"   title="ชิดซ้าย">⬅ ซ้าย</button>
+          <button class="align-btn"        data-align="center" title="กึ่งกลาง">↔ กลาง</button>
+          <button class="align-btn"        data-align="right"  title="ชิดขวา">ขวา ➡</button>
+        </div>
+      </div>
+
+      <!-- Rect stroke -->
+      <div id="prop-stroke-controls" class="context-property-card-compact" style="display:none">
+        <label class="form-label-compact">ความหนาเส้น (Stroke Width)</label>
+        <div class="range-slider-wrap-compact">
+          <input type="range" id="prop-stroke-slider" min="1" max="10" value="3">
+          <span id="prop-stroke-val" class="slider-val-compact">3px</span>
+        </div>
+      </div>
+
+      <!-- Marker size (shared) -->
+      <div class="form-group-compact" id="prop-group-size">
+        <label class="form-label-compact">ขนาด Marker</label>
+        <div class="range-slider-wrap-compact">
+          <input type="range" id="prop-size-slider" min="22" max="54" value="34">
+          <span id="prop-size-val" class="slider-val-compact">34px</span>
+        </div>
+      </div>
+
+      <!-- BG Color -->
+      <div class="form-group-compact" style="margin-top:2px">
+        <div class="form-row-compact justify-between items-center" style="margin-bottom:3px">
+          <label class="form-label-compact" style="margin-bottom:0">🎨 สีพื้นหลัง (BG / Fill):</label>
+          <input type="color" id="prop-bg-color-native" class="color-input-native" value="#10b981">
+        </div>
+        <div class="color-presets-compact" id="bg-color-presets">
+          <div class="color-dot-compact active" style="background:#10b981" data-color="#10b981"></div>
+          <div class="color-dot-compact" style="background:#3b82f6" data-color="#3b82f6"></div>
+          <div class="color-dot-compact" style="background:#f59e0b" data-color="#f59e0b"></div>
+          <div class="color-dot-compact" style="background:#ef4444" data-color="#ef4444"></div>
+          <div class="color-dot-compact" style="background:#8b5cf6" data-color="#8b5cf6"></div>
+          <div class="color-dot-compact" style="background:#0f172a" data-color="#0f172a"></div>
+          <div class="color-dot-compact" style="background:#ffffff;border:1px solid #cbd5e1" data-color="#ffffff"></div>
+        </div>
+      </div>
+
+      <!-- Font / Line Color -->
+      <div class="form-group-compact" style="margin-top:4px">
+        <div class="form-row-compact justify-between items-center" style="margin-bottom:3px">
+          <label class="form-label-compact" style="margin-bottom:0">✏️ สีตัวอักษร / เส้น (Font / Line):</label>
+          <input type="color" id="prop-font-color-native" class="color-input-native" value="#ffffff">
+        </div>
+        <div class="color-presets-compact" id="font-color-presets">
+          <div class="color-dot-compact active" style="background:#ffffff;border:1px solid #cbd5e1" data-color="#ffffff"></div>
+          <div class="color-dot-compact" style="background:#0f172a" data-color="#0f172a"></div>
+          <div class="color-dot-compact" style="background:#10b981" data-color="#10b981"></div>
+          <div class="color-dot-compact" style="background:#3b82f6" data-color="#3b82f6"></div>
+          <div class="color-dot-compact" style="background:#f59e0b" data-color="#f59e0b"></div>
+          <div class="color-dot-compact" style="background:#ef4444" data-color="#ef4444"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Danger actions -->
+    <section class="sidebar-section">
+      <div class="form-row-compact">
+        <button id="btn-delete-selected" class="btn btn-secondary btn-sm" style="flex:1">🗑️ ลบที่เลือก</button>
+        <button id="btn-clear-all"       class="btn btn-danger-subtle btn-sm" style="flex:1">🧹 ล้างทั้งหมด</button>
+      </div>
+    </section>
+  </aside>
+
+  <!-- ── CENTER: Workspace ── -->
+  <section class="app-workspace" id="canvas-container-wrap">
+
+    <!-- Initial / dropzone view -->
+    <div id="initial-instructions-view" class="initial-view-container">
+      <div class="info-hero">
+        <img src="logo.png" alt="Poodle" class="info-hero-logo">
+        <h2>ระบบมาร์กเกอร์และคำอธิบายรูปภาพ (Poodle Marker Studio)</h2>
+        <p>เครื่องมือใส่ป้ายลำดับตัวเลข ตัวอักษร ตีกรอบ และกล่องข้อความภาษาไทย<br>ทำงานแบบ Local 100% — ไม่ส่งรูปออกนอกเครื่อง</p>
+      </div>
+
+      <div class="dropzone-card" id="main-dropzone">
+        <div class="dropzone-icon">🏠</div>
+        <h3>คลิกเพื่อเลือกรูปภาพ หรือลากไฟล์มาวาง</h3>
+        <p>รองรับ PNG, JPG, JPEG, WEBP, GIF, BMP</p>
+        <input type="file" id="image-file-input" accept="image/*" class="hidden">
+        <button type="button" class="btn btn-primary" id="btn-browse-file">📂 เลือกรูปภาพ (Browse)</button>
+        <div style="margin-top:10px">
+          <span class="dropzone-paste-badge">🐾 หรือกด <kbd>Ctrl</kbd>+<kbd>V</kbd> วางจาก Clipboard ได้ทันที</span>
+        </div>
+      </div>
+
+      <div class="feature-details-grid">
+        <div class="feature-box">
+          <div class="feature-box-icon" style="font-weight:800;color:var(--primary)">1,2,3</div>
+          <h4>Num & Text Labels</h4>
+          <p>รันตัวเลขและตัวอักษรลำดับ อัตโนมัติ รีเซ็ตแยกชุดได้</p>
+        </div>
+        <div class="feature-box">
+          <div class="feature-box-icon" style="font-weight:800;color:var(--primary);font-family:serif">Tt</div>
+          <h4>IBM Plex & Thai Wrap</h4>
+          <p>ฟอนต์ IBM Plex Sans Thai Looped ตัดคำอัตโนมัติ</p>
+        </div>
+        <div class="feature-box">
+          <div class="feature-box-icon">🔒</div>
+          <h4>100% Offline & Sharp</h4>
+          <p>ปลอดภัยในเครื่อง คมชัด High-DPI Export ไม่ทับต้นฉบับ</p>
+        </div>
+      </div>
+
+      <div class="shortcut-guide">
+        <div class="shortcut-item"><kbd>Ctrl</kbd>+<kbd>Z</kbd> Undo</div>
+        <div class="shortcut-item"><kbd>Ctrl</kbd>+<kbd>Y</kbd> Redo</div>
+        <div class="shortcut-item"><kbd>Delete</kbd> ลบที่เลือก</div>
+        <div class="shortcut-item"><kbd>Space</kbd>+ลาก Pan</div>
+        <div class="shortcut-item"><kbd>Ctrl</kbd>+เลื่อน Zoom</div>
+      </div>
+    </div>
+
+    <!-- Active canvas view -->
+    <div id="canvas-workspace-view" class="canvas-view-container">
+      <!-- Floating selection toolbar -->
+      <div id="floating-selection-toolbar" class="floating-selection-bar">
+        <span style="font-size:0.8rem;font-weight:600;color:var(--text-muted)">จัดการ:</span>
+        <button class="btn btn-primary btn-sm"       id="btn-edit-selected-modal">✏️ แก้ไข</button>
+        <button class="btn btn-secondary btn-sm"     id="btn-duplicate-selected">📋 สำเนา</button>
+        <button class="btn btn-danger-subtle btn-sm" id="btn-del-floating">🗑️ ลบ</button>
+      </div>
+
+      <div class="canvas-wrapper">
+        <canvas id="main-canvas"></canvas>
+      </div>
+
+      <!-- Viewport & Zoom bar -->
+      <div class="floating-bottom-bar">
+        <button id="btn-tool-pan" class="btn btn-secondary btn-sm btn-pan-toggle" title="เลื่อนภาพ (Pan) — หรือกด Spacebar ค้าง">
+          ✋ <span style="font-size:0.78rem">เลื่อนภาพ (Pan)</span>
+        </button>
+        <div class="divider-v"></div>
+        <button id="btn-zoom-out"  class="btn-icon-only btn-sm" title="ย่อ">➖</button>
+        <span   id="zoom-percentage-text" style="font-size:0.82rem;font-weight:700;min-width:44px;text-align:center">100%</span>
+        <button id="btn-zoom-in"   class="btn-icon-only btn-sm" title="ขยาย">➕</button>
+        <div class="divider-v"></div>
+        <button id="btn-zoom-fit"  class="btn btn-secondary btn-sm">🔍 พอดีหน้าจอ</button>
+        <button id="btn-zoom-reset"class="btn btn-secondary btn-sm">1:1 ขนาดจริง</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── RIGHT: Markers List + FAQ ── -->
+  <aside class="sidebar-right">
+
+    <!-- Markers List -->
+    <section class="sidebar-section">
+      <div class="section-title">
+        <span>📋 รายการ Marker ที่สร้าง</span>
+        <span id="layer-count-badge" class="badge-offline" style="font-size:0.7rem;padding:1px 7px">0 ชิ้น</span>
+      </div>
+      <div id="layers-list-container" class="layers-container">
+        <div class="empty-layers-msg">
+          <span>🐾 ยังไม่มี Marker หรือข้อความบนภาพ</span>
+          <div style="margin-top:4px;font-size:0.72rem;color:var(--text-subtle)">คลิกเลือกเครื่องมือแล้วคลิกบนภาพ</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="sidebar-section" style="flex:1">
+      <div class="section-title"><span>❓ คำถามที่พบบ่อย (FAQ)</span></div>
+      <div class="faq-container">
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)"><span>🔒 รูปภาพถูกส่งขึ้นเน็ตหรือไม่?</span><span>▾</span></div>
+          <div class="faq-answer">ไม่เลยครับ! ทุกอย่างทำงานใน RAM ของเบราว์เซอร์ในเครื่องคุณเท่านั้น 100% Private</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)"><span>🔢 Num Label / Text Label ใช้อย่างไร?</span><span>▾</span></div>
+          <div class="faq-answer">คลิกเลือกเครื่องมือ → คลิกบนภาพเพื่อวาง ระบบรันลำดับให้อัตโนมัติ ตั้งค่าเริ่มต้นหรือรีเซ็ตได้ในแถบซ้าย</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)"><span>📝 Textbox (Tt) กับภาษาไทย?</span><span>▾</span></div>
+          <div class="faq-answer">ฝัง IBM Plex Sans Thai Looped พร้อมตัดคำอัตโนมัติด้วย Intl.Segmenter — resize กล่องแล้วคำจะ wrap ถูกต้อง ไม่ตัดกลางคำ</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)"><span>✏️ แก้ไขชิ้นงานที่วางแล้วทำอย่างไร?</span><span>▾</span></div>
+          <div class="faq-answer">ดับเบิ้ลคลิกที่ชิ้นงานบนภาพ หรือกดไอคอน ✏️ ในแถบขวา เพื่อเปิด Edit Modal ปรับข้อความ ขนาด และสีได้</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)"><span>💾 Export ภาพ ได้ความละเอียดเท่าต้นฉบับ?</span><span>▾</span></div>
+          <div class="faq-answer">ใช่ครับ Export จะเรนเดอร์ที่ความละเอียดต้นฉบับ 100% เสมอ ไม่ขึ้นกับ zoom level ในหน้าจอ</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)"><span>📂 Save As dialog ไม่ขึ้น?</span><span>▾</span></div>
+          <div class="faq-answer">Save As dialog ทำงานบน Secure Context (localhost/HTTPS) หากเปิดผ่าน file:// ไฟล์จะ download อัตโนมัติแทน ยังใช้งานได้ครับ</div>
+        </div>
+
+      </div>
+    </section>
+  </aside>
+
+</main>
+
+<!-- ═══════════════════════ MODALS ═══════════════════════ -->
+
+<!-- Rich Edit Modal -->
+<div id="rich-edit-modal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 id="rich-edit-title">✏️ แก้ไขคุณสมบัติชิ้นงาน</h3>
+      <button class="layer-btn-icon" onclick="closeRichEditModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group-compact">
+        <label class="form-label-compact" id="modal-label-value">ข้อความ / ค่าใน Marker:</label>
+        <textarea id="modal-input-text" class="input-text-compact" rows="3" style="resize:vertical"></textarea>
+      </div>
+      <div class="form-group-compact" id="modal-field-size" style="display:none">
+        <label class="form-label-compact">ขนาด Marker</label>
+        <div class="range-slider-wrap-compact">
+          <input type="range" id="modal-slider-size" min="20" max="80" value="34">
+          <span id="modal-slider-size-val" class="slider-val-compact">34px</span>
+        </div>
+      </div>
+      <div class="form-group-compact" id="modal-field-fontsize" style="display:none">
+        <label class="form-label-compact">ขนาดตัวอักษร</label>
+        <div class="range-slider-wrap-compact">
+          <input type="range" id="modal-slider-fontsize" min="12" max="48" value="18">
+          <span id="modal-slider-fontsize-val" class="slider-val-compact">18px</span>
+        </div>
+      </div>
+      <!-- Text alignment — shown only for Textbox -->
+      <div class="form-group-compact" id="modal-align-group" style="display:none;flex-direction:column;gap:4px">
+        <label class="form-label-compact">การจัดชิด (Text Align)</label>
+        <div class="align-group">
+          <button class="align-btn active" data-align="left"   title="ชิดซ้าย">⬅ ซ้าย</button>
+          <button class="align-btn"        data-align="center" title="กึ่งกลาง">↔ กลาง</button>
+          <button class="align-btn"        data-align="right"  title="ชิดขวา">ขวา ➡</button>
+        </div>
+      </div>
+      <div class="form-group-compact" id="modal-field-strokewidth" style="display:none">
+        <label class="form-label-compact">ความหนาเส้น</label>
+        <div class="range-slider-wrap-compact">
+          <input type="range" id="modal-slider-strokewidth" min="1" max="12" value="3">
+          <span id="modal-slider-strokewidth-val" class="slider-val-compact">3px</span>
+        </div>
+      </div>
+      <div class="form-row-compact" style="margin-top:10px">
+        <div class="form-group-compact" style="flex:1">
+          <label class="form-label-compact">สีพื้นหลัง (BG / Fill)</label>
+          <input type="color" id="modal-color-bg" class="input-text-compact" style="height:34px;padding:2px;cursor:pointer">
+        </div>
+        <div class="form-group-compact" style="flex:1">
+          <label class="form-label-compact">สีตัวอักษร / เส้น</label>
+          <input type="color" id="modal-color-font" class="input-text-compact" style="height:34px;padding:2px;cursor:pointer">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger-subtle btn-sm" id="modal-btn-delete" style="margin-right:auto">🗑️ ลบชิ้นนี้</button>
+      <button class="btn btn-secondary btn-sm" onclick="closeRichEditModal()">ยกเลิก</button>
+      <button class="btn btn-primary btn-sm"   id="modal-btn-save">💾 บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<!-- Export Modal -->
+<div id="export-modal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>🦴 Export ภาพที่ตกแต่งแล้ว</h3>
+      <button class="layer-btn-icon" onclick="closeExportModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group-compact">
+        <label class="form-label-compact">ชื่อไฟล์ (Default: ชื่อเดิม 10 ตัว + YYYYMMDDHHmm)</label>
+        <input type="text" id="export-filename-input" class="input-text-compact">
+        <small style="font-size:0.72rem;color:var(--text-muted);display:block;margin-top:4px">* Export ไม่บันทึกทับต้นฉบับ</small>
+      </div>
+      <div class="form-row-compact" style="margin-top:10px">
+        <div class="form-group-compact" style="flex:1">
+          <label class="form-label-compact">รูปแบบไฟล์</label>
+          <select id="export-format-select" class="select-input-compact">
+            <option value="png">PNG (คมชัด / Lossless)</option>
+            <option value="jpeg">JPEG (ขนาดกะทัดรัด)</option>
+            <option value="webp">WEBP (โมเดิร์น)</option>
+          </select>
+        </div>
+        <div class="form-group-compact" style="flex:1">
+          <label class="form-label-compact">คุณภาพ</label>
+          <input type="range" id="export-quality-slider" min="0.5" max="1" step="0.05" value="0.95" style="width:100%;accent-color:var(--primary)">
+        </div>
+      </div>
+      <div class="form-group-compact" style="margin-top:10px">
+        <label class="form-label-compact">ความละเอียด</label>
+        <div id="export-dimensions-text" style="font-size:0.82rem;font-weight:600;color:var(--primary-hover);background:var(--primary-light);padding:6px 10px;border-radius:var(--radius-sm);border:1px solid var(--primary-border)">-</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary btn-sm" id="btn-cancel-export">ยกเลิก</button>
+      <button class="btn btn-bone btn-sm"      id="btn-confirm-export">💾 บันทึก / ดาวน์โหลด</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     MANUAL MODAL — คู่มือการใช้งานภาษาไทย
+═════════════════════════════════════════════════════════ -->
+<div id="manual-modal" class="modal-overlay manual-overlay">
+  <div class="modal-card manual-card">
+    <div class="modal-header manual-header">
+      <h3 class="manual-title">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary)">
+          <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+          <path d="M16 8.2C16 7 15 6 13.8 6c-.8 0-1.4.4-1.8 1-.4-.6-1-.9-1.8-.9C9 6.1 8 7 8 8.2c0 .6.3 1.2.7 1.6L12 13l3.3-3.2c.4-.4.7-1 .7-1.6z"/>
+        </svg>
+        คู่มือการใช้งาน Poodle Marker Studio
+      </h3>
+      <button class="layer-btn-icon" onclick="closeManual()" title="ปิดคู่มือ">✕</button>
+    </div>
+    <div class="modal-body manual-body">
+
+      <!-- 1. เริ่มต้นใช้งาน -->
+      <div class="manual-section">
+        <div class="manual-section-header">
+          <span class="manual-num">1</span>
+          <h4>การเปิดรูปภาพ</h4>
+        </div>
+        <div class="manual-steps">
+          <div class="manual-step">
+            <span class="step-badge">📂</span>
+            <div><strong>Browse</strong> — คลิกปุ่ม "เลือกรูปภาพ" หรือกดปุ่ม Browse ตรงกลางหน้าจอ แล้วเลือกไฟล์รูปจากเครื่อง</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">🖱️</span>
+            <div><strong>Drag & Drop</strong> — ลากไฟล์รูปจาก File Explorer มาวางที่กรอบตรงกลางหน้าจอได้โดยตรง</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">📋</span>
+            <div><strong>Ctrl+V Paste</strong> — กด Ctrl+C ก๊อปภาพจากที่ใดก็ได้ แล้วกด Ctrl+V ในหน้าแอพเพื่อวางทันที</div>
+          </div>
+          <div class="manual-tip">💡 รองรับไฟล์ PNG, JPG, JPEG, WEBP, GIF, BMP ทุกขนาด</div>
+        </div>
+      </div>
+
+      <!-- 2. Num Label -->
+      <div class="manual-section">
+        <div class="manual-section-header">
+          <span class="manual-num">2</span>
+          <h4>เครื่องมือ Num Label <span class="tool-pill">1,2,3</span></h4>
+        </div>
+        <div class="manual-steps">
+          <div class="manual-step">
+            <span class="step-badge">1</span>
+            <div>คลิกปุ่ม <strong>1,2,3 Num Label</strong> ในแถบเครื่องมือด้านซ้าย เมาส์จะเปลี่ยนเป็น crosshair</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">2</span>
+            <div>คลิกบนตำแหน่งที่ต้องการบนภาพ — วงกลมตัวเลขจะปรากฏและรันลำดับอัตโนมัติ (1, 2, 3...)</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">3</span>
+            <div>ตั้งค่าได้ในแถบซ้าย: เลขเริ่มต้น, ขนาด Marker, สีพื้นหลัง (BG), สีตัวเลข (Font)</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">🔄</span>
+            <div>กด <strong>รีเซ็ต</strong> เพื่อเริ่มนับใหม่จากตัวเลขเริ่มต้น ใช้สำหรับสร้างชุดลำดับแยกกัน</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Text Label -->
+      <div class="manual-section">
+        <div class="manual-section-header">
+          <span class="manual-num">3</span>
+          <h4>เครื่องมือ Text Label <span class="tool-pill">A,B,C</span></h4>
+        </div>
+        <div class="manual-steps">
+          <div class="manual-step">
+            <span class="step-badge">A</span>
+            <div>คลิก <strong>A,B,C Text Label</strong> แล้วคลิกบนภาพ — วงกลมตัวอักษรจะปรากฏรันลำดับ A, B, C, D...</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">⚙️</span>
+            <div>เลือกอักษรเริ่มต้นได้จาก Dropdown (A–H) และกด รีเซ็ต เพื่อเริ่มใหม่</div>
+          </div>
+          <div class="manual-tip">💡 Num Label และ Text Label มีลำดับแยกจากกัน สามารถใช้คู่กันบนภาพเดียวได้</div>
+        </div>
+      </div>
+
+      <!-- 4. Textbox -->
+      <div class="manual-section">
+        <div class="manual-section-header">
+          <span class="manual-num">4</span>
+          <h4>เครื่องมือ Textbox <span class="tool-pill" style="font-family:serif">Tt</span></h4>
+        </div>
+        <div class="manual-steps">
+          <div class="manual-step">
+            <span class="step-badge">1</span>
+            <div>คลิก <strong>Tt Textbox</strong> แล้วคลิกบนภาพ — กล่องข้อความจะปรากฏพร้อมให้พิมพ์ทันที</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">2</span>
+            <div>พิมพ์ข้อความภาษาไทยหรืออังกฤษ ฟอนต์ <strong>IBM Plex Sans Thai Looped</strong> พร้อมตัดคำภาษาไทยอัตโนมัติ</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">↔️</span>
+            <div><strong>ปรับขนาดกล่องพื้นหลัง</strong> — ลากขอบกล่องข้อความเพื่อขยาย/หดความกว้าง กรอบสีพื้นหลังและข้อความจะ wrap ตัดคำตามขนาดกล่องพอดี (ขนาดตัวอักษรไม่เปลี่ยน)</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">🔤</span>
+            <div><strong>ปรับขนาดตัวอักษร (Font Size)</strong> — ปรับได้ผ่าน Slider ในแถบซ้ายหรือใน Edit Modal</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">📐</span>
+            <div><strong>การจัดชิดข้อความ</strong> — เลือกจัดชิดซ้าย (⬅), กึ่งกลาง (↔), หรือชิดขวา (➡) ได้จากแถบซ้ายหรือ Edit Modal</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">🎨</span>
+            <div>สีพื้นหลัง = สีกรอบกล่อง (มีระยะขอบในโค้งมน ป้องกันสระบน-ล่างล้น) / สีตัวอักษร = สีข้อความ</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Rectangle -->
+      <div class="manual-section">
+        <div class="manual-section-header">
+          <span class="manual-num">5</span>
+          <h4>เครื่องมือ Rectangle <span class="tool-pill">🏠</span></h4>
+        </div>
+        <div class="manual-steps">
+          <div class="manual-step">
+            <span class="step-badge">1</span>
+            <div>คลิก <strong>🏠 Rectangle</strong> แล้ว <strong>คลิกลาก</strong> บนภาพเพื่อวาดกรอบสี่เหลี่ยม</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">2</span>
+            <div>สีพื้นหลัง (BG) = สีโปร่งแสงภายในกรอบ / สี Font/Line = สีเส้นขอบ กำหนดจากแถบซ้าย</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">3</span>
+            <div>ความหนาเส้นปรับได้ผ่าน Slider "Stroke Width" ในแถบซ้าย</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. สี -->
+      <div class="manual-section">
+        <div class="manual-section-header">
+          <span class="manual-num">6</span>
+          <h4>การตั้งค่าสี (สำหรับรายการใหม่)</h4>
+        </div>
+        <div class="manual-steps">
+          <div class="manual-step">
+            <span class="step-badge">🎨</span>
+            <div><strong>สีพื้นหลัง (BG / Fill)</strong> — สีวงกลม Marker / สีกล่อง Textbox / สีพื้นใน Rectangle</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">✏️</span>
+            <div><strong>สีตัวอักษร / เส้น (Font / Line)</strong> — สีตัวเลข/ตัวอักษรใน Marker / สีข้อความ Textbox / สีขอบ Rectangle</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">🎯</span>
+            <div>คลิก <strong>Color Dot</strong> เพื่อเลือกสีด่วน หรือคลิก <strong>กล่องสีด้านขวา</strong> เพื่อเปิด Color Picker เต็มรูปแบบ</div>
+          </div>
+          <div class="manual-tip">💡 ตั้งค่าสีจะมีผลกับชิ้นงานที่วางใหม่เท่านั้น ชิ้นเดิมต้องแก้ผ่าน Edit Modal</div>
+        </div>
+      </div>
+
+      <!-- 7. Edit existing -->
+      <div class="manual-section">
+        <div class="manual-section-header">
+          <span class="manual-num">7</span>
+          <h4>การแก้ไขชิ้นงานที่วางแล้ว</h4>
+        </div>
+        <div class="manual-steps">
+          <div class="manual-step">
+            <span class="step-badge">🖱️</span>
+            <div><strong>ดับเบิ้ลคลิก</strong> ที่ชิ้นงานบนภาพ — เปิด Edit Modal ได้ทันที</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">✏️</span>
+            <div>คลิกไอคอน <strong>ดินสอ (✏️)</strong> ในรายการ Marker แถบขวา</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">👆</span>
+            <div>หรือ เปลี่ยนเครื่องมือเป็น <strong>Select (👆)</strong> แล้วคลิกชิ้นงาน จากนั้นกดปุ่ม <strong>แก้ไข</strong> ในแถบลอย</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">↔️</span>
+            <div>ใน Edit Modal: แก้ไขข้อความ, ขนาด, สีพื้นหลัง, สีตัวอักษร กด <strong>บันทึก</strong> เพื่อยืนยัน</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8. Layers -->
+      <div class="manual-section">
+        <div class="manual-section-header">
+          <span class="manual-num">8</span>
+          <h4>แถบรายการ Marker (แถบขวา)</h4>
+        </div>
+        <div class="manual-steps">
+          <div class="manual-step">
+            <span class="step-badge">👁️</span>
+            <div><strong>Eye icon</strong> — คลิกเพื่อซ่อน/แสดงชิ้นงานบนภาพ (ไม่ลบ ยังอยู่ใน Export)</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">✏️</span>
+            <div><strong>Pencil icon</strong> — เปิด Edit Modal เพื่อแก้ไขคุณสมบัติของชิ้นนั้น</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">🗑️</span>
+            <div><strong>Trash icon</strong> — ลบชิ้นงานออกจากภาพ (สามารถ Undo ได้)</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">📋</span>
+            <div><strong>คลิกที่การ์ด</strong> — เลือกชิ้นงานนั้นบน canvas</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 9. Undo/Redo Shortcuts -->
+      <div class="manual-section">
+        <div class="manual-section-header">
+          <span class="manual-num">9</span>
+          <h4>Undo / Redo และ Keyboard Shortcuts</h4>
+        </div>
+        <div class="manual-steps">
+          <div class="shortcut-table">
+            <div class="sc-row"><kbd>Ctrl</kbd>+<kbd>Z</kbd><span>ย้อนกลับ (Undo)</span></div>
+            <div class="sc-row"><kbd>Ctrl</kbd>+<kbd>Y</kbd> หรือ <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd><span>ทำซ้ำ (Redo)</span></div>
+            <div class="sc-row"><kbd>Delete</kbd> หรือ <kbd>Backspace</kbd><span>ลบชิ้นงานที่เลือก</span></div>
+            <div class="sc-row"><kbd>Escape</kbd><span>ยกเลิกการเลือก / เปลี่ยนเป็น Select tool</span></div>
+            <div class="sc-row"><kbd>Space</kbd> + ลาก<span>Pan เลื่อนมุมมองชั่วคราว</span></div>
+            <div class="sc-row"><kbd>Ctrl</kbd> + เลื่อนล้อเมาส์<span>Zoom เข้า/ออก</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 10. Export -->
+      <div class="manual-section">
+        <div class="manual-section-header">
+          <span class="manual-num">10</span>
+          <h4>Export ภาพ</h4>
+        </div>
+        <div class="manual-steps">
+          <div class="manual-step">
+            <span class="step-badge">1</span>
+            <div>กดปุ่ม <strong>🦴 Export ภาพ</strong> มุมขวาบน — เปิดหน้าต่าง Export</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">2</span>
+            <div>ตั้งชื่อไฟล์ (Default: ชื่อเดิม 10 ตัว + วันเวลา) เลือกรูปแบบ PNG / JPEG / WEBP</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">3</span>
+            <div>กด <strong>บันทึก / ดาวน์โหลด</strong> — ระบบจะ Save As dialog (บน localhost) หรือ download อัตโนมัติ</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">📐</span>
+            <div>ภาพที่ Export มีความละเอียด <strong>เท่าต้นฉบับ 100% เสมอ</strong> ไม่ว่า zoom จะอยู่ที่ระดับใด</div>
+          </div>
+          <div class="manual-tip">
+            ⚠️ <strong>Save As dialog ไม่ขึ้น?</strong> เกิดจากเบราว์เซอร์บล็อก file:// protocol<br>
+            แก้ไข: ใช้ <strong>VS Code Live Server</strong> หรือ Node.js ง่ายๆ:<br>
+            <code style="background:var(--bg-panel);padding:2px 6px;border-radius:3px;font-size:0.8rem">npx serve d:\imnipon_Project\image_label</code>
+            แล้วเปิด http://localhost:3000
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /manual-body -->
+    <div class="modal-footer">
+      <button class="btn btn-primary btn-sm" onclick="closeManual()">✅ เข้าใจแล้ว ปิดคู่มือ</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
