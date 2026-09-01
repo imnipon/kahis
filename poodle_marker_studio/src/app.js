@@ -14,9 +14,15 @@ const state = {
   originalImage: null,
   originalFileName: 'image',
   originalFileExt: 'png',
+  imageDataUrl: null,
   imageWidth: 0,
   imageHeight: 0,
   zoomLevel: 1,
+
+  isRestoring: false,
+  pendingDraftObjects: null,
+  draftSaveTimer: null,
+  draftSaveInFlight: false,
 
   activeTool: 'marker', // 'marker' | 'alpha' | 'textbox' | 'rect' | 'select' | 'pan'
   isDrawing: false,
@@ -41,6 +47,8 @@ const state = {
     fontFamily:  'IBM Plex Sans Thai Looped',
     textAlign:   'left'
   },
+
+  lastCustomColors: { bg: null, font: null },
 
   editingObject: null
 };
@@ -127,6 +135,48 @@ function wrapThaiText(text, maxWidth, fontSize, fontFamily) {
   return lines.join('\n');
 }
 
+function getAnnotationObjects() {
+  if (!state.canvas) return [];
+  return state.canvas.getObjects().filter(o => o !== state.canvas.backgroundImage);
+}
+
+function ensureManualOrders() {
+  const objs = getAnnotationObjects();
+  objs.forEach((obj, i) => {
+    if (obj.manualOrder == null || Number.isNaN(Number(obj.manualOrder))) {
+      obj.manualOrder = i + 1;
+    }
+  });
+}
+
+function getSortedAnnotationObjects() {
+  ensureManualOrders();
+  return getAnnotationObjects().slice().sort((a, b) => a.manualOrder - b.manualOrder);
+}
+
+function getNextManualOrder() {
+  ensureManualOrders();
+  const objs = getAnnotationObjects();
+  if (!objs.length) return 1;
+  return Math.max(...objs.map(o => Number(o.manualOrder) || 0)) + 1;
+}
+
+function getObjectBySortedIndex(idx) {
+  return getSortedAnnotationObjects()[idx] || null;
+}
+
+function downloadTextFile(content, fileName, mimeType) {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 /* ─────────────────────────────────────────────
    INIT
 ───────────────────────────────────────────── */
@@ -181,9 +231,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   initCanvas();
   setupEventListeners();
+  setupDraftEventListeners();
   updateContextualSettingsPanel();
   updateSequencePreviews();
   renderLayersList();
+  initDraftSystem();
 
   // B3: Warn if running from file:// (Save As dialog won't work)
   if (window.location.protocol === 'file:') {
@@ -226,14 +278,15 @@ function initCanvas() {
     if (e.target?.selectable) openRichEditForObject(e.target);
   });
 
-  state.canvas.on('object:modified', () => { saveHistoryState(); renderLayersList(); });
-  state.canvas.on('object:added',    () => { if (!state.isHistoryLocked) { saveHistoryState(); renderLayersList(); } });
-  state.canvas.on('object:removed',  () => { if (!state.isHistoryLocked) { saveHistoryState(); renderLayersList(); } });
+  state.canvas.on('object:modified', () => { saveHistoryState(); renderLayersList(); scheduleDraftSave(); });
+  state.canvas.on('object:added',    () => { if (!state.isHistoryLocked) { saveHistoryState(); renderLayersList(); scheduleDraftSave(); } });
+  state.canvas.on('object:removed',  () => { if (!state.isHistoryLocked) { saveHistoryState(); renderLayersList(); scheduleDraftSave(); } });
 
   // B2: Sync rawText whenever user types directly in a Textbox on canvas
   state.canvas.on('text:changed', e => {
     if (e.target?.customType === 'thai-textbox') {
       e.target.rawText = e.target.text;
+      scheduleDraftSave();
     }
   });
 
@@ -373,10 +426,17 @@ function setupEventListeners() {
 
   setupDualColorPickers();
 
-  // Export
+  // Export image
   document.getElementById('btn-export-top').addEventListener('click', openExportModal);
   document.getElementById('btn-confirm-export').addEventListener('click', executeExport);
   document.getElementById('btn-cancel-export').addEventListener('click', closeExportModal);
+
+  // Export data / project
+  document.getElementById('btn-export-data').addEventListener('click', openExportDataModal);
+  document.getElementById('btn-confirm-export-data').addEventListener('click', executeExportData);
+  document.getElementById('btn-export-project').addEventListener('click', exportProjectFile);
+  document.getElementById('btn-import-project').addEventListener('click', () => document.getElementById('project-file-input').click());
+  document.getElementById('project-file-input').addEventListener('change', handleProjectFileSelect);
 
   // Floating bar
   document.getElementById('btn-edit-selected-modal').addEventListener('click', () => {
@@ -414,37 +474,160 @@ function setupEventListeners() {
 }
 
 /* ─────────────────────────────────────────────
-   DUAL COLOR PICKERS
+   COLOR PICKERS (properties + modal)
 ───────────────────────────────────────────── */
+const BG_COLOR_PRESETS  = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#0f172a', '#ffffff'];
+const FONT_COLOR_PRESETS = ['#ffffff', '#0f172a', '#10b981', '#3b82f6', '#f59e0b', '#ef4444'];
+
+function normalizeHexColor(color) {
+  return (color || '').toLowerCase();
+}
+
+function isPresetColor(color, presets) {
+  return presets.map(normalizeHexColor).includes(normalizeHexColor(color));
+}
+
+function styleColorDot(dot, color) {
+  dot.style.background = color;
+  dot.dataset.color = color;
+  dot.hidden = false;
+  if (normalizeHexColor(color) === '#ffffff') {
+    dot.style.border = '1px solid #cbd5e1';
+  } else {
+    dot.style.border = '';
+  }
+}
+
+function setActiveColorDot(presetsContainer, color, lastDotEl) {
+  const norm = normalizeHexColor(color);
+  let matched = false;
+  presetsContainer.querySelectorAll('.color-dot-compact:not(.color-dot-last)').forEach(dot => {
+    const isActive = normalizeHexColor(dot.dataset.color) === norm;
+    dot.classList.toggle('active', isActive);
+    if (isActive) matched = true;
+  });
+  if (lastDotEl) {
+    if (!matched && color) {
+      styleColorDot(lastDotEl, color);
+      lastDotEl.classList.add('active');
+    } else {
+      lastDotEl.classList.remove('active');
+    }
+  }
+}
+
+function syncColorPickerUI(nativeEl, presetsContainer, lastDotEl, presets, color) {
+  if (!nativeEl) return;
+  nativeEl.value = color || '#000000';
+  setActiveColorDot(presetsContainer, color, lastDotEl);
+}
+
+function initColorPickerGroup({ nativeId, presetsId, lastDotId, presets, onPick }) {
+  const nativeEl = document.getElementById(nativeId);
+  const presetsContainer = document.getElementById(presetsId);
+  const lastDotEl = document.getElementById(lastDotId);
+  if (!nativeEl || !presetsContainer) return;
+
+  nativeEl.addEventListener('input', e => {
+    const color = e.target.value;
+    onPick(color);
+    if (!isPresetColor(color, presets)) {
+      styleColorDot(lastDotEl, color);
+    }
+    setActiveColorDot(presetsContainer, color, lastDotEl);
+  });
+
+  presetsContainer.querySelectorAll('.color-dot-compact:not(.color-dot-last)').forEach(dot => {
+    dot.addEventListener('click', () => {
+      const color = dot.dataset.color;
+      nativeEl.value = color;
+      onPick(color);
+      setActiveColorDot(presetsContainer, color, lastDotEl);
+    });
+  });
+
+  if (lastDotEl) {
+    lastDotEl.addEventListener('click', () => {
+      const color = lastDotEl.dataset.color;
+      if (!color) return;
+      nativeEl.value = color;
+      onPick(color);
+      setActiveColorDot(presetsContainer, color, lastDotEl);
+    });
+  }
+}
+
 function setupDualColorPickers() {
-  const bgNative   = document.getElementById('prop-bg-color-native');
-  const fontNative = document.getElementById('prop-font-color-native');
-
-  bgNative.addEventListener('input', e => {
-    state.properties.bgColor = e.target.value;
-    document.querySelectorAll('#bg-color-presets .color-dot-compact').forEach(d => d.classList.remove('active'));
+  initColorPickerGroup({
+    nativeId: 'prop-bg-color-native',
+    presetsId: 'bg-color-presets',
+    lastDotId: 'prop-bg-color-last',
+    presets: BG_COLOR_PRESETS,
+    onPick: color => {
+      state.properties.bgColor = color;
+      if (!isPresetColor(color, BG_COLOR_PRESETS)) state.lastCustomColors.bg = color;
+    }
   });
-  document.querySelectorAll('#bg-color-presets .color-dot-compact').forEach(dot =>
-    dot.addEventListener('click', () => {
-      document.querySelectorAll('#bg-color-presets .color-dot-compact').forEach(d => d.classList.remove('active'));
-      dot.classList.add('active');
-      state.properties.bgColor = dot.dataset.color;
-      bgNative.value = dot.dataset.color;
-    })
-  );
 
-  fontNative.addEventListener('input', e => {
-    state.properties.fontColor = e.target.value;
-    document.querySelectorAll('#font-color-presets .color-dot-compact').forEach(d => d.classList.remove('active'));
+  initColorPickerGroup({
+    nativeId: 'prop-font-color-native',
+    presetsId: 'font-color-presets',
+    lastDotId: 'prop-font-color-last',
+    presets: FONT_COLOR_PRESETS,
+    onPick: color => {
+      state.properties.fontColor = color;
+      if (!isPresetColor(color, FONT_COLOR_PRESETS)) state.lastCustomColors.font = color;
+    }
   });
-  document.querySelectorAll('#font-color-presets .color-dot-compact').forEach(dot =>
-    dot.addEventListener('click', () => {
-      document.querySelectorAll('#font-color-presets .color-dot-compact').forEach(d => d.classList.remove('active'));
-      dot.classList.add('active');
-      state.properties.fontColor = dot.dataset.color;
-      fontNative.value = dot.dataset.color;
-    })
+
+  initColorPickerGroup({
+    nativeId: 'modal-bg-color-native',
+    presetsId: 'modal-bg-color-presets',
+    lastDotId: 'modal-bg-color-last',
+    presets: BG_COLOR_PRESETS,
+    onPick: () => {}
+  });
+
+  initColorPickerGroup({
+    nativeId: 'modal-font-color-native',
+    presetsId: 'modal-font-color-presets',
+    lastDotId: 'modal-font-color-last',
+    presets: FONT_COLOR_PRESETS,
+    onPick: () => {}
+  });
+
+  if (state.lastCustomColors.bg) styleColorDot(document.getElementById('prop-bg-color-last'), state.lastCustomColors.bg);
+  if (state.lastCustomColors.font) styleColorDot(document.getElementById('prop-font-color-last'), state.lastCustomColors.font);
+  if (state.lastCustomColors.bg) styleColorDot(document.getElementById('modal-bg-color-last'), state.lastCustomColors.bg);
+  if (state.lastCustomColors.font) styleColorDot(document.getElementById('modal-font-color-last'), state.lastCustomColors.font);
+}
+
+function syncModalColorPickers(bgColor, fontColor) {
+  syncColorPickerUI(
+    document.getElementById('modal-bg-color-native'),
+    document.getElementById('modal-bg-color-presets'),
+    document.getElementById('modal-bg-color-last'),
+    BG_COLOR_PRESETS,
+    bgColor
   );
+  syncColorPickerUI(
+    document.getElementById('modal-font-color-native'),
+    document.getElementById('modal-font-color-presets'),
+    document.getElementById('modal-font-color-last'),
+    FONT_COLOR_PRESETS,
+    fontColor
+  );
+  if (state.lastCustomColors.bg) styleColorDot(document.getElementById('modal-bg-color-last'), state.lastCustomColors.bg);
+  if (state.lastCustomColors.font) styleColorDot(document.getElementById('modal-font-color-last'), state.lastCustomColors.font);
+}
+
+function rememberModalCustomColors(bgCol, fontCol) {
+  if (!isPresetColor(bgCol, BG_COLOR_PRESETS)) state.lastCustomColors.bg = bgCol;
+  if (!isPresetColor(fontCol, FONT_COLOR_PRESETS)) state.lastCustomColors.font = fontCol;
+  if (state.lastCustomColors.bg) styleColorDot(document.getElementById('prop-bg-color-last'), state.lastCustomColors.bg);
+  if (state.lastCustomColors.font) styleColorDot(document.getElementById('prop-font-color-last'), state.lastCustomColors.font);
+  if (state.lastCustomColors.bg) styleColorDot(document.getElementById('modal-bg-color-last'), state.lastCustomColors.bg);
+  if (state.lastCustomColors.font) styleColorDot(document.getElementById('modal-font-color-last'), state.lastCustomColors.font);
 }
 
 /* ─────────────────────────────────────────────
@@ -510,7 +693,16 @@ function updateSequencePreviews() {
    IMAGE LOADING
 ───────────────────────────────────────────── */
 function handleFileSelect(e) {
-  if (e.target.files?.[0]) loadImageFromFile(e.target.files[0]);
+  const file = e.target.files?.[0];
+  if (!file) return;
+  if (state.originalImage && getAnnotationObjects().length > 0) {
+    if (!confirm('เปลี่ยนภาพจะล้าง markers ปัจจุบัน ต้องการดำเนินการต่อ?')) {
+      e.target.value = '';
+      return;
+    }
+  }
+  loadImageFromFile(file);
+  e.target.value = '';
 }
 
 function loadImageFromFile(file) {
@@ -521,6 +713,7 @@ function loadImageFromFile(file) {
 
   const reader = new FileReader();
   reader.onload = ev => {
+    state.imageDataUrl = ev.target.result;
     const img = new Image();
     img.src = ev.target.result;
     img.onload = () => setupImageOnCanvas(img);
@@ -546,12 +739,26 @@ function setupImageOnCanvas(imgEl) {
   });
 
   state.canvas.clear();
-  state.canvas.setBackgroundImage(fabricImg, () => {
+  state.canvas.setBackgroundImage(fabricImg, async () => {
     fitImageToScreen();
+    if (state.pendingDraftObjects) {
+      const draft = state.pendingDraftObjects;
+      state.pendingDraftObjects = null;
+      await enlivenCanvasObjects(draft.canvas?.objects || []);
+      if (draft.canvas?.viewportTransform) state.canvas.setViewportTransform(draft.canvas.viewportTransform);
+      if (draft.canvas?.zoomLevel) applyZoom(draft.canvas.zoomLevel);
+      if (draft.sequences) Object.assign(state.sequences, draft.sequences);
+      showToast('🐾 โหลด markers จากงานค้างแล้ว');
+    }
     resetHistory();
     saveHistoryState();
     renderLayersList();
+    scheduleDraftSave(true);
+    const sizeMb = state.imageDataUrl ? (state.imageDataUrl.length / (1024 * 1024)).toFixed(1) : 0;
     showToast(`🐾 โหลดรูปภาพสำเร็จ (${state.imageWidth} × ${state.imageHeight} px)`);
+    if (state.imageDataUrl?.length > DRAFT_IMAGE_WARN_BYTES) {
+      setTimeout(() => showToast(`⚠️ ภาพ ~${sizeMb} MB — autosave อาจใช้เวลานาน`), 800);
+    }
   });
 }
 
@@ -635,8 +842,11 @@ function onCanvasMouseDown(opt) {
       rx: 6, ry: 6,
       objectCaching: false,
       customType: 'rect',
-      bgColor:   state.properties.bgColor,
-      fontColor: state.properties.fontColor
+      bgColor: state.properties.bgColor,
+      fontColor: state.properties.fontColor,
+      rectLabel: '',
+      description: '',
+      manualOrder: getNextManualOrder()
     });
     state.canvas.add(currentRect);
   } else if (state.activeTool === 'textbox') {
@@ -731,6 +941,8 @@ function createMarkerAt(x, y, toolType) {
     customType: 'marker',
     toolType, markerValue: textVal,
     markerSize: size, bgColor, fontColor,
+    description: '',
+    manualOrder: getNextManualOrder(),
     objectCaching: false,
     selectable: true, hasRotatingPoint: false
   });
@@ -771,6 +983,8 @@ function createThaiTextBoxAt(x, y) {
     customType: 'thai-textbox',
     rawText:   initialText,
     bgColor, fontColor,
+    description: '',
+    manualOrder: getNextManualOrder(),
     shadow: new fabric.Shadow({ color: 'rgba(0,0,0,0.12)', blur: 6, offsetX: 0, offsetY: 3 })
   });
 
@@ -789,9 +1003,7 @@ function renderLayersList() {
   const countBadge = document.getElementById('layer-count-badge');
   if (!container) return;
 
-  const objects = state.canvas
-    ? state.canvas.getObjects().filter(o => o !== state.canvas.backgroundImage)
-    : [];
+  const objects = getSortedAnnotationObjects();
 
   if (countBadge) countBadge.textContent = `${objects.length} ชิ้น`;
 
@@ -830,16 +1042,23 @@ function renderLayersList() {
       color = obj.backgroundColor || '#10b981';
     } else if (obj.customType === 'rect') {
       icon  = '🏠';
-      label = 'Rectangle';
+      label = obj.rectLabel ? `Rect: "${obj.rectLabel}"` : 'Rectangle';
       color = obj.stroke || '#10b981';
     }
 
+    const hasDesc = !!(obj.description && obj.description.trim());
+    const isFirst = idx === 0;
+    const isLast = idx === objects.length - 1;
+
     card.innerHTML = `
       <div class="layer-left">
+        <span class="layer-order-num" title="ลำดับในคู่มือ">${idx + 1}</span>
         <div class="layer-badge" style="background:${color};font-size:0.65rem">${icon}</div>
-        <div class="layer-name" title="${label}">${label}</div>
+        <div class="layer-name" title="${label}">${label}${hasDesc ? '<span class="layer-desc-icon" title="มี Description">📝</span>' : ''}</div>
       </div>
       <div class="layer-actions" onclick="event.stopPropagation()">
+        <button class="layer-btn-icon layer-sort-btn" title="เลื่อนขึ้น" ${isFirst ? 'disabled' : ''} onclick="moveLayerOrder(${idx}, -1)">↑</button>
+        <button class="layer-btn-icon layer-sort-btn" title="เลื่อนลง" ${isLast ? 'disabled' : ''} onclick="moveLayerOrder(${idx}, 1)">↓</button>
         <button class="layer-btn-icon" title="แก้ไข" onclick="openRichEditForObjectByIndex(${idx})">${LUCIDE.edit}</button>
         <button class="layer-btn-icon ${!obj.visible ? 'is-hidden' : ''}" title="${obj.visible ? 'ซ่อน' : 'แสดง'}" onclick="toggleObjectVisibility(${idx})">
           ${obj.visible ? LUCIDE.eye : LUCIDE.eyeOff}
@@ -851,17 +1070,35 @@ function renderLayersList() {
   });
 }
 
+function moveLayerOrder(sortedIdx, delta) {
+  const sorted = getSortedAnnotationObjects();
+  const targetIdx = sortedIdx + delta;
+  if (targetIdx < 0 || targetIdx >= sorted.length) return;
+
+  const current = sorted[sortedIdx];
+  const swapWith = sorted[targetIdx];
+  const tmpOrder = current.manualOrder;
+  current.manualOrder = swapWith.manualOrder;
+  swapWith.manualOrder = tmpOrder;
+
+  state.canvas.requestRenderAll();
+  saveHistoryState();
+  renderLayersList();
+  scheduleDraftSave(true);
+  showToast('↕️ จัดลำดับรายการแล้ว');
+}
+
 function toggleObjectVisibility(idx) {
-  const objs = state.canvas.getObjects().filter(o => o !== state.canvas.backgroundImage);
-  if (objs[idx]) { objs[idx].visible = !objs[idx].visible; state.canvas.requestRenderAll(); renderLayersList(); }
+  const obj = getObjectBySortedIndex(idx);
+  if (obj) { obj.visible = !obj.visible; state.canvas.requestRenderAll(); renderLayersList(); scheduleDraftSave(); }
 }
 function deleteObjectByIndex(idx) {
-  const objs = state.canvas.getObjects().filter(o => o !== state.canvas.backgroundImage);
-  if (objs[idx]) { state.canvas.remove(objs[idx]); state.canvas.requestRenderAll(); saveHistoryState(); renderLayersList(); showToast('ลบชิ้นงานแล้ว'); }
+  const obj = getObjectBySortedIndex(idx);
+  if (obj) { state.canvas.remove(obj); state.canvas.requestRenderAll(); saveHistoryState(); renderLayersList(); showToast('ลบชิ้นงานแล้ว'); }
 }
 function openRichEditForObjectByIndex(idx) {
-  const objs = state.canvas.getObjects().filter(o => o !== state.canvas.backgroundImage);
-  if (objs[idx]) openRichEditForObject(objs[idx]);
+  const obj = getObjectBySortedIndex(idx);
+  if (obj) openRichEditForObject(obj);
 }
 
 /* ─────────────────────────────────────────────
@@ -872,12 +1109,11 @@ function openRichEditForObject(obj) {
   const modal   = document.getElementById('rich-edit-modal');
   const title   = document.getElementById('rich-edit-title');
   const textIn  = document.getElementById('modal-input-text');
+  const descIn  = document.getElementById('modal-input-description');
   const textLbl = document.getElementById('modal-label-value');
   const fSize   = document.getElementById('modal-field-size');
   const fFont   = document.getElementById('modal-field-fontsize');
   const fStroke = document.getElementById('modal-field-strokewidth');
-  const colorBg = document.getElementById('modal-color-bg');
-  const colorFn = document.getElementById('modal-color-font');
 
   const setSlider = (id, val) => {
     document.getElementById(id).value = val;
@@ -887,22 +1123,27 @@ function openRichEditForObject(obj) {
   // Reset align group visibility
   document.getElementById('modal-align-group').style.display = 'none';
 
+  let bgColor = '#10b981';
+  let fontColor = '#ffffff';
+
   if (obj.customType === 'marker') {
     title.textContent  = `✏️ แก้ไข Marker (${obj.markerValue || ''})`;
     textLbl.textContent = 'ค่าใน Marker:';
     textIn.value = obj.markerValue || '';
+    descIn.value = obj.description || '';
     fSize.style.display = 'block'; fFont.style.display = 'none'; fStroke.style.display = 'none';
     setSlider('modal-slider-size', obj.markerSize || 34);
-    colorBg.value = obj.bgColor   || '#10b981';
-    colorFn.value = obj.fontColor || '#ffffff';
+    bgColor = obj.bgColor || '#10b981';
+    fontColor = obj.fontColor || '#ffffff';
   } else if (obj.customType === 'thai-textbox') {
     title.textContent  = '✏️ แก้ไขกล่องข้อความ (Textbox)';
     textLbl.textContent = 'ข้อความ:';
     textIn.value = obj.rawText || obj.text || '';
+    descIn.value = obj.description || '';
     fSize.style.display = 'none'; fFont.style.display = 'block'; fStroke.style.display = 'none';
     setSlider('modal-slider-fontsize', obj.fontSize || 18);
-    colorBg.value = obj.backgroundColor || obj.bgColor   || '#10b981';
-    colorFn.value = obj.fill            || obj.fontColor || '#ffffff';
+    bgColor = obj.backgroundColor || obj.bgColor || '#10b981';
+    fontColor = obj.fill || obj.fontColor || '#ffffff';
     // Show modal align group and set active button
     document.getElementById('modal-align-group').style.display = 'flex';
     const curAlign = obj.textAlign || 'left';
@@ -912,13 +1153,15 @@ function openRichEditForObject(obj) {
   } else if (obj.customType === 'rect') {
     title.textContent  = '✏️ แก้ไขกรอบสี่เหลี่ยม (Rectangle)';
     textLbl.textContent = 'ชื่อกำกับ:';
-    textIn.value = '';
+    textIn.value = obj.rectLabel || '';
+    descIn.value = obj.description || '';
     fSize.style.display = 'none'; fFont.style.display = 'none'; fStroke.style.display = 'block';
     setSlider('modal-slider-strokewidth', obj.strokeWidth || 3);
-    colorBg.value = obj.bgColor   || '#10b981';
-    colorFn.value = obj.fontColor || obj.stroke || '#ffffff';
+    bgColor = obj.bgColor || '#10b981';
+    fontColor = obj.fontColor || obj.stroke || '#ffffff';
   }
 
+  syncModalColorPickers(bgColor, fontColor);
   modal.style.display = 'flex';
 }
 
@@ -929,18 +1172,23 @@ function closeRichEditModal() {
 
 function saveRichEditModal() {
   const obj      = state.editingObject; if (!obj) return;
-  const textVal  = document.getElementById('modal-input-text').value.trim();
-  const bgCol    = document.getElementById('modal-color-bg').value;
-  const fontCol  = document.getElementById('modal-color-font').value;
+  const textVal  = document.getElementById('modal-input-text').value;
+  const descVal  = document.getElementById('modal-input-description').value;
+  const bgCol    = document.getElementById('modal-bg-color-native').value;
+  const fontCol  = document.getElementById('modal-font-color-native').value;
   const sizeVal  = parseInt(document.getElementById('modal-slider-size').value)         || 34;
   const fsVal    = parseInt(document.getElementById('modal-slider-fontsize').value)     || 18;
   const swVal    = parseInt(document.getElementById('modal-slider-strokewidth').value)  || 3;
 
+  obj.description = descVal;
+  rememberModalCustomColors(bgCol, fontCol);
+
   if (obj.customType === 'marker') {
-    obj.markerValue = textVal; obj.markerSize = sizeVal; obj.bgColor = bgCol; obj.fontColor = fontCol;
+    const markerText = textVal.trim();
+    obj.markerValue = markerText; obj.markerSize = sizeVal; obj.bgColor = bgCol; obj.fontColor = fontCol;
     const circle = obj._objects?.[0]; const label = obj._objects?.[1];
     circle?.set({ fill: bgCol, radius: Math.round(sizeVal / 2) });
-    label?.set({ text: textVal, fill: fontCol, fontSize: Math.round(sizeVal * 0.48) });
+    label?.set({ text: markerText, fill: fontCol, fontSize: Math.round(sizeVal * 0.48) });
     obj.setCoords();
   } else if (obj.customType === 'thai-textbox') {
     const alignVal = document.querySelector('#modal-align-group .align-btn.active')?.dataset?.align || obj.textAlign || 'left';
@@ -957,6 +1205,7 @@ function saveRichEditModal() {
     obj.text = wrapThaiText(textVal, obj.width - 28, fsVal, obj.fontFamily || state.properties.fontFamily);
     obj.setCoords();
   } else if (obj.customType === 'rect') {
+    obj.rectLabel = textVal.trim();
     obj.bgColor = bgCol; obj.fontColor = fontCol;
     obj.set({ fill: hexToRgba(bgCol, 0.2), stroke: fontCol, strokeWidth: swVal });
     obj.setCoords();
@@ -964,6 +1213,7 @@ function saveRichEditModal() {
 
   state.canvas.requestRenderAll();
   saveHistoryState(); renderLayersList(); closeRichEditModal();
+  scheduleDraftSave(true);
   showToast('💾 บันทึกการเปลี่ยนแปลงเรียบร้อย');
 }
 
@@ -978,7 +1228,7 @@ function deleteEditingObject() {
 function duplicateSelectedObject() {
   const obj = state.canvas.getActiveObject(); if (!obj) return;
   obj.clone(cloned => {
-    cloned.set({ left: obj.left + 20, top: obj.top + 20, evented: true, objectCaching: false });
+    cloned.set({ left: obj.left + 20, top: obj.top + 20, evented: true, objectCaching: false, manualOrder: getNextManualOrder() });
     if (cloned.type === 'activeSelection') {
       cloned.canvas = state.canvas;
       cloned.forEachObject(o => { o.objectCaching = false; state.canvas.add(o); });
@@ -1043,12 +1293,24 @@ window.closeManual = () => { document.getElementById('manual-modal').style.displ
 window.openRichEditForObjectByIndex = openRichEditForObjectByIndex;
 window.toggleObjectVisibility       = toggleObjectVisibility;
 window.deleteObjectByIndex          = deleteObjectByIndex;
+window.moveLayerOrder               = moveLayerOrder;
 window.closeRichEditModal           = closeRichEditModal;
 
 /* ─────────────────────────────────────────────
    HISTORY (UNDO / REDO) — B1: deep objectCaching fix
 ───────────────────────────────────────────── */
-const HISTORY_PROPS = ['customType','toolType','markerValue','markerSize','bgColor','fontColor','rawText','textAlign','fontSize','lineHeight','padding','boxPaddingX','boxPaddingY','boxRadius'];
+const HISTORY_PROPS = ['customType','toolType','markerValue','markerSize','bgColor','fontColor','rawText','textAlign','fontSize','lineHeight','padding','boxPaddingX','boxPaddingY','boxRadius','description','rectLabel','manualOrder'];
+
+const DRAFT_DB_NAME = 'PoodleMarkerStudio';
+const DRAFT_DB_VERSION = 1;
+const DRAFT_STORE = 'drafts';
+const DRAFT_KEY = 'current';
+const DRAFT_META_KEY = 'poodle-marker-draft-meta';
+const DRAFT_IMAGE_WARN_BYTES = 8 * 1024 * 1024;
+const DRAFT_IMAGE_MAX_BYTES = 25 * 1024 * 1024;
+const DRAFT_SAVE_DEBOUNCE_MS = 3000;
+
+let pendingRestoreDraft = null;
 
 function saveHistoryState() {
   if (!state.canvas || state.isHistoryLocked) return;
@@ -1059,6 +1321,7 @@ function saveHistoryState() {
   state.history.push(json);
   state.historyIndex = state.history.length - 1;
   updateUndoRedoButtons();
+  scheduleDraftSave();
 }
 
 function undo() { if (state.historyIndex > 0) { state.historyIndex--; loadHistoryState(state.history[state.historyIndex]); } }
@@ -1078,6 +1341,7 @@ function loadHistoryState(jsonStr) {
     state.isHistoryLocked = false;
     updateUndoRedoButtons();
     renderLayersList();
+    scheduleDraftSave();
   });
 }
 
@@ -1181,6 +1445,495 @@ async function executeExport() {
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
   showToast(`🦴 Export "${fileName}" สำเร็จ! (ดาวน์โหลดอัตโนมัติ)`);
 }
+
+/* ─────────────────────────────────────────────
+   DRAFT AUTOSAVE (IndexedDB) + EXPORT DATA/PROJECT
+───────────────────────────────────────────── */
+function openDraftDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DRAFT_DB_NAME, DRAFT_DB_VERSION);
+    req.onupgradeneeded = () => {
+      if (!req.result.objectStoreNames.contains(DRAFT_STORE)) {
+        req.result.createObjectStore(DRAFT_STORE);
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function saveDraftToIDB(draft) {
+  const db = await openDraftDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(DRAFT_STORE, 'readwrite');
+    tx.objectStore(DRAFT_STORE).put(draft, DRAFT_KEY);
+    tx.oncomplete = () => { db.close(); resolve(); };
+    tx.onerror = () => { db.close(); reject(tx.error); };
+  });
+}
+
+async function loadDraftFromIDB() {
+  const db = await openDraftDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(DRAFT_STORE, 'readonly');
+    const req = tx.objectStore(DRAFT_STORE).get(DRAFT_KEY);
+    req.onsuccess = () => { db.close(); resolve(req.result || null); };
+    req.onerror = () => { db.close(); reject(req.error); };
+  });
+}
+
+async function clearDraftFromIDB() {
+  const db = await openDraftDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(DRAFT_STORE, 'readwrite');
+    tx.objectStore(DRAFT_STORE).delete(DRAFT_KEY);
+    tx.oncomplete = () => { db.close(); resolve(); };
+    tx.onerror = () => { db.close(); reject(tx.error); };
+  });
+}
+
+function serializeCanvasObjects() {
+  return getAnnotationObjects().map(o => o.toObject(HISTORY_PROPS));
+}
+
+function buildDraftPayload(includeImage = true) {
+  if (!state.originalImage || !state.canvas) return null;
+
+  let dataUrl = includeImage ? state.imageDataUrl : null;
+  let imageSkipped = false;
+
+  if (dataUrl && dataUrl.length > DRAFT_IMAGE_MAX_BYTES) {
+    dataUrl = null;
+    imageSkipped = true;
+  }
+
+  return {
+    version: 'poodle-marker-draft/v1',
+    savedAt: new Date().toISOString(),
+    image: {
+      fileName: state.originalFileName,
+      fileExt: state.originalFileExt,
+      width: state.imageWidth,
+      height: state.imageHeight,
+      dataUrl
+    },
+    imageSkipped,
+    canvas: {
+      objects: serializeCanvasObjects(),
+      viewportTransform: state.canvas.viewportTransform.slice(),
+      zoomLevel: state.zoomLevel
+    },
+    sequences: JSON.parse(JSON.stringify(state.sequences)),
+    properties: { ...state.properties },
+    activeTool: state.activeTool
+  };
+}
+
+function buildProjectPayload() {
+  const draft = buildDraftPayload(true);
+  if (!draft) return null;
+  draft.format = 'poodle-marker-project/v1';
+  draft.version = 'poodle-marker-project/v1';
+  return draft;
+}
+
+function updateAutosaveBadge(savedAt, status) {
+  const badge = document.getElementById('autosave-badge');
+  if (!badge) return;
+  badge.classList.remove('is-saving', 'is-error');
+  if (status === 'saving') {
+    badge.textContent = 'Last autosave …';
+    badge.classList.add('is-saving');
+    return;
+  }
+  if (status === 'error') {
+    badge.textContent = 'Last autosave failed';
+    badge.classList.add('is-error');
+    return;
+  }
+  if (!savedAt) {
+    badge.textContent = 'Last autosave —';
+    return;
+  }
+  const d = new Date(savedAt);
+  const hh = String(d.getHours()).padStart(2, '0');
+  const mm = String(d.getMinutes()).padStart(2, '0');
+  const ss = String(d.getSeconds()).padStart(2, '0');
+  badge.textContent = `Last autosave ${hh}:${mm}:${ss}`;
+  badge.title = `บันทึกอัตโนมัติ: ${d.toLocaleString('th-TH')}`;
+}
+
+function scheduleDraftSave(immediate = false) {
+  if (state.isRestoring || !state.originalImage) return;
+  if (state.draftSaveTimer) clearTimeout(state.draftSaveTimer);
+  if (immediate) {
+    flushDraftSave();
+    return;
+  }
+  state.draftSaveTimer = setTimeout(flushDraftSave, DRAFT_SAVE_DEBOUNCE_MS);
+}
+
+async function flushDraftSave() {
+  if (state.draftSaveInFlight || state.isRestoring || !state.originalImage) return;
+  const draft = buildDraftPayload(true);
+  if (!draft) return;
+
+  state.draftSaveInFlight = true;
+  updateAutosaveBadge(null, 'saving');
+
+  try {
+    await saveDraftToIDB(draft);
+    localStorage.setItem(DRAFT_META_KEY, JSON.stringify({
+      savedAt: draft.savedAt,
+      fileName: draft.image.fileName,
+      itemCount: draft.canvas.objects.length,
+      imageSkipped: draft.imageSkipped
+    }));
+    updateAutosaveBadge(draft.savedAt);
+    if (draft.imageSkipped) {
+      console.warn('Draft saved without image (size limit)');
+    }
+  } catch (err) {
+    console.warn('Draft save failed, retrying without image:', err);
+    try {
+      const fallback = buildDraftPayload(false);
+      fallback.imageSkipped = true;
+      await saveDraftToIDB(fallback);
+      localStorage.setItem(DRAFT_META_KEY, JSON.stringify({
+        savedAt: fallback.savedAt,
+        fileName: fallback.image.fileName,
+        itemCount: fallback.canvas.objects.length,
+        imageSkipped: true
+      }));
+      updateAutosaveBadge(fallback.savedAt);
+      showToast('⚠️ ภาพใหญ่เกินไป — บันทึกเฉพาะ markers');
+    } catch (err2) {
+      updateAutosaveBadge(null, 'error');
+      console.error('Draft save failed:', err2);
+    }
+  } finally {
+    state.draftSaveInFlight = false;
+  }
+}
+
+function loadImageFromDataUrl(dataUrl) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = dataUrl;
+  });
+}
+
+function enlivenCanvasObjects(objects) {
+  return new Promise((resolve, reject) => {
+    if (!objects?.length) { resolve([]); return; }
+    try {
+      fabric.util.enlivenObjects(objects, (objs) => {
+        try {
+      (objs || []).filter(Boolean).forEach(o => {
+        o.set('objectCaching', false);
+        if (o._objects) o._objects.forEach(c => c.set('objectCaching', false));
+        state.canvas.add(o);
+      });
+      ensureManualOrders();
+      state.canvas.requestRenderAll();
+          resolve(objs || []);
+        } catch (err) {
+          reject(err);
+        }
+      });
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
+async function restoreFromDraft(draft) {
+  state.isRestoring = true;
+  try {
+    if (draft.sequences) Object.assign(state.sequences, draft.sequences);
+    if (draft.properties) Object.assign(state.properties, draft.properties);
+    if (draft.activeTool) setTool(draft.activeTool);
+
+    if (draft.image?.dataUrl) {
+      state.imageDataUrl = draft.image.dataUrl;
+      state.originalFileName = draft.image.fileName || 'image';
+      state.originalFileExt = draft.image.fileExt || 'png';
+      const img = await loadImageFromDataUrl(draft.image.dataUrl);
+      await setupImageOnCanvasFromDraft(img, draft);
+      updateAutosaveBadge(draft.savedAt);
+      scheduleDraftSave(true);
+      showToast('🐾 โหลดงานค้างสำเร็จ');
+    } else if (draft.canvas?.objects?.length) {
+      state.pendingDraftObjects = draft;
+      showToast('📂 กรุณาเลือกภาพเดิม — ระบบจะโหลด markers ให้อัตโนมัติ');
+    } else {
+      throw new Error('ไม่พบข้อมูลงานค้าง');
+    }
+  } catch (err) {
+    console.error('restoreFromDraft failed:', err);
+    throw err;
+  } finally {
+    state.isRestoring = false;
+  }
+}
+
+async function setupImageOnCanvasFromDraft(imgEl, draft) {
+  state.originalImage = imgEl;
+  state.imageWidth = imgEl.naturalWidth || imgEl.width;
+  state.imageHeight = imgEl.naturalHeight || imgEl.height;
+
+  document.getElementById('initial-instructions-view').classList.add('hidden');
+  document.getElementById('canvas-workspace-view').style.display = 'block';
+
+  state.canvas.setWidth(state.imageWidth);
+  state.canvas.setHeight(state.imageHeight);
+
+  const fabricImg = new fabric.Image(imgEl, {
+    selectable: false, evented: false,
+    originX: 'left', originY: 'top',
+    objectCaching: false
+  });
+
+  state.canvas.clear();
+
+  await new Promise((resolve, reject) => {
+    try {
+      state.canvas.setBackgroundImage(fabricImg, () => resolve(), { crossOrigin: 'anonymous' });
+    } catch (err) {
+      reject(err);
+    }
+  });
+
+  await enlivenCanvasObjects(draft.canvas?.objects || []);
+
+  if (draft.canvas?.viewportTransform) {
+    state.canvas.setViewportTransform(draft.canvas.viewportTransform);
+  }
+  if (draft.canvas?.zoomLevel) applyZoom(draft.canvas.zoomLevel);
+  else fitImageToScreen();
+
+  resetHistory();
+  saveHistoryState();
+  renderLayersList();
+}
+
+function formatDraftSummary(draft) {
+  const count = draft.canvas?.objects?.length || 0;
+  const withDesc = (draft.canvas?.objects || []).filter(o => o.description?.trim()).length;
+  const saved = draft.savedAt ? new Date(draft.savedAt).toLocaleString('th-TH') : '—';
+  const imgNote = draft.imageSkipped || !draft.image?.dataUrl
+    ? '<br><strong>หมายเหตุ:</strong> ไม่มีภาพใน draft — ต้องเลือกภาพเดิมหลังโหลด markers'
+    : '';
+  return `ภาพ: <strong>${draft.image?.fileName || '—'}.${draft.image?.fileExt || 'png'}</strong><br>
+    บันทึกล่าสุด: ${saved}<br>
+    รายการ: ${count} ชิ้น (${withDesc} มี Description)${imgNote}`;
+}
+
+function showRestoreDraftModal(draft) {
+  pendingRestoreDraft = draft;
+  document.getElementById('restore-draft-summary').innerHTML = formatDraftSummary(draft);
+  document.getElementById('restore-draft-modal').style.display = 'flex';
+}
+
+async function initDraftSystem() {
+  try {
+    const draft = await loadDraftFromIDB();
+    if (!draft?.canvas?.objects?.length && !draft?.image?.dataUrl) return;
+    showRestoreDraftModal(draft);
+  } catch (err) {
+    console.warn('Could not load draft:', err);
+  }
+}
+
+async function discardPendingDraft() {
+  pendingRestoreDraft = null;
+  document.getElementById('restore-draft-modal').style.display = 'none';
+  await clearDraftFromIDB();
+  localStorage.removeItem(DRAFT_META_KEY);
+  updateAutosaveBadge(null);
+}
+
+function setupDraftEventListeners() {
+  document.getElementById('btn-restore-confirm')?.addEventListener('click', async () => {
+    const draft = pendingRestoreDraft;
+    if (!draft) return;
+    const btn = document.getElementById('btn-restore-confirm');
+    const prevText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'กำลังโหลด...';
+    try {
+      await restoreFromDraft(draft);
+      pendingRestoreDraft = null;
+      document.getElementById('restore-draft-modal').style.display = 'none';
+    } catch (err) {
+      showToast('⚠️ โหลดงานค้างไม่สำเร็จ — ลองเริ่มใหม่หรือเปิด Project');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = prevText;
+    }
+  });
+  document.getElementById('btn-restore-discard')?.addEventListener('click', discardPendingDraft);
+
+  window.addEventListener('beforeunload', () => {
+    if (state.originalImage && !state.isRestoring) flushDraftSave();
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') scheduleDraftSave(true);
+  });
+}
+
+function getItemLabel(obj) {
+  if (obj.customType === 'marker') return obj.markerValue || '';
+  if (obj.customType === 'thai-textbox') return obj.rawText || obj.text || '';
+  if (obj.customType === 'rect') return obj.rectLabel || '';
+  return '';
+}
+
+function serializeItemForExport(obj, index) {
+  const bounds = obj.getBoundingRect(true);
+  const base = {
+    index,
+    manualOrder: Number(obj.manualOrder) || index,
+    type: obj.customType || obj.type,
+    label: getItemLabel(obj),
+    position: {
+      x: Math.round(bounds.left),
+      y: Math.round(bounds.top),
+      width: Math.round(bounds.width),
+      height: Math.round(bounds.height)
+    },
+    description: obj.description || '',
+    visible: obj.visible !== false
+  };
+
+  if (obj.customType === 'marker') {
+    return {
+      ...base,
+      toolType: obj.toolType || 'marker',
+      style: { bgColor: obj.bgColor, fontColor: obj.fontColor, size: obj.markerSize }
+    };
+  }
+  if (obj.customType === 'thai-textbox') {
+    return {
+      ...base,
+      style: { fontSize: obj.fontSize, textAlign: obj.textAlign, bgColor: obj.backgroundColor || obj.bgColor, fontColor: obj.fill || obj.fontColor }
+    };
+  }
+  if (obj.customType === 'rect') {
+    return {
+      ...base,
+      style: { bgColor: obj.bgColor, fontColor: obj.fontColor || obj.stroke, strokeWidth: obj.strokeWidth }
+    };
+  }
+  return base;
+}
+
+function buildExportPayload() {
+  const items = getSortedAnnotationObjects().map((obj, idx) => serializeItemForExport(obj, idx + 1));
+  return {
+    format: 'poodle-marker-studio/v1',
+    exportedAt: new Date().toISOString(),
+    app: 'Poodle Marker Studio',
+    sortOrder: 'manualOrder',
+    image: {
+      fileName: `${state.originalFileName}.${state.originalFileExt}`,
+      width: state.imageWidth,
+      height: state.imageHeight
+    },
+    items,
+    stats: {
+      total: items.length,
+      withDescription: items.filter(i => i.description.trim()).length
+    }
+  };
+}
+
+function buildMarkdownExport(payload) {
+  const lines = [
+    '# Poodle Marker Studio — Export ข้อมูลคู่มือ',
+    '',
+    `- **ภาพ:** ${payload.image.fileName} (${payload.image.width} × ${payload.image.height} px)`,
+    `- **Export เมื่อ:** ${new Date(payload.exportedAt).toLocaleString('th-TH')}`,
+    `- **จำนวนรายการ:** ${payload.stats.total} (${payload.stats.withDescription} มี Description)`,
+    `- **ลำดับ:** เรียงตาม manualOrder (ใช้ index เป็นหัวข้อคู่มือ)`,
+    ''
+  ];
+
+  payload.items.forEach(item => {
+    const typeLabel = { marker: 'Marker', 'thai-textbox': 'Textbox', rect: 'Rectangle' }[item.type] || item.type;
+    lines.push('---', '', `## ${item.index}. ${typeLabel} 「${item.label || '—'}」`, '');
+    lines.push('| ฟิลด์ | ค่า |', '|-------|-----|');
+    lines.push(`| ประเภท | ${typeLabel} |`);
+    lines.push(`| ตำแหน่ง | x=${item.position.x}, y=${item.position.y} (${item.position.width}×${item.position.height} px) |`);
+    lines.push(`| แสดงบนภาพ | ${item.visible ? 'ใช่' : 'ซ่อน'} |`);
+    lines.push('', '**Description:**', item.description.trim() || '_(ว่าง)_', '');
+  });
+
+  return lines.join('\n');
+}
+
+function openExportDataModal() {
+  if (!state.originalImage) { alert('กรุณาเลือกรูปภาพก่อน'); return; }
+  if (getAnnotationObjects().length === 0) { alert('ยังไม่มีรายการบนภาพ'); return; }
+  document.getElementById('export-data-filename-input').value =
+    generateDefaultFileName('json').replace(/\.json$/, '');
+  document.getElementById('export-data-modal').style.display = 'flex';
+}
+
+function closeExportDataModal() {
+  document.getElementById('export-data-modal').style.display = 'none';
+}
+
+function executeExportData() {
+  const fmt = document.getElementById('export-data-format-select').value;
+  let baseName = document.getElementById('export-data-filename-input').value.trim()
+    || generateDefaultFileName(fmt === 'md' ? 'md' : 'json').replace(/\.[^.]+$/, '');
+
+  const payload = buildExportPayload();
+  if (fmt === 'md') {
+    if (!baseName.endsWith('.md')) baseName += '.md';
+    downloadTextFile(buildMarkdownExport(payload), baseName, 'text/markdown;charset=utf-8');
+  } else {
+    if (!baseName.endsWith('.json')) baseName += '.json';
+    downloadTextFile(JSON.stringify(payload, null, 2), baseName, 'application/json');
+  }
+  closeExportDataModal();
+  showToast(`📋 Export Marker "${baseName}" สำเร็จ`);
+}
+
+function exportProjectFile() {
+  if (!state.originalImage) { alert('กรุณาเลือกรูปภาพก่อน'); return; }
+  const payload = buildProjectPayload();
+  if (!payload) return;
+  let fileName = generateDefaultFileName('poodle.json');
+  if (!fileName.endsWith('.poodle.json')) fileName = fileName.replace(/\.[^.]+$/, '') + '.poodle.json';
+  downloadTextFile(JSON.stringify(payload, null, 2), fileName, 'application/json');
+  showToast(`💾 Export Project "${fileName}" สำเร็จ`);
+}
+
+async function handleProjectFileSelect(e) {
+  const file = e.target.files?.[0];
+  e.target.value = '';
+  if (!file) return;
+  try {
+    const text = await file.text();
+    const data = JSON.parse(text);
+    if (!data.canvas && !data.image) throw new Error('invalid format');
+    if (state.originalImage && getAnnotationObjects().length > 0) {
+      if (!confirm('เปิด Project จะแทนที่งานปัจจุบัน ต้องการดำเนินการต่อ?')) return;
+    }
+    await clearDraftFromIDB();
+    await restoreFromDraft(data);
+    scheduleDraftSave(true);
+    showToast('📂 เปิด Project สำเร็จ');
+  } catch (err) {
+    alert('ไม่สามารถเปิดไฟล์ Project ได้: ' + err.message);
+  }
+}
+
+window.closeExportDataModal = closeExportDataModal;
 
 /* ─────────────────────────────────────────────
    TOAST

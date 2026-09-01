@@ -65,6 +65,18 @@ body {
   display: inline-flex; align-items: center; gap: 4px;
 }
 .header-actions { display: flex; align-items: center; gap: 8px; }
+.autosave-badge {
+  font-size: 0.72rem; font-weight: 600; color: var(--text-muted);
+  padding: 4px 10px; border-radius: var(--radius-full);
+  background: var(--bg-panel); border: 1px solid var(--border-color);
+  white-space: nowrap;
+}
+.autosave-badge.is-saving { color: #b45309; border-color: var(--amber-border); background: var(--amber-light); }
+.autosave-badge.is-error { color: var(--danger); border-color: #fecaca; background: #fef2f2; }
+.color-dot-last { border: 2px dashed var(--text-subtle) !important; }
+.color-dot-last.active { box-shadow: 0 0 0 2px var(--secondary); }
+.description-textarea { min-height: 100px; resize: vertical; line-height: 1.5; }
+.layer-desc-icon { font-size: 0.7rem; margin-left: 4px; opacity: 0.85; }
 
 /* ═══════════════════════ BUTTONS ═══════════════════════ */
 .btn {
@@ -81,6 +93,21 @@ body {
   box-shadow: 0 3px 8px rgba(16,185,129,.3);
 }
 .btn-bone:hover { background: linear-gradient(135deg,#059669,#047857); transform: translateY(-1px); }
+.btn-export-image {
+  background: linear-gradient(135deg,#10b981,#059669); color: white;
+  box-shadow: 0 3px 8px rgba(16,185,129,.3);
+}
+.btn-export-image:hover { background: linear-gradient(135deg,#059669,#047857); transform: translateY(-1px); }
+.btn-export-marker {
+  background: linear-gradient(135deg,#8b5cf6,#7c3aed); color: white;
+  box-shadow: 0 3px 8px rgba(139,92,246,.3);
+}
+.btn-export-marker:hover { background: linear-gradient(135deg,#7c3aed,#6d28d9); transform: translateY(-1px); }
+.btn-export-project {
+  background: linear-gradient(135deg,#3b82f6,#2563eb); color: white;
+  box-shadow: 0 3px 8px rgba(59,130,246,.3);
+}
+.btn-export-project:hover { background: linear-gradient(135deg,#2563eb,#1d4ed8); transform: translateY(-1px); }
 .btn-secondary { background: var(--bg-surface); border-color: var(--border-color); color: var(--text-main); }
 .btn-secondary:hover { background: var(--bg-panel); }
 .btn-outline-primary { background: var(--primary-light); border-color: var(--primary-border); color: var(--primary-hover); }
@@ -208,15 +235,24 @@ body {
 }
 .layer-item-card:hover { background: var(--bg-panel-hover); border-color: #cbd5e1; }
 .layer-item-card.active { background: var(--primary-light); border-color: var(--primary); box-shadow: 0 1px 4px rgba(16,185,129,.2); }
-.layer-left { display: flex; align-items: center; gap: 7px; overflow: hidden; }
+.layer-left { display: flex; align-items: center; gap: 7px; overflow: hidden; min-width: 0; flex: 1; }
+.layer-order-num {
+  flex-shrink: 0; width: 18px; height: 18px; border-radius: var(--radius-full);
+  background: var(--bg-surface); border: 1px solid var(--border-color);
+  font-size: 0.65rem; font-weight: 700; color: var(--text-muted);
+  display: inline-flex; align-items: center; justify-content: center;
+}
 .layer-badge { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: .65rem; flex-shrink: 0; }
-.layer-name { font-size: .78rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 155px; }
-.layer-actions { display: flex; align-items: center; gap: 3px; }
+.layer-name { font-size: .78rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
+.layer-actions { display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
 .layer-btn-icon {
   background: transparent; border: none; color: var(--text-muted); cursor: pointer;
   padding: 3px 4px; border-radius: var(--radius-sm);
   display: inline-flex; align-items: center; justify-content: center; transition: all .1s;
 }
+.layer-sort-btn { font-size: 0.72rem; line-height: 1; min-width: 20px; }
+.layer-sort-btn:disabled { opacity: 0.25; pointer-events: none; }
+.layers-sort-hint { font-size: 0.68rem; color: var(--text-subtle); margin: -2px 0 6px; line-height: 1.3; }
 .layer-btn-icon:hover { background: rgba(0,0,0,.08); color: var(--text-main); }
 .layer-btn-icon.is-hidden { color: #94a3b8; opacity: .65; }
 .text-danger { color: var(--danger) !important; }

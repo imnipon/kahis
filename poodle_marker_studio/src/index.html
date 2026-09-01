@@ -17,9 +17,7 @@
     <div class="brand-info">
       <h1>
         Poodle Marker Studio
-        <span class="badge-offline">🐾 100% Local & Offline</span>
         <button class="btn-manual" onclick="openManual()" title="เปิดคู่มือการใช้งาน">
-          <!-- Lucide book-heart icon -->
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
             <path d="M16 8.2C16 7 15 6 13.8 6c-.8 0-1.4.4-1.8 1-.4-.6-1-.9-1.8-.9C9 6.1 8 7 8 8.2c0 .6.3 1.2.7 1.6L12 13l3.3-3.2c.4-.4.7-1 .7-1.6z"/>
@@ -30,11 +28,14 @@
     </div>
   </div>
   <div class="header-actions">
+    <span id="autosave-badge" class="autosave-badge" title="บันทึกอัตโนมัติในเครื่อง">Last autosave —</span>
     <button id="btn-undo" class="btn btn-secondary btn-sm" disabled>↩️ Undo</button>
     <button id="btn-redo" class="btn btn-secondary btn-sm" disabled>↪️ Redo</button>
-    <div class="divider-v"></div>
     <button id="btn-change-image" class="btn btn-secondary btn-sm">🖼️ เปลี่ยนภาพ</button>
-    <button id="btn-export-top"   class="btn btn-bone">🦴 Export ภาพ</button>
+    <button id="btn-import-project" class="btn btn-secondary btn-sm" title="เปิดไฟล์โปรเจกต์ .poodle.json">📂 เปิด/แก้ไข Project</button>
+    <button id="btn-export-project" class="btn btn-export-project btn-sm">Export Project</button>
+    <button id="btn-export-data" class="btn btn-export-marker btn-sm">Export Marker</button>
+    <button id="btn-export-top" class="btn btn-export-image btn-sm">Export ภาพ</button>
   </div>
 </header>
 
@@ -156,6 +157,7 @@
           <div class="color-dot-compact" style="background:#8b5cf6" data-color="#8b5cf6"></div>
           <div class="color-dot-compact" style="background:#0f172a" data-color="#0f172a"></div>
           <div class="color-dot-compact" style="background:#ffffff;border:1px solid #cbd5e1" data-color="#ffffff"></div>
+          <div class="color-dot-compact color-dot-last" id="prop-bg-color-last" hidden title="สีล่าสุด (custom)"></div>
         </div>
       </div>
 
@@ -172,6 +174,7 @@
           <div class="color-dot-compact" style="background:#3b82f6" data-color="#3b82f6"></div>
           <div class="color-dot-compact" style="background:#f59e0b" data-color="#f59e0b"></div>
           <div class="color-dot-compact" style="background:#ef4444" data-color="#ef4444"></div>
+          <div class="color-dot-compact color-dot-last" id="prop-font-color-last" hidden title="สีล่าสุด (custom)"></div>
         </div>
       </div>
     </section>
@@ -201,6 +204,7 @@
         <h3>คลิกเพื่อเลือกรูปภาพ หรือลากไฟล์มาวาง</h3>
         <p>รองรับ PNG, JPG, JPEG, WEBP, GIF, BMP</p>
         <input type="file" id="image-file-input" accept="image/*" class="hidden">
+        <input type="file" id="project-file-input" accept=".json,application/json" class="hidden">
         <button type="button" class="btn btn-primary" id="btn-browse-file">📂 เลือกรูปภาพ (Browse)</button>
         <div style="margin-top:10px">
           <span class="dropzone-paste-badge">🐾 หรือกด <kbd>Ctrl</kbd>+<kbd>V</kbd> วางจาก Clipboard ได้ทันที</span>
@@ -259,7 +263,7 @@
         <button id="btn-zoom-in"   class="btn-icon-only btn-sm" title="ขยาย">➕</button>
         <div class="divider-v"></div>
         <button id="btn-zoom-fit"  class="btn btn-secondary btn-sm">🔍 พอดีหน้าจอ</button>
-        <button id="btn-zoom-reset"class="btn btn-secondary btn-sm">1:1 ขนาดจริง</button>
+        <button id="btn-zoom-reset" class="btn btn-secondary btn-sm">1:1 ขนาดจริง</button>
       </div>
     </div>
   </section>
@@ -273,6 +277,7 @@
         <span>📋 รายการ Marker ที่สร้าง</span>
         <span id="layer-count-badge" class="badge-offline" style="font-size:0.7rem;padding:1px 7px">0 ชิ้น</span>
       </div>
+      <p class="layers-sort-hint">↕️ ใช้ ↑↓ จัดลำดับ — บันทึกใน Export Marker / Project</p>
       <div id="layers-list-container" class="layers-container">
         <div class="empty-layers-msg">
           <span>🐾 ยังไม่มี Marker หรือข้อความบนภาพ</span>
@@ -288,32 +293,82 @@
 
         <div class="faq-item">
           <div class="faq-question" onclick="toggleFaq(this)"><span>🔒 รูปภาพถูกส่งขึ้นเน็ตหรือไม่?</span><span>▾</span></div>
-          <div class="faq-answer">ไม่เลยครับ! ทุกอย่างทำงานใน RAM ของเบราว์เซอร์ในเครื่องคุณเท่านั้น 100% Private</div>
+          <div class="faq-answer">ไม่เลย — ทุกอย่างทำงานในเบราว์เซอร์บนเครื่องคุณ 100% Offline รูปและข้อมูล autosave เก็บใน IndexedDB ของ browser</div>
         </div>
 
         <div class="faq-item">
           <div class="faq-question" onclick="toggleFaq(this)"><span>🔢 Num Label / Text Label ใช้อย่างไร?</span><span>▾</span></div>
-          <div class="faq-answer">คลิกเลือกเครื่องมือ → คลิกบนภาพเพื่อวาง ระบบรันลำดับให้อัตโนมัติ ตั้งค่าเริ่มต้นหรือรีเซ็ตได้ในแถบซ้าย</div>
+          <div class="faq-answer">เลือกเครื่องมือ → คลิกบนภาพเพื่อวาง ระบบรันลำดับ 1,2,3... หรือ A,B,C... อัตโนมัติ ตั้งเลข/ตัวอักษรเริ่มต้นและรีเซ็ตได้ในแถบซ้าย</div>
         </div>
 
         <div class="faq-item">
           <div class="faq-question" onclick="toggleFaq(this)"><span>📝 Textbox (Tt) กับภาษาไทย?</span><span>▾</span></div>
-          <div class="faq-answer">ฝัง IBM Plex Sans Thai Looped พร้อมตัดคำอัตโนมัติด้วย Intl.Segmenter — resize กล่องแล้วคำจะ wrap ถูกต้อง ไม่ตัดกลางคำ</div>
+          <div class="faq-answer">ใช้ IBM Plex Sans Thai Looped ตัดคำอัตโนมัติด้วย Intl.Segmenter — ลากขยายกล่องแล้วข้อความ wrap ถูกต้อง ไม่ตัดกลางคำ</div>
         </div>
 
         <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)"><span>✏️ แก้ไขชิ้นงานที่วางแล้วทำอย่างไร?</span><span>▾</span></div>
-          <div class="faq-answer">ดับเบิ้ลคลิกที่ชิ้นงานบนภาพ หรือกดไอคอน ✏️ ในแถบขวา เพื่อเปิด Edit Modal ปรับข้อความ ขนาด และสีได้</div>
+          <div class="faq-question" onclick="toggleFaq(this)"><span>✏️ Description คืออะไร?</span><span>▾</span></div>
+          <div class="faq-answer">คำอธิบายเพิ่มเติมใน Edit Modal — พิมพ์ได้หลายบรรทัด <strong>ไม่แสดงบนภาพ</strong> ใช้เก็บเนื้อหาสำหรับ Export Marker และส่งต่อ AI สร้างคู่มือ รายการที่มี Description จะมีไอคอน 📝 ในแถบขวา</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)"><span>↕️ จัดลำดับรายการอย่างไร?</span><span>▾</span></div>
+          <div class="faq-answer">ใช้ปุ่ม <strong>↑ ↓</strong> ในแถบรายการ Marker ด้านขวา เลขลำดับด้านหน้า (1, 2, 3...) คือลำดับในคู่มือ ลำดับนี้บันทึกใน autosave, Export Marker และ Export Project</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)"><span>💾 Last autosave / งานค้างคืออะไร?</span><span>▾</span></div>
+          <div class="faq-answer">ระบบบันทึกอัตโนมัติทุก ~3 วินาทีใน IndexedDB แสดงเวลา <strong>Last autosave HH:mm:ss</strong> บน topbar เปิดแอปใหม่จะถามโหลดงานค้าง — ภาพใหญ่มากอาจบันทึกเฉพาะ markers</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)"><span>📤 Export ภาพ / Marker / Project ต่างกันอย่างไร?</span><span>▾</span></div>
+          <div class="faq-answer"><strong>Export ภาพ</strong> — ไฟล์ PNG/JPEG/WEBP มี markers บนภาพ<br><strong>Export Marker</strong> — JSON/Markdown รายการ+Description+ลำดับ (ส่ง AI)<br><strong>Export Project</strong> — .poodle.json ครบภาพ+markers (backup/ย้ายเครื่อง)<br><strong>เปิด/แก้ไข Project</strong> — โหลด .poodle.json กลับมาทำต่อ</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)"><span>💻 ย้ายงานไปเครื่องอื่นได้ไหม?</span><span>▾</span></div>
+          <div class="faq-answer">ได้ — กด <strong>Export Project</strong> แล้ว copy ไฟล์ .poodle.json ไปเครื่องใหม่ เปิดแอป → <strong>เปิด/แก้ไข Project</strong> งานกลับมาครบ รวมลำดับและ Description</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)"><span>🤖 ส่ง AI สร้างคู่มืออย่างไร?</span><span>▾</span></div>
+          <div class="faq-answer">1) จัดลำดับรายการด้วย ↑↓ และใส่ Description 2) Export ภาพ + Export Marker (JSON หรือ Markdown) 3) แนบทั้งสองให้ AI พร้อมบอกให้ใช้ index เป็นหัวข้อและ description เป็นเนื้อหา</div>
         </div>
 
         <div class="faq-item">
           <div class="faq-question" onclick="toggleFaq(this)"><span>💾 Export ภาพ ได้ความละเอียดเท่าต้นฉบับ?</span><span>▾</span></div>
-          <div class="faq-answer">ใช่ครับ Export จะเรนเดอร์ที่ความละเอียดต้นฉบับ 100% เสมอ ไม่ขึ้นกับ zoom level ในหน้าจอ</div>
+          <div class="faq-answer">ใช่ — Export เรนเดอร์ที่ความละเอียดต้นฉบับ 100% เสมอ ไม่ขึ้นกับ zoom บนหน้าจอ</div>
         </div>
 
         <div class="faq-item">
           <div class="faq-question" onclick="toggleFaq(this)"><span>📂 Save As dialog ไม่ขึ้น?</span><span>▾</span></div>
-          <div class="faq-answer">Save As dialog ทำงานบน Secure Context (localhost/HTTPS) หากเปิดผ่าน file:// ไฟล์จะ download อัตโนมัติแทน ยังใช้งานได้ครับ</div>
+          <div class="faq-answer">Save As ทำงานบน localhost/HTTPS ถ้าเปิดผ่าน file:// ไฟล์จะ download อัตโนมัติแทน — ใช้ Live Server หรือ <code>npx serve</code> ได้</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)"><span>🎨 สี Last (custom) คืออะไร?</span><span>▾</span></div>
+          <div class="faq-answer">เมื่อเลือกสีจาก Color Picker ที่ไม่ใช่ preset จะเก็บเป็น dot ขอบประ (สีล่าสุด) ใช้ซ้ำได้ทั้งแถบซ้ายและ Edit Modal</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)"><span>👆 Select / ลบ / สำเนา / ล้างทั้งหมด?</span><span>▾</span></div>
+          <div class="faq-answer">เลือกเครื่องมือ <strong>Select</strong> แล้วคลิกชิ้นงาน — ใช้แถบลอยด้านล่าง แก้ไข / สำเนา / ลบ หรือปุ่ม <strong>ลบที่เลือก</strong> / <strong>ล้างทั้งหมด</strong> ในแถบซ้าย กด <kbd>Delete</kbd> ลบที่เลือกได้</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)"><span>👁️ ซ่อน Marker บนภาพได้ไหม?</span><span>▾</span></div>
+          <div class="faq-answer">ได้ — กดไอคอน <strong>👁️</strong> ในแถบรายการด้านขวา Marker จะไม่แสดงบนภาพ แต่ยังอยู่ในรายการและ Export Marker / Project</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)"><span>⚠️ ภาพใหญ่ autosave จำกัดอย่างไร?</span><span>▾</span></div>
+          <div class="faq-answer">ภาพ ~8 MB ขึ้นไป ระบบแจ้งเตือนว่า autosave อาจช้า · ภาพ ~25 MB ขึ้นไป บันทึกเฉพาะ markers (ไม่เก็บภาพใน IndexedDB) — ใช้ <strong>Export Project</strong> สำรองภาพใหญ่</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)"><span>📖 เปิดคู่มืออยู่ที่ไหน?</span><span>▾</span></div>
+          <div class="faq-answer">กดปุ่ม <strong>คู่มือ</strong> ข้างชื่อ "Poodle Marker Studio" มุมซ้ายบน — มี 15 หัวข้อครอบคลุมทุกฟังก์ชัน</div>
         </div>
 
       </div>
@@ -366,21 +421,90 @@
           <span id="modal-slider-strokewidth-val" class="slider-val-compact">3px</span>
         </div>
       </div>
-      <div class="form-row-compact" style="margin-top:10px">
-        <div class="form-group-compact" style="flex:1">
-          <label class="form-label-compact">สีพื้นหลัง (BG / Fill)</label>
-          <input type="color" id="modal-color-bg" class="input-text-compact" style="height:34px;padding:2px;cursor:pointer">
+      <div class="form-group-compact" style="margin-top:10px">
+        <div class="form-row-compact justify-between items-center" style="margin-bottom:3px">
+          <label class="form-label-compact" style="margin-bottom:0">🎨 สีพื้นหลัง (BG / Fill):</label>
+          <input type="color" id="modal-bg-color-native" class="color-input-native" value="#10b981">
         </div>
-        <div class="form-group-compact" style="flex:1">
-          <label class="form-label-compact">สีตัวอักษร / เส้น</label>
-          <input type="color" id="modal-color-font" class="input-text-compact" style="height:34px;padding:2px;cursor:pointer">
+        <div class="color-presets-compact" id="modal-bg-color-presets">
+          <div class="color-dot-compact" style="background:#10b981" data-color="#10b981"></div>
+          <div class="color-dot-compact" style="background:#3b82f6" data-color="#3b82f6"></div>
+          <div class="color-dot-compact" style="background:#f59e0b" data-color="#f59e0b"></div>
+          <div class="color-dot-compact" style="background:#ef4444" data-color="#ef4444"></div>
+          <div class="color-dot-compact" style="background:#8b5cf6" data-color="#8b5cf6"></div>
+          <div class="color-dot-compact" style="background:#0f172a" data-color="#0f172a"></div>
+          <div class="color-dot-compact" style="background:#ffffff;border:1px solid #cbd5e1" data-color="#ffffff"></div>
+          <div class="color-dot-compact color-dot-last" id="modal-bg-color-last" hidden title="สีล่าสุด (custom)"></div>
         </div>
+      </div>
+      <div class="form-group-compact" style="margin-top:8px">
+        <div class="form-row-compact justify-between items-center" style="margin-bottom:3px">
+          <label class="form-label-compact" style="margin-bottom:0">✏️ สีตัวอักษร / เส้น (Font / Line):</label>
+          <input type="color" id="modal-font-color-native" class="color-input-native" value="#ffffff">
+        </div>
+        <div class="color-presets-compact" id="modal-font-color-presets">
+          <div class="color-dot-compact" style="background:#ffffff;border:1px solid #cbd5e1" data-color="#ffffff"></div>
+          <div class="color-dot-compact" style="background:#0f172a" data-color="#0f172a"></div>
+          <div class="color-dot-compact" style="background:#10b981" data-color="#10b981"></div>
+          <div class="color-dot-compact" style="background:#3b82f6" data-color="#3b82f6"></div>
+          <div class="color-dot-compact" style="background:#f59e0b" data-color="#f59e0b"></div>
+          <div class="color-dot-compact" style="background:#ef4444" data-color="#ef4444"></div>
+          <div class="color-dot-compact color-dot-last" id="modal-font-color-last" hidden title="สีล่าสุด (custom)"></div>
+        </div>
+      </div>
+      <div class="form-group-compact" style="margin-top:10px">
+        <label class="form-label-compact">📝 Description (คำอธิบายเพิ่มเติม — ไม่แสดงบนภาพ)</label>
+        <textarea id="modal-input-description" class="input-text-compact description-textarea" rows="5" placeholder="อธิบายรายการนี้สำหรับทำคู่มือ / ส่งต่อ AI..."></textarea>
       </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-danger-subtle btn-sm" id="modal-btn-delete" style="margin-right:auto">🗑️ ลบชิ้นนี้</button>
       <button class="btn btn-secondary btn-sm" onclick="closeRichEditModal()">ยกเลิก</button>
       <button class="btn btn-primary btn-sm"   id="modal-btn-save">💾 บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<!-- Restore Draft Modal -->
+<div id="restore-draft-modal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>🐾 พบงานค้างจากครั้งก่อน</h3>
+    </div>
+    <div class="modal-body">
+      <p id="restore-draft-summary" style="font-size:0.88rem;line-height:1.6;color:var(--text-muted)">—</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary btn-sm" id="btn-restore-discard">เริ่มใหม่</button>
+      <button class="btn btn-primary btn-sm" id="btn-restore-confirm">โหลดงานค้าง</button>
+    </div>
+  </div>
+</div>
+
+<!-- Export Data Modal -->
+<div id="export-data-modal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>📋 Export Marker</h3>
+      <button class="layer-btn-icon" onclick="closeExportDataModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:10px">Export รายละเอียด markers + Description แยกจากภาพ — ใช้ส่งต่อ AI สร้างคู่มือ</p>
+      <div class="form-group-compact">
+        <label class="form-label-compact">ชื่อไฟล์</label>
+        <input type="text" id="export-data-filename-input" class="input-text-compact">
+      </div>
+      <div class="form-group-compact" style="margin-top:10px">
+        <label class="form-label-compact">รูปแบบ</label>
+        <select id="export-data-format-select" class="select-input-compact">
+          <option value="json">JSON (สำหรับ AI / automation)</option>
+          <option value="md">Markdown (อ่านง่าย / paste ให้ AI)</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary btn-sm" onclick="closeExportDataModal()">ยกเลิก</button>
+      <button class="btn btn-primary btn-sm" id="btn-confirm-export-data">💾 ดาวน์โหลด</button>
     </div>
   </div>
 </div>
@@ -460,7 +584,9 @@
             <span class="step-badge">📋</span>
             <div><strong>Ctrl+V Paste</strong> — กด Ctrl+C ก๊อปภาพจากที่ใดก็ได้ แล้วกด Ctrl+V ในหน้าแอพเพื่อวางทันที</div>
           </div>
-          <div class="manual-tip">💡 รองรับไฟล์ PNG, JPG, JPEG, WEBP, GIF, BMP ทุกขนาด</div>
+          <div class="manual-tip">💡 รองรับ PNG, JPG, JPEG, WEBP, GIF, BMP ทุกขนาด</div>
+          <div class="manual-tip">📖 กดปุ่ม <strong>คู่มือ</strong> ข้างชื่อแอพ (มุมซ้ายบน) เปิดคู่มือฉบับเต็มได้ทุกเมื่อ</div>
+          <div class="manual-tip">🧭 <strong>Topbar:</strong> Last autosave · Undo/Redo · เปลี่ยนภาพ · เปิด/แก้ไข Project · Export Project · Export Marker · Export ภาพ</div>
         </div>
       </div>
 
@@ -565,11 +691,41 @@
         </div>
       </div>
 
-      <!-- 6. สี -->
+      <!-- 6. Select / Pan / Zoom -->
       <div class="manual-section">
         <div class="manual-section-header">
           <span class="manual-num">6</span>
-          <h4>การตั้งค่าสี (สำหรับรายการใหม่)</h4>
+          <h4>Select, Pan และ Zoom</h4>
+        </div>
+        <div class="manual-steps">
+          <div class="manual-step">
+            <span class="step-badge">👆</span>
+            <div><strong>Select</strong> — เลือก ย้าย หรือปรับขนาดชิ้นงาน ใช้แถบลอยด้านล่างเพื่อ แก้ไข / ทำสำเนา / ลบ</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">📋</span>
+            <div><strong>ทำสำเนา</strong> — เลือกชิ้นงานแล้วกด สำเนา ในแถบลอย หรือแถบซ้าย (ลบที่เลือก / ล้างทั้งหมด อยู่ด้านล่างแถบซ้าย)</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">✋</span>
+            <div><strong>Pan</strong> — ปุ่ม Pan ใต้ canvas หรือ Space+ลาก เลื่อนมุมมองโดยไม่ขยับ marker</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">🔍</span>
+            <div><strong>Zoom</strong> — ปุ่ม + / − / Fit / 100% หรือ Ctrl+ล้อเมาส์</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">🖼️</span>
+            <div><strong>เปลี่ยนภาพ</strong> — บน topbar โหลดภาพใหม่ (confirm ถ้ามี markers)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. สี -->
+      <div class="manual-section">
+        <div class="manual-section-header">
+          <span class="manual-num">7</span>
+          <h4>การตั้งค่าสี</h4>
         </div>
         <div class="manual-steps">
           <div class="manual-step">
@@ -582,111 +738,171 @@
           </div>
           <div class="manual-step">
             <span class="step-badge">🎯</span>
-            <div>คลิก <strong>Color Dot</strong> เพื่อเลือกสีด่วน หรือคลิก <strong>กล่องสีด้านขวา</strong> เพื่อเปิด Color Picker เต็มรูปแบบ</div>
+            <div>คลิก <strong>Color Dot</strong> เลือกสีด่วน หรือ <strong>Color Picker</strong> เลือกสี custom</div>
           </div>
-          <div class="manual-tip">💡 ตั้งค่าสีจะมีผลกับชิ้นงานที่วางใหม่เท่านั้น ชิ้นเดิมต้องแก้ผ่าน Edit Modal</div>
+          <div class="manual-step">
+            <span class="step-badge">⭕</span>
+            <div><strong>สีล่าสุด (Last)</strong> — dot ขอบประ เก็บสี custom ใช้ซ้ำได้ในแถบซ้ายและ Edit Modal</div>
+          </div>
+          <div class="manual-tip">💡 แถบซ้ายมีผลชิ้นใหม่ — ชิ้นเดิมแก้ใน Edit Modal (preset + Last color เหมือนกัน)</div>
         </div>
       </div>
 
-      <!-- 7. Edit existing -->
+      <!-- 8. Edit + Description -->
       <div class="manual-section">
         <div class="manual-section-header">
-          <span class="manual-num">7</span>
-          <h4>การแก้ไขชิ้นงานที่วางแล้ว</h4>
+          <span class="manual-num">8</span>
+          <h4>แก้ไขชิ้นงาน + Description</h4>
         </div>
         <div class="manual-steps">
           <div class="manual-step">
             <span class="step-badge">🖱️</span>
-            <div><strong>ดับเบิ้ลคลิก</strong> ที่ชิ้นงานบนภาพ — เปิด Edit Modal ได้ทันที</div>
+            <div>ดับเบิ้ลคลิกบนชิ้นงาน · ✏️ ในแถบขวา · หรือ Select แล้วกดแก้ไขในแถบลอย</div>
           </div>
           <div class="manual-step">
             <span class="step-badge">✏️</span>
-            <div>คลิกไอคอน <strong>ดินสอ (✏️)</strong> ในรายการ Marker แถบขวา</div>
+            <div>แก้ข้อความ/ค่า Marker, ขนาด, สี, ความหนาเส้น, จัดชิด (Textbox)</div>
           </div>
           <div class="manual-step">
-            <span class="step-badge">👆</span>
-            <div>หรือ เปลี่ยนเครื่องมือเป็น <strong>Select (👆)</strong> แล้วคลิกชิ้นงาน จากนั้นกดปุ่ม <strong>แก้ไข</strong> ในแถบลอย</div>
+            <span class="step-badge">📝</span>
+            <div><strong>Description</strong> — คำอธิบายหลายบรรทัด ไม่แสดงบนภาพ ใช้ Export Marker / ส่ง AI</div>
           </div>
           <div class="manual-step">
-            <span class="step-badge">↔️</span>
-            <div>ใน Edit Modal: แก้ไขข้อความ, ขนาด, สีพื้นหลัง, สีตัวอักษร กด <strong>บันทึก</strong> เพื่อยืนยัน</div>
+            <span class="step-badge">🏷️</span>
+            <div>Rectangle มี <strong>ชื่อกำกับ</strong> แยกจาก Description</div>
           </div>
         </div>
       </div>
 
-      <!-- 8. Layers -->
-      <div class="manual-section">
-        <div class="manual-section-header">
-          <span class="manual-num">8</span>
-          <h4>แถบรายการ Marker (แถบขวา)</h4>
-        </div>
-        <div class="manual-steps">
-          <div class="manual-step">
-            <span class="step-badge">👁️</span>
-            <div><strong>Eye icon</strong> — คลิกเพื่อซ่อน/แสดงชิ้นงานบนภาพ (ไม่ลบ ยังอยู่ใน Export)</div>
-          </div>
-          <div class="manual-step">
-            <span class="step-badge">✏️</span>
-            <div><strong>Pencil icon</strong> — เปิด Edit Modal เพื่อแก้ไขคุณสมบัติของชิ้นนั้น</div>
-          </div>
-          <div class="manual-step">
-            <span class="step-badge">🗑️</span>
-            <div><strong>Trash icon</strong> — ลบชิ้นงานออกจากภาพ (สามารถ Undo ได้)</div>
-          </div>
-          <div class="manual-step">
-            <span class="step-badge">📋</span>
-            <div><strong>คลิกที่การ์ด</strong> — เลือกชิ้นงานนั้นบน canvas</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 9. Undo/Redo Shortcuts -->
+      <!-- 9. Layers + Sort -->
       <div class="manual-section">
         <div class="manual-section-header">
           <span class="manual-num">9</span>
-          <h4>Undo / Redo และ Keyboard Shortcuts</h4>
+          <h4>แถบรายการ + จัดลำดับ</h4>
         </div>
         <div class="manual-steps">
+          <div class="manual-step">
+            <span class="step-badge">#</span>
+            <div><strong>เลขลำดับ</strong> = ลำดับในคู่มือ / Export (ไม่ใช่ลำดับวางบนภาพ)</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">↑↓</span>
+            <div><strong>↑ ↓</strong> สลับลำดับ — บันทึกใน autosave, Export Marker และ Project</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">📝</span>
+            <div>📝 = มี Description · 👁️ ซ่อน/แสดงบนภาพ (ยังอยู่ใน Export) · ✏️ แก้ไข · 🗑️ ลบ</div>
+          </div>
+          <div class="manual-tip">💡 คลิกชื่อรายการในแถบขวาเพื่อเลือกชิ้นงานบน canvas</div>
+        </div>
+      </div>
+
+      <!-- 10. Undo/Redo -->
+      <div class="manual-section">
+        <div class="manual-section-header">
+          <span class="manual-num">10</span>
+          <h4>Undo / Redo และ Shortcuts</h4>
+        </div>
+        <div class="manual-steps">
+          <div class="manual-step">
+            <span class="step-badge">↩️</span>
+            <div>ปุ่ม <strong>Undo / Redo</strong> บน topbar</div>
+          </div>
           <div class="shortcut-table">
-            <div class="sc-row"><kbd>Ctrl</kbd>+<kbd>Z</kbd><span>ย้อนกลับ (Undo)</span></div>
-            <div class="sc-row"><kbd>Ctrl</kbd>+<kbd>Y</kbd> หรือ <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd><span>ทำซ้ำ (Redo)</span></div>
-            <div class="sc-row"><kbd>Delete</kbd> หรือ <kbd>Backspace</kbd><span>ลบชิ้นงานที่เลือก</span></div>
-            <div class="sc-row"><kbd>Escape</kbd><span>ยกเลิกการเลือก / เปลี่ยนเป็น Select tool</span></div>
-            <div class="sc-row"><kbd>Space</kbd> + ลาก<span>Pan เลื่อนมุมมองชั่วคราว</span></div>
-            <div class="sc-row"><kbd>Ctrl</kbd> + เลื่อนล้อเมาส์<span>Zoom เข้า/ออก</span></div>
+            <div class="sc-row"><kbd>Ctrl</kbd>+<kbd>Z</kbd><span>Undo</span></div>
+            <div class="sc-row"><kbd>Ctrl</kbd>+<kbd>Y</kbd><span>Redo</span></div>
+            <div class="sc-row"><kbd>Delete</kbd><span>ลบที่เลือก</span></div>
+            <div class="sc-row"><kbd>Escape</kbd><span>ยกเลิกเลือก</span></div>
+            <div class="sc-row"><kbd>Space</kbd>+ลาก<span>Pan</span></div>
+            <div class="sc-row"><kbd>Ctrl</kbd>+ล้อ<span>Zoom</span></div>
           </div>
         </div>
       </div>
 
-      <!-- 10. Export -->
+      <!-- 11. Autosave -->
       <div class="manual-section">
         <div class="manual-section-header">
-          <span class="manual-num">10</span>
+          <span class="manual-num">11</span>
+          <h4>Autosave งานค้าง</h4>
+        </div>
+        <div class="manual-steps">
+          <div class="manual-step">
+            <span class="step-badge">💾</span>
+            <div>Topbar: <strong>Last autosave HH:mm:ss</strong> — บันทึกใน IndexedDB ทุก ~3 วินาที</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">🐾</span>
+            <div>เปิดใหม่ → โหลดงานค้าง หรือเริ่มใหม่</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">⚠️</span>
+            <div>ภาพ ~8 MB ขึ้นไป — แจ้งเตือนว่า autosave อาจช้า · ภาพ ~25 MB ขึ้นไป — บันทึกเฉพาะ markers (ไม่เก็บภาพใน IndexedDB)</div>
+          </div>
+          <div class="manual-tip">💡 ใช้ Export Project เป็น backup ถาวร — autosave หายถ้าล้าง browser data</div>
+        </div>
+      </div>
+
+      <!-- 12. Export ภาพ -->
+      <div class="manual-section">
+        <div class="manual-section-header">
+          <span class="manual-num">12</span>
           <h4>Export ภาพ</h4>
         </div>
         <div class="manual-steps">
           <div class="manual-step">
-            <span class="step-badge">1</span>
-            <div>กดปุ่ม <strong>🦴 Export ภาพ</strong> มุมขวาบน — เปิดหน้าต่าง Export</div>
-          </div>
-          <div class="manual-step">
-            <span class="step-badge">2</span>
-            <div>ตั้งชื่อไฟล์ (Default: ชื่อเดิม 10 ตัว + วันเวลา) เลือกรูปแบบ PNG / JPEG / WEBP</div>
-          </div>
-          <div class="manual-step">
-            <span class="step-badge">3</span>
-            <div>กด <strong>บันทึก / ดาวน์โหลด</strong> — ระบบจะ Save As dialog (บน localhost) หรือ download อัตโนมัติ</div>
-          </div>
-          <div class="manual-step">
-            <span class="step-badge">📐</span>
-            <div>ภาพที่ Export มีความละเอียด <strong>เท่าต้นฉบับ 100% เสมอ</strong> ไม่ว่า zoom จะอยู่ที่ระดับใด</div>
+            <span class="step-badge">🦴</span>
+            <div><strong>Export ภาพ</strong> (เขียว) — PNG/JPEG/WEBP ความละเอียดต้นฉบับ 100%</div>
           </div>
           <div class="manual-tip">
-            ⚠️ <strong>Save As dialog ไม่ขึ้น?</strong> เกิดจากเบราว์เซอร์บล็อก file:// protocol<br>
-            แก้ไข: ใช้ <strong>VS Code Live Server</strong> หรือ Node.js ง่ายๆ:<br>
+            ⚠️ Save As บน file:// ไม่ขึ้น — ใช้<br>
             <code style="background:var(--bg-panel);padding:2px 6px;border-radius:3px;font-size:0.8rem">npx serve d:\imnipon_Project\kahis\poodle_marker_studio\src</code>
-            แล้วเปิด http://localhost:3000
           </div>
+        </div>
+      </div>
+
+      <!-- 13. Export Marker -->
+      <div class="manual-section">
+        <div class="manual-section-header">
+          <span class="manual-num">13</span>
+          <h4>Export Marker</h4>
+        </div>
+        <div class="manual-steps">
+          <div class="manual-step">
+            <span class="step-badge">📋</span>
+            <div><strong>Export Marker</strong> (ม่วง) — JSON/Markdown รายการ+Description+ลำดับ (ไม่มีภาพ)</div>
+          </div>
+          <div class="manual-tip">💡 จัดลำดับ ↑↓ และใส่ Description ก่อน Export</div>
+        </div>
+      </div>
+
+      <!-- 14. Project -->
+      <div class="manual-section">
+        <div class="manual-section-header">
+          <span class="manual-num">14</span>
+          <h4>Export / เปิด Project</h4>
+        </div>
+        <div class="manual-steps">
+          <div class="manual-step">
+            <span class="step-badge">💾</span>
+            <div><strong>Export Project</strong> (น้ำเงิน) → .poodle.json ครบภาพ+markers</div>
+          </div>
+          <div class="manual-step">
+            <span class="step-badge">📂</span>
+            <div><strong>เปิด/แก้ไข Project</strong> — โหลดกลับมาทำต่อ / ย้ายเครื่อง</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 15. AI Workflow -->
+      <div class="manual-section">
+        <div class="manual-section-header">
+          <span class="manual-num">15</span>
+          <h4>Workflow ส่ง AI สร้างคู่มือ</h4>
+        </div>
+        <div class="manual-steps">
+          <div class="manual-step"><span class="step-badge">1</span><div>ใส่ Description + จัดลำดับ ↑↓</div></div>
+          <div class="manual-step"><span class="step-badge">2</span><div>Export ภาพ + Export Marker</div></div>
+          <div class="manual-step"><span class="step-badge">3</span><div>ส่ง AI: index=หัวข้อ, description=เนื้อหา, แนบภาพ</div></div>
         </div>
       </div>
 
