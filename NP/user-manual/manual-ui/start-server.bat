@@ -1,10 +1,10 @@
 @echo off
-cd /d "%~dp0"
+cd /d "%~dp0.."
 echo.
 echo  KAHIS Manual - Local Server
 echo  ===========================
 echo  Open in browser:
-echo    http://localhost:8080/chapter-01-ui-components.html
+echo    http://localhost:8080/manual-ui/chapter-01-ui-components.html
 echo.
 echo  Press Ctrl+C to stop.
 echo.

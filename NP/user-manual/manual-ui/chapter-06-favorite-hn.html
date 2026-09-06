@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAHIS คู่มือการใช้งาน — Favorite HN (จัดการรายการโปรด)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="manual-base.css">
+      <link rel="stylesheet" href="manual-print-paged.css" id="print-mode-css">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="toolbar-title">
+    <span class="toolbar-logo-wrap"><img class="toolbar-logo" src="assets/poodle-logo-clean.svg" alt=""></span>
+    <h1>KAHIS คู่มือการใช้งาน — บทที่ 6</h1>
+  </div>
+  <div class="toolbar-actions">
+        <span class="print-mode-indicator" id="print-mode-indicator" title=""></span>
+    <button type="button" class="btn btn-mode is-active" id="btn-mode-paged" onclick="KahisExport.setMode('paged')">ขอบเท่ากัน</button>
+    <button type="button" class="btn btn-mode" id="btn-mode-legacy" onclick="KahisExport.setMode('legacy')">ขอบมาตรฐาน</button>
+    <button type="button" class="btn btn-print" id="btn-export-pdf" onclick="KahisExport.exportPdf()">ส่งออก PDF (A4)</button>
+  </div>
+</div>
+    
+<div class="manual-root">
+  <div class="manual-body">
+
+    <header class="doc-header">
+      <div class="brand">
+        <div class="logo">KAHIS</div>
+        <div class="brand-text">
+          <h2>ระบบเวชระเบียนอิเล็กทรอนิกโรงพยาบาลสัตว์ ม.เกษตร</h2>
+          <div class="brand-en">KAHIS Kasetsart Animal Hospital Information System</div>
+              <p>คู่มือการใช้งานสำหรับสัตวแพทย์ และบุคคลากรโรงพยาบาลสัตว์</p>
+        </div>
+      </div>
+      <div class="doc-meta">
+        <div><strong>บทที่ 6</strong></div>
+        <div>Favorite HN (จัดการรายการโปรด)</div>
+        <div>Version 2026.08.14.01</div>
+        <div>อัปเดต: 7 ก.ย. 2026</div>
+      </div>
+    </header>
+    
+    <div class="chapter-badge">Chapter 06 — Favorite HN / Manage Favorite OPD</div>
+    <h1 class="chapter-title">Favorite HN — การค้นหาและจัดการรายการ HN โปรด</h1>
+    <p class="chapter-desc">
+      ฟีเจอร์นี้ใช้บันทึกรายการ HN ที่ต้องการติดตามบ่อยไว้เป็นรายการโปรด (Favorite) พร้อมจัดกลุ่มด้วยโฟลเดอร์
+      เพื่อให้ค้นและเข้าถึง Exam card ของสัตว์ป่วยเหล่านั้นได้รวดเร็วขึ้น คลิกที่ภาพเพื่อดูขนาดจริง
+    </p>
+
+    <!-- ── ส่วนที่ 1 ── -->
+        <h3 class="section-title">ส่วนที่ 1 — ค้นหา HN และเลือกเข้ารายการโปรด</h3>
+
+    <figure class="figure-block">
+      <button class="figure-trigger" onclick="openLightbox('../Label/06_favorite_hn_search.png', 'รูปที่ 6ก — ค้นหา HN และรายการ Favorite')" aria-label="ดูภาพขนาดจริง">
+        <img src="../Label/06_favorite_hn_search.png" alt="ภาพหน้าค้นหา HN และบล็อกรายการ Favorite แสดง Label 1-5">
+      </button>
+      <figcaption class="figure-caption">
+        <span><span class="fig-num">รูปที่ 6ก</span> — ค้นหา HN และรายการ Favorite</span>
+          </figcaption>
+    </figure>
+
+    <section class="labels-section">
+      <article class="label-item" id="label-1">
+        <div class="label-bar">
+          <span class="label-bar-num">1</span>
+          <span class="label-bar-title">เมนูค้นหา HN</span>
+          <span class="label-bar-tag">Search Menu</span>
+        </div>
+        <div class="label-body">
+              <p>ขั้นตอนแรก เข้าเมนูค้นหา HN ที่ต้องการ</p>
+        </div>
+      </article>
+
+      <article class="label-item" id="label-2">
+        <div class="label-bar">
+          <span class="label-bar-num">2</span>
+          <span class="label-bar-title">ช่องค้นหา / ตัวกรอง</span>
+          <span class="label-bar-tag">Search / Filter</span>
+        </div>
+        <div class="label-body">
+              <p>ใส่หมายเลข HN ที่ต้องการ หรือใช้คำค้นหาอื่น ๆ ตามช่องตัวกรอง</p>
+        </div>
+      </article>
+
+      <article class="label-item" id="label-3">
+        <div class="label-bar">
+          <span class="label-bar-num">3</span>
+          <span class="label-bar-title">ไอคอนเลือกเข้า Favorite</span>
+          <span class="label-bar-tag">Favorite Toggle</span>
+        </div>
+        <div class="label-body">
+             <p>icon เพื่อเลือก HN ที่ต้องการใส่ใน favorite — <strong>สีขาว</strong> คือยังไม่เลือก, <strong>สีส้ม</strong> คืออยู่ในรายการแล้ว</p>
+        </div>
+      </article>
+
+      <article class="label-item" id="label-4">
+        <div class="label-bar">
+          <span class="label-bar-num">4</span>
+          <span class="label-bar-title">บล็อกรายการ Favorite ที่เลือกแล้ว</span>
+          <span class="label-bar-tag">Favorite Block</span>
+        </div>
+           <div class="label-body">
+          <p>บล็อกรายการ favorite ที่เลือกแล้ว ด้านบนเป็นส่วนการสร้างโฟลเดอร์ และการแสดงหรือซ่อนบล็อก favorite</p>
+        </div>
+      </article>
+
+      <article class="label-item" id="label-5">
+        <div class="label-bar">
+          <span class="label-bar-num">5</span>
+          <span class="label-bar-title">ส่วนแสดงรายการ Favorite</span>
+          <span class="label-bar-tag">List</span>
+        </div>
+           <div class="label-body">
+          <p>ส่วนแสดงรายการ ซึ่งสามารถลบได้จากไอคอนถังขยะ</p>
+          <ul>
+            <li>คลิกที่เลข HN จะเป็นการเลือกรายการ</li>
+            <li>วางเคอร์เซอร์เมาส์บน HN จะแสดง tooltip รายละเอียดเบื้องต้นของ HN นั้น</li>
+          </ul>
+        </div>
+      </article>
+    </section>
+   
+    <!-- ── ส่วนที่ 2 ── -->
+    <h3 class="section-title" style="margin-top:1.5rem">ส่วนที่ 2 — เพิ่มรายการเข้าโฟลเดอร์ Favorite</h3>
+    <p class="chapter-desc" style="margin-top:-.5rem">
+      เมื่อกดไอคอน Favorite (ส่วนที่ 1 Label 3) เลือก HN ที่ต้องการ ระบบจะเปิดหน้าต่างนี้ให้เลือกโฟลเดอร์ปลายทาง
+    </p>
+
+    <figure class="figure-block">
+      <button class="figure-trigger" onclick="openLightbox('../Label/06_favorite_hn_modal.png', 'รูปที่ 6ข — เพิ่ม HN เข้าโฟลเดอร์ Favorite')" aria-label="ดูภาพขนาดจริง">
+           <img src="../Label/06_favorite_hn_modal.png" alt="ภาพหน้าต่างเพิ่ม HN เข้าโฟลเดอร์ Favorite แสดง Label 1-4">
+      </button>
+      <figcaption class="figure-caption">
+        <span><span class="fig-num">รูปที่ 6ข</span> — เพิ่ม HN เข้าโฟลเดอร์ Favorite</span>
+      </figcaption>
+    </figure>
+
+    <section class="labels-section">
+      <article class="label-item" id="label-1b">
+        <div class="label-bar">
+             <span class="label-bar-num">1</span>
+          <span class="label-bar-title">ตรวจสอบ HN ที่เลือก</span>
+          <span class="label-bar-tag">Confirm HN</span>
+        </div>
+        <div class="label-body">
+          <p>เมื่อเลือก HN จากรายการค้นหา ให้เริ่มจากการตรวจสอบเลขว่าตรงกับที่ต้องการหรือไม่</p>
+        </div>
+      </article>
+
+      <article class="label-item" id="label-2b">
+           <div class="label-bar">
+          <span class="label-bar-num">2</span>
+          <span class="label-bar-title">เลือกโฟลเดอร์ปลายทาง</span>
+          <span class="label-bar-tag">Folder</span>
+        </div>
+        <div class="label-body">
+          <p>เลือกโฟลเดอร์ที่ต้องการ หรือเลือก <strong>root</strong> เพื่อให้รายการไม่ระบุโฟลเดอร์</p>
+        </div>
+      </article>
+
+         <article class="label-item" id="label-3b">
+        <div class="label-bar">
+          <span class="label-bar-num">3</span>
+          <span class="label-bar-title">ปุ่ม Add</span>
+          <span class="label-bar-tag">Add</span>
+        </div>
+        <div class="label-body">
+          <p>ปุ่ม <strong>"add"</strong> เพื่อเพิ่มรายการไปที่โฟลเดอร์ที่เลือก</p>
+        </div>
+      </article>
+   
+      <article class="label-item" id="label-4b">
+        <div class="label-bar">
+          <span class="label-bar-num">4</span>
+          <span class="label-bar-title">รายการที่อยู่ใน Favorite แล้ว</span>
+          <span class="label-bar-tag">Existing / Remove</span>
+        </div>
+        <div class="label-body">
+          <p>กรณีเป็นรายการที่อยู่ใน favorite แล้ว จะมีบล็อกแสดงที่อยู่โฟลเดอร์ปัจจุบัน และปุ่ม <strong>"ถังขยะ"</strong> เพื่อนำออกจากรายการ favorite</p>
+        </div>
+         </article>
+    </section>
+
+    <section class="manual-closing">
+    <section class="summary-section">
+      <div class="label-bar label-bar--summary">
+        <span class="label-bar-title">แผนที่ส่วนประกอบ — สรุปบทที่ 6</span>
+        <span class="label-bar-tag">สรุป</span>
+      </div>
+      <div class="summary-list">
+        <p class="summary-row"><span class="summary-num">ส่วนที่ 1</span><span class="summary-text"><strong>ค้นหา HN</strong> — ค้นหา/กรอง แล้วกดไอคอน Favorite (ขาว = ยังไม่เลือก, ส้ม = เลือกแล้ว)</span></p>
+           <p class="summary-row"><span class="summary-num">ส่วนที่ 2</span><span class="summary-text"><strong>เลือกโฟลเดอร์</strong> — ยืนยัน HN, เลือกโฟลเดอร์ (หรือ root) แล้วกด Add; ถ้ามีอยู่แล้วกดถังขยะเพื่อนำออก</span></p>
+      </div>
+    </section>
+
+    <div class="checklist-box">
+      <div class="checklist-head">Checklist การจัดการ Favorite HN</div>
+      <ol>
+        <li>เข้าเมนูค้นหา HN แล้วใส่เลข HN หรือคำค้นที่ต้องการ</li>
+        <li>กดไอคอน Favorite ที่รายการ HN เพื่อเปิดหน้าต่างเลือกโฟลเดอร์</li>
+        <li>ตรวจสอบเลข HN ให้ตรง เลือกโฟลเดอร์ปลายทาง (หรือ root) แล้วกด Add</li>
+           <li>ตรวจดูรายการที่บันทึกแล้วในบล็อก Favorite และลบได้ด้วยไอคอนถังขยะ</li>
+      </ol>
+    </div>
+    </section>
+
+  </div><!-- .manual-body -->
+</div><!-- .manual-root -->
+
+<div class="print-footer-config" hidden
+  data-brand="KAHIS (Kasetsart Animal Hospital Information System)"
+  data-chapter="บทที่ 6 : Favorite HN (จัดการรายการโปรด)"
+     data-version="Version 2026.08.14.01">
+</div>
+
+<div class="print-running-footer" aria-hidden="true">
+  <span class="print-footer-brand">KAHIS (Kasetsart Animal Hospital Information System)</span>
+  <div class="print-footer-meta">
+    <div class="print-footer-line1">บทที่ 6 : Favorite HN (จัดการรายการโปรด) หน้าที่ <span class="print-footer-page-num"></span></div>
+    <div class="print-footer-line2">Version 2026.08.14.01 พิมพ์เมื่อ <span class="print-footer-printed-at"></span></div>
+  </div>
+</div>
+
+   <div class="paged-footer-source" aria-hidden="true">
+  <div class="paged-footer-inner">
+    <span class="print-footer-brand">KAHIS (Kasetsart Animal Hospital Information System)</span>
+    <div class="print-footer-meta">
+      <div class="print-footer-line1">บทที่ 6 : Favorite HN (จัดการรายการโปรด) หน้าที่ <span class="print-footer-page-num"></span></div>
+      <div class="print-footer-line2">Version 2026.08.14.01 พิมพ์เมื่อ <span class="print-footer-printed-at"></span></div>
+    </div>
+  </div>
+</div>
+   
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <button class="lightbox-close" onclick="closeLightbox(event)" aria-label="ปิด">✕</button>
+  <img id="lightbox-img" src="" alt="">
+  <div class="lightbox-caption" id="lightbox-caption"></div>
+</div>
+
+<script>window.PagedConfig = { auto: false };</script>
+<script src="https://unpkg.com/pagedjs@0.4.3/dist/paged.polyfill.js"></script>
+<script src="manual-export.js"></script>
+<script>
+     const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const lightboxCaption = document.getElementById('lightbox-caption');
+
+  function openLightbox(src, caption) {
+    lightboxImg.src = src;
+    lightboxCaption.textContent = caption || '';
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+     function closeLightbox(e) {
+    if (e.target === lightbox || e.target.classList.contains('lightbox-close')) {
+      lightbox.classList.remove('open');
+      lightboxImg.src = '';
+      document.body.style.overflow = '';
+    }
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      lightbox.classList.remove('open');
+         lightboxImg.src = '';
+      document.body.style.overflow = '';
+    }
+  });
+</script>
+
+</body>
+</html>

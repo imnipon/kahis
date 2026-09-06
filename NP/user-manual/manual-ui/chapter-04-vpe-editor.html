@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAHIS คู่มือการใช้งาน — การลงข้อมูล Vital Sign &amp; Physical Examination (VPE)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="manual-base.css">
+      <link rel="stylesheet" href="manual-print-paged.css" id="print-mode-css">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="toolbar-title">
+    <span class="toolbar-logo-wrap"><img class="toolbar-logo" src="assets/poodle-logo-clean.svg" alt=""></span>
+    <h1>KAHIS คู่มือการใช้งาน — บทที่ 4</h1>
+  </div>
+  <div class="toolbar-actions">
+        <span class="print-mode-indicator" id="print-mode-indicator" title=""></span>
+    <button type="button" class="btn btn-mode is-active" id="btn-mode-paged" onclick="KahisExport.setMode('paged')">ขอบเท่ากัน</button>
+    <button type="button" class="btn btn-mode" id="btn-mode-legacy" onclick="KahisExport.setMode('legacy')">ขอบมาตรฐาน</button>
+    <button type="button" class="btn btn-print" id="btn-export-pdf" onclick="KahisExport.exportPdf()">ส่งออก PDF (A4)</button>
+  </div>
+</div>
+    
+<div class="manual-root">
+  <div class="manual-body">
+
+    <header class="doc-header">
+      <div class="brand">
+        <div class="logo">KAHIS</div>
+        <div class="brand-text">
+          <h2>ระบบเวชระเบียนอิเล็กทรอนิกโรงพยาบาลสัตว์ ม.เกษตร</h2>
+          <div class="brand-en">KAHIS Kasetsart Animal Hospital Information System</div>
+              <p>คู่มือการใช้งานสำหรับสัตวแพทย์ และบุคคลากรโรงพยาบาลสัตว์</p>
+        </div>
+      </div>
+      <div class="doc-meta">
+        <div><strong>บทที่ 4</strong></div>
+        <div>การลงข้อมูล Vital Sign &amp; Physical Examination (VPE)</div>
+        <div>Version 2026.08.14.01</div>
+        <div>อัปเดต: 7 ก.ย. 2026</div>
+      </div>
+    </header>
+    
+    <div class="chapter-badge">Chapter 04 — Subjective &amp; Systematic Examination, VPE Data Entry</div>
+    <h1 class="chapter-title">Vital Sign &amp; Physical Examination (VPE) — การลงข้อมูล VPE</h1>
+    <p class="chapter-desc">
+      เข้าหน้านี้ผ่านปุ่มทางลัด <strong>Vital Sign &amp; PE (VPE)</strong> ในหน้า Exam Card Editor (ดูบทที่ 3 Label G)
+      บทนี้อธิบายโครงหน้าจอ VPE ด้วย Label หมายเลข 1–6 และตารางรายละเอียดฟิลด์ข้อมูลครบทั้ง 8 หมวด
+      คลิกที่ภาพเพื่อดูขนาดจริง
+    </p>
+
+    <figure class="figure-block">
+          <button class="figure-trigger" onclick="openLightbox('../Label/04_vpe_form.png', 'รูปที่ 4 — หน้าจอ Vital Sign &amp; PE (VPE)')" aria-label="ดูภาพขนาดจริง">
+        <img src="../Label/04_vpe_form.png" alt="ภาพหน้าจอ Vital Sign และ Physical Examination พร้อม Label 1-6">
+      </button>
+      <figcaption class="figure-caption">
+        <span><span class="fig-num">รูปที่ 4</span> — หน้าจอ Vital Sign &amp; PE (VPE)</span>
+      </figcaption>
+    </figure>
+
+    <section class="labels-section">
+          <h3 class="section-title">คำอธิบายแต่ละ Label</h3>
+
+      <article class="label-item" id="label-1">
+        <div class="label-bar">
+          <span class="label-bar-num">1</span>
+          <span class="label-bar-title">Tab การใส่ข้อมูลเพื่อบันทึก</span>
+          <span class="label-bar-tag">Form Entry</span>
+        </div>
+        <div class="label-body">
+          <p>แท็บสำหรับกรอกข้อมูล Vital Sign &amp; Physical Examination ของ Exam card ที่กำลังเปิดอยู่ เป็นแท็บเริ่มต้นเมื่อเปิดหน้า VPE</p>
+            </div>
+      </article>
+
+      <article class="label-item" id="label-2">
+        <div class="label-bar">
+          <span class="label-bar-num">2</span>
+          <span class="label-bar-title">Tab ตารางรายการ VPE ทั้งหมดของ HN</span>
+          <span class="label-bar-tag">All Data Table</span>
+        </div>
+        <div class="label-body">
+          <p>แท็บแสดงตารางรวมประวัติการบันทึก VPE <strong>ทั้งหมดของ HN นั้น</strong> (ไม่จำกัดเฉพาะ Exam card ปัจจุบัน) ใช้สำหรับย้อนดูแนวโน้มค่า Vital Sign ของสัตว์ป่วยตัวนี้ในแต่ละครั้งที่บันทึกไว้</p>
+            </div>
+      </article>
+
+      <article class="label-item" id="label-3">
+        <div class="label-bar">
+          <span class="label-bar-num">3</span>
+          <span class="label-bar-title">TAG หัวข้อประเภทข้อมูล VPE</span>
+          <span class="label-bar-tag">Section Nav</span>
+        </div>
+        <div class="label-body">
+          <p>แถบ TAG หมวดหมู่ข้อมูล กดที่ TAG เพื่อเลื่อนหน้าจอไปยังหัวข้อที่ต้องการโดยตรง แบ่งเป็น 8 หมวด:</p>
+             <ul>
+            <li>1. Core Vital Signs</li>
+            <li>2. Blood Pressure &amp; Advanced Monitoring</li>
+            <li>3. Perfusion, Mucosa &amp; Bleeding</li>
+            <li>4. Cardiac &amp; Critical Events</li>
+            <li>5. Respiratory Assessment</li>
+            <li>6. Neurologic &amp; Mentation</li>
+            <li>7. Mobility &amp; Posture</li>
+            <li>8. Pain Assessment</li>
+          </ul>
+           </div>
+      </article>
+
+      <article class="label-item" id="label-4">
+        <div class="label-bar">
+          <span class="label-bar-num">4</span>
+          <span class="label-bar-title">ส่วนแสดง field ข้อมูลการบันทึกผล</span>
+          <span class="label-bar-tag">Fields</span>
+        </div>
+        <div class="label-body">
+          <p>พื้นที่กรอกข้อมูลหลัก เรียงตามหมวดที่เลือกจาก Label 3 ประกอบด้วยฟิลด์รวม <strong>47 ฟิลด์</strong> ในฟอร์ม
+               (รวมกับ Record Meta อีก 4 ฟิลด์ เป็น 51 ฟิลด์ทั้งหมด) รายละเอียดฟิลด์และตัวเลือกของแต่ละหมวดดังตารางด้านล่าง</p>
+
+          <figure class="figure-block">
+            <button class="figure-trigger" onclick="openLightbox('../Label/04_vpe_full_detail.png', 'รูปที่ 4ก — ฟอร์ม VPE ครบทั้ง 8 หมวด')" aria-label="ดูภาพขนาดจริง">
+              <img src="../Label/04_vpe_full_detail.png" alt="ภาพฟอร์ม Vital Sign and Physical Examination แสดงครบทั้ง 8 หมวด">
+            </button>
+            <figcaption class="figure-caption">
+              <span><span class="fig-num">รูปที่ 4ก</span> — ฟอร์ม VPE ครบทั้ง 8 หมวด (ใช้อ้างอิงกับตารางฟิลด์)</span>
+            </figcaption>
+          </figure>
+   
+          <div class="label-subtitle">หมวด 1 — Core Vital Signs</div>
+          <div class="field-table-wrap">
+            <table class="field-table">
+              <thead><tr><th>#</th><th>ฟิลด์</th><th>ประเภท</th><th>ตัวเลือก / คำอธิบาย</th></tr></thead>
+              <tbody>
+                <tr><td class="col-num">1</td><td class="col-field">Temp</td><td class="col-type">ตัวเลข</td><td class="col-detail">หน่วย °F — hint: 100.0–102.5 (สุนัข) / 100.5–102.5 (แมว)</td></tr>
+                <tr><td class="col-num">2</td><td class="col-field">HR</td><td class="col-type">ตัวเลข</td><td class="col-detail">หน่วย bpm — hint: 60–140 (สุนัข) / 140–220 (แมว)</td></tr>
+                <tr><td class="col-num">3</td><td class="col-field">RR</td><td class="col-type">ตัวเลข</td><td class="col-detail">หน่วย rpm — hint: 15–30 (สุนัข) / 20–30 (แมว)</td></tr>
+                <tr><td class="col-num">4</td><td class="col-field">Pulse</td><td class="col-type">ตัวเลข</td><td class="col-detail">หน่วย bpm — hint: 60–140 (สุนัข) / 140–220 (แมว)</td></tr>
+                <tr><td class="col-num">5</td><td class="col-field">Weight</td><td class="col-type">ตัวเลข</td><td class="col-detail">หน่วย kg — hint: 10.00 (สุนัข) / 4.50 (แมว)</td></tr>
+                   <tr><td class="col-num">6</td><td class="col-field">CRT</td><td class="col-type">Select</td><td class="col-detail">กรุณาเลือกข้อมูล · &lt; 2 sec (Normal) · 2–3 sec (Mildly Prolonged) · &gt; 3 sec (Prolonged) · &lt; 1 sec (Hyperdynamic / Brick Red) · Unable to assess</td></tr>
+                <tr><td class="col-num">7</td><td class="col-field">FBS</td><td class="col-type">ตัวเลข</td><td class="col-detail">หน่วย mg/dL — hint: 75–120 (สุนัข) / 70–150 (แมว)</td></tr>
+                <tr><td class="col-num">8</td><td class="col-field">Hydration Status</td><td class="col-type">Select</td><td class="col-detail">กรุณาเลือกข้อมูล · Normal (&lt;5%) · Mild Dehydration (5–6%) · Moderate Dehydration (7–9%) · Severe Dehydration (≥10–12%) · Overhydrated (Fluid Overload) · Unable to assess</td></tr>
+                <tr><td class="col-num">9</td><td class="col-field">Estimated Dehydration</td><td class="col-type">ตัวเลข</td><td class="col-detail">หน่วย % — ช่วงกรอกได้ 0–12%</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="label-subtitle">หมวด 2 — Blood Pressure &amp; Advanced Monitoring</div>
+             <div class="field-table-wrap">
+            <table class="field-table">
+              <thead><tr><th>#</th><th>ฟิลด์</th><th>ประเภท</th><th>ตัวเลือก / คำอธิบาย</th></tr></thead>
+              <tbody>
+                <tr><td class="col-num">10</td><td class="col-field">NIBP SYS</td><td class="col-type">ตัวเลข</td><td class="col-detail">หน่วย mmHg — hint: 110–140 (สุนัข) / 120–140 (แมว)</td></tr>
+                <tr><td class="col-num">11</td><td class="col-field">NIBP DIA</td><td class="col-type">ตัวเลข</td><td class="col-detail">หน่วย mmHg — hint: 60–90 (สุนัข) / 70–90 (แมว)</td></tr>
+                <tr><td class="col-num">12</td><td class="col-field">NIBP MAP</td><td class="col-type">ตัวเลข</td><td class="col-detail">หน่วย mmHg — hint: 70–110 (สุนัข) / 80–110 (แมว)</td></tr>
+                <tr><td class="col-num">13</td><td class="col-field">BP Method</td><td class="col-type">Select</td><td class="col-detail">กรุณาเลือกข้อมูล · Oscillometric · Doppler · High-Definition Oscillometry (HDO) · Invasive / Direct · Other</td></tr>
+                <tr><td class="col-num">14</td><td class="col-field">Cuff Site</td><td class="col-type">Select</td><td class="col-detail">กรุณาเลือกข้อมูล · Left forelimb · Right forelimb · Left hindlimb · Right hindlimb · Tail · Other</td></tr>
+                   <tr><td class="col-num">15</td><td class="col-field">SpO2</td><td class="col-type">ตัวเลข</td><td class="col-detail">หน่วย % — hint: 95–100</td></tr>
+                <tr><td class="col-num">16</td><td class="col-field">EtCO2</td><td class="col-type">ตัวเลข</td><td class="col-detail">หน่วย mmHg — hint: 35–45</td></tr>
+                <tr><td class="col-num">17</td><td class="col-field">Oxygen Support</td><td class="col-type">Select</td><td class="col-detail">กรุณาเลือกข้อมูล · Room air · Flow-by · Nasal cannula · Mask · Oxygen cage / Hood · Mechanical Ventilation / Intubated · Other</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="label-subtitle">หมวด 3 — Perfusion, Mucosa &amp; Bleeding</div>
+          <div class="field-table-wrap">
+            <table class="field-table">
+                 <thead><tr><th>#</th><th>ฟิลด์</th><th>ประเภท</th><th>ตัวเลือก / คำอธิบาย</th></tr></thead>
+              <tbody>
+                <tr><td class="col-num">18</td><td class="col-field">Mucous Membrane Site</td><td class="col-type">Checkbox</td><td class="col-detail">Oral mucosa (ค่าเริ่มต้นติ๊กไว้) · Conjunctiva · Prepuce · Vulva · Other</td></tr>
+                <tr><td class="col-num">19</td><td class="col-field">Mucous Membrane Color</td><td class="col-type">Select</td><td class="col-detail">กรุณาเลือกข้อมูล · Pink (Normal) · Pale / Porcelain White · Hyperemic / Injected / Red · Muddy / Brick Red · Jaundiced / Icteric / Yellow · Cyanotic / Blue · Gray / Ashen · Unable to assess</td></tr>
+                <tr><td class="col-num">20</td><td class="col-field">Bleeding Status</td><td class="col-type">Select</td><td class="col-detail">กรุณาเลือกข้อมูล · No active bleeding · Active — controlled · Active — uncontrolled · Suspected internal bleeding · Unable to assess</td></tr>
+                <tr><td class="col-num">21</td><td class="col-field">Bleeding Severity</td><td class="col-type">Select</td><td class="col-detail">กรุณาเลือกข้อมูล · None · Mild · Moderate · Severe</td></tr>
+                <tr><td class="col-num">22</td><td class="col-field">Bleeding Site</td><td class="col-type">ข้อความ</td><td class="col-detail">placeholder ตัวอย่าง: e.g., Left forelimb / Oral cavity</td></tr>
+              </tbody>
+            </table>
+          </div>
+   
+          <div class="label-subtitle">หมวด 4 — Cardiac &amp; Critical Events</div>
+          <div class="field-table-wrap">
+            <table class="field-table">
+              <thead><tr><th>#</th><th>ฟิลด์</th><th>ประเภท</th><th>ตัวเลือก / คำอธิบาย</th></tr></thead>
+              <tbody>
+                <tr><td class="col-num">23</td><td class="col-field">Heart Sound</td><td class="col-type">Select</td><td class="col-detail">กรุณาเลือกข้อมูล · Normal (S1/S2 clear) · Systolic Murmur · Diastolic Murmur · Continuous Murmur (เช่น PDA) · Gallop Rhythm (S3/S4) · Muffled / Distant · Arrhythmia / Irregular · Unable to assess</td></tr>
+                <tr><td class="col-num">24</td><td class="col-field">Critical Event Time</td><td class="col-type">วันที่/เวลา</td><td class="col-detail">รูปแบบ YYYY-MM-DD hh:mm</td></tr>
+                <tr><td class="col-num">25</td><td class="col-field">Critical Events</td><td class="col-type">Checkbox</td><td class="col-detail">Cyanosis · Seizure · Cardiopulmonary Arrest (CPA) · Respiratory Arrest · Severe Dyspnea / Distress · Syncope / Collapse · Other</td></tr>
+                <tr><td class="col-num">26</td><td class="col-field">Critical Events Note</td><td class="col-type">ข้อความ</td><td class="col-detail">placeholder ตัวอย่าง: e.g., Generalized tonic-clonic seizure lasting 2 mins</td></tr>
+                 </tbody>
+            </table>
+          </div>
+
+          <div class="label-subtitle">หมวด 5 — Respiratory Assessment</div>
+          <div class="field-table-wrap">
+            <table class="field-table">
+              <thead><tr><th>#</th><th>ฟิลด์</th><th>ประเภท</th><th>ตัวเลือก / คำอธิบาย</th></tr></thead>
+              <tbody>
+                <tr><td class="col-num">27</td><td class="col-field">Lung / Airway Sounds</td><td class="col-type">Checkbox</td><td class="col-detail">Normal (Vesiculobronchial) · Referred Upper Airway Sound (Stertor/Stridor) · Wheezes (Rhonchi) · Crackles (Fine/Coarse) · Harsh · Dull / Diminished · Absent · Other</td></tr>
+                <tr><td class="col-num">28</td><td class="col-field">Lung Sound Side</td><td class="col-type">Select</td><td class="col-detail">กรุณาเลือกข้อมูล · Left · Right · Bilateral · Unable to localize</td></tr>
+                   <tr><td class="col-num">29</td><td class="col-field">Lung Region</td><td class="col-type">Select</td><td class="col-detail">กรุณาเลือกข้อมูล · All lung fields (Diffuse) · Cranioventral · Caudodorsal · Cranial · Caudal · Dorsal · Ventral</td></tr>
+                <tr><td class="col-num">30</td><td class="col-field">Respiratory Effort</td><td class="col-type">Select</td><td class="col-detail">กรุณาเลือกข้อมูล · Normal (Eupneic) · Increased (Mild-Moderate) · Severe Labored (Dyspneic) · Paradoxical Effort · Unable to assess</td></tr>
+                <tr><td class="col-num">31</td><td class="col-field">Respiratory Depth</td><td class="col-type">Select</td><td class="col-detail">กรุณาเลือกข้อมูล · Normal · Shallow (Hypopnea) · Deep (Hyperpnea) · Variable · Unable to assess</td></tr>
+                <tr><td class="col-num">32</td><td class="col-field">Affected Phase</td><td class="col-type">Select</td><td class="col-detail">กรุณาเลือกข้อมูล · None · Inspiratory · Expiratory · Biphasic · Unable to assess</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+             <div class="label-subtitle">หมวด 6 — Neurologic &amp; Mentation</div>
+          <div class="field-table-wrap">
+            <table class="field-table">
+              <thead><tr><th>#</th><th>ฟิลด์</th><th>ประเภท</th><th>ตัวเลือก / คำอธิบาย</th></tr></thead>
+              <tbody>
+                <tr><td class="col-num">33</td><td class="col-field">Level of Consciousness / Mentation</td><td class="col-type">Select</td><td class="col-detail">กรุณาเลือกข้อมูล · BAR (Bright, Alert, Responsive) · QAR (Quiet, Alert, Responsive) · Lethargic / Dull / Depressed · Obtunded · Stuporous · Comatose · Hyperactive / Agitated · Unable to assess</td></tr>
+                <tr><td class="col-num">34</td><td class="col-field">Reaction to Stimuli &amp; Surroundings</td><td class="col-type">Select</td><td class="col-detail">กรุณาเลือกข้อมูล · Appropriate / Normal · Hyper-reactive / Exaggerated · Hypo-reactive / Decreased · Absent · Inappropriate · Unable to assess</td></tr>
+                <tr><td class="col-num">35</td><td class="col-field">Palpebral Reflex — Left</td><td class="col-type">Select</td><td class="col-detail">กรุณาเลือกข้อมูล · Intact / Normal (Present) · Decreased / Sluggish · Absent · Exaggerated / Hyperreflexic · Unable to assess</td></tr>
+                <tr><td class="col-num">36</td><td class="col-field">Palpebral Reflex — Right</td><td class="col-type">Select</td><td class="col-detail">(ตัวเลือกชุดเดียวกับ Palpebral Reflex — Left)</td></tr>
+                   <tr><td class="col-num">37</td><td class="col-field">Menace Response — Left</td><td class="col-type">Select</td><td class="col-detail">(ตัวเลือกชุดเดียวกับ Palpebral Reflex)</td></tr>
+                <tr><td class="col-num">38</td><td class="col-field">Menace Response — Right</td><td class="col-type">Select</td><td class="col-detail">(ตัวเลือกชุดเดียวกับ Palpebral Reflex)</td></tr>
+                <tr><td class="col-num">39</td><td class="col-field">Pupillary Light Reflex (PLR) — Left</td><td class="col-type">Select</td><td class="col-detail">(ตัวเลือกชุดเดียวกับ Palpebral Reflex)</td></tr>
+                <tr><td class="col-num">40</td><td class="col-field">Pupillary Light Reflex (PLR) — Right</td><td class="col-type">Select</td><td class="col-detail">(ตัวเลือกชุดเดียวกับ Palpebral Reflex)</td></tr>
+                <tr><td class="col-num">41</td><td class="col-field">Pedal Withdrawal Reflex — Left</td><td class="col-type">Select</td><td class="col-detail">(ตัวเลือกชุดเดียวกับ Palpebral Reflex)</td></tr>
+                <tr><td class="col-num">42</td><td class="col-field">Pedal Withdrawal Reflex — Right</td><td class="col-type">Select</td><td class="col-detail">(ตัวเลือกชุดเดียวกับ Palpebral Reflex)</td></tr>
+              </tbody>
+            </table>
+          </div>
+   
+          <div class="label-subtitle">หมวด 7 — Mobility &amp; Posture</div>
+          <div class="field-table-wrap">
+            <table class="field-table">
+              <thead><tr><th>#</th><th>ฟิลด์</th><th>ประเภท</th><th>ตัวเลือก / คำอธิบาย</th></tr></thead>
+              <tbody>
+                <tr><td class="col-num">43</td><td class="col-field">Gait</td><td class="col-type">Select</td><td class="col-detail">กรุณาเลือกข้อมูล · Normal / Ambulatory · Ataxic (Proprioceptive/Vestibular/Cerebellar) · Paresis (Weakness) · Plegia (Paralysis) · Lameness (Grade 1–5) · Non-ambulatory · Unable to assess · Other</td></tr>
+                <tr><td class="col-num">44</td><td class="col-field">Posture</td><td class="col-type">Select</td><td class="col-detail">กรุณาเลือกข้อมูล · Normal · Orthopneic stance · Schiff-Sherrington posture · Decerebrate posture · Decerebellate posture · Head tilt / Turn · Kyphosis / Hunched · Recumbent (Sternal/Lateral) · Unable to assess</td></tr>
+                <tr><td class="col-num">45</td><td class="col-field">Mobility Note</td><td class="col-type">ข้อความ</td><td class="col-detail">placeholder ตัวอย่าง: e.g., Grade 2/5 CP deficit on left hindlimb</td></tr>
+              </tbody>
+            </table>
+          </div>
+   
+          <div class="label-subtitle">หมวด 8 — Pain Assessment</div>
+          <div class="field-table-wrap">
+            <table class="field-table">
+              <thead><tr><th>#</th><th>ฟิลด์</th><th>ประเภท</th><th>ตัวเลือก / คำอธิบาย</th></tr></thead>
+              <tbody>
+                <tr><td class="col-num">46</td><td class="col-field">Pain Score</td><td class="col-type">Select</td><td class="col-detail">กรุณาเลือกข้อมูล · 0 · 1 · 2 · 3 · 4 (Glasgow / WSAVA scale)</td></tr>
+                <tr><td class="col-num">47</td><td class="col-field">Observed Pain Indicators</td><td class="col-type">Checkbox</td><td class="col-detail">Vocalization · Facial Expression (Grimace) · Abnormal Posture / Guarding · Restlessness / Agitation · Reduced Movement / Lethargy · Aggression / Resistance to touch · Anorexia</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+         </article>
+
+      <article class="label-item" id="label-5">
+        <div class="label-bar">
+          <span class="label-bar-num">5</span>
+          <span class="label-bar-title">ส่วนข้อมูล Record Meta</span>
+          <span class="label-bar-tag">Record Meta</span>
+        </div>
+        <div class="label-body">
+          <p>ข้อมูลกำกับการบันทึกของฟอร์ม VPE นี้ อยู่คนละส่วนกับ 8 หมวดข้างต้น:</p>
+             <div class="field-table-wrap">
+            <table class="field-table">
+              <thead><tr><th>#</th><th>ฟิลด์</th><th>ประเภท</th><th>คำอธิบาย</th></tr></thead>
+              <tbody>
+                <tr><td class="col-num">48</td><td class="col-field">Processed on</td><td class="col-type">วันที่/เวลา</td><td class="col-detail">เริ่มต้นว่างและ inactive ต้องติ๊ก checkbox หลังชื่อ field ก่อนจึงเลือกวันเวลาได้ ใช้ระบุวันเวลาที่ถือว่าเป็นผลการตรวจนี้</td></tr>
+                <tr><td class="col-num">49</td><td class="col-field">DVM/User</td><td class="col-type">อ่านอย่างเดียว</td><td class="col-detail">ดึงอัตโนมัติจาก Exam card ที่เปิดอยู่</td></tr>
+                <tr><td class="col-num">50</td><td class="col-field">Department</td><td class="col-type">อ่านอย่างเดียว</td><td class="col-detail">ดึงอัตโนมัติจาก Exam card ที่เปิดอยู่</td></tr>
+                <tr><td class="col-num">51</td><td class="col-field">Form Note</td><td class="col-type">ข้อความยาว</td><td class="col-detail">บันทึกหมายเหตุเพิ่มเติมเกี่ยวกับการตรวจร่างกาย</td></tr>
+                 </tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+
+      <article class="label-item" id="label-6">
+        <div class="label-bar">
+          <span class="label-bar-num">6</span>
+          <span class="label-bar-title">ส่วนตรวจสอบข้อมูลครบถ้วน (Required)</span>
+          <span class="label-bar-tag">Required Check</span>
+        </div>
+           <div class="label-body">
+          <p>แถบตรวจสอบว่าข้อมูลครบถ้วนตามข้อกำหนดหรือไม่ ก่อนจะสามารถกด <strong>Confirm</strong> เพื่อบันทึกได้:</p>
+          <ul>
+            <li>ถ้าครบถ้วนตามข้อกำหนด ปุ่ม <strong>Confirm</strong> จะกดบันทึกได้</li>
+            <li>ถ้ายังไม่ครบ จะมี tag บอกว่าส่วนไหนครบแล้ว (✓) ส่วนไหนยังขาดอยู่ — โดยทั่วไปต้องครบ 3 รายการ ได้แก่ <strong>Form</strong> (เลือกฟอร์ม Vital Sign &amp; Physical Examination แล้ว), <strong>DVM/User</strong> และ <strong>Dept</strong></li>
+          </ul>
+        </div>
+      </article>
+    </section>
+   
+    <section class="manual-closing">
+    <section class="summary-section">
+      <div class="label-bar label-bar--summary">
+        <span class="label-bar-title">แผนที่ส่วนประกอบ — สรุปบทที่ 4</span>
+        <span class="label-bar-tag">สรุป</span>
+      </div>
+      <div class="summary-list">
+        <p class="summary-row"><span class="summary-num">1–2</span><span class="summary-text"><strong>Tab</strong> — กรอกข้อมูล / ตารางรวม VPE ทั้งหมดของ HN</span></p>
+        <p class="summary-row"><span class="summary-num">3</span><span class="summary-text"><strong>TAG หมวด</strong> — เลื่อนหน้าจอไป 8 หมวดข้อมูล</span></p>
+           <p class="summary-row"><span class="summary-num">4</span><span class="summary-text"><strong>Fields</strong> — 47 ฟิลด์ในฟอร์ม แบ่ง 8 หมวด (ดูตารางรายละเอียด)</span></p>
+        <p class="summary-row"><span class="summary-num">5</span><span class="summary-text"><strong>Record Meta</strong> — Processed on, DVM/User, Department, Form Note (4 ฟิลด์)</span></p>
+        <p class="summary-row"><span class="summary-num">6</span><span class="summary-text"><strong>Required Check</strong> — ต้องครบ Form / DVM-User / Dept ก่อน Confirm ได้</span></p>
+      </div>
+    </section>
+
+    <div class="checklist-box">
+      <div class="checklist-head">Checklist การลงข้อมูล VPE</div>
+      <ol>
+        <li>เปิดหน้า VPE จากปุ่มทางลัดในหน้า Exam Card Editor</li>
+           <li>ใช้ TAG หมวด (Label 3) เลื่อนไปกรอกทีละหมวด ครบทั้ง 8 หมวดตามความจำเป็นของเคส</li>
+        <li>กรอกค่าตัวเลขให้อยู่ในหน่วยที่ระบุ (ดู hint ใต้ช่องกรอกเทียบชนิดสัตว์)</li>
+        <li>ตรวจสอบ Record Meta (Label 5) — เปิด Processed on ถ้าต้องการระบุวันเวลาย้อนหลัง</li>
+        <li>ตรวจแถบ Required (Label 6) ให้ครบ Form / DVM-User / Dept แล้วกด Confirm</li>
+        <li>ตรวจสอบผลย้อนหลังได้จาก Tab ตารางรวม (Label 2)</li>
+      </ol>
+    </div>
+    </section>
+
+  </div><!-- .manual-body -->
+   </div><!-- .manual-root -->
+
+<div class="print-footer-config" hidden
+  data-brand="KAHIS (Kasetsart Animal Hospital Information System)"
+  data-chapter="บทที่ 4 : การลงข้อมูล Vital Sign &amp; Physical Examination (VPE)"
+  data-version="Version 2026.08.14.01">
+</div>
+
+<div class="print-running-footer" aria-hidden="true">
+  <span class="print-footer-brand">KAHIS (Kasetsart Animal Hospital Information System)</span>
+     <div class="print-footer-meta">
+    <div class="print-footer-line1">บทที่ 4 : การลงข้อมูล Vital Sign &amp; Physical Examination (VPE) หน้าที่ <span class="print-footer-page-num"></span></div>
+    <div class="print-footer-line2">Version 2026.08.14.01 พิมพ์เมื่อ <span class="print-footer-printed-at"></span></div>
+  </div>
+</div>
+
+<div class="paged-footer-source" aria-hidden="true">
+  <div class="paged-footer-inner">
+    <span class="print-footer-brand">KAHIS (Kasetsart Animal Hospital Information System)</span>
+    <div class="print-footer-meta">
+         <div class="print-footer-line1">บทที่ 4 : การลงข้อมูล Vital Sign &amp; Physical Examination (VPE) หน้าที่ <span class="print-footer-page-num"></span></div>
+      <div class="print-footer-line2">Version 2026.08.14.01 พิมพ์เมื่อ <span class="print-footer-printed-at"></span></div>
+    </div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <button class="lightbox-close" onclick="closeLightbox(event)" aria-label="ปิด">✕</button>
+  <img id="lightbox-img" src="" alt="">
+  <div class="lightbox-caption" id="lightbox-caption"></div>
+   </div>
+
+<script>window.PagedConfig = { auto: false };</script>
+<script src="https://unpkg.com/pagedjs@0.4.3/dist/paged.polyfill.js"></script>
+<script src="manual-export.js"></script>
+<script>
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const lightboxCaption = document.getElementById('lightbox-caption');
+
+  function openLightbox(src, caption) {
+       lightboxImg.src = src;
+    lightboxCaption.textContent = caption || '';
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox(e) {
+    if (e.target === lightbox || e.target.classList.contains('lightbox-close')) {
+      lightbox.classList.remove('open');
+      lightboxImg.src = '';
+      document.body.style.overflow = '';
+       }
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      lightbox.classList.remove('open');
+      lightboxImg.src = '';
+      document.body.style.overflow = '';
+    }
+  });
+</script>
+   
+</body>
+</html>

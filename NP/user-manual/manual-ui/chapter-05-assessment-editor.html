@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAHIS คู่มือการใช้งาน — การลงข้อมูล Assessment</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="manual-base.css">
+      <link rel="stylesheet" href="manual-print-paged.css" id="print-mode-css">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="toolbar-title">
+    <span class="toolbar-logo-wrap"><img class="toolbar-logo" src="assets/poodle-logo-clean.svg" alt=""></span>
+    <h1>KAHIS คู่มือการใช้งาน — บทที่ 5</h1>
+  </div>
+  <div class="toolbar-actions">
+        <span class="print-mode-indicator" id="print-mode-indicator" title=""></span>
+    <button type="button" class="btn btn-mode is-active" id="btn-mode-paged" onclick="KahisExport.setMode('paged')">ขอบเท่ากัน</button>
+    <button type="button" class="btn btn-mode" id="btn-mode-legacy" onclick="KahisExport.setMode('legacy')">ขอบมาตรฐาน</button>
+    <button type="button" class="btn btn-print" id="btn-export-pdf" onclick="KahisExport.exportPdf()">ส่งออก PDF (A4)</button>
+  </div>
+</div>
+    
+<div class="manual-root">
+  <div class="manual-body">
+
+    <header class="doc-header">
+      <div class="brand">
+        <div class="logo">KAHIS</div>
+        <div class="brand-text">
+          <h2>ระบบเวชระเบียนอิเล็กทรอนิกโรงพยาบาลสัตว์ ม.เกษตร</h2>
+          <div class="brand-en">KAHIS Kasetsart Animal Hospital Information System</div>
+              <p>คู่มือการใช้งานสำหรับสัตวแพทย์ และบุคคลากรโรงพยาบาลสัตว์</p>
+        </div>
+      </div>
+      <div class="doc-meta">
+        <div><strong>บทที่ 5</strong></div>
+        <div>การลงข้อมูล Assessment</div>
+        <div>Version 2026.08.14.01</div>
+        <div>อัปเดต: 7 ก.ย. 2026</div>
+      </div>
+    </header>
+    
+    <div class="chapter-badge">Chapter 05 — Subjective &amp; Systematic Examination, Assessment Data Entry</div>
+    <h1 class="chapter-title">Assessment (Problem / Diagnosis Terms) — การลงข้อมูล Assessment</h1>
+    <p class="chapter-desc">
+      เข้าหน้านี้ผ่านปุ่มทางลัด <strong>Assessment</strong> ในหน้า Exam Card Editor (ดูบทที่ 3 Label C/G) ใช้บันทึกปัญหา/ข้อวินิจฉัย
+      ทางคลินิกโดยอ้างอิงรหัสมาตรฐานสากล <strong>SNOMED CT (Veterinary Extension)</strong> และ <strong>SA-PDT</strong>
+      บทนี้แบ่งเป็น 3 ส่วนตามหน้าจอ คลิกที่ภาพเพื่อดูขนาดจริง
+    </p>
+
+    <div class="checklist-box">
+      <div class="checklist-head">📢 ประกาศ — อยู่ในระหว่างการพัฒนา</div>
+      <p style="font-size:.86rem; line-height:1.7">
+        โมดูล Assessment นี้อยู่ในระหว่างการพัฒนาฐานข้อมูลมาตรฐาน (SA-PDT / SNOMED CT) และการวางแนวทางการลงข้อมูลต่อเนื่องของแต่ละปัญหา/ข้อวินิจฉัย
+        เช่น การทำงานผ่านชุดข้อมูลเดียวกันเพื่อการอัปเดตสถานะของโรคในแต่ละ Exam card ถัดไป (ไม่ต้องสร้างรายการใหม่ซ้ำทุกครั้งที่มา follow-up)
+        รายละเอียดขั้นตอนและหน้าจอในบทนี้อาจมีการปรับปรุงเพิ่มเติมตามความคืบหน้าของการพัฒนา
+      </p>
+    </div>
+
+        <!-- ── ส่วนที่ 1 ── -->
+    <h3 class="section-title">ส่วนที่ 1 — ค้นหาและเลือก Concept</h3>
+    <p class="chapter-desc" style="margin-top:-.5rem">
+      กดปุ่ม <strong>🔍 เลือก Concept</strong> ในฟอร์มกรอกรายละเอียด (ส่วนที่ 2) เพื่อเปิดหน้าต่างนี้
+    </p>
+
+    <figure class="figure-block">
+      <button class="figure-trigger" onclick="openLightbox('../Label/05_assessment_concept.png', 'รูปที่ 5ก — Select Assessment Concept')" aria-label="ดูภาพขนาดจริง">
+        <img src="../Label/05_assessment_concept.png" alt="ภาพหน้าต่างค้นหา Assessment Concept แสดง Label 1-3">
+          </button>
+      <figcaption class="figure-caption">
+        <span><span class="fig-num">รูปที่ 5ก</span> — Select Assessment Concept</span>
+      </figcaption>
+    </figure>
+
+    <section class="labels-section">
+      <article class="label-item" id="label-1a">
+        <div class="label-bar">
+          <span class="label-bar-num">1</span>
+          <span class="label-bar-title">ช่องกรอกคำค้น</span>
+              <span class="label-bar-tag">Search</span>
+        </div>
+        <div class="label-body">
+          <p>พิมพ์คำค้นอย่างน้อย 3 ตัวอักษร ระบบจะค้นในฐานคำศัพท์มาตรฐาน SA-PDT / SNOMED CT ให้ ด้านซ้ายมี checkbox กรองตาม <strong>Semantic Tag</strong> เช่น Disorder, Finding, Observable Entity, Organism, Procedure, Regime/Therapy, Situation, Specimen, Substance</p>
+        </div>
+      </article>
+
+      <article class="label-item" id="label-2a">
+        <div class="label-bar">
+          <span class="label-bar-num">2</span>
+          <span class="label-bar-title">รายการผลการค้นหา</span>
+              <span class="label-bar-tag">Results</span>
+        </div>
+        <div class="label-body">
+          <p>รายการ concept ที่ค้นพบ แสดงชื่อ, คำอธิบายสั้น และรหัส SNOMED CT รายการที่เลือกจะไฮไลต์สีฟ้า และนำรายละเอียดไปแสดงในบล็อกขวา (Label 3)</p>
+        </div>
+      </article>
+
+      <article class="label-item" id="label-3a">
+        <div class="label-bar">
+          <span class="label-bar-num">3</span>
+          <span class="label-bar-title">รายละเอียด Concept ที่เลือก</span>
+             <span class="label-bar-tag">Detail</span>
+        </div>
+        <div class="label-body">
+          <p>แสดงรายละเอียดของ concept ที่เลือก พร้อม:</p>
+          <ul>
+            <li><strong>Synonyms &amp; Aliases</strong> — คำพ้องความหมายของ term นี้</li>
+            <li><strong>Assessment Categories</strong> — หมวดหมู่ที่ term นี้สังกัดอยู่ พร้อมรหัส SNOMED CT</li>
+            <li>ปุ่ม <strong>"เลือก Concept นี้"</strong> — ยืนยันเลือก concept กลับไปที่ฟอร์มกรอกรายละเอียด</li>
+          </ul>
+        </div>
+         </article>
+    </section>
+
+    <!-- ── ส่วนที่ 2 ── -->
+    <h3 class="section-title" style="margin-top:1.5rem">ส่วนที่ 2 — ฟอร์มกรอกรายละเอียดปัญหา (Add New PDT Concept)</h3>
+
+    <figure class="figure-block">
+      <button class="figure-trigger" onclick="openLightbox('../Label/05_assessment_form.png', 'รูปที่ 5ข — Assessment Editor, ฟอร์มกรอกรายละเอียด')" aria-label="ดูภาพขนาดจริง">
+        <img src="../Label/05_assessment_form.png" alt="ภาพฟอร์มกรอกรายละเอียด Assessment แสดง Label 1-7">
+      </button>
+         <figcaption class="figure-caption">
+        <span><span class="fig-num">รูปที่ 5ข</span> — Assessment Editor, ฟอร์มกรอกรายละเอียด</span>
+      </figcaption>
+    </figure>
+
+    <section class="labels-section">
+      <article class="label-item" id="label-1b">
+        <div class="label-bar">
+          <span class="label-bar-num">1</span>
+          <span class="label-bar-title">Tab แสดง Exam card ที่เลือกทำ Assessment</span>
+          <span class="label-bar-tag">Exam Card Tab</span>
+           </div>
+        <div class="label-body">
+          <p>แสดง Tab ของ Exam card ที่กำลังเพิ่ม/แก้ไขรายการ Assessment อยู่ (คล้ายรูปแบบ Tab ในหน้า Exam Card Editor)</p>
+        </div>
+      </article>
+
+      <article class="label-item" id="label-2b">
+        <div class="label-bar">
+          <span class="label-bar-num">2</span>
+          <span class="label-bar-title">รายการที่เลือกแล้ว (Selected Problem / Diagnosis Terms)</span>
+          <span class="label-bar-tag">Selected List</span>
+           </div>
+        <div class="label-body">
+          <p>รายการปัญหา/ข้อวินิจฉัยที่เพิ่มไว้แล้วสำหรับ Exam card นี้ — <strong>1 Exam card สามารถมีได้หลายรายการ (หลาย PDT) พร้อมกัน</strong> แต่ละรายการแสดง:</p>
+          <ul>
+            <li>ชื่อ concept (เช่น Diarrhea, Gallstones)</li>
+            <li>Semantic tag (Disorder / Finding)</li>
+            <li>ตัวย่อประเภทปัญหา — Dx (Working Diagnosis) / Sign (Clinical Sign) / DDx (Differential) / RO (Rule Out)</li>
+            <li>สถานะ — Active / Pending / Resolved</li>
+               <li>ปุ่ม ✎ แก้ไข และ ✕ ลบรายการ</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="label-item" id="label-3b">
+        <div class="label-bar">
+          <span class="label-bar-num">3</span>
+          <span class="label-bar-title">ค้นหา/เลือก Concept และ Required tag</span>
+          <span class="label-bar-tag">Concept + Required</span>
+        </div>
+        <div class="label-body">
+             <p>ปุ่ม <strong>🔍 เลือก Concept</strong> เปิดหน้าต่างค้นหา (ดูส่วนที่ 1) เมื่อเลือกแล้วชื่อ concept จะแสดงเป็น pill พร้อมปุ่ม × สำหรับล้างค่า</p>
+          <p>แถบ <strong>Required</strong> แสดงรายการที่ต้องกรอกให้ครบก่อนบันทึกได้ พร้อมเครื่องหมาย ✓ เมื่อกรอกครบ: <strong>Concept / Problem Note</strong> (กรอกอย่างน้อยหนึ่งในสองช่องนี้), <strong>Clinical Condition Category</strong>, <strong>Clinical Status</strong>, <strong>DVM</strong>, <strong>Dept</strong></p>
+        </div>
+      </article>
+
+      <article class="label-item" id="label-4b">
+        <div class="label-bar">
+          <span class="label-bar-num">4</span>
+          <span class="label-bar-title">ฟิลด์รายละเอียดปัญหา</span>
+             <span class="label-bar-tag">Fields</span>
+        </div>
+        <div class="label-body">
+          <p>ฟิลด์รายละเอียดของปัญหา/ข้อวินิจฉัยที่เลือก อ้างอิงมาตรฐาน SNOMED CT (VetSCT) ระบุรหัส Concept ID (SCTID) กำกับแต่ละตัวเลือกไว้ในตาราง:</p>
+          <div class="field-table-wrap">
+            <table class="field-table">
+              <thead><tr><th>#</th><th>ฟิลด์</th><th>ประเภท</th><th>ตัวเลือก / คำอธิบาย</th></tr></thead>
+              <tbody>
+                <tr><td class="col-num">1</td><td class="col-field">เลือก Concept<span class="req-mark">*</span></td><td class="col-type">ค้นหา/เลือก</td><td class="col-detail">ค้นหาและเลือกรหัสโรค/ปัญหามาตรฐานจาก SA-PDT / SNOMED CT (ดูส่วนที่ 1) — ต้องกรอกอย่างน้อยหนึ่งใน "เลือก Concept" นี้ หรือ "หมายเหตุรายการ (Problem Note)" ข้อ 11</td></tr>
+                   <tr><td class="col-num">2</td><td class="col-field">ประเภทปัญหา/ข้อวินิจฉัย (Clinical Condition Category)<span class="req-mark">*</span></td><td class="col-type">Select</td><td class="col-detail">การวินิจฉัยเบื้องต้น (Working Diagnosis, DX) <code>148006</code> · อาการและอาการแสดง (Clinical Sign) <code>60955000</code> · การวินิจฉัยแยกโรค (Differential Diagnosis) <code>82298002</code> · สงสัยเพื่อพิสูจน์ขจัด (Rule Out) <code>415684004</code></td></tr>
+                <tr><td class="col-num">3</td><td class="col-field">การพยากรณ์โรค (Prognosis)</td><td class="col-type">Select</td><td class="col-detail">ตอบสนองต่อการรักษาดี (Good) <code>170969009</code> · ต้องเฝ้าระวัง (Guarded) <code>170971004</code> · พยากรณ์โรคไม่ดี (Poor) <code>170970005</code> · วิกฤต/ทรุดหนัก (Grave) <code>170972006</code></td></tr>
+                <tr><td class="col-num">4</td><td class="col-field">ลักษณะการดำเนินของโรค (Clinical Course)</td><td class="col-type">Checkbox</td><td class="col-detail">เลือกได้มากกว่า 1 ข้อ — เฉียบพลัน (Acute) <code>373933003</code> · กลับมาเป็นซ้ำ (Recurrent) <code>255227004</code> · ติดตามอาการ (Follow-up) <code>390906007</code> · เรื้อรัง (Chronic) <code>90734009</code></td></tr>
+                <tr><td class="col-num">5</td><td class="col-field">สถานะของปัญหาทางคลินิก (Clinical Status)<span class="req-mark">*</span></td><td class="col-type">Select</td><td class="col-detail">กำลังรักษา (Active) <code>55561003</code> · อยู่ระหว่างการส่งตรวจ (Pending) <code>7087005</code> · หายหรือสงบ (Resolved/Inactive) <code>410513005</code></td></tr>
+                   <tr><td class="col-num">6</td><td class="col-field">ระดับความรุนแรงของโรค (Severity)</td><td class="col-type">Select</td><td class="col-detail">เล็กน้อย (Mild) <code>255604002</code> · ปานกลาง (Moderate) <code>6736007</code> · รุนแรง (Severe) <code>24484000</code> · วิกฤต/อันตรายถึงชีวิต (Life-threatening) <code>442452003</code></td></tr>
+                <tr><td class="col-num">7</td><td class="col-field">ระยะเวลาที่พบความผิดปกติ (Clinical Duration)</td><td class="col-type">ข้อความ</td><td class="col-detail">กรอกข้อความอิสระ — placeholder: เช่น 1–2 สัปดาห์</td></tr>
+                <tr><td class="col-num">8</td><td class="col-field">ระดับความมั่นใจในข้อวินิจฉัย (Diagnostic Certainty)</td><td class="col-type">Select</td><td class="col-detail">มีหลักฐานสนับสนุนชัดเจน (High) <code>410605003</code> · มีหลักฐานบางส่วน (Medium) <code>2931005</code> · เป็นไปได้แต่ยังไม่ยืนยัน (Low) <code>415684004</code></td></tr>
+                <tr><td class="col-num">9</td><td class="col-field">ผลการตรวจเสริมทางเทคนิค (Confirmatory Finding / Evidence)</td><td class="col-type">ข้อความยาว</td><td class="col-detail">กรอกข้อความอิสระ เช่น ผลแล็บ/อัลตราซาวด์ที่ยืนยันโรค</td></tr>
+                <tr><td class="col-num">10</td><td class="col-field">เหตุผลและความเห็นทางคลินิก (Clinical Reasoning)</td><td class="col-type">ข้อความยาว</td><td class="col-detail">กรอกข้อความอิสระ อธิบายเหตุผลการวินิจฉัย</td></tr>
+                <tr><td class="col-num">11</td><td class="col-field">หมายเหตุรายการ (Problem Note)<span class="req-mark">*</span></td><td class="col-type">ข้อความยาว</td><td class="col-detail">กรอกข้อความอิสระ บันทึกเพิ่มเติมเฉพาะปัญหานี้ เช่น แผนนัด follow-up · <strong>และใช้กรอก term ที่ต้องการในกรณีค้นหา concept มาตรฐานไม่พบตามต้องการ หรือเสนอ term ใหม่ที่ไม่มีในมาตรฐาน</strong> (แนะนำ 1 term ต่อครั้ง — ผู้ดูแลระบบจะรวบรวมข้อมูลนี้เพื่อพิจารณาแก้ไข เพิ่มเติม หรือแจ้งคำที่เหมาะสมจากฐานข้อมูลมาตรฐานสากลต่อไป)</td></tr>
+                 </tbody>
+            </table>
+          </div>
+          <p style="margin-top:.5rem"><span class="req-mark">*</span> = ฟิลด์บังคับกรอก (Required) — ข้อ 1 "เลือก Concept" และข้อ 11 "Problem Note" นับเป็นกลุ่มเดียวกัน กรอกอย่างน้อยหนึ่งในสองข้อนี้ก็ผ่านเงื่อนไข Required</p>
+        </div>
+      </article>
+
+      <article class="label-item" id="label-5b">
+        <div class="label-bar">
+          <span class="label-bar-num">5</span>
+          <span class="label-bar-title">ช่อง NOTE เสนอ term ใหม่ (ฟิลด์เดียวกับข้อ 11)</span>
+          <span class="label-bar-tag">Suggest Term</span>
+        </div>
+        <div class="label-body">
+          <p>Label 5 ในภาพชี้ไปที่ช่อง <strong>หมายเหตุรายการ (Problem Note)</strong> ซึ่งเป็นฟิลด์เดียวกับข้อ 11 ในตารางฟิลด์ของ Label 4 — ใช้กรอกในกรณีค้นหา concept มาตรฐานไม่พบตามต้องการ หรือต้องการเพิ่มเติมเองโดยไม่ใช้ term จากมาตรฐาน แนะนำใส่ <strong>1 term</strong> ต่อครั้ง ทางผู้ดูแลระบบจะรวบรวมข้อมูลนี้เพื่อพิจารณาแก้ไข เพิ่มเติม หรือแจ้งคำที่เหมาะสมจากฐานข้อมูลมาตรฐานสากลต่อไป</p>
+        </div>
+      </article>
+
+      <article class="label-item" id="label-6b">
+        <div class="label-bar">
+          <span class="label-bar-num">6</span>
+          <span class="label-bar-title">ปุ่มเก็บรายการ</span>
+             <span class="label-bar-tag">Append Problem</span>
+        </div>
+        <div class="label-body">
+          <p>ปุ่ม <strong>+ Append Problem</strong> ใช้เก็บรายละเอียดปัญหาที่กรอกไว้เข้าสู่รายการ Selected Problem / Diagnosis Terms (Label 2) ก่อนจะบันทึกลงฐานข้อมูลจริงอีกครั้งด้วยปุ่ม Confirm (Label 7)</p>
+          <p>กด ✎ ที่รายการใน Selected List (Label 2) เพื่อโหลดรายละเอียดกลับมาแก้ไขในฟอร์มนี้ แล้วกด Append Problem ซ้ำเพื่ออัปเดตรายการ</p>
+        </div>
+      </article>
+   
+      <article class="label-item" id="label-7b">
+        <div class="label-bar">
+          <span class="label-bar-num">7</span>
+          <span class="label-bar-title">Record Meta, ปุ่ม Confirm และ Assessment Note</span>
+          <span class="label-bar-tag">Record Meta</span>
+        </div>
+        <div class="label-body">
+          <p>ส่วนขวาสุดของฟอร์ม ประกอบด้วย:</p>
+          <ul>
+            <li><strong>DVM</strong> และ <strong>Department</strong> — อ่านอย่างเดียว ดึงอัตโนมัติจาก Exam card ที่เปิดอยู่</li>
+               <li>ปุ่ม <strong>Confirm</strong> — บันทึกรายการ Selected Problem / Diagnosis Terms ทั้งหมดของ Exam card นี้ลงฐานข้อมูลจริง</li>
+            <li><strong>Assessment Note (สรุปการประเมิน)</strong> — ข้อความอิสระระดับ Exam card (ไม่ผูกกับปัญหาใดปัญหาหนึ่งโดยเฉพาะ) ใช้สรุปภาพรวมทางคลินิกและแผนติดตาม</li>
+          </ul>
+        </div>
+      </article>
+    </section>
+
+    <!-- ── ส่วนที่ 3 ── -->
+    <h3 class="section-title" style="margin-top:1.5rem">ส่วนที่ 3 — ตารางรวม Assessment ของ HN</h3>
+   
+    <figure class="figure-block">
+      <button class="figure-trigger" onclick="openLightbox('../Label/05_assessment_table.png', 'รูปที่ 5ค — ตารางข้อมูล Assessment ทั้งหมด')" aria-label="ดูภาพขนาดจริง">
+        <img src="../Label/05_assessment_table.png" alt="ภาพตารางข้อมูล Assessment ทั้งหมดของ HN แสดง Label 1-3">
+      </button>
+      <figcaption class="figure-caption">
+        <span><span class="fig-num">รูปที่ 5ค</span> — ตารางข้อมูล Assessment ทั้งหมด</span>
+      </figcaption>
+    </figure>
+
+       <section class="labels-section">
+      <article class="label-item" id="label-1c">
+        <div class="label-bar">
+          <span class="label-bar-num">1</span>
+          <span class="label-bar-title">Tab ตารางรวมของ HN</span>
+          <span class="label-bar-tag">HN All Data</span>
+        </div>
+        <div class="label-body">
+          <p>Tab แยกต่างหากจาก Tab ของแต่ละ Exam card แสดงรายการ Assessment <strong>ทั้งหมดของ HN นั้น</strong> ไม่จำกัดเฉพาะ Exam card ปัจจุบัน มีปุ่ม Export CSV และ Refresh</p>
+        </div>
+         </article>
+
+      <article class="label-item" id="label-2c">
+        <div class="label-bar">
+          <span class="label-bar-num">2</span>
+          <span class="label-bar-title">ส่วน Filter</span>
+          <span class="label-bar-tag">Filter</span>
+        </div>
+        <div class="label-body">
+          <p>กรองรายการด้วยคำค้น (problem, confirmatory findings, DVM), Categories, Type, Status และ Severity</p>
+           </div>
+      </article>
+
+      <article class="label-item" id="label-3c">
+        <div class="label-bar">
+          <span class="label-bar-num">3</span>
+          <span class="label-bar-title">ตารางแสดงรายการ Assessment ทั้งหมด</span>
+          <span class="label-bar-tag">Table</span>
+        </div>
+        <div class="label-body">
+          <p>คอลัมน์ทั้งหมดในตาราง (13 คอลัมน์) เรียงตามลำดับที่แสดงจริง:</p>
+          <div class="field-table-wrap">
+            <table class="field-table">
+              <thead><tr><th>#</th><th>คอลัมน์</th><th>ที่มา</th></tr></thead>
+              <tbody>
+                <tr><td class="col-num">1</td><td class="col-field">#</td><td class="col-detail">ลำดับรายการ</td></tr>
+                <tr><td class="col-num">2</td><td class="col-field">DateTime Rec.</td><td class="col-detail">วันเวลาที่บันทึกรายการ</td></tr>
+                <tr><td class="col-num">3</td><td class="col-field">Problem / Diagnosis Terms (PDT)</td><td class="col-detail">ชื่อ concept ที่เลือก — ฟิลด์ข้อ 1 ใน Label 4</td></tr>
+                <tr><td class="col-num">4</td><td class="col-field">Problem Note</td><td class="col-detail">ฟิลด์ข้อ 11 ใน Label 4</td></tr>
+                <tr><td class="col-num">5</td><td class="col-field">Clinical Condition Category</td><td class="col-detail">ฟิลด์ข้อ 2 ใน Label 4</td></tr>
+                <tr><td class="col-num">6</td><td class="col-field">Prognosis</td><td class="col-detail">ฟิลด์ข้อ 3 ใน Label 4</td></tr>
+                <tr><td class="col-num">7</td><td class="col-field">ลักษณะการดำเนินของโรค (Clinical Course)</td><td class="col-detail">ฟิลด์ข้อ 4 ใน Label 4</td></tr>
+                <tr><td class="col-num">8</td><td class="col-field">Clinical Status</td><td class="col-detail">ฟิลด์ข้อ 5 ใน Label 4</td></tr>
+                <tr><td class="col-num">9</td><td class="col-field">Severity</td><td class="col-detail">ฟิลด์ข้อ 6 ใน Label 4</td></tr>
+                <tr><td class="col-num">10</td><td class="col-field">Clinical Duration</td><td class="col-detail">ฟิลด์ข้อ 7 ใน Label 4</td></tr>
+                <tr><td class="col-num">11</td><td class="col-field">Diagnostic Certainty</td><td class="col-detail">ฟิลด์ข้อ 8 ใน Label 4</td></tr>
+                <tr><td class="col-num">12</td><td class="col-field">Confirmatory Finding / Evidence</td><td class="col-detail">ฟิลด์ข้อ 9 ใน Label 4</td></tr>
+                <tr><td class="col-num">13</td><td class="col-field">Clinical Reasoning</td><td class="col-detail">ฟิลด์ข้อ 10 ใน Label 4</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="margin-top:.5rem">ด้านล่างตารางมีตัวควบคุมแบ่งหน้า (pagination) สำหรับเลื่อนดูรายการถัดไป</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="manual-closing">
+    <section class="summary-section">
+      <div class="label-bar label-bar--summary">
+        <span class="label-bar-title">แผนที่ส่วนประกอบ — สรุปบทที่ 5</span>
+        <span class="label-bar-tag">สรุป</span>
+      </div>
+      <div class="summary-list">
+        <p class="summary-row"><span class="summary-num">ส่วนที่ 1</span><span class="summary-text"><strong>ค้นหา Concept</strong> — ค้นด้วยคำค้น + filter semantic tag, ดูรายละเอียด/คำพ้อง แล้วกดเลือก</span></p>
+           <p class="summary-row"><span class="summary-num">ส่วนที่ 2</span><span class="summary-text"><strong>ฟอร์มกรอกรายละเอียด</strong> — 11 ฟิลด์ (2 ฟิลด์บังคับ) + Append Problem เก็บเข้ารายการ + Confirm บันทึกจริง</span></p>
+        <p class="summary-row"><span class="summary-num">ส่วนที่ 3</span><span class="summary-text"><strong>ตารางรวม HN</strong> — ดูประวัติ Assessment ทั้งหมด พร้อม filter และ Export CSV</span></p>
+      </div>
+    </section>
+
+    <div class="checklist-box">
+      <div class="checklist-head">Checklist การลงข้อมูล Assessment</div>
+      <ol>
+        <li>เปิดหน้า Assessment จากปุ่มทางลัดในหน้า Exam Card Editor</li>
+           <li>กด 🔍 เลือก Concept ค้นหาและเลือกปัญหา/ข้อวินิจฉัยที่ต้องการ (หรือกรอกช่อง NOTE ถ้าค้นหาไม่พบ)</li>
+        <li>กรอก Clinical Condition Category และ Clinical Status ให้ครบ (ฟิลด์บังคับ) พร้อมข้อมูลอื่นตามบริบทเคส</li>
+        <li>กด Append Problem เพื่อเก็บรายการเข้า Selected Problem / Diagnosis Terms — ทำซ้ำได้หลายปัญหาต่อ 1 Exam card</li>
+        <li>ตรวจแถบ Required ให้ครบ Concept หรือ Problem Note (อย่างน้อยหนึ่งอย่าง) / Category / Status / DVM / Dept</li>
+        <li>กรอก Assessment Note สรุปภาพรวม แล้วกด Confirm เพื่อบันทึกลงฐานข้อมูลจริง</li>
+      </ol>
+       </div>
+    </section>
+
+  </div><!-- .manual-body -->
+</div><!-- .manual-root -->
+
+<div class="print-footer-config" hidden
+  data-brand="KAHIS (Kasetsart Animal Hospital Information System)"
+  data-chapter="บทที่ 5 : การลงข้อมูล Assessment"
+  data-version="Version 2026.08.14.01">
+</div>
+   
+<div class="print-running-footer" aria-hidden="true">
+  <span class="print-footer-brand">KAHIS (Kasetsart Animal Hospital Information System)</span>
+  <div class="print-footer-meta">
+    <div class="print-footer-line1">บทที่ 5 : การลงข้อมูล Assessment หน้าที่ <span class="print-footer-page-num"></span></div>
+    <div class="print-footer-line2">Version 2026.08.14.01 พิมพ์เมื่อ <span class="print-footer-printed-at"></span></div>
+  </div>
+</div>
+
+<div class="paged-footer-source" aria-hidden="true">
+     <div class="paged-footer-inner">
+    <span class="print-footer-brand">KAHIS (Kasetsart Animal Hospital Information System)</span>
+    <div class="print-footer-meta">
+      <div class="print-footer-line1">บทที่ 5 : การลงข้อมูล Assessment หน้าที่ <span class="print-footer-page-num"></span></div>
+      <div class="print-footer-line2">Version 2026.08.14.01 พิมพ์เมื่อ <span class="print-footer-printed-at"></span></div>
+    </div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+     <button class="lightbox-close" onclick="closeLightbox(event)" aria-label="ปิด">✕</button>
+  <img id="lightbox-img" src="" alt="">
+  <div class="lightbox-caption" id="lightbox-caption"></div>
+</div>
+
+<script>window.PagedConfig = { auto: false };</script>
+<script src="https://unpkg.com/pagedjs@0.4.3/dist/paged.polyfill.js"></script>
+<script src="manual-export.js"></script>
+<script>
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+     const lightboxCaption = document.getElementById('lightbox-caption');
+
+  function openLightbox(src, caption) {
+    lightboxImg.src = src;
+    lightboxCaption.textContent = caption || '';
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox(e) {
+    if (e.target === lightbox || e.target.classList.contains('lightbox-close')) {
+         lightbox.classList.remove('open');
+      lightboxImg.src = '';
+      document.body.style.overflow = '';
+    }
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      lightbox.classList.remove('open');
+      lightboxImg.src = '';
+      document.body.style.overflow = '';
+    }
+     });
+</script>
+
+</body>
+</html>

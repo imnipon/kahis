@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KAHIS คู่มือการใช้งาน — การลงข้อมูลในใบบันทึกการตรวจ (VR005)</title>
+  <title>KAHIS คู่มือการใช้งาน — การลงข้อมูลในใบบันทึกการตรวจ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="manual-base.css">
@@ -22,10 +22,6 @@
     <button type="button" class="btn btn-mode" id="btn-mode-legacy" onclick="KahisExport.setMode('legacy')">ขอบมาตรฐาน</button>
     <button type="button" class="btn btn-print" id="btn-export-pdf" onclick="KahisExport.exportPdf()">ส่งออก PDF (A4)</button>
   </div>
-  <p class="file-protocol-notice" id="file-protocol-notice" hidden>
-    เปิดไฟล์จากเครื่อง — ใช้โหมด <strong>ขอบมาตรฐาน</strong> ได้เลย หรือรัน <code>start-server.bat</code>
-    แล้วเปิด <code>http://localhost:8080/chapter-03-exam-card-editor.html</code> เพื่อใช้โหมด <strong>ขอบเท่ากัน</strong>
-  </p>
 </div>
 
 <div class="manual-root">
@@ -75,7 +71,7 @@
     </article>
 
     <figure class="figure-block">
-      <button class="figure-trigger" onclick="openLightbox('../Label/03_VR005%20Fullscreen%20mode.png', 'รูปที่ 3ก — Full Screen Mode (VR005)')" aria-label="ดูภาพขนาดจริง">
+      <button class="figure-trigger" onclick="openLightbox('../Label/03_VR005%20Fullscreen%20mode.png', 'รูปที่ 3ก — Full Screen Mode')" aria-label="ดูภาพขนาดจริง">
         <img src="../Label/03_VR005 Fullscreen mode.png" alt="ภาพ Full Screen Mode ของ Exam Card Editor">
       </button>
       <figcaption class="figure-caption">
@@ -95,7 +91,7 @@
     </article>
 
     <figure class="figure-block">
-      <button class="figure-trigger" onclick="openLightbox('../Label/03_VR005%20Floating%20mode.png', 'รูปที่ 3ข — Floating Mode (VR005)')" aria-label="ดูภาพขนาดจริง">
+      <button class="figure-trigger" onclick="openLightbox('../Label/03_VR005%20Floating%20mode.png', 'รูปที่ 3ข — Floating Mode')" aria-label="ดูภาพขนาดจริง">
         <img src="../Label/03_VR005 Floating mode.png" alt="ภาพ Floating Mode ของ Exam Card Editor">
       </button>
       <figcaption class="figure-caption">
@@ -116,7 +112,7 @@
     </article>
 
     <figure class="figure-block">
-      <button class="figure-trigger" onclick="openLightbox('../Label/03_VR005%20Closed%20Card%20Editor%20for%20unsaved.png', 'รูปที่ 3ค — แสดงผลตามความยาวหน้า (VR005)')" aria-label="ดูภาพขนาดจริง">
+      <button class="figure-trigger" onclick="openLightbox('../Label/03_VR005%20Closed%20Card%20Editor%20for%20unsaved.png', 'รูปที่ 3ค — แสดงผลตามความยาวหน้า')" aria-label="ดูภาพขนาดจริง">
         <img src="../Label/03_VR005 Closed Card Editor for unsaved.png" alt="ภาพแสดงผลตามความยาวหน้า Exam Card Editor">
       </button>
       <figcaption class="figure-caption">
@@ -131,7 +127,7 @@
     </p>
 
     <figure class="figure-block">
-      <button class="figure-trigger" onclick="openLightbox('../Label/03_VR005%20Fullscreen%20mode%202.png', 'รูปที่ 3ง — ส่วนประกอบ Exam Card Editor (VR005)')" aria-label="ดูภาพขนาดจริง">
+      <button class="figure-trigger" onclick="openLightbox('../Label/03_VR005%20Fullscreen%20mode%202.png', 'รูปที่ 3ง — ส่วนประกอบ Exam Card Editor')" aria-label="ดูภาพขนาดจริง">
         <img src="../Label/03_VR005 Fullscreen mode 2.png" alt="ภาพส่วนประกอบของ Exam Card Editor">
       </button>
       <figcaption class="figure-caption">
@@ -169,8 +165,25 @@
           <p>ใช้เลือกหรือเปลี่ยนแผนกที่กำกับ Exam card และปุ่มบันทึกข้อมูล:</p>
           <ul>
             <li><strong>Add New</strong> — เมื่อเป็น Exam card ใหม่ที่ยังไม่เคยบันทึก จะสร้าง Exam card id ให้</li>
-            <li><strong>Apply</strong> — เมื่อเป็นการแก้ไขข้อมูลที่เคยบันทึกแล้ว</li>
+            <li><strong>Update</strong> — เมื่อเป็นการแก้ไขข้อมูลที่เคยบันทึกแล้ว</li>
           </ul>
+
+          <div class="label-subtitle">การเปลี่ยนแผนกกำกับ Exam card ที่บันทึกแล้ว</div>
+          <p>สามารถเปลี่ยนแผนกที่กำกับ Exam card ย้อนหลังได้ โดยมีขั้นตอนและข้อกำหนดตาม Label ในภาพด้านล่างดังนี้:</p>
+          <ul>
+            <li><strong>Label 1</strong> — เลือกรายการ Exam card ที่ต้องการเปลี่ยนแผนก โดย Exam card รายการนั้น<strong>ต้องมีการบันทึกข้อมูลแล้ว</strong> (มี Exam card id) และต้องเป็น <strong>user account เจ้าของ Exam card</strong> นั้นเท่านั้นที่จะเปลี่ยนแผนกได้</li>
+            <li><strong>Label 2</strong> — เลือกแผนกใหม่ที่ต้องการเปลี่ยน โดยแผนกใหม่ที่เลือก<strong>ต้องไม่ซ้ำ</strong>กับแผนกที่มีอยู่เดิมของ Exam card อื่นในวันเดียวกัน ที่มีเจ้าของเป็น user account เดียวกันนี้</li>
+            <li><strong>Label 3</strong> — กด <strong>Update</strong> เพื่อบันทึกการเปลี่ยนแปลง</li>
+          </ul>
+
+          <figure class="figure-block">
+            <button class="figure-trigger" onclick="openLightbox('../Label/03_examcard_changedept.png', 'รูปที่ 3จ — เปลี่ยนแผนกกำกับ Exam card')" aria-label="ดูภาพขนาดจริง">
+              <img src="../Label/03_examcard_changedept.png" alt="ภาพเปลี่ยนแผนกกำกับ Exam card แสดง Label 1-3: เลือกรายการ, เลือกแผนกใหม่, ปุ่ม Update">
+            </button>
+            <figcaption class="figure-caption">
+              <span><span class="fig-num">รูปที่ 3จ</span> — เปลี่ยนแผนกกำกับ Exam card (Label 1-3)</span>
+            </figcaption>
+          </figure>
         </div>
       </article>
 
@@ -254,7 +267,7 @@
       <div class="summary-list">
         <p class="summary-row"><span class="summary-num">1–3</span><span class="summary-text"><strong>ตัวอย่างโหมดแสดงผล</strong> — Full Screen / Floating / ปิดด้วย X กลับหน้าเดียว (ปุ่มมุมขวาบน)</span></p>
         <p class="summary-row"><span class="summary-num">A</span><span class="summary-text"><strong>ผู้บันทึก / วันที่ / TAB</strong> — 1 id ต่อแผนกต่อ user; TAB รวมทุก id ของวัน; แก้ได้เฉพาะเจ้าของ</span></p>
-        <p class="summary-row"><span class="summary-num">B</span><span class="summary-text"><strong>แผนก + บันทึก</strong> — Add New (สร้าง id) / Apply (แก้ไขที่บันทึกแล้ว)</span></p>
+        <p class="summary-row"><span class="summary-num">B</span><span class="summary-text"><strong>แผนก + บันทึก</strong> — Add New (สร้าง id) / Update (แก้ไขที่บันทึกแล้ว); เปลี่ยนแผนกได้เฉพาะเจ้าของ และห้ามซ้ำกับ Exam card อื่นวันเดียวกัน</span></p>
         <p class="summary-row"><span class="summary-num">C</span><span class="summary-text"><strong>Topics</strong> — เลือกหัวข้อลงข้อมูล; Assessment ท้ายรายการเป็นแสดงผลอย่างเดียว</span></p>
         <p class="summary-row"><span class="summary-num">D</span><span class="summary-text"><strong>Plain text</strong> — พื้นที่กรอกเนื้อหาหลัก</span></p>
         <p class="summary-row"><span class="summary-num">E</span><span class="summary-text"><strong><span class="remarkable-tag">Remarkable</span></strong> — เน้นหัวข้อสำคัญใน Viewer</span></p>
@@ -268,7 +281,7 @@
       <ol>
         <li>เลือกโหมดแสดงผลที่มุมขวาบน (Full Screen หรือ Floating) หรือกด X เพื่อกลับหน้าเดียว</li>
         <li>ตรวจวันที่ Exam card และ TAB ให้ตรงกับแผนก/user ที่ต้องการ — แก้ไขได้เฉพาะ Exam card ของตนเอง</li>
-        <li>ถ้าเป็นใบใหม่: เลือกแผนกแล้วกด <strong>Add New</strong>; ถ้าเคยบันทึกแล้วใช้ <strong>Apply</strong></li>
+        <li>ถ้าเป็นใบใหม่: เลือกแผนกแล้วกด <strong>Add New</strong>; ถ้าเคยบันทึกแล้วใช้ <strong>Update</strong> (เปลี่ยนแผนกได้เฉพาะเจ้าของ Exam card และห้ามซ้ำกับ Exam card อื่นวันเดียวกัน)</li>
         <li>กรอกทีละหัวข้อจาก Topics และใช้ตัวช่วยกรอก (Template / Guideline / Order) เมื่อจำเป็น</li>
         <li>ทำเครื่องหมาย <span class="remarkable-tag">Remarkable</span> เฉพาะหัวข้อที่ต้องการเน้นใน Viewer</li>
         <li>ใช้ทางลัด VPE / Assessment / Plan ตามงาน และบันทึกก่อนปิด Editor เมื่อมีข้อมูลสำคัญ</li>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KAHIS คู่มือการใช้งาน — ใบบันทึกการตรวจ (VR004)</title>
+  <title>KAHIS คู่มือการใช้งาน — ใบบันทึกการตรวจ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="manual-base.css">
@@ -22,10 +22,6 @@
     <button type="button" class="btn btn-mode" id="btn-mode-legacy" onclick="KahisExport.setMode('legacy')">ขอบมาตรฐาน</button>
     <button type="button" class="btn btn-print" id="btn-export-pdf" onclick="KahisExport.exportPdf()">ส่งออก PDF (A4)</button>
   </div>
-  <p class="file-protocol-notice" id="file-protocol-notice" hidden>
-    เปิดไฟล์จากเครื่อง — ใช้โหมด <strong>ขอบมาตรฐาน</strong> ได้เลย หรือรัน <code>start-server.bat</code>
-    แล้วเปิด <code>http://localhost:8080/chapter-02-exam-card-viewer.html</code> เพื่อใช้โหมด <strong>ขอบเท่ากัน</strong>
-  </p>
 </div>
 
 <div class="manual-root">
@@ -57,11 +53,11 @@
     </p>
 
     <figure class="figure-block">
-      <button class="figure-trigger" onclick="openLightbox('../Label/02_VR004.png', 'รูปที่ 2 — ใบบันทึกการตรวจ (VR004)')" aria-label="ดูภาพขนาดจริง">
-        <img src="../Label/02_VR004.png" alt="ภาพ Label ใบบันทึกการตรวจ (VR004)">
+      <button class="figure-trigger" onclick="openLightbox('../Label/02_VR004.png', 'รูปที่ 2 — ใบบันทึกการตรวจ')" aria-label="ดูภาพขนาดจริง">
+        <img src="../Label/02_VR004.png" alt="ภาพ Label ใบบันทึกการตรวจ">
       </button>
       <figcaption class="figure-caption">
-        <span><span class="fig-num">รูปที่ 2</span> — ใบบันทึกการตรวจ (VR004)</span>
+        <span><span class="fig-num">รูปที่ 2</span> — ใบบันทึกการตรวจ</span>
       </figcaption>
     </figure>
 
@@ -124,10 +120,23 @@
           </ul>
 
           <div class="label-subtitle">ปุ่มเลือกวันที่ (Date Picker)</div>
+          <p>เมื่อกดปุ่ม Date Picker จะเปิดปฏิทินแบบแสดง <strong>3 เดือนพร้อมกัน</strong> เลื่อนดูเดือนอื่นได้ด้วยลูกศรซ้าย/ขวา และมี tag เดือนที่มีวันลงทะเบียนเข้ารับบริการอยู่ด้านบน กดที่ tag เพื่อเลื่อนปฏิทินไปเดือนนั้นได้ทันที</p>
           <ul>
-            <li>เลือกวันที่ที่ต้องการให้แสดงผล โดยต้องเป็นวันที่อยู่ในช่วงเวลา<strong>ลงทะเบียนรับบริการ</strong>เท่านั้น</li>
-            <li>ในปฏิทิน วันที่ที่เลือกได้จะถูกแสดงผล และมีสัญลักษณ์กำกับวันที่มีการบันทึก Exam card ไว้แล้ว</li>
+            <li>วันที่ที่สามารถเลือกได้ต้องอยู่ในช่วง<strong>ลงทะเบียนรับบริการ</strong> (มี visit no) เท่านั้น — ตัวเลขวันที่จะแสดงเป็น<strong>สีฟ้า</strong>; วันที่ไม่อยู่ในช่วงรับบริการจะเป็น<strong>สีเทา (inactive)</strong> เลือกไม่ได้</li>
+            <li>วันที่ที่มีข้อมูล Exam card บันทึกไว้แล้วจะมี<strong>จุดสีฟ้า</strong>กำกับใต้ตัวเลขวันที่นั้น</li>
+            <li>ถ้าวันที่เลือกมีการลงทะเบียนเข้ารับบริการ<strong>มากกว่าหนึ่งครั้ง</strong> ระบบจะแสดงช่องเลือก <strong>Visit No.</strong> ให้เลือกว่าจะเปิด Exam card ของรอบบริการใด โดยค่าเริ่มต้น (default) จะเป็นเลข visit no ล่าสุดของวันนั้น</li>
+            <li>กดปุ่ม <strong>OK</strong> เพื่อยืนยันวันที่ (และ visit no ถ้ามี) ที่เลือก</li>
+            <li>มีปุ่ม <strong>Go to Today</strong> อยู่ในหน้าต่าง Date Picker ด้วย สำหรับเลื่อนปฏิทินกลับมาที่วันปัจจุบันโดยเร็ว</li>
           </ul>
+
+          <figure class="figure-block">
+            <button class="figure-trigger" onclick="openLightbox('../Label/02_examcard_datepicker.png', 'รูปที่ 2ก — หน้าต่าง Date Picker')" aria-label="ดูภาพขนาดจริง">
+              <img src="../Label/02_examcard_datepicker.png" alt="ภาพหน้าต่าง Date Picker แสดง tag เดือน, ปฏิทิน 3 เดือน, ช่อง visit no, ปุ่ม OK และ Go to Today">
+            </button>
+            <figcaption class="figure-caption">
+              <span><span class="fig-num">รูปที่ 2ก</span> — หน้าต่าง Date Picker</span>
+            </figcaption>
+          </figure>
 
           <div class="label-subtitle">ปุ่ม Full Screen</div>
           <p>เปิด Editor ในรูปแบบ <strong>Full Screen Mode</strong> เพื่อพื้นที่ทำงานที่กว้างขึ้น โดยจะเลือก <strong>Floating Mode</strong> ได้อีกโหมด แบบวนไอคอนในการเปลี่ยน และการปิดโหมด จะทำให้แสดงผลหน้าเดียว ตามความยาวของหน้าเพจ</p>

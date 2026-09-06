@@ -2,7 +2,9 @@
  * KAHIS Manual — PDF export (Paged.js default, Legacy fallback)
  *
  * โหมด Paged.js ต้องเปิดผ่าน http:// (Local Server) — เปิด file:// ตรงๆ ไม่ได้
- * รัน start-server.bat แล้วเปิด http://localhost:8080/chapter-01-ui-components.html
+ * รัน start-server.bat แล้วเปิด http://localhost:8080/manual-ui/chapter-01-ui-components.html
+ * (start-server.bat รัน python -m http.server จากโฟลเดอร์ user-manual/ ซึ่งเป็นระดับบน
+ *  ของ manual-ui/ และ Label/ — จำเป็นต้องเป็นระดับนี้เพื่อให้ path ../Label/... ใช้งานได้ถูกต้อง)
  */
 (function () {
   const STORAGE_KEY = 'kahis-print-mode';
@@ -153,7 +155,7 @@
       alert(
         'โหมดขอบเท่ากัน ใช้กับการเปิดไฟล์จากเครื่องโดยตรงไม่ได้\n\n' +
         '1. ดับเบิลคลิก start-server.bat\n' +
-        '2. เปิด http://localhost:8080/chapter-01-ui-components.html\n' +
+        '2. เปิด http://localhost:8080/manual-ui/chapter-01-ui-components.html\n' +
         '3. กด Export PDF อีกครั้ง\n\n' +
         'หรือใช้โหมดขอบมาตรฐานได้ทันที'
       );
@@ -210,7 +212,7 @@
         alert(
           'Export ไม่สำเร็จ (เปิดไฟล์จากเครื่องโดยตรง)\n\n' +
           '• ดับเบิลคลิก start-server.bat\n' +
-          '• เปิด http://localhost:8080/chapter-01-ui-components.html\n\n' +
+          '• เปิด http://localhost:8080/manual-ui/chapter-01-ui-components.html\n\n' +
           'หรือใช้โหมดขอบมาตรฐานแล้ว Export อีกครั้ง'
         );
         applyMode('legacy', { silent: true });

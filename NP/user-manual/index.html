@@ -243,21 +243,33 @@
   const CHAPTERS = [
     {
       id: '01',
-      code: 'VR001',
       title: 'ส่วนประกอบหลักของ UI',
       file: 'chapter-01-ui-components.html'
     },
     {
       id: '02',
-      code: 'VR004',
       title: 'ใบบันทึกการตรวจ',
       file: 'chapter-02-exam-card-viewer.html'
     },
     {
       id: '03',
-      code: 'VR005',
       title: 'การลงข้อมูลในใบบันทึกการตรวจ',
       file: 'chapter-03-exam-card-editor.html'
+    },
+    {
+      id: '04',
+      title: 'การลงข้อมูล VPE',
+      file: 'chapter-04-vpe-editor.html'
+    },
+    {
+      id: '05',
+      title: 'การลงข้อมูล Assessment',
+      file: 'chapter-05-assessment-editor.html'
+    },
+    {
+      id: '06',
+      title: 'Favorite HN (รายการโปรด)',
+      file: 'chapter-06-favorite-hn.html'
     }
   ];
 
@@ -284,13 +296,14 @@
     a.href = chapterHref(ch);
     a.target = '_blank';
     a.rel = 'noopener';
-    a.addEventListener('click', playChapterBark);
+    if (ch.id === '01') {
+      a.addEventListener('click', playChapterBark);
+    }
     a.innerHTML =
       '<div class="portal-ring">' +
         '<img class="icon-poodle icon-poodle-chapter" src="' + assetBase + 'poodle-current-clean.svg" alt="">' +
       '</div>' +
-      '<div class="portal-label">บทที่ ' + ch.id + '<br>' + ch.title + '</div>' +
-      '<span class="portal-sub">' + ch.code + '</span>';
+      '<div class="portal-label">บทที่ ' + ch.id + '<br>' + ch.title + '</div>';
     return a;
   }
 

@@ -17,7 +17,10 @@ user-manual/
 ├── manual-ui/          # HTML รายบท + CSS/JS พิมพ์
 │   ├── chapter-01-….html
 │   ├── chapter-02-….html
-│   └── chapter-03-….html
+│   ├── chapter-03-….html
+│   ├── chapter-04-vpe-editor.html
+│   ├── chapter-05-assessment-editor.html
+│   └── chapter-06-favorite-hn.html
 └── Label/              # ภาพ Label ประกอบแต่ละบท
 ```
 
@@ -39,6 +42,9 @@ user-manual/
 
 | บท | ไฟล์ HTML | ภาพ Label |
 |----|-----------|-----------|
-| 1 — ส่วนประกอบหลัก UI (VR001) | `chapter-01-ui-components.html` | `Label/01_VR001.png` |
-| 2 — ใบบันทึกการตรวจ (VR004) | `chapter-02-exam-card-viewer.html` | `Label/02_VR004.png` |
-| 3 — การลงข้อมูลใบบันทึกการตรวจ (VR005) | `chapter-03-exam-card-editor.html` | `Label/03_VR005 …` |
+| 1 — ส่วนประกอบหลัก UI | `chapter-01-ui-components.html` | `Label/01_VR001.png` |
+| 2 — ใบบันทึกการตรวจ | `chapter-02-exam-card-viewer.html` | `Label/02_VR004.png`, `Label/02_examcard_datepicker.png` |
+| 3 — การลงข้อมูลใบบันทึกการตรวจ | `chapter-03-exam-card-editor.html` | `Label/03_VR005 …`, `Label/03_examcard_changedept.png` |
+| 4 — การลงข้อมูล Vital Sign & PE (VPE) | `chapter-04-vpe-editor.html` | `Label/04_vpe_form.png`, `Label/04_vpe_full_detail.png` |
+| 5 — การลงข้อมูล Assessment | `chapter-05-assessment-editor.html` | `Label/05_assessment_concept.png`, `Label/05_assessment_form.png`, `Label/05_assessment_table.png` |
+| 6 — Favorite HN (รายการโปรด) | `chapter-06-favorite-hn.html` | `Label/06_favorite_hn_search.png`, `Label/06_favorite_hn_modal.png` |

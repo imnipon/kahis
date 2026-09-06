@@ -413,6 +413,74 @@ body.pagedjs-busy .btn { pointer-events: none; opacity: .7; }
 }
 .label-subtitle:first-child { margin-top: 0; }
 
+/* ── Field reference table (VPE / Assessment field lists) ── */
+.field-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  margin: .3rem 0 1rem;
+}
+.field-table {
+  width: 100%;
+  min-width: 32rem;
+  border-collapse: collapse;
+  font-size: .82rem;
+}
+.field-table caption {
+  text-align: left;
+  font-weight: 700;
+  color: var(--kahis-green-dark);
+  font-size: .84rem;
+  margin-bottom: .35rem;
+  caption-side: top;
+}
+.field-table th,
+.field-table td {
+  border: 1px solid var(--border);
+  padding: .4rem .55rem;
+  text-align: left;
+  vertical-align: top;
+}
+.field-table thead th {
+  background: var(--kahis-green-light);
+  color: var(--kahis-green-dark);
+  font-weight: 700;
+  font-size: .76rem;
+  white-space: nowrap;
+}
+.field-table tbody tr {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+.field-table tbody tr:nth-child(even) { background: var(--bg); }
+.field-table td.col-num {
+  width: 2rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.field-table td.col-field {
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+.field-table td.col-type {
+  color: var(--accent);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.field-table td.col-detail { color: var(--text-muted); }
+.field-table .req-mark {
+  color: var(--label-red);
+  font-weight: 800;
+  margin-left: .15rem;
+}
+.field-table code {
+  background: var(--bg);
+  padding: .05rem .3rem;
+  border-radius: 3px;
+  font-size: .78em;
+}
+
 /* ── Closing block (summary + checklist) ── */
 .manual-closing {
   margin-top: 1.5rem;
