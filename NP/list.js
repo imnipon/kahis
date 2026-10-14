@@ -39,4 +39,6 @@ const assessmentFiles = [
   { title: "User Manual — บทที่ 5 การลงข้อมูล Assessment", file: "NP/user-manual/manual-ui/chapter-05-assessment-editor.html", lastUpdate: "2026-09-07T01:30:00.000000" },
   { title: "User Manual — บทที่ 6 Favorite HN (รายการโปรด)", file: "NP/user-manual/manual-ui/chapter-06-favorite-hn.html", lastUpdate: "2026-09-07T01:30:00.000000" },
   { title: "User Manual — README", file: "NP/user-manual/README.md", lastUpdate: "2026-09-07T01:30:00.000000" },
+  { title: "Report — สถิติการใช้งานระบบ Sep 2026", file: "NP/report/2026-09-sep-oct/index.html", lastUpdate: "2026-10-14T15:00:00.000000" },
+  { title: "Report — Portal รวมรายงาน", file: "NP/report/index.html", lastUpdate: "2026-10-14T15:00:00.000000" },
 ];

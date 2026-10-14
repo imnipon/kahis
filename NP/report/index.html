@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAHIS - Clinical Reports Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-cream: #FBF9F5;
+      --bg-card: #FFFFFF;
+      --olive-primary: #5A6B47;
+      --olive-dark: #3F4B31;
+      --olive-light: #EBF0E6;
+      --terracotta: #D96B43;
+      --warm-brown: #8C6A54;
+      --dark-slate: #2B2E2A;
+      --text-muted: #6B7066;
+      --border-soft: #E8E3DA;
+      --shadow-sm: 0 2px 8px rgba(43, 46, 42, 0.04);
+      --shadow-md: 0 8px 24px rgba(43, 46, 42, 0.07);
+      --radius-md: 14px;
+      --radius-lg: 20px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Sarabun', 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-cream);
+      color: var(--dark-slate);
+      line-height: 1.6;
+      padding: 40px 20px 80px;
+    }
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    header {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      padding: 32px 36px;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    header::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 5px;
+      background: linear-gradient(90deg, var(--olive-primary) 0%, var(--terracotta) 100%);
+    }
+    .badge {
+      display: inline-block;
+      padding: 5px 12px;
+      background: var(--olive-light);
+      color: var(--olive-dark);
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+    h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+    p.sub { color: var(--text-muted); font-size: 15px; }
+    .report-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .report-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      text-decoration: none;
+      color: inherit;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .report-card:hover {
+      border-color: var(--olive-primary);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+    .report-tag {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--terracotta);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .report-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--dark-slate);
+    }
+    .report-desc {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: var(--olive-primary);
+      font-weight: 600;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border-soft);
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      color: var(--warm-brown);
+      text-decoration: none;
+      margin-bottom: 18px;
+    }
+    .back-btn:hover { text-decoration: underline; color: var(--dark-slate); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../../index.html" class="back-btn">← กลับสู่หน้าหลัก KAHIS Explorer</a>
+    <header>
+      <div class="badge">KAHIS Kasetsart Animal Hospital Information System</div>
+      <h1>คลังรายงานการใช้งานระบบและกิจกรรมคลินิก (Clinical Reports)</h1>
+      <p class="sub">สถานที่: โรงพยาบาลสัตว์ มหาวิทยาลัยเกษตรศาสตร์ หนองโพ</p>
+    </header>
+
+    <div class="report-grid">
+      <a href="2026-09-sep-oct/index.html" class="report-card">
+        <div>
+          <div class="report-tag">ล่าสุด · September - October 2026</div>
+          <div class="report-title">รายงานสถิติการใช้งานระบบ Sep 2026</div>
+          <div class="report-desc">
+            สถิติ Exam Card 3,829 รายการ, Walk-in Check-in คิว 100%, การสแกนเอกสาร, Assessment POMR, สัญญาณชีพ VPE และ Audit Log
+          </div>
+        </div>
+        <div class="card-footer">
+          <span>ช่วงเวลา: 1 ก.ย. – 9 ต.ค. 2569</span>
+          <span>เปิดรายงาน →</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</body>
+</html>

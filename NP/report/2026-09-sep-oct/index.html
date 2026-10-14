@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>รายงานสรุปผลการใช้งานระบบ KAHIS (1 ก.ย. - 9 ต.ค. 2569)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-cream: #FBF9F5;
+      --bg-card: #FFFFFF;
+      --bg-card-subtle: #F6F3EE;
+      --olive-primary: #5A6B47;
+      --olive-dark: #3F4B31;
+      --olive-light: #EBF0E6;
+      --terracotta: #D96B43;
+      --terracotta-light: #FDF1EB;
+      --warm-brown: #8C6A54;
+      --dark-slate: #2B2E2A;
+      --text-muted: #6B7066;
+      --border-soft: #E8E3DA;
+      --shadow-sm: 0 2px 8px rgba(43, 46, 42, 0.04);
+      --shadow-md: 0 8px 24px rgba(43, 46, 42, 0.07);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Sarabun', 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-cream);
+      color: var(--dark-slate);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* Header */
+    header {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      padding: 36px 40px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, var(--olive-primary) 0%, var(--terracotta) 100%);
+    }
+
+    .header-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      background-color: var(--olive-light);
+      color: var(--olive-dark);
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--dark-slate);
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+
+    .header-subtitle {
+      color: var(--text-muted);
+      font-size: 16px;
+      max-width: 800px;
+    }
+
+    .header-meta {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px dashed var(--border-soft);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      font-size: 14px;
+      color: var(--warm-brown);
+    }
+
+    .meta-item strong {
+      color: var(--dark-slate);
+      font-weight: 600;
+    }
+
+    /* Executive KPI Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 22px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .kpi-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .kpi-value {
+      font-size: 32px;
+      font-weight: 700;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--olive-dark);
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+
+    .kpi-value.accent-orange {
+      color: var(--terracotta);
+    }
+
+    .kpi-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .badge-pill {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+
+    .badge-pill.success {
+      background-color: var(--olive-light);
+      color: var(--olive-dark);
+    }
+
+    .badge-pill.alert {
+      background-color: var(--terracotta-light);
+      color: var(--terracotta);
+    }
+
+    /* Section Styling */
+    .section-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 32px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-soft);
+      padding-bottom: 14px;
+    }
+
+    .section-number {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--olive-primary);
+      background-color: var(--olive-light);
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--dark-slate);
+    }
+
+    .section-desc {
+      color: var(--text-muted);
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+
+    /* Table Styles */
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-soft);
+      margin-bottom: 24px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 14.5px;
+      background: #FFFFFF;
+    }
+
+    th {
+      background-color: var(--bg-card-subtle);
+      color: var(--dark-slate);
+      font-weight: 600;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-soft);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-soft);
+      color: var(--dark-slate);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background-color: #FAF8F5;
+    }
+
+    .num-col {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+    }
+
+    /* Gallery & Image Cards */
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 20px;
+      margin-top: 16px;
+    }
+
+    .image-grid.single {
+      grid-template-columns: 1fr;
+    }
+
+    .image-card {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+
+    .image-card:hover {
+      border-color: var(--olive-primary);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .img-wrapper {
+      position: relative;
+      background: #FFFFFF;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 220px;
+      max-height: 380px;
+    }
+
+    .img-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+
+    .image-card:hover .img-wrapper img {
+      transform: scale(1.02);
+    }
+
+    .img-zoom-hint {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      background: rgba(43, 46, 42, 0.75);
+      color: #FFFFFF;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 999px;
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .image-caption {
+      padding: 14px 18px;
+    }
+
+    .image-caption p {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--dark-slate);
+      margin: 0;
+    }
+
+    /* Callout & Insights */
+    .insight-box {
+      background: var(--olive-light);
+      border-left: 4px solid var(--olive-primary);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 16px 20px;
+      margin: 20px 0;
+      font-size: 14.5px;
+      color: var(--olive-dark);
+    }
+
+    .insight-box strong {
+      color: var(--olive-dark);
+      font-weight: 700;
+    }
+
+    .warning-box {
+      background: var(--terracotta-light);
+      border-left: 4px solid var(--terracotta);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 16px 20px;
+      margin: 20px 0;
+      font-size: 14.5px;
+      color: #7A351D;
+    }
+
+    .warning-box strong {
+      color: var(--terracotta);
+      font-weight: 700;
+    }
+
+    /* Lightbox Modal */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 22, 19, 0.92);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      padding: 24px;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .lightbox.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .lightbox-content {
+      position: relative;
+      max-width: 94vw;
+      max-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .lightbox-img {
+      max-width: 100%;
+      max-height: 82vh;
+      object-fit: contain;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background-color: #FFFFFF;
+    }
+
+    .lightbox-caption {
+      margin-top: 14px;
+      color: #E8E3DA;
+      font-size: 14px;
+      text-align: center;
+      max-width: 800px;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 8px 18px;
+      border-radius: 999px;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: -16px;
+      right: -16px;
+      background: var(--terracotta);
+      color: #FFFFFF;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      border: 2px solid #FFFFFF;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .lightbox-close:hover {
+      transform: scale(1.1);
+      background: #B8502B;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding-top: 40px;
+      color: var(--text-muted);
+      font-size: 13.5px;
+      border-top: 1px solid var(--border-soft);
+      margin-top: 40px;
+    }
+
+    /* Print & Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 16px 12px 60px;
+      }
+      header {
+        padding: 24px 20px;
+      }
+      h1 {
+        font-size: 22px;
+      }
+      .section-card {
+        padding: 20px 16px;
+      }
+      .image-grid {
+        grid-template-columns: 1fr;
+      }
+      .img-wrapper {
+        min-height: 180px;
+      }
+      .lightbox-close {
+        top: 10px;
+        right: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Header -->
+    <header>
+      <div class="header-badge">
+        KAHIS Kasetsart Animal Hospital Information System
+      </div>
+      <h1>รายงานสรุปผลการใช้งานระบบเวชระเบียนและกิจกรรมคลินิก</h1>
+      <p class="header-subtitle">
+        สรุปการดำเนินงาน เปรียบเทียบสถิติการใช้งาน และพฤติกรรมการบันทึกข้อมูล ระหว่างวันที่ 1 - 30 กันยายน 2569 และ 1 - 9 ตุลาคม 2569
+      </p>
+      <div class="header-meta">
+        <div class="meta-item">สถานที่: <strong>โรงพยาบาลสัตว์ มหาวิทยาลัยเกษตรศาสตร์ หนองโพ</strong></div>
+        <div class="meta-item">ช่วงเวลาตรวจวัด: <strong>1 ก.ย. 2569 – 9 ต.ค. 2569</strong></div>
+        <div class="meta-item">จัดทำโดย: <strong>Admin</strong></div>
+      </div>
+    </header>
+
+    <!-- Executive KPI Summary Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-title">
+          Exam Card Activities
+          <span class="badge-pill success">รวม 3,829</span>
+        </div>
+        <div class="kpi-value">2,927 <span style="font-size: 16px; font-weight: normal; color: var(--text-muted);">+ 902</span></div>
+        <div class="kpi-sub">ก.ย. 2,927 ใบ (~97.6/วัน) | ต.ค. 902 ใบ (~100.2/วัน)</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-title">
+          Walk-in Check-in
+          <span class="badge-pill success">คิว 100% ใน ต.ค.</span>
+        </div>
+        <div class="kpi-value">3,065 <span style="font-size: 16px; font-weight: normal; color: var(--text-muted);">+ 954</span></div>
+        <div class="kpi-sub">ก.ย. ไร้รหัสคิว 56 ราย | ต.ค. มีคิวครบทุกเคส (0 No Queue)</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-title">
+          Assessment (POMR)
+          <span class="badge-pill success">~1.26 ปัญหา/เคส</span>
+        </div>
+        <div class="kpi-value accent-orange">3,676 <span style="font-size: 16px; font-weight: normal; color: var(--text-muted);">+ 1,168</span></div>
+        <div class="kpi-sub">บันทึกประเมินปัญหาสัตว์ป่วยตามแนวทาง POMR</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-title">
+          Document Scans
+          <span class="badge-pill alert">มีเอกสารเฉพาะทาง</span>
+        </div>
+        <div class="kpi-value">850 <span style="font-size: 16px; font-weight: normal; color: var(--text-muted);">+ 50</span></div>
+        <div class="kpi-sub">ก.ย. 850 รายการ | ต.ค. 50 รายการ (มีบัตร ปชช. / ใบตรวจเฉพาะ)</div>
+      </div>
+    </div>
+
+    <!-- Section 1: Exam Card Activities -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-number">01</span>
+        <h2 class="section-title">สถิติการเปิดบันทึกการตรวจ (Exam Card Activities)</h2>
+      </div>
+      <p class="section-desc">
+        เปรียบเทียบจำนวนการสร้าง Exam Card ระหว่างรอบเดือนกันยายน (30 วัน) และช่วงต้นเดือนตุลาคม (9 วัน)
+      </p>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ช่วงเวลาบันทึก</th>
+              <th>จำนวนวัน</th>
+              <th>จำนวน Exam Card (รายการ)</th>
+              <th>อัตราเฉลี่ยต่อวัน</th>
+              <th>สถานะเทียบกับเดือนก่อน</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1 - 30 กันยายน 2569</strong></td>
+              <td class="num-col">30 วัน</td>
+              <td class="num-col">2,927</td>
+              <td class="num-col">~97.57 รายการ/วัน</td>
+              <td><span class="badge-pill success">เกณฑ์มาตรฐาน</span></td>
+            </tr>
+            <tr>
+              <td><strong>1 - 9 ตุลาคม 2569</strong></td>
+              <td class="num-col">9 วัน</td>
+              <td class="num-col">902</td>
+              <td class="num-col">~100.22 รายการ/วัน</td>
+              <td><span class="badge-pill success">+2.7% (เฉลี่ยต่อวันเพิ่มขึ้น)</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="image-grid">
+        <div class="image-card" onclick="openLightbox('images/01_exam_card_sep2026.png', 'รวม 2,927 รายการ')">
+          <div class="img-wrapper">
+            <img src="images/01_exam_card_sep2026.png" alt="Exam Card Sep 2026" loading="lazy">
+            <div class="img-zoom-hint">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+              คลิกเพื่อดูภาพเต็ม
+            </div>
+          </div>
+          <div class="image-caption">
+            <p>รวม 2,927 รายการ</p>
+          </div>
+        </div>
+
+        <div class="image-card" onclick="openLightbox('images/02_exam_card_oct2026.png', 'รวม 902 รายการ')">
+          <div class="img-wrapper">
+            <img src="images/02_exam_card_oct2026.png" alt="Exam Card Oct 2026" loading="lazy">
+            <div class="img-zoom-hint">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+              คลิกเพื่อดูภาพเต็ม
+            </div>
+          </div>
+          <div class="image-caption">
+            <p>รวม 902 รายการ</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Walk-In Records & HeatMap -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-number">02</span>
+        <h2 class="section-title">สถิติ Walk-in Check-in และการบังคับใช้รหัสคิว</h2>
+      </div>
+      <p class="section-desc">
+        วิเคราะห์ปริมาณการเข้ารับบริการผ่านจุดลงทะเบียน และผลสัมฤทธิ์ของการบังคับใช้รหัสคิวในการเรียกเข้ารับบริการ
+      </p>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ช่วงเวลา</th>
+              <th>จำนวน Check-in รวม</th>
+              <th>มีรหัสคิว (With Queue)</th>
+              <th>ไม่มีรหัสคิว (No Queue)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1 - 30 ก.ย. 2569</strong></td>
+              <td class="num-col">3,065 รายการ</td>
+              <td class="num-col">3,009 รายการ</td>
+              <td class="num-col" style="color: var(--terracotta);">56 รายการ</td>
+            </tr>
+            <tr>
+              <td><strong>1 - 9 ต.ค. 2569</strong></td>
+              <td class="num-col">954 รายการ</td>
+              <td class="num-col">954 รายการ</td>
+              <td class="num-col" style="color: var(--olive-primary); font-weight: 700;">0 รายการ (100% Queue)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="insight-box">
+        <strong>ข้อสังเกตสำคัญด้านการจัดการคิว:</strong> 
+        ในช่วงเดือนกันยายนมีเคสที่ไม่มีรหัสคิว (No Queue) จำนวน 56 รายการ แต่หลังจากการปรับปรุงขั้นตอนและกำหนดให้ต้องมีรหัสคิวทุกครั้งในการ Check-in ส่งผลให้ในเดือนตุลาคม <strong>ไม่มีเคสหลุดจากระบบคิวเลย (No Queue เป็น 0)</strong> ทำให้ระบบเรียกเข้ารับบริการทำงานได้อย่างมีประสิทธิภาพเต็ม 100%
+      </div>
+
+      <div class="image-grid">
+        <div class="image-card" onclick="openLightbox('images/03_walkin_heatmap_sep2026.png', 'รวม 3,065 รายการ')">
+          <div class="img-wrapper">
+            <img src="images/03_walkin_heatmap_sep2026.png" alt="Walk-in Heatmap Sep" loading="lazy">
+            <div class="img-zoom-hint">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+              คลิกเพื่อดูภาพเต็ม
+            </div>
+          </div>
+          <div class="image-caption">
+            <p>รวม 3,065 รายการ</p>
+          </div>
+        </div>
+
+        <div class="image-card" onclick="openLightbox('images/04_walkin_heatmap_oct2026.png', 'รวม 954 รายการ')">
+          <div class="img-wrapper">
+            <img src="images/04_walkin_heatmap_oct2026.png" alt="Walk-in Heatmap Oct" loading="lazy">
+            <div class="img-zoom-hint">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+              คลิกเพื่อดูภาพเต็ม
+            </div>
+          </div>
+          <div class="image-caption">
+            <p>รวม 954 รายการ</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Document Scanning (External Document Activities) -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-number">03</span>
+        <h2 class="section-title">สถิติการสแกนเอกสารเข้าระบบ (External Document Activities)</h2>
+      </div>
+      <p class="section-desc">
+        ติดตามปริมาณการสแกนแนบไฟล์เวชระเบียนภายนอก เอกสารส่งตัว และใบตรวจเฉพาะทางเข้าสู่ระบบ
+      </p>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ช่วงเวลา</th>
+              <th>จำนวนการสแกน</th>
+              <th>เอกสารสำคัญที่ตรวจพบจากการสำรวจ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1 - 30 ก.ย. 2569</strong></td>
+              <td class="num-col"><strong>850</strong> รายการ</td>
+              <td>ใบตรวจอายุรกรรม, ใบอนุญาตให้รักษาสัตว์, เอกสารส่งต่อจาก รพส.อื่น, ผลตรวจ Lab</td>
+            </tr>
+            <tr>
+              <td><strong>1 - 9 ต.ค. 2569</strong></td>
+              <td class="num-col"><strong>50</strong> รายการ</td>
+              <td>
+                • <strong>MA ใบตรวจอายุรกรรม:</strong> 2 ใบ<br>
+                • <strong>ตรวจระบบประสาท:</strong> 4 ใบ <em>(ข้อสังเกต: ตรวจสอบว่าเป็นใบตรวจเสริมหรือใบตรวจหลัก)</em><br>
+                • <strong>ST ศัลยกรรมเนื้อเยื่ออ่อน:</strong> 9 ใบ<br>
+                • <strong>CA ใบตรวจคลินิกพิเศษโรคหัวใจ:</strong> 3 ใบ<br>
+                • <strong>ใบบันทึกอาการสัตว์ป่วยใน:</strong> 3 ใบ<br>
+                • <strong>บัตรประชาชน:</strong> ยังตรวจพบการถ่ายภาพ/สแกนบัตรประชาชนแนบในระบบ
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="warning-box">
+        <strong>ข้อเสนอแนะด้านความปลอดภัย (Privacy & Security Notice):</strong> 
+        ยังตรวจพบการสแกนเก็บสำเนา <strong>"บัตรประชาชน"</strong> ของเจ้าของสัตว์เลี้ยงเข้าสู่ระบบฐานข้อมูล ควรพิจารณากำหนดนโยบายการเบลอหรือเซนเซอร์เลขบัตรประจำตัวประชาชน (Data Masking) หรือจัดเก็บเฉพาะในหมวดเอกสารที่จำกัดสิทธิ์การเข้าถึง เพื่อให้สอดคล้องกับมาตรฐาน พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล (PDPA)
+      </div>
+
+      <div class="image-grid">
+        <div class="image-card" onclick="openLightbox('images/05_scan_docs_sep2026.png', 'รวม 850 รายการ')">
+          <div class="img-wrapper">
+            <img src="images/05_scan_docs_sep2026.png" alt="Scan Docs Sep" loading="lazy">
+            <div class="img-zoom-hint">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+              คลิกเพื่อดูภาพเต็ม
+            </div>
+          </div>
+          <div class="image-caption">
+            <p>รวม 850 รายการ</p>
+          </div>
+        </div>
+
+        <div class="image-card" onclick="openLightbox('images/06_scan_docs_oct2026.png', 'รวม 50 รายการ')">
+          <div class="img-wrapper">
+            <img src="images/06_scan_docs_oct2026.png" alt="Scan Docs Oct" loading="lazy">
+            <div class="img-zoom-hint">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+              คลิกเพื่อดูภาพเต็ม
+            </div>
+          </div>
+          <div class="image-caption">
+            <p>รวม 50 รายการ</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4: Assessment Activities (POMR) -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-number">04</span>
+        <h2 class="section-title">สถิติการประเมินอาการสัตว์ป่วย (Assessment Activities - POMR)</h2>
+      </div>
+      <p class="section-desc">
+        การบันทึกรายการปัญหาและการประเมินตามมาตรฐาน Problem-Oriented Medical Record (POMR)
+      </p>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ช่วงเวลา</th>
+              <th>จำนวนรายการประเมิน (Activities)</th>
+              <th>อัตราเฉลี่ยต่อวัน</th>
+              <th>สัดส่วนเทียบกับ Exam Card</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1 - 30 ก.ย. 2569</strong></td>
+              <td class="num-col"><strong>3,676</strong> รายการ</td>
+              <td class="num-col">~122.53 รายการ/วัน</td>
+              <td>~1.26 ปัญหาต่อ 1 Exam Card</td>
+            </tr>
+            <tr>
+              <td><strong>1 - 9 ต.ค. 2569</strong></td>
+              <td class="num-col"><strong>1,168</strong> รายการ</td>
+              <td class="num-col">~129.78 รายการ/วัน</td>
+              <td>~1.29 ปัญหาต่อ 1 Exam Card</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="image-grid">
+        <div class="image-card" onclick="openLightbox('images/07_assessment_sep2026.png', 'รวม 3,676 รายการ')">
+          <div class="img-wrapper">
+            <img src="images/07_assessment_sep2026.png" alt="Assessment Sep" loading="lazy">
+            <div class="img-zoom-hint">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+              คลิกเพื่อดูภาพเต็ม
+            </div>
+          </div>
+          <div class="image-caption">
+            <p>รวม 3,676 รายการ</p>
+          </div>
+        </div>
+
+        <div class="image-card" onclick="openLightbox('images/08_assessment_oct2026.png', 'รวม 1,168 รายการ')">
+          <div class="img-wrapper">
+            <img src="images/08_assessment_oct2026.png" alt="Assessment Oct" loading="lazy">
+            <div class="img-zoom-hint">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+              คลิกเพื่อดูภาพเต็ม
+            </div>
+          </div>
+          <div class="image-caption">
+            <p>รวม 1,168 รายการ</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 5: Vital Sign & PE (VPE) -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-number">05</span>
+        <h2 class="section-title">การตรวจร่างกายและบันทึกสัญญาณชีพ (Vital Sign & Physical Examination)</h2>
+      </div>
+      <p class="section-desc">
+        บันทึกสัญญาณชีพพื้นฐาน (VPE v2) และตัวอย่างรายละเอียดหน้าต่าง Vital Sign Submission Detail
+      </p>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ช่วงเวลา</th>
+              <th>จำนวนบันทึก (ครั้ง)</th>
+              <th>สัดส่วนเทียบกับ Exam Card</th>
+              <th>พารามิเตอร์สำคัญที่มีการจัดเก็บในระบบ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1 - 30 ก.ย. 2569</strong></td>
+              <td class="num-col"><strong>2,389</strong> ครั้ง</td>
+              <td><strong>81.62%</strong> (2,389 จาก 2,927 เคส)</td>
+              <td>Temp, Weight, CRT, Mucous Membrane (Color/Site), Lung/Airway Sounds, Mentation (BAR), Reaction to Stimuli</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="image-grid single">
+        <div class="image-card" onclick="openLightbox('images/09_vpe_sep2026.png', 'รวม 2,389 รายการ')">
+          <div class="img-wrapper">
+            <img src="images/09_vpe_sep2026.png" alt="VPE Activities" loading="lazy">
+            <div class="img-zoom-hint">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+              คลิกเพื่อดูภาพเต็ม
+            </div>
+          </div>
+          <div class="image-caption">
+            <p>รวม 2,389 รายการ</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 6: Plan Activities & History Log -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-number">06</span>
+        <h2 class="section-title">แผนการรักษาและระบบประวัติการแก้ไข (Plan Activities & Edit History Log)</h2>
+      </div>
+      <p class="section-desc">
+        ระบบบันทึกแผนการรักษาพร้อมกลไก Audit Trail ติดตามทุกการแก้ไข (Revision Tracking)
+      </p>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ช่วงเวลา</th>
+              <th>จำนวนแผนการรักษา (รายการ)</th>
+              <th>อัตราเฉลี่ยต่อวัน</th>
+              <th>คุณสมบัติระบบความปลอดภัยและการตรวจสอบ (Audit Trail)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1 - 30 ก.ย. 2569</strong></td>
+              <td class="num-col"><strong>1,247</strong> รายการ</td>
+              <td class="num-col">~41.57 รายการ/วัน</td>
+              <td rowspan="2">
+                • <strong>Revision Versioning:</strong> แยกชัดเจนระหว่าง Revision 1, Revision 2<br>
+                • <strong>Time & User Attribution:</strong> ระบุชื่อ DVM ผู้แก้ไขและ Timestamp ละเอียดระดับวินาที<br>
+                • <strong>Status History:</strong> ติดตามสถานะตั้งแต่ CREATED · PLAN จนถึงการปรับเปลี่ยนคำสั่ง
+              </td>
+            </tr>
+            <tr>
+              <td><strong>1 - 9 ต.ค. 2569</strong></td>
+              <td class="num-col"><strong>338</strong> รายการ</td>
+              <td class="num-col">~37.56 รายการ/วัน</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="image-grid single">
+        <div class="image-card" onclick="openLightbox('images/10_plan_activities_history.png', 'รวม 1,247 รายการ (1 - 30 ก.ย.) และ 338 รายการ (1 - 9 ต.ค.)')">
+          <div class="img-wrapper">
+            <img src="images/10_plan_activities_history.png" alt="Plan Activities" loading="lazy">
+            <div class="img-zoom-hint">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+              คลิกเพื่อดูภาพเต็ม
+            </div>
+          </div>
+          <div class="image-caption">
+            <p>รวม 1,247 รายการ (1 - 30 ก.ย.) และ 338 รายการ (1 - 9 ต.ค.)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 7: Pet's Note & Patient Safety -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-number">07</span>
+        <h2 class="section-title">บันทึกข้อควรระวังของสัตว์ป่วยและประวัติการแก้ไข (Pet's Note & Drug Allergy Log)</h2>
+      </div>
+      <p class="section-desc">
+        ระบบบันทึกความปลอดภัยของสัตว์ป่วย เช่น การแพ้ยา/ผลิตภัณฑ์ พร้อมประวัติการสร้างและแก้ไขย้อนหลัง
+      </p>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>หัวข้อการบันทึก</th>
+              <th>ตัวอย่างการใช้งานจริง</th>
+              <th>ระดับความสำคัญ (Level)</th>
+              <th>การรักษาความปลอดภัย (Patient Safety)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>ประวัติการแพ้ยา / แพ้ผลิตภัณฑ์</strong></td>
+              <td><code>แพ้ Epi-otic 24/8/26 ใช้แล้วตาบวม</code></td>
+              <td><span class="badge-pill alert">HIGH</span></td>
+              <td>แสดงเตือนทันทีเมื่อเปิดเคส ป้องกันการจ่ายยาซ้ำ</td>
+            </tr>
+            <tr>
+              <td><strong>บันทึกพฤติกรรม / ข้อควรระวังทั่วไป</strong></td>
+              <td>การจัดการพิเศษระหว่างตรวจ, นิสัยสัตว์ป่วย</td>
+              <td><span class="badge-pill success">LOW</span></td>
+              <td>ช่วยทีมสัตวแพทย์และผู้ช่วยเตรียมความพร้อม</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="insight-box">
+        <strong>ความสำคัญของ Pet's Note History Log:</strong> 
+        ระบบมีหน้าต่าง Modal ตรวจสอบย้อนหลัง (Audit Log) บันทึกประวัติ <code>Revision 1 · CREATE</code> ระบุวัน-เวลา และชื่อสัตวแพทย์ผู้บันทึกอย่างชัดเจน ช่วยให้การปรับปรุงข้อมูลประวัติการแพ้ยามีความโปร่งใสและตรวจสอบความถูกต้องได้อย่างรัดกุม
+      </div>
+
+      <div class="image-grid single">
+        <div class="image-card" onclick="openLightbox('images/11_pets_note_activities_history.png', 'รวม 3 รายการ (ตัวอย่างแจ้งเตือนระดับ HIGH)')">
+          <div class="img-wrapper">
+            <img src="images/11_pets_note_activities_history.png" alt="Pet's Note Activities" loading="lazy">
+            <div class="img-zoom-hint">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+              คลิกเพื่อดูภาพเต็ม
+            </div>
+          </div>
+          <div class="image-caption">
+            <p>รวม 3 รายการ</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>© 2026 Kasetsart University Veterinary Teaching Hospital · KAHIS System Report</p>
+      <p style="margin-top: 4px; font-size: 12px; color: var(--text-muted);">
+        เอกสารรายงานฉบับนี้สร้างขึ้นเพื่อการติดตามและประเมินผลประสิทธิภาพการใช้งานระบบสารสนเทศโรงพยาบาลสัตว์
+      </p>
+    </footer>
+
+  </div>
+
+  <!-- Lightbox Modal Container -->
+  <div id="lightboxModal" class="lightbox" onclick="closeLightbox(event)">
+    <div class="lightbox-content" onclick="event.stopPropagation()">
+      <button class="lightbox-close" onclick="closeLightbox(event)" title="ปิดภาพ">✕</button>
+      <img id="lightboxImg" class="lightbox-img" src="" alt="Full size preview">
+      <div id="lightboxCaption" class="lightbox-caption"></div>
+    </div>
+  </div>
+
+  <script>
+    function openLightbox(src, caption) {
+      const modal = document.getElementById('lightboxModal');
+      const img = document.getElementById('lightboxImg');
+      const cap = document.getElementById('lightboxCaption');
+      
+      img.src = src;
+      cap.textContent = caption || '';
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox(event) {
+      const modal = document.getElementById('lightboxModal');
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+      setTimeout(() => {
+        document.getElementById('lightboxImg').src = '';
+      }, 200);
+    }
+
+    // Close with ESC key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeLightbox();
+      }
+    });
+  </script>
+</body>
+</html>

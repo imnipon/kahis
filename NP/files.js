@@ -394,6 +394,35 @@ const filesTree = [
         "type": "file",
         "path": "NP/editor_ui_shell_map.md",
         "lastUpdate": "2026-08-08T18:20:00.000000"
+      },
+      {
+        "name": "report",
+        "label": "Report",
+        "type": "folder",
+        "path": "NP/report",
+        "children": [
+          {
+            "name": "index.html",
+            "type": "file",
+            "path": "NP/report/index.html",
+            "lastUpdate": "2026-10-14T15:00:00.000000"
+          },
+          {
+            "name": "2026-09-sep-oct",
+            "label": "Sep 2026",
+            "type": "folder",
+            "path": "NP/report/2026-09-sep-oct",
+            "children": [
+              {
+                "name": "index.html",
+                "label": "Sep 2026 Report",
+                "type": "file",
+                "path": "NP/report/2026-09-sep-oct/index.html",
+                "lastUpdate": "2026-10-14T15:00:00.000000"
+              }
+            ]
+          }
+        ]
       }
     ]
   }
